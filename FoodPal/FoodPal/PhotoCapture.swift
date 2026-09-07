@@ -24,8 +24,12 @@ struct PhotoCapture: View {
 
     private enum Phase {
         case idle
-        case analysing(UIImage)
-        case ready(UIImage?, MealEstimate)
+        /// `source` steht auf dem Ladescreen — sonst behauptet er, Claude
+        /// arbeite, während in Wahrheit die Datenbank gefragt wird.
+        case analysing(UIImage, source: String)
+        /// `per100g` unterscheidet die beiden Quellen: die Datenbank liefert je
+        /// 100 g und braucht ein Mengenfeld, die Schätzung gilt für die Portion.
+        case ready(UIImage?, MealEstimate, per100g: Bool)
         case failed(UIImage?, String)
     }
 
@@ -36,8 +40,9 @@ struct PhotoCapture: View {
         VStack(alignment: .leading, spacing: 0) {
             switch phase {
             case .idle: intake
-            case .analysing(let image): analysing(image)
-            case .ready(let image, let estimate): Confirm(image: image, estimate: estimate, onSave: save)
+            case .analysing(let image, let source): analysing(image, source)
+            case .ready(let image, let estimate, let per100g):
+                Confirm(image: image, estimate: estimate, per100g: per100g, onSave: save)
             case .failed(let image, let message): failure(image, message)
             }
         }
@@ -71,7 +76,7 @@ struct PhotoCapture: View {
             .buttonStyle(.plain)
             .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
             action("Manuell eingeben") {
-                phase = .ready(nil, MealEstimate(name: "", kcal: 0))
+                phase = .ready(nil, MealEstimate(name: "", kcal: 0), per100g: false)
             }
 
             Text("Geschätzt wird von \(provider.label).")
@@ -83,7 +88,7 @@ struct PhotoCapture: View {
 
     // MARK: - Analyse
 
-    private func analysing(_ image: UIImage) -> some View {
+    private func analysing(_ image: UIImage, _ source: String) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Image(uiImage: image)
                 .resizable()
@@ -98,7 +103,7 @@ struct PhotoCapture: View {
                 .font(.system(size: 22, weight: .light))
                 .foregroundStyle(Palette.ink)
                 .padding(.top, 18)
-            Text(provider.label + " · " + effectiveModel)
+            Text(source)
                 .font(.system(size: 13))
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 4)
@@ -132,7 +137,7 @@ struct PhotoCapture: View {
                 action("Erneut versuchen") { Task { await analyse(image) } }
             }
             action("Manuell eingeben") {
-                phase = .ready(image, MealEstimate(name: "", kcal: 0))
+                phase = .ready(image, MealEstimate(name: "", kcal: 0), per100g: false)
             }
         }
     }
@@ -166,7 +171,19 @@ struct PhotoCapture: View {
     }
 
     private func analyse(_ image: UIImage) async {
-        phase = .analysing(image)
+        // Erst der billige Weg: sitzt ein lesbarer Barcode auf dem Bild, kommen
+        // exakte Werte aus der Datenbank — kein LLM-Aufruf, keine Schätzung.
+        // Findet sich keiner oder kennt die Datenbank das Produkt nicht, läuft
+        // stillschweigend der gewohnte Weg weiter.
+        if let code = Barcode.read(image) {
+            phase = .analysing(image, source: "Open Food Facts")
+            if let product = try? await FoodDatabase.lookup(code) {
+                phase = .ready(image, product, per100g: true)
+                return
+            }
+        }
+
+        phase = .analysing(image, source: provider.label + " · " + effectiveModel)
         do {
             let estimate = try await VisionEstimator.estimate(
                 image: image,
@@ -174,7 +191,7 @@ struct PhotoCapture: View {
                 model: effectiveModel,
                 baseURL: localURL
             )
-            phase = .ready(image, estimate)
+            phase = .ready(image, estimate, per100g: false)
         } catch {
             phase = .failed(image, error.localizedDescription)
         }
@@ -208,9 +225,14 @@ struct PhotoCapture: View {
 private struct Confirm: View {
     let image: UIImage?
     let estimate: MealEstimate
+    /// Werte aus der Datenbank gelten je 100 g — dann braucht es ein Mengenfeld,
+    /// das sie umrechnet. Bei einer Foto-Schätzung gelten sie bereits für die
+    /// Portion, und das Feld entfällt.
+    let per100g: Bool
     let onSave: (UIImage?, MealEstimate) -> Void
 
     @State private var name = ""
+    @State private var grams = "100"
     @State private var kcal = ""
     @State private var protein = ""
     @State private var carbs = ""
@@ -228,6 +250,7 @@ private struct Confirm: View {
                 }
 
                 field("bezeichnung", text: $name, mono: false)
+                if per100g { field("menge · g", text: $grams, mono: true) }
                 field("kcal", text: $kcal, mono: true)
                 field("protein · g", text: $protein, mono: true)
                 field("kohlenhydrate · g", text: $carbs, mono: true)
@@ -254,15 +277,34 @@ private struct Confirm: View {
             }
         }
         .scrollIndicators(.hidden)
+        .onChange(of: grams) { _, _ in if per100g { rescale() } }
         .task {
             guard !loaded else { return }
             name = estimate.name
-            kcal = estimate.kcal > 0 ? String(Int(estimate.kcal)) : ""
-            protein = estimate.proteinG.map { String(Int($0)) } ?? ""
-            carbs = estimate.carbsG.map { String(Int($0)) } ?? ""
-            fat = estimate.fatG.map { String(Int($0)) } ?? ""
+            if per100g {
+                rescale()
+            } else {
+                kcal = estimate.kcal > 0 ? String(Int(estimate.kcal)) : ""
+                protein = estimate.proteinG.map { String(Int($0)) } ?? ""
+                carbs = estimate.carbsG.map { String(Int($0)) } ?? ""
+                fat = estimate.fatG.map { String(Int($0)) } ?? ""
+            }
             loaded = true
         }
+    }
+
+    /// Menge ändern schreibt die vier Nährwertfelder neu. Wer danach ein Feld
+    /// von Hand korrigiert, behält seine Korrektur — bis er die Menge erneut
+    /// anfasst. Vorhersehbarer als eine Zwei-Wege-Bindung.
+    private func rescale() {
+        let factor = (Double(grams.replacingOccurrences(of: ",", with: ".")) ?? 0) / 100
+        func scaled(_ value: Double?) -> String {
+            value.map { String(Int(($0 * factor).rounded())) } ?? ""
+        }
+        kcal = scaled(estimate.kcal)
+        protein = scaled(estimate.proteinG)
+        carbs = scaled(estimate.carbsG)
+        fat = scaled(estimate.fatG)
     }
 
     private func field(_ label: String, text: Binding<String>, mono: Bool) -> some View {

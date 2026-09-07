@@ -412,7 +412,9 @@ Phase D braucht kein Xcode — die Installation kann nebenher laufen.
 
 ## Bewusst weggelassen
 
-- **Vision Framework** — das LLM macht die Bilderkennung komplett. Der eine sinnvolle Einsatz wäre Barcode-Scan für Fertigprodukte (`VNDetectBarcodesRequest` + Open Food Facts); das ist ein eigenes Feature mit eigener Datenquelle, vorgemerkt für später.
+- **Ein eigener Scanner-Screen.** Der Barcode-Weg ist gebaut (`VNDetectBarcodesRequest` + Open Food Facts), aber ohne zweite Tür: das Foto, das du ohnehin machst, wird vorher geprüft. Ein Live-Scanner (`DataScannerViewController`) wäre die Nachrüstung, falls sich EANs aus normalem Abstand zu selten lesen lassen — siehe [Nährwertdatenbank](anbieter.md#nährwertdatenbank).
+- **Offline-Cache der Produktdaten.** Jeder Scan fragt neu. Lohnt erst, wenn dieselben fünf Produkte täglich durchlaufen.
+- **Die gescannte Menge speichern.** `Entry` hält die ausgerechneten Werte, nicht „200 g von X". Wer den Eintrag später bearbeitet, korrigiert deshalb kcal, nicht Gramm. Ein optionales `grams` wäre eine automatische SwiftData-Migration, falls das stört.
 - **Rücklesen aus HealthKit** — die Tagessumme zeigt nur, was du in dieser App erfasst hast. Nötig, sobald eine zweite App Ernährungsdaten schreibt.
 - **Nachträglicher Sync** von Einträgen, die bei ausgeschaltetem Sync entstanden sind.
 - **Bearbeitbare Preset-Bibliothek**, Zielwerte/Tagesbudget, Wochen- und Verlaufsstatistiken, Widgets, iCloud-Sync (mit Personal Team ohnehin gesperrt).

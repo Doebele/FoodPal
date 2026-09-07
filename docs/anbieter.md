@@ -61,6 +61,28 @@ die überall erreichbar ist und ATS ohnehin zufriedenstellt. **LM Link** hilft
 hier nicht; es vernetzt LM-Studio-Installationen untereinander, und auf dem
 iPhone läuft keine.
 
+## Nährwertdatenbank
+
+Neben den Schätzern steht **Open Food Facts** — ohne Eintrag in den
+Einstellungen, weil es nichts zu wählen gibt: kein Schlüssel, keine
+Registrierung, eine feste Adresse.
+
+Der Weg ist automatisch und hat keinen eigenen Screen. Jedes aufgenommene Foto
+läuft zuerst durch `VNDetectBarcodesRequest` (EAN-13, EAN-8, UPC-E, auf dem
+Originalbild — bei 1024 px ist ein EAN aus normalem Abstand nicht mehr lesbar).
+Sitzt ein Code darauf und kennt die Datenbank ihn, kommen exakte Werte je 100 g
+und die Bestätigung bekommt ein Mengenfeld. Sonst läuft stillschweigend der
+gewohnte Weg über das LLM.
+
+Pflicht ist ein eigener User-Agent, sonst wird die IP irgendwann gesperrt. In
+`FoodDatabase.swift` steht dort die Repo-Adresse statt einer Mailadresse.
+Limits: 100 Produktabfragen/min — für eine Ein-Personen-App belanglos.
+
+**Die Datenbank ersetzt den Schätzer nicht.** Sie kennt Verpacktes mit Barcode;
+ein Teller Pasta, das Gipfeli vom Bäcker und alles Selbstgekochte stehen dort
+nicht. Und selbst beim Treffer bleibt die Menge zu beantworten — die Datenbank
+weiss, was 100 g Joghurt haben, nicht wie viel im Becher war.
+
 ## Auswahl
 
 Für Portionsschätzung aus einem Foto zählt genau eine Disziplin, und dort fallen
