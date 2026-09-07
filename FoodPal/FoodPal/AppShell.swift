@@ -27,15 +27,18 @@ enum AppTab: String, CaseIterable, Identifiable {
 /// die Innenformen verlieren.
 struct TabBar: View {
     @Binding var selection: AppTab
+    let onCapture: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
             Rectangle().fill(Palette.rule).frame(height: 1)
             HStack(spacing: 0) {
                 ForEach(AppTab.allCases) { tab in
-                    let active = tab == selection
+                    let active = tab == selection && tab != .capture
                     Button {
-                        selection = tab
+                        // Erfassen ist kein Tab-Ziel, sondern oeffnet ein
+                        // Bottom Sheet — es erledigt eine Sache und geht wieder.
+                        if tab == .capture { onCapture() } else { selection = tab }
                     } label: {
                         VStack(spacing: 4) {
                             Pictogram(kind: tab.pictogram, color: active ? Palette.ink : Palette.ink2)
@@ -59,6 +62,13 @@ struct TabBar: View {
 }
 
 struct AppShell: View {
+    @State private var showCapture = {
+        #if DEBUG
+        return ProcessInfo.processInfo.environment["START_SHEET"] == "1"
+        #else
+        return false
+        #endif
+    }()
     @State private var tab: AppTab = {
         #if DEBUG
         // Erlaubt Screenshots einzelner Tabs ohne Bedienung des Simulators.
@@ -72,16 +82,21 @@ struct AppShell: View {
         VStack(spacing: 0) {
             Group {
                 switch tab {
-                case .start: TodayView()
-                case .capture: CaptureView()
+                case .start, .capture: TodayView()
                 case .settings: SettingsView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            TabBar(selection: $tab)
+            TabBar(selection: $tab) { showCapture = true }
         }
         .background(Palette.paper)
+        .sheet(isPresented: $showCapture) {
+            CaptureSheet()
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.large])
+                .presentationBackground(Palette.paper)
+        }
     }
 }
 

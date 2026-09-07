@@ -1,10 +1,12 @@
 import SwiftUI
 import SwiftData
 
-/// Die Erfassung folgt dem Modus, der auf dem Startscreen gesetzt wurde:
-/// bei mg die Getränkeauswahl, bei kcal die Kamera. Der Umschalter unten
-/// wechselt zwischen beidem.
-struct CaptureView: View {
+/// Die Erfassung ist ein Bottom Sheet, kein Tab-Ziel: sie kommt von unten,
+/// erledigt eine Sache und verschwindet wieder. Der Modus vom Startscreen
+/// bestimmt, womit sie öffnet — bei mg die Getränkeauswahl, bei kcal die
+/// Kamera. Der Umschalter unten wechselt zwischen beidem.
+struct CaptureSheet: View {
+    @Environment(\.dismiss) private var dismiss
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
 
@@ -13,8 +15,10 @@ struct CaptureView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            header
+
             if mode == .mg {
-                CoffeeCapture(roast: roast)
+                CoffeeCapture(roast: roast) { dismiss() }
             } else {
                 PlaceholderScreen(title: "Foto")
             }
@@ -28,59 +32,77 @@ struct CaptureView: View {
                 .font(.system(size: 11))
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 10)
-                .padding(.bottom, 8)
+                .padding(.bottom, 12)
         }
         .background(Palette.paper)
+    }
+
+    private var header: some View {
+        HStack {
+            Text(mode == .mg ? "Kaffee" : "Neue Mahlzeit")
+                .font(.system(size: 13, weight: .medium))
+                .tracking(0.9)
+                .foregroundStyle(Palette.ink2)
+            Spacer()
+            Button("Schließen") { dismiss() }
+                .buttonStyle(.plain)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(Palette.ink)
+        }
+        .padding(.horizontal, Metric.margin)
+        .padding(.top, 20)
     }
 }
 
 /// Getränkeauswahl. **Ein Tap genügt** — tippen sichert sofort mit
-/// Standardportion; darunter erscheint eine schmale Zeile zum Zurücknehmen.
+/// Standardportion und schließt das Sheet.
 ///
 /// Die häufigsten Sorten stehen **unten**, entgegen der Leserichtung: dort
 /// liegt der Daumen bei einhändiger Bedienung.
 struct CoffeeCapture: View {
     let roast: Roast
+    let onSaved: () -> Void
 
     @Environment(\.modelContext) private var context
     @Query private var all: [Entry]
     @AppStorage(Preference.healthSync) private var healthSync = true
 
     @State private var health = HealthKitSync()
-    @State private var last: Entry?
     @State private var saves = 0
-    @State private var failure: String?
 
     private static let columns = 2
+    private static let dots = 12
+    private static let mgPerDot: Double = 160 / 12
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             caption
-            // Das Raster haengt unten: die haeufigsten Sorten sollen im
-            // Daumenbereich liegen, nicht in der Bildschirmmitte.
+            // Das Raster hängt unten: die häufigsten Sorten sollen im
+            // Daumenbereich liegen, nicht in der Mitte des Sheets.
             Spacer(minLength: 0)
             grid
-            confirmation
         }
         .padding(.horizontal, Metric.margin)
         .haptic(trigger: saves)
-        .task(id: saves) {
-            guard saves > 0 else { return }
-            try? await Task.sleep(for: .seconds(6))
-            withAnimation { last = nil }
-        }
     }
 
+    /// Die Legende zeigt die Kodierung, statt sie zu beschreiben:
+    /// kcal in Ink, Koffein im Akzent — genau wie in den Zellen.
     private var caption: some View {
-        HStack {
+        HStack(spacing: 0) {
             Text("häufigste unten")
+                .foregroundStyle(Palette.ink2)
             Spacer()
-            Text("punkte = koffein · zahl = kcal")
+            Text("kcal")
+                .foregroundStyle(Palette.ink)
+            Text(" · ")
+                .foregroundStyle(Palette.ink2)
+            Text("koffein")
+                .foregroundStyle(roast.color)
         }
         .font(.system(size: 11))
         .tracking(0.8)
-        .foregroundStyle(Palette.ink2)
-        .padding(.top, 12)
+        .padding(.top, 16)
         .padding(.bottom, 12)
     }
 
@@ -116,11 +138,14 @@ struct CoffeeCapture: View {
                     .lineLimit(1)
                 HStack(spacing: 8) {
                     DotBar(lit: lit(for: preset), total: Self.dots, color: roast.color)
-                        .frame(width: 58)
+                        .frame(width: 52)
                     Spacer(minLength: 0)
                     Text("\(Int(preset.kcal))")
                         .font(.system(size: 12, design: .monospaced))
-                        .foregroundStyle(Palette.ink2)
+                        .foregroundStyle(Palette.ink)
+                    Text("\(Int(preset.caffeineMg))")
+                        .font(.system(size: 12, design: .monospaced))
+                        .foregroundStyle(roast.color)
                 }
             }
             .padding(.horizontal, 14)
@@ -131,38 +156,6 @@ struct CoffeeCapture: View {
         .buttonStyle(.plain)
         .accessibilityLabel("\(preset.name), \(Int(preset.caffeineMg)) Milligramm Koffein")
     }
-
-    /// Statt „Bearbeiten": unmittelbar nach einem Fehltipp hilft
-    /// Zurücknehmen, nicht ein Formular. Geändert wird der Eintrag später
-    /// über die Tagesliste.
-    @ViewBuilder private var confirmation: some View {
-        if let entry = last {
-            VStack(spacing: 0) {
-                Rectangle().fill(Palette.ink).frame(height: 1)
-                HStack {
-                    Text("\(entry.name) gesichert")
-                        .foregroundStyle(Palette.ink2)
-                    Spacer()
-                    Button("Rückgängig") { undo(entry) }
-                        .buttonStyle(.plain)
-                        .foregroundStyle(Palette.ink)
-                        .font(.system(size: 13, weight: .medium))
-                }
-                .font(.system(size: 13))
-                .padding(.top, 12)
-            }
-            .transition(.opacity)
-        } else if let failure {
-            Text(failure)
-                .font(.system(size: 12))
-                .foregroundStyle(Palette.ink2)
-        }
-    }
-
-    // MARK: - Reihenfolge
-
-    private static let dots = 12
-    private static let mgPerDot: Double = 160 / 12
 
     private func lit(for preset: CoffeePreset) -> Int {
         min(Self.dots, Int((preset.caffeineMg / Self.mgPerDot).rounded()))
@@ -187,27 +180,21 @@ struct CoffeeCapture: View {
         }
     }
 
-    // MARK: - Sichern
-
     private func save(_ preset: CoffeePreset) {
         let entry = preset.entry()
         context.insert(entry)
-        withAnimation { last = entry }
-        failure = nil
         saves += 1
 
-        guard healthSync else { return }
-        Task {
-            do { entry.hkIDs = try await health.save(entry) }
-            catch { failure = "Lokal gesichert, Health: \(error.localizedDescription)" }
+        if healthSync {
+            Task { entry.hkIDs = (try? await health.save(entry)) ?? [] }
         }
-    }
 
-    private func undo(_ entry: Entry) {
-        let ids = entry.hkIDs
-        context.delete(entry)
-        withAnimation { last = nil }
-        Task { try? await health.delete(ids: ids) }
+        // Kurz warten, damit der Impuls noch ankommt, bevor das Sheet geht —
+        // ein sofortiges Schließen fühlt sich abgeschnitten an.
+        Task {
+            try? await Task.sleep(for: .milliseconds(120))
+            onSaved()
+        }
     }
 }
 
