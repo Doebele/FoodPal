@@ -42,6 +42,30 @@ struct AppShell: View {
     }
 }
 
+/// Kopfzeile jedes Sheets: Titel links, Schliessen rechts. Beim dritten
+/// Vorkommen ausgelagert — vorher waren es zwei Kopien, jetzt eine Regel.
+struct SheetHeader: View {
+    let title: String
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 13, weight: .medium))
+                .tracking(0.9)
+                .foregroundStyle(Palette.ink2)
+            Spacer()
+            Button("Schließen") { dismiss() }
+                .buttonStyle(.plain)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(Palette.ink)
+        }
+        .padding(.horizontal, Metric.margin)
+        .padding(.top, 20)
+        .padding(.bottom, 8)
+    }
+}
+
 /// ponytail: Platzhalter, bis die Foto-Erfassung dran ist.
 struct PlaceholderScreen: View {
     let title: String

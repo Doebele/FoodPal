@@ -2,25 +2,9 @@ import SwiftUI
 
 /// Einstellungen als Sheet — mit Kopfzeile und Schliessen, wie die Erfassung.
 struct SettingsSheet: View {
-    @Environment(\.dismiss) private var dismiss
-
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Text("Einstellungen")
-                    .font(.system(size: 13, weight: .medium))
-                    .tracking(0.9)
-                    .foregroundStyle(Palette.ink2)
-                Spacer()
-                Button("Schließen") { dismiss() }
-                    .buttonStyle(.plain)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(Palette.ink)
-            }
-            .padding(.horizontal, Metric.margin)
-            .padding(.top, 20)
-            .padding(.bottom, 8)
-
+            SheetHeader(title: "Einstellungen")
             SettingsView()
         }
         .background(Palette.paper)
@@ -34,14 +18,16 @@ struct SettingsView: View {
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
     @AppStorage(Preference.appearance) private var appearanceRaw = Appearance.auto.rawValue
     @AppStorage(Preference.provider) private var providerRaw = Provider.claude.rawValue
-    @AppStorage(Preference.model) private var model = ""
-    @AppStorage(Preference.localURL) private var localURL = ""
 
     @State private var health = HealthKitSync()
     @State private var authError: String?
-    @State private var apiKey = ""
-    @State private var probeResult: String?
-    @State private var probing = false
+    @State private var showVision = {
+        #if DEBUG
+        return ProcessInfo.processInfo.environment["START_VISION"] == "1"
+        #else
+        return false
+        #endif
+    }()
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
@@ -97,9 +83,12 @@ struct SettingsView: View {
                     }
                 }
 
-                caption("bildanalyse", trailing: provider.label, topPadding: 28)
-                providerPicker.padding(.top, 12)
-                providerFields.padding(.top, 16)
+                // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
+                // nur beim Einrichten gebraucht werden. Sie stehen deshalb hinter
+                // einer Zeile statt dauerhaft zwischen den Schaltern.
+                section("bildanalyse", trailing: provider.label, topPadding: 28) {
+                    actionRow("Anbieter und Modell") { showVision = true }
+                }
 
                 caption("erscheinungsbild", trailing: appearance.label, topPadding: 28)
                 appearancePicker.padding(.top, 12)
@@ -116,97 +105,14 @@ struct SettingsView: View {
         .scrollIndicators(.hidden)
         .background(Palette.paper)
         .haptic(.selection, trigger: roastRaw)
-    }
-
-    // MARK: - Bildanalyse
-
-    private var providerPicker: some View {
-        HStack(spacing: 0) {
-            ForEach(Array(Provider.allCases.enumerated()), id: \.element.id) { index, option in
-                if index > 0 {
-                    Rectangle().fill(Palette.rule).frame(width: 1, height: 20)
-                }
-                Button {
-                    providerRaw = option.rawValue
-                    model = ""
-                    apiKey = option.keychainAccount.flatMap(Keychain.get) ?? ""
-                    probeResult = nil
-                } label: {
-                    VStack(spacing: 10) {
-                        Text(option.label)
-                            .font(.system(size: 13, weight: option == provider ? .medium : .regular))
-                            .foregroundStyle(option == provider ? Palette.ink : Palette.ink2)
-                        Rectangle()
-                            .fill(option == provider ? Palette.ink : .clear)
-                            .frame(height: 3)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-            }
+        .sheet(isPresented: $showVision) {
+            VisionSheet()
+                .presentationDragIndicator(.visible)
+                // Vier Zeilen fuellen kein volles Sheet. Gross ziehbar bleibt
+                // es trotzdem — fuer die Tastatur beim Schluesselfeld.
+                .presentationDetents([.medium, .large])
+                .presentationBackground(Palette.paper)
         }
-    }
-
-    @ViewBuilder private var providerFields: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            if provider == .custom {
-                row("Adresse") {
-                    TextField("http://…:1234/v1", text: $localURL)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .keyboardType(.URL)
-                        .multilineTextAlignment(.trailing)
-                        .font(.system(size: 15, design: .monospaced))
-                        .foregroundStyle(Palette.ink)
-                }
-            }
-
-            row("API-Schlüssel") {
-                SecureField(provider == .custom ? "optional" : "nicht hinterlegt", text: $apiKey)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .multilineTextAlignment(.trailing)
-                    .font(.system(size: 15, design: .monospaced))
-                    .foregroundStyle(Palette.ink)
-                    .onSubmit { storeKey() }
-                    .onChange(of: apiKey) { _, _ in storeKey() }
-            }
-
-            row("Modell") {
-                TextField(provider.defaultModel, text: $model)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .multilineTextAlignment(.trailing)
-                    .font(.system(size: 15, design: .monospaced))
-                    .foregroundStyle(Palette.ink)
-            }
-
-            actionRow(probing ? "Prüfe …" : "Verbindung testen") {
-                Task {
-                    probing = true
-                    probeResult = await VisionEstimator.probe(provider: provider, baseURL: localURL)
-                    probing = false
-                }
-            }
-
-            if let probeResult {
-                Text(probeResult)
-                    .font(.system(size: 12))
-                    .foregroundStyle(Palette.ink2)
-                    .padding(.top, 8)
-            }
-        }
-        .task(id: providerRaw) {
-            apiKey = provider.keychainAccount.flatMap(Keychain.get) ?? ""
-        }
-    }
-
-    /// Der Schlüssel geht in die Keychain, nicht in UserDefaults — und er
-    /// verlässt das Gerät nur als Kopfzeile der Anfrage an den Anbieter.
-    private func storeKey() {
-        guard let account = provider.keychainAccount else { return }
-        Keychain.set(apiKey, for: account)
     }
 
     // MARK: - Erscheinungsbild
@@ -324,70 +230,6 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - Bausteine
-
-    private func caption(_ title: String, trailing: String? = nil, topPadding: CGFloat = 0) -> some View {
-        HStack {
-            Text(title)
-                .font(.system(size: 11))
-                .tracking(0.8)
-                .foregroundStyle(Palette.ink2)
-            Spacer()
-            if let trailing {
-                Text(trailing)
-                    .font(.system(size: 11))
-                    .tracking(0.8)
-                    .foregroundStyle(Palette.ink2)
-            }
-        }
-        .padding(.top, topPadding)
-        .overlay(alignment: .bottom) {
-            Rectangle().fill(Palette.ink).frame(height: 1).offset(y: 12)
-        }
-        .padding(.bottom, 12)
-    }
-
-    private func section<Content: View>(
-        _ title: String,
-        topPadding: CGFloat = 0,
-        @ViewBuilder content: () -> Content
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            caption(title, topPadding: topPadding)
-            content()
-        }
-    }
-
-    private func row<Value: View>(_ label: String, @ViewBuilder value: () -> Value) -> some View {
-        HStack {
-            Text(label)
-                .font(.system(size: 16))
-                .foregroundStyle(Palette.ink)
-            Spacer()
-            value()
-        }
-        .frame(height: 48)
-        .overlay(alignment: .bottom) {
-            Rectangle().fill(Palette.rule).frame(height: 1)
-        }
-    }
-
-    private func actionRow(_ label: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack {
-                Text(label)
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundStyle(Palette.ink)
-                Spacer()
-            }
-            .frame(height: 48)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .overlay(alignment: .bottom) {
-            Rectangle().fill(Palette.rule).frame(height: 1)
-        }
-    }
 }
 
 /// Ein Farbfeld aus Punkten des gemeinsamen Rasters — 10 Spalten, 7 Reihen.
@@ -422,6 +264,218 @@ struct DotBlock: View {
     SettingsView().background(Palette.paper)
 }
 
+/// Bildanalyse als eigenes Sheet.
+///
+/// Anbieter, Schlüssel, Modell und Adresse braucht man einmal beim Einrichten
+/// und danach nie wieder. Zwischen Haptik-Schalter und Röstung standen sie
+/// dauerhaft im Weg — hier stehen sie, wenn man sie sucht.
+struct VisionSheet: View {
+    @AppStorage(Preference.provider) private var providerRaw = Provider.claude.rawValue
+    @AppStorage(Preference.model) private var model = ""
+    @AppStorage(Preference.localURL) private var localURL = ""
+
+    @State private var apiKey = ""
+    @State private var probeResult: String?
+    @State private var probing = false
+
+    private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            SheetHeader(title: "Bildanalyse")
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    // Ohne Wert rechts: der Umschalter darunter zeigt den
+                    // gewaehlten Anbieter bereits an.
+                    caption("anbieter", topPadding: 8)
+                    providerPicker.padding(.top, 12)
+                    providerFields.padding(.top, 16)
+
+                    Text(hint)
+                        .font(.system(size: 12))
+                        .foregroundStyle(Palette.ink2)
+                        .padding(.top, 24)
+                }
+                .padding(.horizontal, Metric.margin)
+                .padding(.bottom, 32)
+            }
+            .scrollIndicators(.hidden)
+        }
+        .background(Palette.paper)
+        .haptic(.selection, trigger: providerRaw)
+    }
+
+    /// Der eine Satz, der beim Einrichten fehlt: dass hinter „Eigener Dienst"
+    /// weit mehr steckt als LM Studio.
+    private var hint: String {
+        switch provider {
+        case .claude: "Schlüssel von console.anthropic.com."
+        case .openAI: "Schlüssel von platform.openai.com."
+        case .custom:
+            "Jeder Dienst, der die OpenAI-API spricht: OpenRouter, Gemini, "
+            + "Grok, GLM, DeepSeek, Muse, Groq, Mistral — und ohne Schlüssel "
+            + "LM Studio oder Ollama im eigenen Netz. Adresse ohne "
+            + "/chat/completions."
+        }
+    }
+
+    private var providerPicker: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(Provider.allCases.enumerated()), id: \.element.id) { index, option in
+                if index > 0 {
+                    Rectangle().fill(Palette.rule).frame(width: 1, height: 20)
+                }
+                Button {
+                    providerRaw = option.rawValue
+                    model = ""
+                    apiKey = option.keychainAccount.flatMap(Keychain.get) ?? ""
+                    probeResult = nil
+                } label: {
+                    VStack(spacing: 10) {
+                        Text(option.label)
+                            .font(.system(size: 13, weight: option == provider ? .medium : .regular))
+                            .foregroundStyle(option == provider ? Palette.ink : Palette.ink2)
+                        Rectangle()
+                            .fill(option == provider ? Palette.ink : .clear)
+                            .frame(height: 3)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    @ViewBuilder private var providerFields: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if provider == .custom {
+                row("Adresse") {
+                    TextField("http://…:1234/v1", text: $localURL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .keyboardType(.URL)
+                        .multilineTextAlignment(.trailing)
+                        .font(.system(size: 15, design: .monospaced))
+                        .foregroundStyle(Palette.ink)
+                }
+            }
+
+            row("API-Schlüssel") {
+                SecureField(provider == .custom ? "optional" : "nicht hinterlegt", text: $apiKey)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .multilineTextAlignment(.trailing)
+                    .font(.system(size: 15, design: .monospaced))
+                    .foregroundStyle(Palette.ink)
+                    .onSubmit { storeKey() }
+                    .onChange(of: apiKey) { _, _ in storeKey() }
+            }
+
+            row("Modell") {
+                TextField(provider.defaultModel, text: $model)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .multilineTextAlignment(.trailing)
+                    .font(.system(size: 15, design: .monospaced))
+                    .foregroundStyle(Palette.ink)
+            }
+
+            actionRow(probing ? "Prüfe …" : "Verbindung testen") {
+                Task {
+                    probing = true
+                    probeResult = await VisionEstimator.probe(provider: provider, baseURL: localURL)
+                    probing = false
+                }
+            }
+
+            if let probeResult {
+                Text(probeResult)
+                    .font(.system(size: 12))
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.top, 8)
+            }
+        }
+        .task(id: providerRaw) {
+            apiKey = provider.keychainAccount.flatMap(Keychain.get) ?? ""
+        }
+    }
+
+    /// Der Schlüssel geht in die Keychain, nicht in UserDefaults — und er
+    /// verlässt das Gerät nur als Kopfzeile der Anfrage an den Anbieter.
+    private func storeKey() {
+        guard let account = provider.keychainAccount else { return }
+        Keychain.set(apiKey, for: account)
+    }
+
+}
+
+// MARK: - Bausteine, dateiweit
+
+private func caption(_ title: String, trailing: String? = nil, topPadding: CGFloat = 0) -> some View {
+    HStack {
+        Text(title)
+            .font(.system(size: 11))
+            .tracking(0.8)
+            .foregroundStyle(Palette.ink2)
+        Spacer()
+        if let trailing {
+            Text(trailing)
+                .font(.system(size: 11))
+                .tracking(0.8)
+                .foregroundStyle(Palette.ink2)
+        }
+    }
+    .padding(.top, topPadding)
+    .overlay(alignment: .bottom) {
+        Rectangle().fill(Palette.ink).frame(height: 1).offset(y: 12)
+    }
+    .padding(.bottom, 12)
+}
+
+private func section<Content: View>(
+    _ title: String,
+    trailing: String? = nil,
+    topPadding: CGFloat = 0,
+    @ViewBuilder content: () -> Content
+) -> some View {
+    VStack(alignment: .leading, spacing: 0) {
+        caption(title, trailing: trailing, topPadding: topPadding)
+        content()
+    }
+}
+
+private func row<Value: View>(_ label: String, @ViewBuilder value: () -> Value) -> some View {
+    HStack {
+        Text(label)
+            .font(.system(size: 16))
+            .foregroundStyle(Palette.ink)
+        Spacer()
+        value()
+    }
+    .frame(height: 48)
+    .overlay(alignment: .bottom) {
+        Rectangle().fill(Palette.rule).frame(height: 1)
+    }
+}
+
+private func actionRow(_ label: String, action: @escaping () -> Void) -> some View {
+    Button(action: action) {
+        HStack {
+            Text(label)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(Palette.ink)
+            Spacer()
+        }
+        .frame(height: 48)
+        .contentShape(Rectangle())
+    }
+    .buttonStyle(.plain)
+    .overlay(alignment: .bottom) {
+        Rectangle().fill(Palette.rule).frame(height: 1)
+    }
+}
 /// Untere linke Hälfte — die Diagonale, an der Auto seine beiden Modi teilt.
 private struct LowerLeft: Shape {
     func path(in rect: CGRect) -> Path {

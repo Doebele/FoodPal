@@ -15,7 +15,7 @@ struct CaptureSheet: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            header
+            SheetHeader(title: mode == .mg ? "Kaffee" : "Neue Mahlzeit")
 
             if mode == .mg {
                 CoffeeCapture(roast: roast) { dismiss() }
@@ -35,22 +35,6 @@ struct CaptureSheet: View {
                 .padding(.bottom, 12)
         }
         .background(Palette.paper)
-    }
-
-    private var header: some View {
-        HStack {
-            Text(mode == .mg ? "Kaffee" : "Neue Mahlzeit")
-                .font(.system(size: 13, weight: .medium))
-                .tracking(0.9)
-                .foregroundStyle(Palette.ink2)
-            Spacer()
-            Button("Schließen") { dismiss() }
-                .buttonStyle(.plain)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(Palette.ink)
-        }
-        .padding(.horizontal, Metric.margin)
-        .padding(.top, 20)
     }
 }
 
