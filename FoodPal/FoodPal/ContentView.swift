@@ -8,10 +8,29 @@ struct ContentView: View {
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
     @State private var health = HealthKitSync()
     @State private var message = ""
+    @State private var demoValue = 1849
 
     var body: some View {
         NavigationStack {
             List {
+                Section("Anzeigen") {
+                    VStack(alignment: .leading, spacing: 20) {
+                        FlipDisplay(value: demoValue).frame(height: 96)
+                        SevenSegmentDisplay(value: demoValue).frame(height: 96)
+                        HStack(spacing: 6) {
+                            ForEach(0..<10, id: \.self) { SevenSegmentDigit(digit: $0) }
+                        }
+                        .frame(height: 56)
+                        SevenSegmentDisplay(value: 206, tint: Roast.hell.color).frame(height: 72)
+                        Button("Wert wechseln") { demoValue = Int.random(in: 1000...2999) }
+                    }
+                    .padding(Metric.margin)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Palette.paper)
+                }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Palette.paper)
+
                 Section("HealthKit") {
                     LabeledContent("Status", value: health.status.rawValue)
                     Button("Berechtigung anfragen") {
