@@ -385,7 +385,9 @@ Phase D braucht kein Xcode — die Installation kann nebenher laufen.
 
 ## Risiken
 
-1. **HealthKit auf Personal Team.** Die Quellen sind sich einig, dass Lesen/Schreiben der Standard-Typen für den Eigengebrauch funktioniert und nur die eingeschränkten Entitlements (Background-Delivery, klinische Daten) ein bezahltes Konto verlangen — die brauchen wir nicht. Sicher ist es aber erst nach dem Gerätetest. Fällt es durch: entweder 99 €/Jahr, oder HealthKit fliegt raus und die App bleibt rein lokal.
+1. ~~**HealthKit auf Personal Team.**~~ **Erledigt am 7.9.2026 — funktioniert.** Apple stellt dem kostenlosen Personal Team ein Profil mit `com.apple.developer.healthkit` aus; die signierte App trägt die Berechtigung, Schreiben und Löschen laufen auf dem Gerät. Das Profil enthält sogar `healthkit.background-delivery`, die wir nicht anfordern.
+
+   **Fallstrick, der dabei auffiel:** `requestAuthorization` weist **Korrelationstypen ab** und beendet die App mit `NSInvalidArgumentException — Authorization to share the following types is disallowed: HKCorrelationTypeIdentifierFood`. Angefragt werden dürfen nur die Einzelwerte. Die `HKCorrelation` lässt sich trotzdem speichern, solange ihre enthaltenen Werte freigegeben sind; gelöscht wird ebenfalls nur über die Einzelwerte.
 2. **7-Tage-Ablauf.** Personal-Team-Profile laufen wöchentlich ab, die App startet dann nicht mehr und muss aus Xcode neu aufgespielt werden. Ohne bezahltes Konto nicht zu umgehen. Die SwiftData-Daten überleben das.
 3. **Schätzgenauigkeit.** Kalorien aus einem Foto liegen realistisch ±30 % daneben — die Portionsgröße ist aus einem Bild schlicht nicht sicher ableitbar. Deshalb der Bestätigungsschritt vor jedem Speichern.
 4. **Lokales Modell schwächer.** Portionsschätzung ist genau die Disziplin, in der kleine VLMs gegen Claude/GPT abfallen. Der Vergleich in Phase 3 zeigt, ob es für dich reicht.
