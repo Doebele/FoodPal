@@ -96,7 +96,9 @@ struct SevenSegmentDisplay: View {
     static let slant: CGFloat = 0.0385
 
     var body: some View {
-        HStack(spacing: 12) {
+        // Eng gesetzt: die Ziffern sind schmal und lesen sich als Zahl besser,
+        // wenn sie zusammenrücken. Die Neigung frisst ohnehin schon Abstand.
+        HStack(spacing: 4) {
             ForEach(Array(digits.enumerated()), id: \.offset) { _, digit in
                 SevenSegmentDigit(digit: digit, slant: slant, lit: tint)
             }
