@@ -10,19 +10,20 @@ import SwiftUI
 struct FlipCard: View {
     let digit: Int
     var tint: Color = Palette.ink
+    var duration: Double = FlipDisplay.landing
 
     @State private var shown: Int
     @State private var incoming: Int
     @State private var progress: Double = 0
 
-    init(digit: Int, tint: Color = Palette.ink) {
+    init(digit: Int, tint: Color = Palette.ink, duration: Double = FlipDisplay.landing) {
         self.digit = digit
         self.tint = tint
+        self.duration = duration
         _shown = State(initialValue: digit)
         _incoming = State(initialValue: digit)
     }
 
-    static let duration: Double = 0.16
     static let boxWidth: CGFloat = 80
     static let boxHeight: CGFloat = 112
     private static let radius: CGFloat = 6
@@ -79,9 +80,9 @@ struct FlipCard: View {
             guard new != shown else { return }
             incoming = new
             progress = 0
-            withAnimation(.easeInOut(duration: Self.duration)) { progress = 1 }
+            withAnimation(.easeInOut(duration: duration)) { progress = 1 }
             Task {
-                try? await Task.sleep(for: .seconds(Self.duration))
+                try? await Task.sleep(for: .seconds(duration))
                 shown = new
                 progress = 0
             }
@@ -117,27 +118,40 @@ struct FlipCard: View {
     }
 }
 
-/// Setzt die Ziffern **nacheinander von links nach rechts** um: die nächste
-/// Stelle klappt erst, wenn die vorige aufgesetzt hat.
+/// Setzt die Ziffern **nacheinander von links nach rechts** um — und jede
+/// Stelle **rollt** durch die Zwischenwerte, wie ein Zählwerk: von 2 auf 5
+/// über 3 und 4, nicht im Sprung.
 ///
-/// Das ist nicht nur eine Geschmacksfrage — iOS fasst Haptik-Ereignisse unter
-/// rund 50 ms zusammen. Bei gleichzeitigem Durchlauf verschmelzen die Impulse
-/// zu Matsch; nacheinander ist jeder Tick einzeln spürbar.
+/// Zwei Taktungen: Zwischenschritte laufen schnell, das Aufsetzen auf den
+/// Zielwert etwas länger — so hat der Lauf ein hörbares Ende.
+///
+/// Die Untergrenze setzt nicht die Animation, sondern die Haptik: iOS fasst
+/// Impulse unter rund 50 ms zusammen. Bei 90 ms je Zwischenschritt bleibt
+/// jeder Tick einzeln spürbar.
 struct FlipDisplay: View {
     let value: Int
     var tint: Color = Palette.ink
 
+    /// Zwischenschritt im Durchrollen.
+    static let step: Double = 0.09
+    /// Aufsetzen auf den Zielwert.
+    static let landing: Double = 0.15
+    /// Sicherheitsventil: darüber wird gesetzt statt gerollt. Greift im
+    /// normalen Betrieb nie — ein Eintrag ändert die Summe um wenige Stellen.
+    private static let maxFlaps = 20
+
     @State private var shown: [Int] = []
     @State private var flap = 0
+    @State private var stepDuration = FlipDisplay.landing
 
     var body: some View {
         HStack(spacing: 7) {
             ForEach(Array(shown.enumerated()), id: \.offset) { _, digit in
-                FlipCard(digit: digit, tint: tint)
+                FlipCard(digit: digit, tint: tint, duration: stepDuration)
             }
         }
         .task(id: value) { await cascade(to: Self.digits(of: value)) }
-        .sensoryFeedback(.impact(weight: .light, intensity: 0.7), trigger: flap)
+        .haptic(trigger: flap)
         .accessibilityElement()
         .accessibilityLabel("\(value)")
     }
@@ -149,11 +163,28 @@ struct FlipDisplay: View {
             shown = target
             return
         }
-        for index in target.indices where shown[index] != target[index] {
-            shown[index] = target[index]
-            try? await Task.sleep(for: .seconds(FlipCard.duration))
-            flap += 1
+
+        let plan = target.indices.map { Self.rollSteps(from: shown[$0], to: target[$0]) }
+        guard plan.reduce(0, +) <= Self.maxFlaps else {
+            shown = target
+            return
         }
+
+        for index in target.indices where plan[index] > 0 {
+            for remaining in stride(from: plan[index], to: 0, by: -1) {
+                let isLast = remaining == 1
+                stepDuration = isLast ? Self.landing : Self.step
+                shown[index] = (shown[index] + 1) % 10
+                try? await Task.sleep(for: .seconds(stepDuration))
+                flap += 1
+            }
+        }
+    }
+
+    /// Ein Zählwerk rollt nur vorwärts: von 8 auf 1 sind es drei Schritte
+    /// über 9 und 0, nicht sieben rückwärts.
+    private static func rollSteps(from: Int, to: Int) -> Int {
+        (to - from + 10) % 10
     }
 
     private static func digits(of value: Int) -> [Int] {

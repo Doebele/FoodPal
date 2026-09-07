@@ -3,6 +3,8 @@ import SwiftData
 
 @main
 struct FoodPalApp: App {
+    init() { Preference.registerDefaults() }
+
     var body: some Scene {
         WindowGroup {
             ContentView()

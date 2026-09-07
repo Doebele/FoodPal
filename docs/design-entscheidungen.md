@@ -331,7 +331,23 @@ Nach links über heute hinaus geht nichts — Gummiband statt leerer Zukunftstag
 `AddMealView` — `PhotosPicker` oder Kamera → Analyse → Bestätigungs-Sheet mit Name, kcal und drei Makrofeldern, alle editierbar, dann sichern. Manuelle Eingabe ohne Foto ist derselbe Screen, nur leer.
 Ladezustand während der Analyse: kein Spinner in einer Box, sondern das Foto steht bereits da und trägt eine dünne indeterminierte Fortschrittslinie an der Oberkante. Fehlerfall: eine Zeile Klartext plus „Erneut versuchen", und die manuelle Eingabe bleibt jederzeit erreichbar.
 
-`SettingsView` — HealthKit-Status und Sync-Schalter, Provider-Auswahl, Keyfelder, LM-Studio-URL mit Verbindungstest.
+`SettingsView` — HealthKit-Status und Sync-Schalter, Provider-Auswahl, Keyfelder, LM-Studio-URL mit Verbindungstest, Ziffernstil, Röstung und **Haptik-Schalter**.
+
+### Haptik
+
+**Abschaltbar, aber voreingestellt an.** Wer sie nicht vorfindet, entdeckt sie nie; wer sie stört, findet den Schalter.
+
+Alle Impulse laufen über **einen** Modifier, nicht über verstreute `.sensoryFeedback`-Aufrufe:
+
+```swift
+someView.haptic(trigger: counter)          // gestuft über Preference.haptics
+```
+
+Der Schalter greift damit überall, ohne dass jeder Screen ihn selbst abfragt. Voreinstellungen werden beim Start über `Preference.registerDefaults()` gesetzt.
+
+**Wo Haptik hingehört:** dort, wo etwas *einrastet* — Kaffee gesichert, Eintrag gelöscht, Flipkarte aufgesetzt, Tag gewechselt. **Nicht** an jeden Tastendruck; sonst nutzt sie sich ab und wird zum Rauschen.
+
+**Die Untergrenze der Taktung:** iOS fasst Haptik-Ereignisse unter rund 50 ms zusammen. Bei der Flip-Kaskade heißt das: unter etwa 110 ms je Stelle verschmelzen die Impulse zu einem Brummen. Nicht die Animation setzt hier das Limit, sondern die Haptik.
 
 `PhotosPicker` läuft außerhalb des App-Prozesses und braucht **keine** Fotoberechtigung — es bleibt nur `NSCameraUsageDescription`.
 
