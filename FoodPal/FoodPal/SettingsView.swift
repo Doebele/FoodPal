@@ -1,0 +1,244 @@
+import SwiftUI
+
+struct SettingsView: View {
+    @AppStorage(Preference.healthSync) private var healthSync = true
+    @AppStorage(Preference.haptics) private var haptics = true
+    @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
+    @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
+
+    @State private var health = HealthKitSync()
+    @State private var authError: String?
+
+    private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
+    private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Einstellungen")
+                    .font(.system(size: 13, weight: .medium))
+                    .tracking(0.9)
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.bottom, 32)
+
+                section("apple health") {
+                    row("Verbindung") {
+                        HStack(spacing: 8) {
+                            Rectangle()
+                                .fill(health.status == .authorized ? Palette.ink : Palette.ink2)
+                                .frame(width: 9, height: 9)
+                            Text(health.status.rawValue)
+                                .font(.system(size: 16))
+                                .foregroundStyle(Palette.ink)
+                        }
+                    }
+                    if health.status != .authorized {
+                        actionRow("Mit Health verbinden") {
+                            Task {
+                                do { try await health.requestAuthorization() }
+                                catch { authError = error.localizedDescription }
+                            }
+                        }
+                    }
+                    row("Sync") {
+                        Toggle("", isOn: $healthSync)
+                            .labelsHidden()
+                            .tint(Palette.ink)
+                    }
+                    row("Schreibt") {
+                        Text("Kalorien · Koffein · Makros")
+                            .font(.system(size: 16))
+                            .foregroundStyle(Palette.ink2)
+                    }
+                }
+
+                if let authError {
+                    Text(authError)
+                        .font(.system(size: 12))
+                        .foregroundStyle(Palette.ink2)
+                        .padding(.top, 8)
+                }
+
+                section("bedienung", topPadding: 28) {
+                    row("Haptik") {
+                        Toggle("", isOn: $haptics)
+                            .labelsHidden()
+                            .tint(Palette.ink)
+                    }
+                }
+
+                caption("anzeige · ziffern", trailing: style.label, topPadding: 28)
+                stylePicker.padding(.top, 12)
+
+                caption("akzent · röstung", trailing: roast.label, topPadding: 28)
+                roastPicker.padding(.top, 12)
+            }
+            .padding(.horizontal, Metric.margin)
+            .padding(.bottom, 32)
+        }
+        .scrollIndicators(.hidden)
+        .background(Palette.paper)
+        .haptic(.selection, trigger: roastRaw)
+    }
+
+    // MARK: - Ziffernstil
+
+    /// Die Auswahl zeigt die **echte Darstellung**, kein Text-Etikett —
+    /// man wählt, was man sieht.
+    private var stylePicker: some View {
+        HStack(spacing: 0) {
+            // Optischer Ausgleich: die massive Segment-Acht traegt schwerer
+            // als die kleine Ziffer auf der Karte, deshalb kleiner gesetzt.
+            styleCell(.flip) {
+                FlipCard(digit: 8).frame(height: 64)
+            }
+            Rectangle().fill(Palette.rule).frame(width: 1, height: 64)
+            styleCell(.sevenSegment) {
+                SevenSegmentDigit(digit: 8).frame(height: 50)
+            }
+        }
+    }
+
+    private func styleCell<Content: View>(
+        _ target: NumberStyle,
+        @ViewBuilder preview: () -> Content
+    ) -> some View {
+        let active = style == target
+        return Button { styleRaw = target.rawValue } label: {
+            VStack(spacing: 10) {
+                preview()
+                Text(target.label)
+                    .font(.system(size: 11, weight: active ? .medium : .regular))
+                    .foregroundStyle(active ? Palette.ink : Palette.ink2)
+                Rectangle()
+                    .fill(active ? Palette.ink : .clear)
+                    .frame(height: 3)
+            }
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Röstung
+
+    /// Die Farbfelder sitzen im selben Punktraster wie Diagramm und Anzeige.
+    private var roastPicker: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: Grid.pitch) {
+                ForEach(Roast.allCases) { candidate in
+                    Button { roastRaw = candidate.rawValue } label: {
+                        DotBlock(color: candidate.color)
+                            .overlay(alignment: .bottom) {
+                                Rectangle()
+                                    .fill(candidate == roast ? Palette.ink : .clear)
+                                    .frame(height: 3)
+                                    .offset(y: 11)
+                            }
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(candidate.label)
+                }
+            }
+            .padding(.bottom, 11)
+        }
+    }
+
+    // MARK: - Bausteine
+
+    private func caption(_ title: String, trailing: String? = nil, topPadding: CGFloat = 0) -> some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 11))
+                .tracking(0.8)
+                .foregroundStyle(Palette.ink2)
+            Spacer()
+            if let trailing {
+                Text(trailing)
+                    .font(.system(size: 11))
+                    .tracking(0.8)
+                    .foregroundStyle(Palette.ink2)
+            }
+        }
+        .padding(.top, topPadding)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Palette.ink).frame(height: 1).offset(y: 12)
+        }
+        .padding(.bottom, 12)
+    }
+
+    private func section<Content: View>(
+        _ title: String,
+        topPadding: CGFloat = 0,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            caption(title, topPadding: topPadding)
+            content()
+        }
+    }
+
+    private func row<Value: View>(_ label: String, @ViewBuilder value: () -> Value) -> some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 16))
+                .foregroundStyle(Palette.ink)
+            Spacer()
+            value()
+        }
+        .frame(height: 48)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Palette.rule).frame(height: 1)
+        }
+    }
+
+    private func actionRow(_ label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                Text(label)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(Palette.ink)
+                Spacer()
+            }
+            .frame(height: 48)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Palette.rule).frame(height: 1)
+        }
+    }
+}
+
+/// Ein Farbfeld aus Punkten des gemeinsamen Rasters — 10 Spalten, 7 Reihen.
+struct DotBlock: View {
+    let color: Color
+    var columns = 10
+    var rows = 7
+
+    var body: some View {
+        Canvas { ctx, size in
+            let s = size.width / (Grid.x(columns - 1) + Grid.dot)
+            for r in 0..<rows {
+                for c in 0..<columns {
+                    let rect = CGRect(
+                        x: Grid.x(c) * s,
+                        y: CGFloat(r) * Grid.pitch * s,
+                        width: Grid.dot * s,
+                        height: Grid.dot * s
+                    )
+                    ctx.fill(Path(rect), with: .color(color))
+                }
+            }
+        }
+        .aspectRatio(
+            (Grid.x(columns - 1) + Grid.dot) / (CGFloat(rows - 1) * Grid.pitch + Grid.dot),
+            contentMode: .fit
+        )
+    }
+}
+
+#Preview {
+    SettingsView().background(Palette.paper)
+}

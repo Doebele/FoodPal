@@ -59,7 +59,14 @@ struct TabBar: View {
 }
 
 struct AppShell: View {
-    @State private var tab: AppTab = .start
+    @State private var tab: AppTab = {
+        #if DEBUG
+        // Erlaubt Screenshots einzelner Tabs ohne Bedienung des Simulators.
+        if let raw = ProcessInfo.processInfo.environment["START_TAB"],
+           let forced = AppTab(rawValue: raw) { return forced }
+        #endif
+        return .start
+    }()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -67,7 +74,7 @@ struct AppShell: View {
                 switch tab {
                 case .start: TodayView()
                 case .capture: PlaceholderScreen(title: "Erfassen")
-                case .settings: PlaceholderScreen(title: "Einstellungen")
+                case .settings: SettingsView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
