@@ -122,21 +122,25 @@ struct EntryDetailView: View {
         }
     }
 
-    /// Die Zeit steht als schlichter Wert wie jeder andere. Erst beim
-    /// Antippen klappt das Rad aus — Apples kompakter DatePicker bringt
-    /// sonst eine graue Kastenpille mit, die es sonst nirgends gibt.
+    /// Zeitpunkt statt nur Uhrzeit: so lassen sich Einträge nachtragen,
+    /// die schon vorbei sind. Nach vorn ist bei jetzt Schluss — ein Eintrag
+    /// in der Zukunft wäre unsichtbar, weil die Tagesansicht bei heute endet.
+    ///
+    /// Der Wert steht als schlichter Text wie jeder andere; erst beim
+    /// Antippen klappt das Rad aus. Apples kompakter DatePicker bringt sonst
+    /// eine graue Kastenpille mit, die es sonst nirgends gibt.
     private var timeField: some View {
         VStack(alignment: .leading, spacing: 6) {
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) { editingTime.toggle() }
             } label: {
                 HStack {
-                    Text("zeit")
+                    Text("zeitpunkt")
                         .font(.system(size: 11))
                         .tracking(0.8)
                         .foregroundStyle(Palette.ink2)
                     Spacer()
-                    Text(date.formatted(date: .omitted, time: .shortened))
+                    Text(stamp)
                         .font(.system(size: 22, weight: .light, design: .monospaced))
                         .foregroundStyle(Palette.ink)
                 }
@@ -145,15 +149,33 @@ struct EntryDetailView: View {
             .buttonStyle(.plain)
 
             if editingTime {
-                DatePicker("", selection: $date, displayedComponents: .hourAndMinute)
-                    .datePickerStyle(.wheel)
-                    .labelsHidden()
-                    .frame(maxWidth: .infinity)
+                DatePicker(
+                    "",
+                    selection: $date,
+                    in: ...Date.now,
+                    displayedComponents: [.date, .hourAndMinute]
+                )
+                .datePickerStyle(.wheel)
+                .labelsHidden()
+                .frame(maxWidth: .infinity)
             }
 
             Rectangle().fill(Palette.rule).frame(height: 1)
         }
         .padding(.bottom, 20)
+    }
+
+    private var stamp: String {
+        let calendar = Calendar.current
+        let day: String
+        if calendar.isDateInToday(date) {
+            day = "Heute"
+        } else if calendar.isDateInYesterday(date) {
+            day = "Gestern"
+        } else {
+            day = date.formatted(.dateTime.day().month(.abbreviated))
+        }
+        return day + " · " + date.formatted(date: .omitted, time: .shortened)
     }
 
     // MARK: - Bausteine
