@@ -139,6 +139,11 @@ struct FlipDisplay: View {
     /// Sicherheitsventil: darüber wird gesetzt statt gerollt. Greift im
     /// normalen Betrieb nie — ein Eintrag ändert die Summe um wenige Stellen.
     private static let maxFlaps = 20
+    /// Klappe beim Zurücksetzen. Knapp über der Grenze, ab der iOS die
+    /// Haptik-Impulse zusammenfasst.
+    private static let reset: Double = 0.11
+    /// Ein- und Ausblenden einer Stelle.
+    private static let shift: Double = 0.22
 
     @State private var shown: [Int] = []
     @State private var flap = 0
@@ -148,6 +153,7 @@ struct FlipDisplay: View {
         HStack(spacing: 7) {
             ForEach(Array(shown.enumerated()), id: \.offset) { _, digit in
                 FlipCard(digit: digit, tint: tint, duration: stepDuration)
+                    .transition(.opacity)
             }
         }
         .task(id: value) { await cascade(to: Self.digits(of: value)) }
@@ -157,10 +163,12 @@ struct FlipDisplay: View {
     }
 
     private func cascade(to target: [Int]) async {
-        // Stellenzahl geändert: ohne Klappen neu setzen, sonst liefe die
-        // Zuordnung Stelle-zu-Karte auseinander.
-        guard shown.count == target.count else {
+        guard !shown.isEmpty else {
             shown = target
+            return
+        }
+        guard shown.count == target.count else {
+            await reconfigure(to: target)
             return
         }
 
@@ -178,6 +186,34 @@ struct FlipDisplay: View {
                 try? await Task.sleep(for: .seconds(stepDuration))
                 flap += 1
             }
+        }
+    }
+
+    /// Wechselt die Stellenzahl — etwa von kcal auf mg —, wird die Anzeige
+    /// zurückgesetzt statt weitergezählt: alle Karten auf null, dann blendet
+    /// die vierte Stelle ein oder aus, dann steht der neue Wert.
+    ///
+    /// Dabei **je eine Klappe statt Durchrollen**: Rollen heißt zählen,
+    /// hier wird zurückgesetzt. 1849 auf 0000 durchzurollen wären achtzehn
+    /// Klappen; so sind es vier.
+    private func reconfigure(to target: [Int]) async {
+        await flipEach(to: Array(repeating: 0, count: shown.count))
+
+        withAnimation(.easeInOut(duration: Self.shift)) {
+            shown = Array(repeating: 0, count: target.count)
+        }
+        try? await Task.sleep(for: .seconds(Self.shift + 0.04))
+
+        await flipEach(to: target)
+    }
+
+    /// Setzt jede Stelle mit genau einer Klappe — mit Impuls je Aufsetzen.
+    private func flipEach(to target: [Int]) async {
+        for index in target.indices where shown[index] != target[index] {
+            stepDuration = Self.reset
+            shown[index] = target[index]
+            try? await Task.sleep(for: .seconds(Self.reset))
+            flap += 1
         }
     }
 
