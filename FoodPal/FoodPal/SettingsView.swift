@@ -108,9 +108,7 @@ struct SettingsView: View {
         .sheet(isPresented: $showVision) {
             VisionSheet()
                 .presentationDragIndicator(.visible)
-                // Vier Zeilen fuellen kein volles Sheet. Gross ziehbar bleibt
-                // es trotzdem — fuer die Tastatur beim Schluesselfeld.
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
                 .presentationBackground(Palette.paper)
         }
     }
@@ -286,16 +284,21 @@ struct VisionSheet: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    // Ohne Wert rechts: der Umschalter darunter zeigt den
-                    // gewaehlten Anbieter bereits an.
-                    caption("anbieter", topPadding: 8)
-                    providerPicker.padding(.top, 12)
-                    providerFields.padding(.top, 16)
+                    // Der aktive Dienst zuerst: Schluessel einsetzen und testen
+                    // ist das Haeufige, den Anbieter wechseln das Seltene.
+                    caption("aktiv", trailing: provider.label, topPadding: 8)
+                    providerFields
 
                     Text(hint)
                         .font(.system(size: 12))
                         .foregroundStyle(Palette.ink2)
-                        .padding(.top, 24)
+                        .padding(.top, 20)
+
+                    caption("gehostet · mit schlüssel", topPadding: 32)
+                    list(Provider.allCases.filter(\.needsKey))
+
+                    caption("ohne schlüssel", topPadding: 28)
+                    list(Provider.allCases.filter { !$0.needsKey })
                 }
                 .padding(.horizontal, Metric.margin)
                 .padding(.bottom, 32)
@@ -306,53 +309,59 @@ struct VisionSheet: View {
         .haptic(.selection, trigger: providerRaw)
     }
 
-    /// Der eine Satz, der beim Einrichten fehlt: dass hinter „Eigener Dienst"
-    /// weit mehr steckt als LM Studio.
-    private var hint: String {
-        switch provider {
-        case .claude: "Schlüssel von console.anthropic.com."
-        case .openAI: "Schlüssel von platform.openai.com."
-        case .custom:
-            "Jeder Dienst, der die OpenAI-API spricht: OpenRouter, Gemini, "
-            + "Grok, GLM, DeepSeek, Muse, Groq, Mistral — und ohne Schlüssel "
-            + "LM Studio oder Ollama im eigenen Netz. Adresse ohne "
-            + "/chat/completions."
-        }
-    }
-
-    private var providerPicker: some View {
-        HStack(spacing: 0) {
-            ForEach(Array(Provider.allCases.enumerated()), id: \.element.id) { index, option in
-                if index > 0 {
-                    Rectangle().fill(Palette.rule).frame(width: 1, height: 20)
-                }
-                Button {
-                    providerRaw = option.rawValue
-                    model = ""
-                    apiKey = option.keychainAccount.flatMap(Keychain.get) ?? ""
-                    probeResult = nil
-                } label: {
-                    VStack(spacing: 10) {
+    /// Eine Zeile je Dienst statt eines Umschalters: bei zwoelf Eintraegen
+    /// passt keine Segmentleiste mehr, und die Adressen soll niemand abtippen.
+    private func list(_ options: [Provider]) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(options) { option in
+                Button { select(option) } label: {
+                    HStack {
                         Text(option.label)
-                            .font(.system(size: 13, weight: option == provider ? .medium : .regular))
+                            .font(.system(size: 16, weight: option == provider ? .medium : .regular))
                             .foregroundStyle(option == provider ? Palette.ink : Palette.ink2)
+                        Spacer()
                         Rectangle()
                             .fill(option == provider ? Palette.ink : .clear)
-                            .frame(height: 3)
+                            .frame(width: 9, height: 9)
                     }
-                    .frame(maxWidth: .infinity)
+                    .frame(height: 48)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .overlay(alignment: .bottom) {
+                    Rectangle().fill(Palette.rule).frame(height: 1)
+                }
             }
         }
     }
 
+    /// Modell und Adresse kommen vom neuen Dienst — ein Modellname des alten
+    /// waere beim neuen fast sicher falsch. Der Schluessel bleibt, er liegt je
+    /// Anbieter in einem eigenen Keychain-Fach.
+    private func select(_ option: Provider) {
+        providerRaw = option.rawValue
+        model = ""
+        if option.editableAddress { localURL = option.defaultAddress }
+        probeResult = nil
+    }
+
+    /// Der Satz, der beim Einrichten fehlt: wo der Schluessel herkommt und
+    /// dass die Liste kein Zaun ist.
+    private var hint: String {
+        if provider.editableAddress {
+            return "Adresse ohne /chat/completions. Jeder Dienst, der die "
+                + "OpenAI-API spricht, passt hier hinein — auch einer, der "
+                + "oben nicht steht."
+        }
+        return "Schlüssel von \(provider.keyOrigin). Modellnamen ändern sich; "
+            + "„Verbindung testen\" sagt, ob es den eingetragenen noch gibt."
+    }
+
     @ViewBuilder private var providerFields: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if provider == .custom {
+            if provider.editableAddress {
                 row("Adresse") {
-                    TextField("http://…:1234/v1", text: $localURL)
+                    TextField("https://…/v1", text: $localURL)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
@@ -363,7 +372,7 @@ struct VisionSheet: View {
             }
 
             row("API-Schlüssel") {
-                SecureField(provider == .custom ? "optional" : "nicht hinterlegt", text: $apiKey)
+                SecureField(provider.needsKey ? "nicht hinterlegt" : "optional", text: $apiKey)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .multilineTextAlignment(.trailing)
@@ -374,7 +383,7 @@ struct VisionSheet: View {
             }
 
             row("Modell") {
-                TextField(provider.defaultModel, text: $model)
+                TextField(provider.defaultModel.isEmpty ? "eintragen" : provider.defaultModel, text: $model)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .multilineTextAlignment(.trailing)
@@ -385,7 +394,11 @@ struct VisionSheet: View {
             actionRow(probing ? "Prüfe …" : "Verbindung testen") {
                 Task {
                     probing = true
-                    probeResult = await VisionEstimator.probe(provider: provider, baseURL: localURL)
+                    probeResult = await VisionEstimator.probe(
+                        provider: provider,
+                        model: model.isEmpty ? provider.defaultModel : model,
+                        baseURL: localURL
+                    )
                     probing = false
                 }
             }
@@ -398,15 +411,14 @@ struct VisionSheet: View {
             }
         }
         .task(id: providerRaw) {
-            apiKey = provider.keychainAccount.flatMap(Keychain.get) ?? ""
+            apiKey = Keychain.get(provider.keychainAccount) ?? ""
         }
     }
 
     /// Der Schlüssel geht in die Keychain, nicht in UserDefaults — und er
     /// verlässt das Gerät nur als Kopfzeile der Anfrage an den Anbieter.
     private func storeKey() {
-        guard let account = provider.keychainAccount else { return }
-        Keychain.set(apiKey, for: account)
+        Keychain.set(apiKey, for: provider.keychainAccount)
     }
 
 }

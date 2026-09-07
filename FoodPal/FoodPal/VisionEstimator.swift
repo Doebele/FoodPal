@@ -12,40 +12,74 @@ import UIKit
 /// OpenRouter, Gemini über seinen Kompatibilitätspfad, xAI Grok, Z.ai GLM,
 /// Groq, Mistral, DeepSeek. Siehe `docs/anbieter.md`.
 enum Provider: String, CaseIterable, Identifiable, Codable {
-    // Rohwert "local" bleibt, damit bestehende Einstellungen weitergelten.
-    case claude, openAI, custom = "local"
+    // Rohwert "local" bleibt bei custom, damit bestehende Einstellungen und
+    // der dort hinterlegte Keychain-Eintrag weitergelten.
+    case claude, openAI, openRouter, gemini, grok, glm, deepSeek, muse, mistral
+    case lmStudio, ollama, custom = "local"
 
     var id: String { rawValue }
 
-    var label: String {
+    /// Adresse, Standardmodell und Bezugsquelle des Schlüssels — eine Zeile je
+    /// Anbieter. Eine Tabelle statt drei paralleler `switch`, damit beim
+    /// Nachtragen eines Dienstes nichts an drei Stellen auseinanderläuft.
+    ///
+    /// `url == nil` heisst: die Adresse steht nicht fest, weil der Rechner im
+    /// eigenen Netz hängt oder frei gewählt wird.
+    private var spec: (label: String, url: String?, model: String, keys: String) {
         switch self {
-        case .claude: "Claude"
-        case .openAI: "OpenAI"
-        case .custom: "Eigener Dienst"
+        case .claude:     ("Claude", "https://api.anthropic.com/v1", "claude-sonnet-5", "console.anthropic.com")
+        case .openAI:     ("OpenAI", "https://api.openai.com/v1", "gpt-4o", "platform.openai.com")
+        case .openRouter: ("OpenRouter", "https://openrouter.ai/api/v1", "anthropic/claude-sonnet-5", "openrouter.ai/keys")
+        case .gemini:     ("Gemini", "https://generativelanguage.googleapis.com/v1beta/openai", "gemini-2.5-flash", "aistudio.google.com")
+        case .grok:       ("Grok", "https://api.x.ai/v1", "grok-4", "console.x.ai")
+        case .glm:        ("GLM", "https://api.z.ai/api/paas/v4", "glm-4.5v", "z.ai")
+        case .deepSeek:   ("DeepSeek", "https://api.deepseek.com/v1", "deepseek-v4-flash-vision-exp", "platform.deepseek.com")
+        case .muse:       ("Muse", "https://api.meta.ai/v1", "muse-spark-1.1", "dev.meta.ai")
+        case .mistral:    ("Mistral", "https://api.mistral.ai/v1", "pixtral-large-latest", "console.mistral.ai")
+        case .lmStudio:   ("LM Studio", nil, "zai-org/glm-4.6v-flash", "")
+        case .ollama:     ("Ollama", nil, "qwen3-vl", "")
+        case .custom:     ("Eigener Dienst", nil, "", "")
         }
     }
 
-    /// Schlüssel in der Keychain. Lokal braucht keinen.
-    var keychainAccount: String? {
+    var label: String { spec.label }
+    var defaultModel: String { spec.model }
+    var keyOrigin: String { spec.keys }
+
+    /// Feste Adresse, wo es eine gibt. Sonst kommt sie aus den Einstellungen.
+    var fixedBaseURL: String? { spec.url }
+    var editableAddress: Bool { spec.url == nil }
+
+    /// Vorschlag fürs Adressfeld — die Portnummern unterscheiden die beiden,
+    /// die IP muss ohnehin jeder selbst eintragen.
+    var defaultAddress: String {
+        switch self {
+        case .lmStudio: "http://192.168.1.42:1234/v1"
+        case .ollama: "http://192.168.1.42:11434/v1"
+        default: ""
+        }
+    }
+
+    /// Die Dienste im eigenen Netz kommen ohne Schlüssel aus, beim freien Slot
+    /// ist er erlaubt, aber nicht verlangt. Alles Gehostete braucht einen.
+    var needsKey: Bool {
+        switch self {
+        case .lmStudio, .ollama, .custom: false
+        default: true
+        }
+    }
+
+    /// Je Anbieter ein eigenes Fach — wer zwischen zweien wechselt, tippt den
+    /// Schlüssel nicht jedes Mal neu ein. Die drei ersten Namen sind
+    /// historisch, damit bereits hinterlegte Schlüssel auffindbar bleiben.
+    var keychainAccount: String {
         switch self {
         case .claude: "anthropic-key"
         case .openAI: "openai-key"
         case .custom: "custom-key"
+        default: rawValue + "-key"
         }
     }
-
-    var defaultModel: String {
-        switch self {
-        case .claude: "claude-sonnet-5"
-        case .openAI: "gpt-4o"
-        case .custom: "zai-org/glm-4.6v-flash"
-        }
-    }
-
-    /// Nur die beiden festen Dienste **verlangen** einen Schlüssel; ein
-    /// eigener Endpunkt darf einen haben, muss aber nicht — LM Studio im
-    /// eigenen Netz braucht keinen.
-    var needsKey: Bool { self != .custom }
 }
 
 struct MealEstimate: Codable, Equatable, Sendable {
@@ -93,12 +127,13 @@ enum VisionEstimator {
         guard let jpeg = downscaled(image) else { throw Failure.badImage }
         let base64 = jpeg.base64EncodedString()
 
-        let key = provider.keychainAccount.flatMap(Keychain.get)
+        let key = Keychain.get(provider.keychainAccount)
         if provider.needsKey, key?.isEmpty != false { throw Failure.missingKey }
 
+        let base = provider.fixedBaseURL ?? baseURL
         let request = provider == .claude
-            ? anthropicRequest(base64: base64, model: model, key: key ?? "")
-            : openAIRequest(base64: base64, model: model, key: key, baseURL: baseURL)
+            ? anthropicRequest(base64: base64, model: model, key: key ?? "", baseURL: base)
+            : openAIRequest(base64: base64, model: model, key: key, baseURL: base)
 
         let (data, response) = try await URLSession.shared.data(for: request)
         let code = (response as? HTTPURLResponse)?.statusCode ?? 0
@@ -178,8 +213,10 @@ enum VisionEstimator {
 
     // MARK: - Anfragen
 
-    private static func anthropicRequest(base64: String, model: String, key: String) -> URLRequest {
-        var request = URLRequest(url: URL(string: "https://api.anthropic.com/v1/messages")!)
+    private static func anthropicRequest(
+        base64: String, model: String, key: String, baseURL: String
+    ) -> URLRequest {
+        var request = URLRequest(url: URL(string: trimmed(baseURL) + "/messages")!)
         request.httpMethod = "POST"
         request.setValue(key, forHTTPHeaderField: "x-api-key")
         request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
@@ -203,8 +240,7 @@ enum VisionEstimator {
     private static func openAIRequest(
         base64: String, model: String, key: String?, baseURL: String
     ) -> URLRequest {
-        let base = baseURL.hasSuffix("/") ? String(baseURL.dropLast()) : baseURL
-        var request = URLRequest(url: URL(string: base + "/chat/completions")!)
+        var request = URLRequest(url: URL(string: trimmed(baseURL) + "/chat/completions")!)
         request.httpMethod = "POST"
         if let key, !key.isEmpty {
             request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
@@ -224,6 +260,12 @@ enum VisionEstimator {
             ]]
         ])
         return request
+    }
+
+    /// Ein abschliessender Schrägstrich in der selbst eingetragenen Adresse
+    /// ergäbe sonst `//chat/completions`.
+    static func trimmed(_ url: String) -> String {
+        url.hasSuffix("/") ? String(url.dropLast()) : url
     }
 
     // MARK: - Bild
@@ -246,39 +288,48 @@ extension VisionEstimator {
     /// Fragt die Modellliste ab. Billiger und ehrlicher als eine
     /// Probe-Schätzung: es kostet keine Tokens und sagt trotzdem, ob
     /// Adresse, Schlüssel und Erreichbarkeit stimmen.
-    static func probe(provider: Provider, baseURL: String) async -> String {
-        let key = provider.keychainAccount.flatMap(Keychain.get)
+    static func probe(provider: Provider, model: String, baseURL: String) async -> String {
+        let key = Keychain.get(provider.keychainAccount)
         if provider.needsKey, key?.isEmpty != false { return "Kein Schlüssel hinterlegt." }
 
-        var request: URLRequest
-        switch provider {
-        case .claude:
-            request = URLRequest(url: URL(string: "https://api.anthropic.com/v1/models")!)
+        let base = provider.fixedBaseURL ?? baseURL
+        guard !base.isEmpty, let url = URL(string: trimmed(base) + "/models") else {
+            return "Adresse fehlt oder ist ungültig."
+        }
+
+        var request = URLRequest(url: url)
+        if provider == .claude {
             request.setValue(key, forHTTPHeaderField: "x-api-key")
             request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
-        case .openAI:
-            request = URLRequest(url: URL(string: "https://api.openai.com/v1/models")!)
-            request.setValue("Bearer \(key ?? "")", forHTTPHeaderField: "Authorization")
-        case .custom:
-            let base = baseURL.hasSuffix("/") ? String(baseURL.dropLast()) : baseURL
-            guard let url = URL(string: base + "/models") else { return "Adresse ist ungültig." }
-            request = URLRequest(url: url)
-            if let key, !key.isEmpty {
-                request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
-            }
+        } else if let key, !key.isEmpty {
+            request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
         }
         request.timeoutInterval = 12
 
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await URLSession.shared.data(for: request)
             let code = (response as? HTTPURLResponse)?.statusCode ?? 0
             switch code {
-            case 200..<300: return "Verbindung steht."
+            case 200..<300:
+                // Modell-IDs wandern; ein Tippfehler oder ein abgekündigter
+                // Name fiele sonst erst beim ersten Foto auf.
+                let ids = listedModels(data)
+                if ids.isEmpty { return "Verbindung steht." }
+                return ids.contains(model)
+                    ? "Verbindung steht, Modell vorhanden."
+                    : "Verbindung steht, aber \(model) ist nicht in der Liste."
             case 401, 403: return "Schlüssel wird abgelehnt (\(code))."
             default: return "Antwort \(code)."
             }
         } catch {
             return error.localizedDescription
         }
+    }
+
+    /// Anthropic und die OpenAI-Form liefern beide `{"data":[{"id":…}]}`.
+    private static func listedModels(_ data: Data) -> Set<String> {
+        guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let items = root["data"] as? [[String: Any]] else { return [] }
+        return Set(items.compactMap { $0["id"] as? String })
     }
 }
