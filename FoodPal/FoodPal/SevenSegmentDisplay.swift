@@ -86,6 +86,13 @@ struct SevenSegmentDigit: View {
     }
 }
 
+/// Beim Wechsel der Stellenzahl — etwa von kcal auf mg — läuft die Anzeige
+/// wie ein echtes Gerät: erst **auf null**, dann blendet die vierte Stelle
+/// ein oder aus, dann steht der neue Wert. Ohne das schiebt SwiftUI die
+/// Ziffern seitlich um, was nach Textlayout aussieht und nicht nach Anzeige.
+///
+/// Bleibt die Stellenzahl gleich, wird direkt übergeblendet — ein Zaehlwerk
+/// nullt nicht, nur weil sich ein Wert ändert.
 struct SevenSegmentDisplay: View {
     let value: Int
     var tint: Color = Palette.ink
@@ -95,27 +102,58 @@ struct SevenSegmentDisplay: View {
     /// meist bei 5–8°, was schnell nach Taschenrechner wirkt.
     static let slant: CGFloat = 0.0385
 
+    private static let blank: Double = 0.14
+    private static let shift: Double = 0.20
+
+    @State private var shown: [Int] = []
+
     var body: some View {
         // Eng gesetzt: die Ziffern sind schmal und lesen sich als Zahl besser,
         // wenn sie zusammenrücken. Die Neigung frisst ohnehin schon Abstand.
         HStack(spacing: 4) {
-            ForEach(Array(digits.enumerated()), id: \.offset) { _, digit in
+            ForEach(Array(shown.enumerated()), id: \.offset) { _, digit in
                 SevenSegmentDigit(digit: digit, slant: slant, lit: tint)
+                    .transition(.opacity)
             }
         }
+        .task(id: value) { await run(to: Self.digits(of: value)) }
         .accessibilityElement()
         .accessibilityLabel("\(value)")
     }
 
-    private var digits: [Int] {
-        String(max(0, value)).compactMap { $0.wholeNumberValue }
+    private func run(to target: [Int]) async {
+        guard !shown.isEmpty else {
+            shown = target
+            return
+        }
+        guard shown.count != target.count else {
+            withAnimation(.easeInOut(duration: Self.blank)) { shown = target }
+            return
+        }
+
+        withAnimation(.easeInOut(duration: Self.blank)) {
+            shown = Array(repeating: 0, count: shown.count)
+        }
+        try? await Task.sleep(for: .seconds(Self.blank + 0.04))
+
+        withAnimation(.easeInOut(duration: Self.shift)) {
+            shown = Array(repeating: 0, count: target.count)
+        }
+        try? await Task.sleep(for: .seconds(Self.shift + 0.04))
+
+        withAnimation(.easeInOut(duration: Self.blank)) { shown = target }
+    }
+
+    private static func digits(of value: Int) -> [Int] {
+        String(max(0, value)).compactMap(\.wholeNumberValue)
     }
 }
 
 #Preview {
-    VStack(spacing: 32) {
-        SevenSegmentDisplay(value: 1849).frame(height: 116)
-        SevenSegmentDisplay(value: 206, tint: Roast.hell.color).frame(height: 116)
+    @Previewable @State var value = 1849
+    return VStack(spacing: 32) {
+        SevenSegmentDisplay(value: value).frame(height: 116)
+        Button("kcal / mg") { value = value > 1000 ? 189 : 1849 }
     }
     .padding(Metric.margin)
     .background(Palette.paper)
