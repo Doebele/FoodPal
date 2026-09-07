@@ -73,7 +73,7 @@ struct AppShell: View {
             Group {
                 switch tab {
                 case .start: TodayView()
-                case .capture: PlaceholderScreen(title: "Erfassen")
+                case .capture: CaptureView()
                 case .settings: SettingsView()
                 }
             }
