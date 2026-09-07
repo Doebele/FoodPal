@@ -60,3 +60,16 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+## Geheimnisse — öffentliches Repository
+Secrets.swift
+Secrets.plist
+*.xcconfig.local
+.env
+.env.*
+!.env.example
+*.p8
+*.p12
+*.mobileprovision
+*.certSigningRequest
+apikeys.json
