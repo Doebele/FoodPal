@@ -198,7 +198,8 @@ struct DayView: View {
                 NumberDisplay(
                     value: mode == .kcal ? kcal : mg,
                     style: style,
-                    tint: mode == .kcal ? Palette.ink : roast.color
+                    tint: mode == .kcal ? Palette.ink : roast.color,
+                    resetKey: mode.rawValue
                 )
                 .frame(height: 112)
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -329,15 +330,17 @@ struct NumberDisplay: View {
     let value: Int
     let style: NumberStyle
     var tint: Color = Palette.ink
+    /// Wechselt dieser Schlüssel, nullt die Anzeige, statt weiterzuzählen.
+    var resetKey: String = ""
 
     var body: some View {
         switch style {
         case .flip:
-            FlipDisplay(value: value, tint: tint)
+            FlipDisplay(value: value, tint: tint, resetKey: resetKey)
         case .sevenSegment, .dotMatrix:
             // ponytail: Dot-Matrix-Ziffern folgen, sobald der Feinschliff
             // der Figma-Komponenten steht — bis dahin 7-Segment.
-            SevenSegmentDisplay(value: value, tint: tint)
+            SevenSegmentDisplay(value: value, tint: tint, resetKey: resetKey)
         }
     }
 }

@@ -122,30 +122,37 @@ struct FlipCard: View {
 /// Stelle **rollt** durch die Zwischenwerte, wie ein Zählwerk: von 2 auf 5
 /// über 3 und 4, nicht im Sprung.
 ///
-/// Zwei Taktungen: Zwischenschritte laufen schnell, das Aufsetzen auf den
-/// Zielwert etwas länger — so hat der Lauf ein hörbares Ende.
+/// Zwei Anlässe, zwei Verhalten:
+///
+/// - **Wertänderung** — die Stellen rollen auf den neuen Wert, jede Klappe
+///   mit Impuls. Wächst die Stellenzahl dabei, kommt vorn still eine Karte
+///   dazu, die dann mitrollt.
+/// - **Moduswechsel** (`resetKey`, etwa kcal ↔ mg) — die Anzeige wird erst
+///   **stumm genullt**, denn das Löschen ist kein Ereignis, das man spüren
+///   soll. Erst das Setzen auf den gespeicherten Wert gibt wieder Impulse.
 ///
 /// Die Untergrenze setzt nicht die Animation, sondern die Haptik: iOS fasst
-/// Impulse unter rund 50 ms zusammen. Bei 90 ms je Zwischenschritt bleibt
-/// jeder Tick einzeln spürbar.
+/// Impulse unter rund 50 ms zusammen.
 struct FlipDisplay: View {
     let value: Int
     var tint: Color = Palette.ink
+    /// Wechselt dieser Schlüssel, wird genullt statt gezählt.
+    var resetKey: String = ""
 
     /// Zwischenschritt im Durchrollen.
     static let step: Double = 0.09
     /// Aufsetzen auf den Zielwert.
     static let landing: Double = 0.15
-    /// Sicherheitsventil: darüber wird gesetzt statt gerollt. Greift im
-    /// normalen Betrieb nie — ein Eintrag ändert die Summe um wenige Stellen.
-    private static let maxFlaps = 20
-    /// Klappe beim Zurücksetzen. Knapp über der Grenze, ab der iOS die
-    /// Haptik-Impulse zusammenfasst.
+    /// Klappe beim stummen Nullen und beim Setzen nach dem Moduswechsel.
     private static let reset: Double = 0.11
     /// Ein- und Ausblenden einer Stelle.
     private static let shift: Double = 0.22
+    /// Sicherheitsventil: darüber wird gesetzt statt gerollt. Greift im
+    /// normalen Betrieb nie — ein Eintrag ändert die Summe um wenige Stellen.
+    private static let maxFlaps = 20
 
     @State private var shown: [Int] = []
+    @State private var shownKey = ""
     @State private var flap = 0
     @State private var stepDuration = FlipDisplay.landing
 
@@ -156,32 +163,46 @@ struct FlipDisplay: View {
                     .transition(.opacity)
             }
         }
-        .task(id: value) { await cascade(to: Self.digits(of: value)) }
+        .task(id: "\(resetKey)|\(value)") {
+            await update(to: Self.digits(of: value), key: resetKey)
+        }
         .haptic(trigger: flap)
         .accessibilityElement()
         .accessibilityLabel("\(value)")
     }
 
-    private func cascade(to target: [Int]) async {
+    private func update(to target: [Int], key: String) async {
+        let previous = shownKey
+        shownKey = key
+
         guard !shown.isEmpty else {
             shown = target
             return
         }
-        guard shown.count == target.count else {
-            await reconfigure(to: target)
+
+        if !previous.isEmpty && previous != key {
+            // Moduswechsel: stumm löschen, dann hörbar setzen.
+            await flipEach(to: Array(repeating: 0, count: shown.count), silent: true)
+            await resize(to: target.count)
+            await flipEach(to: target, silent: false)
             return
         }
 
+        // Wertänderung: Stellenzahl still anpassen, dann rollen.
+        await resize(to: target.count)
+        await roll(to: target)
+    }
+
+    /// Rollt jede Stelle vorwärts durch die Zwischenwerte, mit Impuls je Klappe.
+    private func roll(to target: [Int]) async {
         let plan = target.indices.map { Self.rollSteps(from: shown[$0], to: target[$0]) }
         guard plan.reduce(0, +) <= Self.maxFlaps else {
             shown = target
             return
         }
-
         for index in target.indices where plan[index] > 0 {
             for remaining in stride(from: plan[index], to: 0, by: -1) {
-                let isLast = remaining == 1
-                stepDuration = isLast ? Self.landing : Self.step
+                stepDuration = remaining == 1 ? Self.landing : Self.step
                 shown[index] = (shown[index] + 1) % 10
                 try? await Task.sleep(for: .seconds(stepDuration))
                 flap += 1
@@ -189,32 +210,26 @@ struct FlipDisplay: View {
         }
     }
 
-    /// Wechselt die Stellenzahl — etwa von kcal auf mg —, wird die Anzeige
-    /// zurückgesetzt statt weitergezählt: alle Karten auf null, dann blendet
-    /// die vierte Stelle ein oder aus, dann steht der neue Wert.
-    ///
-    /// Dabei **je eine Klappe statt Durchrollen**: Rollen heißt zählen,
-    /// hier wird zurückgesetzt. 1849 auf 0000 durchzurollen wären achtzehn
-    /// Klappen; so sind es vier.
-    private func reconfigure(to target: [Int]) async {
-        await flipEach(to: Array(repeating: 0, count: shown.count))
-
-        withAnimation(.easeInOut(duration: Self.shift)) {
-            shown = Array(repeating: 0, count: target.count)
-        }
-        try? await Task.sleep(for: .seconds(Self.shift + 0.04))
-
-        await flipEach(to: target)
-    }
-
-    /// Setzt jede Stelle mit genau einer Klappe — mit Impuls je Aufsetzen.
-    private func flipEach(to target: [Int]) async {
+    /// Setzt jede Stelle mit genau einer Klappe. `silent` unterdrückt den
+    /// Impuls — beim Nullen soll nichts zu spüren sein.
+    private func flipEach(to target: [Int], silent: Bool) async {
         for index in target.indices where shown[index] != target[index] {
             stepDuration = Self.reset
             shown[index] = target[index]
             try? await Task.sleep(for: .seconds(Self.reset))
-            flap += 1
+            if !silent { flap += 1 }
         }
+    }
+
+    /// Blendet vorn eine Stelle ein oder aus — still, es ist kein Zählschritt.
+    private func resize(to count: Int) async {
+        guard shown.count != count else { return }
+        withAnimation(.easeInOut(duration: Self.shift)) {
+            shown = count > shown.count
+                ? Array(repeating: 0, count: count - shown.count) + shown
+                : Array(shown.suffix(count))
+        }
+        try? await Task.sleep(for: .seconds(Self.shift + 0.04))
     }
 
     /// Ein Zählwerk rollt nur vorwärts: von 8 auf 1 sind es drei Schritte
@@ -230,9 +245,14 @@ struct FlipDisplay: View {
 
 #Preview {
     @Previewable @State var value = 1849
+    @Previewable @State var key = "kcal"
     return VStack(spacing: 32) {
-        FlipDisplay(value: value).frame(height: 112)
-        Button("Wert wechseln") { value = Int.random(in: 1000...2999) }
+        FlipDisplay(value: value, resetKey: key).frame(height: 112)
+        Button("Wert ändern") { value += Int.random(in: 3...80) }
+        Button("Modus wechseln") {
+            key = key == "kcal" ? "mg" : "kcal"
+            value = key == "kcal" ? 1849 : 189
+        }
     }
     .padding(Metric.margin)
     .background(Palette.paper)

@@ -86,17 +86,17 @@ struct SevenSegmentDigit: View {
     }
 }
 
-/// Beim Wechsel der Stellenzahl — etwa von kcal auf mg — läuft die Anzeige
-/// wie ein echtes Gerät: erst **auf null**, dann blendet die vierte Stelle
-/// ein oder aus, dann steht der neue Wert. Ohne das schiebt SwiftUI die
-/// Ziffern seitlich um, was nach Textlayout aussieht und nicht nach Anzeige.
+/// Genullt wird **nur beim Moduswechsel** (`resetKey`, etwa kcal ↔ mg):
+/// erst auf null, dann blendet die Stelle ein oder aus, dann steht der Wert.
 ///
-/// Bleibt die Stellenzahl gleich, wird direkt übergeblendet — ein Zaehlwerk
-/// nullt nicht, nur weil sich ein Wert ändert.
+/// Eine reine Wertänderung blendet direkt über — auch wenn dabei eine Stelle
+/// hinzukommt. Ein Zählwerk nullt nicht, bloß weil eine Zahl größer wird.
 struct SevenSegmentDisplay: View {
     let value: Int
     var tint: Color = Palette.ink
     var slant: CGFloat = SevenSegmentDisplay.slant
+    /// Wechselt dieser Schlüssel, wird genullt statt übergeblendet.
+    var resetKey: String = ""
 
     /// 0,0385 entspricht 2,2° — gemessen am Entwurf. LCD-Schriften liegen
     /// meist bei 5–8°, was schnell nach Taschenrechner wirkt.
@@ -106,6 +106,7 @@ struct SevenSegmentDisplay: View {
     private static let shift: Double = 0.20
 
     @State private var shown: [Int] = []
+    @State private var shownKey = ""
 
     var body: some View {
         // Eng gesetzt: die Ziffern sind schmal und lesen sich als Zahl besser,
@@ -116,17 +117,23 @@ struct SevenSegmentDisplay: View {
                     .transition(.opacity)
             }
         }
-        .task(id: value) { await run(to: Self.digits(of: value)) }
+        .task(id: "\(resetKey)|\(value)") {
+            await run(to: Self.digits(of: value), key: resetKey)
+        }
         .accessibilityElement()
         .accessibilityLabel("\(value)")
     }
 
-    private func run(to target: [Int]) async {
+    private func run(to target: [Int], key: String) async {
+        let previous = shownKey
+        shownKey = key
+
         guard !shown.isEmpty else {
             shown = target
             return
         }
-        guard shown.count != target.count else {
+        guard !previous.isEmpty && previous != key else {
+            // Reine Wertänderung: überblenden, auch bei neuer Stellenzahl.
             withAnimation(.easeInOut(duration: Self.blank)) { shown = target }
             return
         }
