@@ -27,10 +27,13 @@ final class HealthKitSync {
 
     private static var foodType: HKCorrelationType { HKCorrelationType(.food) }
 
+    /// Nur die Einzeltypen. HealthKit weist Korrelationstypen in der
+    /// Autorisierung ausdrücklich zurück ("Authorization to share the
+    /// following types is disallowed: HKCorrelationTypeIdentifierFood").
+    /// Die Korrelation lässt sich dennoch speichern, solange ihre
+    /// enthaltenen Werte freigegeben sind.
     private static var shareTypes: Set<HKSampleType> {
-        var set: Set<HKSampleType> = [foodType]
-        for (id, _) in quantities { set.insert(HKQuantityType(id)) }
-        return set
+        Set(quantities.map { HKQuantityType($0.0) })
     }
 
     var isAvailable: Bool { HKHealthStore.isHealthDataAvailable() }
@@ -104,12 +107,11 @@ final class HealthKitSync {
             orPredicateWithSubpredicates: ids.map { HKQuery.predicateForObject(with: $0) }
         )
 
-        var types: [HKObjectType] = [Self.foodType]
-        for (id, _) in Self.quantities { types.append(HKQuantityType(id)) }
-
-        for type in types {
-            guard let sampleType = type as? HKSampleType else { continue }
-            _ = try? await store.deleteObjects(of: sampleType, predicate: predicate)
+        // Der Korrelationstyp bleibt außen vor — ohne Autorisierung dafür
+        // kein Löschen. Sind alle enthaltenen Einzelwerte fort, verschwindet
+        // der Eintrag in Health ohnehin.
+        for (id, _) in Self.quantities {
+            _ = try? await store.deleteObjects(of: HKQuantityType(id), predicate: predicate)
         }
     }
 
