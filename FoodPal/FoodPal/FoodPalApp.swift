@@ -7,8 +7,18 @@ struct FoodPalApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppShell()
+                .modelContainer(container)
         }
-        .modelContainer(for: Entry.self)
     }
+
+    private let container: ModelContainer = {
+        let container = try! ModelContainer(for: Entry.self)
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["SEED_DEMO"] == "1" {
+            DemoData.seedIfEmpty(ModelContext(container))
+        }
+        #endif
+        return container
+    }()
 }
