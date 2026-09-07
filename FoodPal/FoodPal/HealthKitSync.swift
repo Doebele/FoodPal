@@ -25,13 +25,6 @@ final class HealthKitSync {
         (.dietaryFatTotal, .gram())
     ]
 
-    private static var foodType: HKCorrelationType { HKCorrelationType(.food) }
-
-    /// Nur die Einzeltypen. HealthKit weist Korrelationstypen in der
-    /// Autorisierung ausdrücklich zurück ("Authorization to share the
-    /// following types is disallowed: HKCorrelationTypeIdentifierFood").
-    /// Die Korrelation lässt sich dennoch speichern, solange ihre
-    /// enthaltenen Werte freigegeben sind.
     private static var shareTypes: Set<HKSampleType> {
         Set(quantities.map { HKQuantityType($0.0) })
     }
@@ -54,9 +47,11 @@ final class HealthKitSync {
         try await store.requestAuthorization(toShare: Self.shareTypes, read: [])
     }
 
-    /// Legt den Eintrag als `HKCorrelation` vom Typ `.food` ab, nicht als lose
-    /// Einzelwerte — nur so zeigt die Health-App einen benannten Eintrag mit
-    /// aufklappbaren Nährwerten. Gibt die UUIDs zum späteren Löschen zurück.
+    /// Legt die Nährwerte als einzelne Samples ab und gibt ihre UUIDs zum
+    /// späteren Löschen zurück. Bewusst ohne `HKCorrelation`: Apples Health-App
+    /// zeigt daraus keine gruppierte Mahlzeit, der Name reist ohnehin als
+    /// Metadatum mit — und eine Korrelation ließe sich nie wieder löschen,
+    /// weil HealthKit für Korrelationstypen keine Autorisierung erteilt.
     @discardableResult
     func save(_ entry: Entry) async throws -> [UUID] {
         guard isAvailable else { throw Failure.unavailable }
@@ -69,11 +64,13 @@ final class HealthKitSync {
             (.dietaryFatTotal, .gram(), entry.fatG ?? 0)
         ]
 
+        // Der Name reist als HKMetadataKeyFoodType an jedem Einzelwert mit —
+        // die Health-App zeigt ihn im Detail als "Nahrungsmittel".
         let metadata: [String: Any] = [HKMetadataKeyFoodType: entry.name]
 
-        var samples = Set<HKSample>()
+        var samples: [HKQuantitySample] = []
         for (id, unit, value) in values where value > 0 {
-            samples.insert(HKQuantitySample(
+            samples.append(HKQuantitySample(
                 type: HKQuantityType(id),
                 quantity: HKQuantity(unit: unit, doubleValue: value),
                 start: entry.date,
@@ -83,19 +80,8 @@ final class HealthKitSync {
         }
         guard !samples.isEmpty else { throw Failure.nothingToWrite }
 
-        let correlation = HKCorrelation(
-            type: Self.foodType,
-            start: entry.date,
-            end: entry.date,
-            objects: samples,
-            metadata: metadata
-        )
-
-        try await store.save(correlation)
-
-        var ids = [correlation.uuid]
-        ids.append(contentsOf: samples.map(\.uuid))
-        return ids
+        try await store.save(samples)
+        return samples.map(\.uuid)
     }
 
     /// Löscht über alle infrage kommenden Typen — ein Prädikat, das nicht
@@ -107,9 +93,6 @@ final class HealthKitSync {
             orPredicateWithSubpredicates: ids.map { HKQuery.predicateForObject(with: $0) }
         )
 
-        // Der Korrelationstyp bleibt außen vor — ohne Autorisierung dafür
-        // kein Löschen. Sind alle enthaltenen Einzelwerte fort, verschwindet
-        // der Eintrag in Health ohnehin.
         for (id, _) in Self.quantities {
             _ = try? await store.deleteObjects(of: HKQuantityType(id), predicate: predicate)
         }

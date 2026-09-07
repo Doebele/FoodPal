@@ -1,0 +1,84 @@
+import SwiftUI
+
+/// Farben als dynamische UIColors statt Asset-Katalog: die Werte stehen damit
+/// im Code, wo sie sich mit den Figma-Variablen abgleichen lassen.
+enum Palette {
+    static let paper = dynamic(light: 0xFAFAF8, dark: 0x121211)
+    static let ink   = dynamic(light: 0x161614, dark: 0xF0F0EA)
+    static let ink2  = dynamic(light: 0x8A8A82, dark: 0x85857D)
+    /// Erloschene Punkte im Diagramm — etwas kräftiger als `rule`.
+    static let ink3  = dynamic(light: 0xC9C9BD, dark: 0x33332E)
+    static let rule  = dynamic(light: 0xE2E2DA, dark: 0x2A2A27)
+
+    static func dynamic(light: UInt32, dark: UInt32) -> Color {
+        Color(uiColor: UIColor { $0.userInterfaceStyle == .dark ? UIColor(hex: dark) : UIColor(hex: light) })
+    }
+}
+
+/// Der Akzent gehört ausschließlich dem Koffein. Wählbar als Röstung.
+enum Roast: String, CaseIterable, Identifiable, Codable {
+    case zimt, hell, mittel, wien, franzoesisch, italienisch
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .zimt: "Zimt"
+        case .hell: "Hell"
+        case .mittel: "Mittel"
+        case .wien: "Wien"
+        case .franzoesisch: "Französisch"
+        case .italienisch: "Italienisch"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .zimt: Palette.dynamic(light: 0xC9793A, dark: 0xE3A876)
+        case .hell: Palette.dynamic(light: 0xB4531F, dark: 0xE08A4E)
+        case .mittel: Palette.dynamic(light: 0x9A4A22, dark: 0xCE7B45)
+        case .wien: Palette.dynamic(light: 0x7A3A1B, dark: 0xBC6D3C)
+        case .franzoesisch: Palette.dynamic(light: 0x5A2A14, dark: 0xA75E33)
+        case .italienisch: Palette.dynamic(light: 0x3D1C0E, dark: 0x91502B)
+        }
+    }
+}
+
+/// Das Punktraster, auf dem Tagesdiagramm und Ziffernanzeige gemeinsam sitzen.
+///
+/// Ein Tag hat immer 24 Stunden, also hat das Raster **immer 72 Spalten** —
+/// je Stunde drei Punkte, zwischen den Stunden eine zusätzliche Lücke.
+/// Die Teilung ergibt sich aus der verfügbaren Breite und gilt für **beide**
+/// Achsen; nur so bleiben die Punkte quadratisch und nichts wird gestaucht.
+enum Grid {
+    static let columns = 72
+    static let dot: CGFloat = 3
+    static let pitch: CGFloat = 5
+    static let groupPitch: CGFloat = 15
+    /// x(71) + dot bei natürlicher Teilung.
+    static let naturalWidth: CGFloat = 358
+
+    static func x(_ column: Int) -> CGFloat {
+        CGFloat(column / 3) * groupPitch + CGFloat(column % 3) * pitch
+    }
+
+    static func scale(forWidth width: CGFloat) -> CGFloat {
+        width / naturalWidth
+    }
+}
+
+enum Metric {
+    static let margin: CGFloat = 24
+    static let rowHeight: CGFloat = 56
+}
+
+private extension UIColor {
+    convenience init(hex: UInt32) {
+        self.init(
+            red: CGFloat((hex >> 16) & 0xFF) / 255,
+            green: CGFloat((hex >> 8) & 0xFF) / 255,
+            blue: CGFloat(hex & 0xFF) / 255,
+            alpha: 1
+        )
+    }
+}
