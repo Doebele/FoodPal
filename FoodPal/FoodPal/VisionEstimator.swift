@@ -3,12 +3,17 @@ import UIKit
 
 /// Woher die Schätzung kommt.
 ///
-/// **LM Studio spricht die OpenAI-API.** „OpenAI" und „lokal" sind deshalb
-/// derselbe Request-Körper, nur mit anderer Adresse, anderem Modellnamen und
-/// ohne echten Schlüssel — zwei Körperformen, nicht drei. Ein `switch` in
-/// einer Funktion, kein Protokoll mit drei Conformances.
+/// Es gibt nur **zwei Körperformen**, nicht eine je Anbieter: Anthropic hat
+/// eine eigene, alles Übrige spricht die OpenAI-Form. Deshalb ein `switch`
+/// in einer Funktion und kein Protokoll mit Conformances.
+///
+/// `custom` ist dadurch weit mehr als LM Studio — jeder OpenAI-kompatible
+/// Dienst passt hinein, mit Adresse, Modellnamen und optionalem Schlüssel:
+/// OpenRouter, Gemini über seinen Kompatibilitätspfad, xAI Grok, Z.ai GLM,
+/// Groq, Mistral, DeepSeek. Siehe `docs/anbieter.md`.
 enum Provider: String, CaseIterable, Identifiable, Codable {
-    case claude, openAI, local
+    // Rohwert "local" bleibt, damit bestehende Einstellungen weitergelten.
+    case claude, openAI, custom = "local"
 
     var id: String { rawValue }
 
@@ -16,7 +21,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .claude: "Claude"
         case .openAI: "OpenAI"
-        case .local: "LM Studio"
+        case .custom: "Eigener Dienst"
         }
     }
 
@@ -25,7 +30,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .claude: "anthropic-key"
         case .openAI: "openai-key"
-        case .local: nil
+        case .custom: "custom-key"
         }
     }
 
@@ -33,11 +38,14 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .claude: "claude-sonnet-5"
         case .openAI: "gpt-4o"
-        case .local: "zai-org/glm-4.6v-flash"
+        case .custom: "zai-org/glm-4.6v-flash"
         }
     }
 
-    var needsKey: Bool { keychainAccount != nil }
+    /// Nur die beiden festen Dienste **verlangen** einen Schlüssel; ein
+    /// eigener Endpunkt darf einen haben, muss aber nicht — LM Studio im
+    /// eigenen Netz braucht keinen.
+    var needsKey: Bool { self != .custom }
 }
 
 struct MealEstimate: Codable, Equatable, Sendable {
@@ -251,10 +259,13 @@ extension VisionEstimator {
         case .openAI:
             request = URLRequest(url: URL(string: "https://api.openai.com/v1/models")!)
             request.setValue("Bearer \(key ?? "")", forHTTPHeaderField: "Authorization")
-        case .local:
+        case .custom:
             let base = baseURL.hasSuffix("/") ? String(baseURL.dropLast()) : baseURL
             guard let url = URL(string: base + "/models") else { return "Adresse ist ungültig." }
             request = URLRequest(url: url)
+            if let key, !key.isEmpty {
+                request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+            }
         }
         request.timeoutInterval = 12
 

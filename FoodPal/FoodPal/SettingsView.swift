@@ -150,18 +150,7 @@ struct SettingsView: View {
 
     @ViewBuilder private var providerFields: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if provider.needsKey {
-                row("API-Schlüssel") {
-                    SecureField("nicht hinterlegt", text: $apiKey)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .multilineTextAlignment(.trailing)
-                        .font(.system(size: 15, design: .monospaced))
-                        .foregroundStyle(Palette.ink)
-                        .onSubmit { storeKey() }
-                        .onChange(of: apiKey) { _, _ in storeKey() }
-                }
-            } else {
+            if provider == .custom {
                 row("Adresse") {
                     TextField("http://…:1234/v1", text: $localURL)
                         .textInputAutocapitalization(.never)
@@ -171,6 +160,17 @@ struct SettingsView: View {
                         .font(.system(size: 15, design: .monospaced))
                         .foregroundStyle(Palette.ink)
                 }
+            }
+
+            row("API-Schlüssel") {
+                SecureField(provider == .custom ? "optional" : "nicht hinterlegt", text: $apiKey)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .multilineTextAlignment(.trailing)
+                    .font(.system(size: 15, design: .monospaced))
+                    .foregroundStyle(Palette.ink)
+                    .onSubmit { storeKey() }
+                    .onChange(of: apiKey) { _, _ in storeKey() }
             }
 
             row("Modell") {
