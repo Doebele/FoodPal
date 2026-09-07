@@ -1,5 +1,32 @@
 import SwiftUI
 
+/// Einstellungen als Sheet — mit Kopfzeile und Schliessen, wie die Erfassung.
+struct SettingsSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text("Einstellungen")
+                    .font(.system(size: 13, weight: .medium))
+                    .tracking(0.9)
+                    .foregroundStyle(Palette.ink2)
+                Spacer()
+                Button("Schließen") { dismiss() }
+                    .buttonStyle(.plain)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Palette.ink)
+            }
+            .padding(.horizontal, Metric.margin)
+            .padding(.top, 20)
+            .padding(.bottom, 8)
+
+            SettingsView()
+        }
+        .background(Palette.paper)
+    }
+}
+
 struct SettingsView: View {
     @AppStorage(Preference.healthSync) private var healthSync = true
     @AppStorage(Preference.haptics) private var haptics = true
@@ -15,13 +42,7 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Text("Einstellungen")
-                    .font(.system(size: 13, weight: .medium))
-                    .tracking(0.9)
-                    .foregroundStyle(Palette.ink2)
-                    .padding(.bottom, 32)
-
-                section("apple health") {
+                section("apple health", topPadding: 16) {
                     row("Verbindung") {
                         HStack(spacing: 8) {
                             Rectangle()

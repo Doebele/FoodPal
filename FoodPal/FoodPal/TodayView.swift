@@ -13,6 +13,9 @@ enum DisplayMode: String {
 /// Die Kopfzeile steht **außerhalb** des Pagers: nur der Inhalt wandert,
 /// Datum und Sprungziel bleiben stehen.
 struct TodayView: View {
+    let onCapture: () -> Void
+    let onSettings: () -> Void
+
     @Query(sort: \Entry.date) private var all: [Entry]
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
@@ -63,6 +66,8 @@ struct TodayView: View {
             .scrollPosition(id: $scrolled, anchor: .center)
             .scrollIndicators(.hidden)
             .haptic(.selection, trigger: currentDay)
+
+            captureAction
         }
         .background(Palette.paper)
     }
@@ -73,10 +78,20 @@ struct TodayView: View {
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(Palette.ink)
 
-            // Der Sprung nach vorn erscheint nur, wenn er etwas tut.
-            if currentDay != today {
-                HStack {
-                    Spacer()
+            HStack {
+                // Einstellungen sind selten gebraucht — die Ecke genuegt.
+                Button(action: onSettings) {
+                    Pictogram(kind: .settings, color: Palette.ink2)
+                        .frame(width: 22, height: 22)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Einstellungen")
+
+                Spacer()
+
+                // Der Sprung nach vorn erscheint nur, wenn er etwas tut.
+                if currentDay != today {
                     Button {
                         withAnimation { scrolled = today }
                     } label: {
@@ -91,6 +106,24 @@ struct TodayView: View {
         .padding(.horizontal, Metric.margin)
         .padding(.top, 12)
         .padding(.bottom, 16)
+    }
+
+    /// Die primaere Handlung liegt unten, im Daumenbereich — nicht in einer
+    /// Ecke. Eine Aktion, kein Ziel: deshalb eine Zeile, kein Tab.
+    private var captureAction: some View {
+        VStack(spacing: 0) {
+            Rectangle().fill(Palette.rule).frame(height: 1)
+            Button(action: onCapture) {
+                Text("Erfassen")
+                    .font(.system(size: 17, weight: .medium))
+                    .foregroundStyle(Palette.ink)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+        .background(Palette.paper)
     }
 
     private func title(for day: Date) -> String {
@@ -112,6 +145,7 @@ struct DayView: View {
 
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
+    @State private var selected: Entry?
 
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
     private var kcal: Int { Int(entries.reduce(0) { $0 + $1.kcal }.rounded()) }
@@ -178,6 +212,7 @@ struct DayView: View {
     private var entryList: some View {
         VStack(spacing: 0) {
             ForEach(entries.sorted { $0.date < $1.date }) { entry in
+                Button { selected = entry } label: {
                 HStack(spacing: 0) {
                     Text(entry.date.formatted(date: .omitted, time: .shortened))
                         .font(.system(size: 13, design: .monospaced))
@@ -192,10 +227,29 @@ struct DayView: View {
                         .foregroundStyle(Palette.ink)
                 }
                 .frame(height: Metric.rowHeight)
+                .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
                 .overlay(alignment: .bottom) {
                     Rectangle().fill(Palette.rule).frame(height: 1)
                 }
             }
+        }
+        // Zeile antippen oeffnet den Eintrag — der einzige Weg, ihn wieder
+        // loszuwerden, seit Swipe-to-delete dem Tageswechsel weichen musste.
+        .task {
+            #if DEBUG
+            // Erlaubt einen Screenshot des Eintrags ohne Bedienung des Simulators.
+            if ProcessInfo.processInfo.environment["START_ENTRY"] == "1" {
+                selected = entries.sorted { $0.date < $1.date }.last
+            }
+            #endif
+        }
+        .sheet(item: $selected) { entry in
+            EntryDetailView(entry: entry)
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.large])
+                .presentationBackground(Palette.paper)
         }
     }
 }
