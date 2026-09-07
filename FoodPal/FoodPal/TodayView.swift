@@ -74,9 +74,16 @@ struct TodayView: View {
 
     private var header: some View {
         ZStack {
-            Text(title(for: currentDay))
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(Palette.ink)
+            // Pfeile flankieren das Datum, damit es mittig bleibt —
+            // unabhaengig davon, ob der Heute-Sprung gerade da ist.
+            HStack(spacing: 4) {
+                stepButton("<", delta: -1, enabled: canStep(-1))
+                Text(title(for: currentDay))
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Palette.ink)
+                    .frame(minWidth: 132)
+                stepButton(">", delta: 1, enabled: canStep(1))
+            }
 
             HStack {
                 // Einstellungen sind selten gebraucht — die Ecke genuegt.
@@ -90,7 +97,8 @@ struct TodayView: View {
 
                 Spacer()
 
-                // Der Sprung nach vorn erscheint nur, wenn er etwas tut.
+                // Der Sprung nach vorn erscheint nur, wenn er etwas tut —
+                // nach mehreren Tagen zurueck waere Vorwaertswischen muehsam.
                 if currentDay != today {
                     Button {
                         withAnimation { scrolled = today }
@@ -106,6 +114,33 @@ struct TodayView: View {
         .padding(.horizontal, Metric.margin)
         .padding(.top, 12)
         .padding(.bottom, 16)
+    }
+
+    /// Deaktivierte Pfeile bleiben im Layout, aber unsichtbar: sonst
+    /// wandert das Datum, sobald ein Rand erreicht ist.
+    private func stepButton(_ glyph: String, delta: Int, enabled: Bool) -> some View {
+        Button { step(delta) } label: {
+            Text(glyph)
+                .font(.system(size: 15))
+                .foregroundStyle(Palette.ink2)
+                .frame(width: 32, height: 40)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .opacity(enabled ? 1 : 0)
+        .disabled(!enabled)
+        .accessibilityLabel(delta < 0 ? "Vorheriger Tag" : "Naechster Tag")
+    }
+
+    private func canStep(_ delta: Int) -> Bool {
+        guard let index = days.firstIndex(of: currentDay) else { return false }
+        return days.indices.contains(index + delta)
+    }
+
+    private func step(_ delta: Int) {
+        guard let index = days.firstIndex(of: currentDay),
+              days.indices.contains(index + delta) else { return }
+        withAnimation { scrolled = days[index + delta] }
     }
 
     /// Die primaere Handlung liegt unten, im Daumenbereich — nicht in einer
