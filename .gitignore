@@ -73,3 +73,9 @@ Secrets.plist
 *.mobileprovision
 *.certSigningRequest
 apikeys.json
+
+## Werkzeug-Zustand (Agenten-Sitzungen)
+.mimosa/
+.v2c/
+.video_agent/
+.zcode/
