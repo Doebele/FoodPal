@@ -9,6 +9,9 @@ enum Preference {
     static let numberStyle = "numberStyle"
     static let captureMode = "captureMode"
     static let appearance = "appearance"
+    static let provider = "visionProvider"
+    static let model = "visionModel"
+    static let localURL = "lmStudioURL"
 
     /// Voreinstellungen. Haptik ist **an** — abschaltbar, aber wer sie nicht
     /// vorfindet, entdeckt sie nie.
@@ -19,7 +22,10 @@ enum Preference {
             roast: Roast.hell.rawValue,
             numberStyle: NumberStyle.flip.rawValue,
             captureMode: Entry.Kind.coffee.rawValue,
-            appearance: Appearance.auto.rawValue
+            appearance: Appearance.auto.rawValue,
+            provider: Provider.claude.rawValue,
+            model: "",
+            localURL: "http://192.168.1.42:1234/v1"
         ])
     }
 }

@@ -33,13 +33,20 @@ struct SettingsView: View {
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
     @AppStorage(Preference.appearance) private var appearanceRaw = Appearance.auto.rawValue
+    @AppStorage(Preference.provider) private var providerRaw = Provider.claude.rawValue
+    @AppStorage(Preference.model) private var model = ""
+    @AppStorage(Preference.localURL) private var localURL = ""
 
     @State private var health = HealthKitSync()
     @State private var authError: String?
+    @State private var apiKey = ""
+    @State private var probeResult: String?
+    @State private var probing = false
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
     private var appearance: Appearance { Appearance(rawValue: appearanceRaw) ?? .auto }
+    private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
 
     var body: some View {
         ScrollView {
@@ -90,6 +97,10 @@ struct SettingsView: View {
                     }
                 }
 
+                caption("bildanalyse", trailing: provider.label, topPadding: 28)
+                providerPicker.padding(.top, 12)
+                providerFields.padding(.top, 16)
+
                 caption("erscheinungsbild", trailing: appearance.label, topPadding: 28)
                 appearancePicker.padding(.top, 12)
 
@@ -105,6 +116,97 @@ struct SettingsView: View {
         .scrollIndicators(.hidden)
         .background(Palette.paper)
         .haptic(.selection, trigger: roastRaw)
+    }
+
+    // MARK: - Bildanalyse
+
+    private var providerPicker: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(Provider.allCases.enumerated()), id: \.element.id) { index, option in
+                if index > 0 {
+                    Rectangle().fill(Palette.rule).frame(width: 1, height: 20)
+                }
+                Button {
+                    providerRaw = option.rawValue
+                    model = ""
+                    apiKey = option.keychainAccount.flatMap(Keychain.get) ?? ""
+                    probeResult = nil
+                } label: {
+                    VStack(spacing: 10) {
+                        Text(option.label)
+                            .font(.system(size: 13, weight: option == provider ? .medium : .regular))
+                            .foregroundStyle(option == provider ? Palette.ink : Palette.ink2)
+                        Rectangle()
+                            .fill(option == provider ? Palette.ink : .clear)
+                            .frame(height: 3)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    @ViewBuilder private var providerFields: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if provider.needsKey {
+                row("API-Schlüssel") {
+                    SecureField("nicht hinterlegt", text: $apiKey)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .multilineTextAlignment(.trailing)
+                        .font(.system(size: 15, design: .monospaced))
+                        .foregroundStyle(Palette.ink)
+                        .onSubmit { storeKey() }
+                        .onChange(of: apiKey) { _, _ in storeKey() }
+                }
+            } else {
+                row("Adresse") {
+                    TextField("http://…:1234/v1", text: $localURL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .keyboardType(.URL)
+                        .multilineTextAlignment(.trailing)
+                        .font(.system(size: 15, design: .monospaced))
+                        .foregroundStyle(Palette.ink)
+                }
+            }
+
+            row("Modell") {
+                TextField(provider.defaultModel, text: $model)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .multilineTextAlignment(.trailing)
+                    .font(.system(size: 15, design: .monospaced))
+                    .foregroundStyle(Palette.ink)
+            }
+
+            actionRow(probing ? "Prüfe …" : "Verbindung testen") {
+                Task {
+                    probing = true
+                    probeResult = await VisionEstimator.probe(provider: provider, baseURL: localURL)
+                    probing = false
+                }
+            }
+
+            if let probeResult {
+                Text(probeResult)
+                    .font(.system(size: 12))
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.top, 8)
+            }
+        }
+        .task(id: providerRaw) {
+            apiKey = provider.keychainAccount.flatMap(Keychain.get) ?? ""
+        }
+    }
+
+    /// Der Schlüssel geht in die Keychain, nicht in UserDefaults — und er
+    /// verlässt das Gerät nur als Kopfzeile der Anfrage an den Anbieter.
+    private func storeKey() {
+        guard let account = provider.keychainAccount else { return }
+        Keychain.set(apiKey, for: account)
     }
 
     // MARK: - Erscheinungsbild

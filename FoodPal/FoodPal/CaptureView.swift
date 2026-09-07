@@ -20,7 +20,7 @@ struct CaptureSheet: View {
             if mode == .mg {
                 CoffeeCapture(roast: roast) { dismiss() }
             } else {
-                PlaceholderScreen(title: "Foto")
+                PhotoCapture { dismiss() }
             }
 
             ModeToggle(mode: mode, roast: roast) { new in
