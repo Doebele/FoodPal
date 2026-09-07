@@ -32,12 +32,14 @@ struct SettingsView: View {
     @AppStorage(Preference.haptics) private var haptics = true
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
+    @AppStorage(Preference.appearance) private var appearanceRaw = Appearance.auto.rawValue
 
     @State private var health = HealthKitSync()
     @State private var authError: String?
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
+    private var appearance: Appearance { Appearance(rawValue: appearanceRaw) ?? .auto }
 
     var body: some View {
         ScrollView {
@@ -88,6 +90,9 @@ struct SettingsView: View {
                     }
                 }
 
+                caption("erscheinungsbild", trailing: appearance.label, topPadding: 28)
+                appearancePicker.padding(.top, 12)
+
                 caption("anzeige · ziffern", trailing: style.label, topPadding: 28)
                 stylePicker.padding(.top, 12)
 
@@ -100,6 +105,57 @@ struct SettingsView: View {
         .scrollIndicators(.hidden)
         .background(Palette.paper)
         .haptic(.selection, trigger: roastRaw)
+    }
+
+    // MARK: - Erscheinungsbild
+
+    /// Auch hier gilt: man wählt, was man sieht. Die Felder zeigen die
+    /// Farben des jeweiligen Modus — Auto stellt beide nebeneinander.
+    private var appearancePicker: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(Appearance.allCases.enumerated()), id: \.element.id) { index, option in
+                if index > 0 {
+                    Rectangle().fill(Palette.rule).frame(width: 1, height: 44)
+                }
+                Button { appearanceRaw = option.rawValue } label: {
+                    VStack(spacing: 10) {
+                        swatch(option)
+                        Text(option.label)
+                            .font(.system(size: 11, weight: option == appearance ? .medium : .regular))
+                            .foregroundStyle(option == appearance ? Palette.ink : Palette.ink2)
+                        Rectangle()
+                            .fill(option == appearance ? Palette.ink : .clear)
+                            .frame(height: 3)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    /// Auto zeigt **beide** Modi, diagonal geteilt. Zwei nebeneinander
+    /// gelegte Papiertöne taugen dafür nicht: dunkles Papier ist genauso
+    /// schwarz wie helle Tinte, damit sähe Auto aus wie Hell.
+    private func swatch(_ option: Appearance) -> some View {
+        let size = CGSize(width: 54, height: 34)
+        return ZStack {
+            pair(light: option != .dark)
+            if option == .auto {
+                pair(light: false).clipShape(LowerLeft())
+            }
+        }
+        .frame(width: size.width, height: size.height)
+        .clipShape(RoundedRectangle(cornerRadius: 3))
+        .overlay(RoundedRectangle(cornerRadius: 3).stroke(Palette.rule, lineWidth: 1))
+    }
+
+    private func pair(light: Bool) -> some View {
+        HStack(spacing: 0) {
+            Palette.fixed(light ? Palette.lightPaper : Palette.darkPaper)
+            Palette.fixed(light ? Palette.lightInk : Palette.darkInk)
+        }
     }
 
     // MARK: - Ziffernstil
@@ -262,4 +318,16 @@ struct DotBlock: View {
 
 #Preview {
     SettingsView().background(Palette.paper)
+}
+
+/// Untere linke Hälfte — die Diagonale, an der Auto seine beiden Modi teilt.
+private struct LowerLeft: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.maxX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        path.closeSubpath()
+        return path
+    }
 }

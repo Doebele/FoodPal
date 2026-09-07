@@ -10,6 +10,15 @@ enum Palette {
     static let ink3  = dynamic(light: 0xC9C9BD, dark: 0x33332E)
     static let rule  = dynamic(light: 0xE2E2DA, dark: 0x2A2A27)
 
+    /// Fester Farbwert, unabhängig vom aktuellen Modus — für Vorschauen,
+    /// die zeigen sollen, wie der *andere* Modus aussieht.
+    static func fixed(_ hex: UInt32) -> Color { Color(uiColor: UIColor(hex: hex)) }
+
+    static let lightPaper: UInt32 = 0xFAFAF8
+    static let lightInk: UInt32 = 0x161614
+    static let darkPaper: UInt32 = 0x121211
+    static let darkInk: UInt32 = 0xF0F0EA
+
     static func dynamic(light: UInt32, dark: UInt32) -> Color {
         Color(uiColor: UIColor { $0.userInterfaceStyle == .dark ? UIColor(hex: dark) : UIColor(hex: light) })
     }

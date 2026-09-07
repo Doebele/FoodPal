@@ -8,6 +8,7 @@ enum Preference {
     static let roast = "accentRoast"
     static let numberStyle = "numberStyle"
     static let captureMode = "captureMode"
+    static let appearance = "appearance"
 
     /// Voreinstellungen. Haptik ist **an** — abschaltbar, aber wer sie nicht
     /// vorfindet, entdeckt sie nie.
@@ -17,8 +18,33 @@ enum Preference {
             healthSync: true,
             roast: Roast.hell.rawValue,
             numberStyle: NumberStyle.flip.rawValue,
-            captureMode: Entry.Kind.coffee.rawValue
+            captureMode: Entry.Kind.coffee.rawValue,
+            appearance: Appearance.auto.rawValue
         ])
+    }
+}
+
+/// Hell, Dunkel oder dem Gerät folgen. Voreingestellt ist **Auto** —
+/// die App hat keinen Grund, die Systemwahl zu überstimmen.
+enum Appearance: String, CaseIterable, Identifiable {
+    case auto, light, dark
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .auto: "Auto"
+        case .light: "Hell"
+        case .dark: "Dunkel"
+        }
+    }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .auto: nil
+        case .light: .light
+        case .dark: .dark
+        }
     }
 }
 
