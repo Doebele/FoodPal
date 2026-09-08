@@ -245,9 +245,13 @@ struct DayView: View {
         .frame(height: 14)
     }
 
+    /// Neueste zuoberst. Die Liste steht unter der Tagessumme, und was man
+    /// gerade erfasst hat, will man ohne Scrollen sehen — nicht am Ende eines
+    /// langen Tages suchen. Das Diagramm darüber bleibt chronologisch; es ist
+    /// eine Zeitachse und darf nicht rückwärts laufen.
     private var entryList: some View {
         VStack(spacing: 0) {
-            ForEach(entries.sorted { $0.date < $1.date }) { entry in
+            ForEach(entries.sorted { $0.date > $1.date }) { entry in
                 Button { selected = entry } label: {
                 HStack(spacing: 0) {
                     Text(entry.date.formatted(date: .omitted, time: .shortened))
