@@ -18,7 +18,13 @@ struct PhotoCapture: View {
     @AppStorage(Preference.addresses) private var addressesJSON = "{}"
 
     @State private var health = HealthKitSync()
-    @State private var phase = Phase.idle
+    @State private var phase = {
+        #if DEBUG
+        return ProcessInfo.processInfo.environment["START_DESCRIBE"] == "1" ? Phase.describing : .idle
+        #else
+        return Phase.idle
+        #endif
+    }()
     @State private var photoItem: PhotosPickerItem?
     @State private var showCamera = false
     @State private var saves = 0
@@ -39,35 +45,84 @@ struct PhotoCapture: View {
         /// und braucht ein Mengenfeld, die Schätzung gilt für die Portion.
         case ready(UIImage?, [MealEstimate], per100g: Bool)
         case failed(UIImage?, String)
+
+        var isIdle: Bool {
+            if case .idle = self { return true }
+            return false
+        }
     }
 
     private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
     private var effectiveModel: String { provider.model(from: modelsJSON) }
 
     var body: some View {
+        intake
+            .padding(.horizontal, Metric.margin)
+            .haptic(trigger: saves)
+            .photosPicker(isPresented: .constant(false), selection: $photoItem)
+            .onChange(of: photoItem) { _, item in
+                guard let item else { return }
+                Task { await load(item) }
+            }
+            .fullScreenCover(isPresented: $showCamera) {
+                CameraPicker { image in
+                    showCamera = false
+                    if let image { Task { await analyse(image) } }
+                }
+                .ignoresSafeArea()
+            }
+            // Alles nach der Wahl des Wegs liegt eine Ebene tiefer — siehe
+            // `work`. Nach unten wischen bricht ab, ohne etwas zu speichern.
+            .sheet(isPresented: working) {
+                work
+                    .presentationDragIndicator(.visible)
+                    .presentationDetents([.large])
+                    .presentationBackground(Palette.paper)
+            }
+    }
+
+    /// Offen, sobald ein Weg gewählt ist. Zurück auf `idle` heisst zu: das
+    /// Wischen nach unten und der Schliessen-Knopf laufen beide hierdurch.
+    private var working: Binding<Bool> {
+        Binding(get: { !phase.isIdle }, set: { if !$0 { phase = .idle } })
+    }
+
+    /// **Der zweite Screen als eigenes Sheet.**
+    ///
+    /// Vorher stand darunter weiter der kcal/mg-Umschalter der Erfassung — ein
+    /// Fehltipp auf mg warf jede eingetippte Beschreibung weg. Hier gibt es
+    /// nur noch zwei Ausgänge: absenden oder abbrechen. Zwei Handlungen auf
+    /// einem Screen sind eine zu viel, wenn eine davon die andere vernichtet.
+    private var work: some View {
         VStack(alignment: .leading, spacing: 0) {
-            switch phase {
-            case .idle: intake
-            case .describing: describe
-            case .analysing(let image, let source): analysing(image, source)
-            case .ready(let image, let estimates, let per100g):
-                Confirm(image: image, estimates: estimates, per100g: per100g, onSave: save)
-            case .failed(let image, let message): failure(image, message)
+            SheetHeader(title: workTitle)
+
+            Group {
+                switch phase {
+                case .idle: EmptyView()
+                case .describing: describe
+                case .analysing(let image, let source): analysing(image, source)
+                case .ready(let image, let estimates, let per100g):
+                    Confirm(image: image, estimates: estimates, per100g: per100g, onSave: save)
+                case .failed(let image, let message): failure(image, message)
+                }
             }
+            .padding(.horizontal, Metric.margin)
+            // Den Fussraum, den vorher der Umschalter der Erfassung gab, gibt
+            // es hier nicht mehr — sonst laeuft der Sichern-Knopf in den
+            // Home-Indikator.
+            .padding(.bottom, 12)
         }
-        .padding(.horizontal, Metric.margin)
-        .haptic(trigger: saves)
-        .photosPicker(isPresented: .constant(false), selection: $photoItem)
-        .onChange(of: photoItem) { _, item in
-            guard let item else { return }
-            Task { await load(item) }
-        }
-        .fullScreenCover(isPresented: $showCamera) {
-            CameraPicker { image in
-                showCamera = false
-                if let image { Task { await analyse(image) } }
-            }
-            .ignoresSafeArea()
+        .background(Palette.paper)
+    }
+
+    private var workTitle: String {
+        switch phase {
+        case .describing: "Beschreiben"
+        case .analysing: "Analyse"
+        case .ready: "Bestätigen"
+        case .failed: "Fehlgeschlagen"
+        case .idle: ""
         }
     }
 
@@ -327,6 +382,7 @@ struct PhotoCapture: View {
 
         Task {
             try? await Task.sleep(for: .milliseconds(120))
+            phase = .idle
             onSaved()
         }
     }
