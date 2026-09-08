@@ -512,6 +512,10 @@ Fest bleiben zwei Stellen, an denen Schrift Geometrie ist und keine Sprache: die
 
 **Bewegung.** `accessibilityReduceMotion` schaltet das Zählwerk der Flipkarten ab: der Wert wird gesetzt, mit **einem** Impuls statt einer Kaskade. Die Rückmeldung bleibt, die Bewegung geht. Die Dot-Matrix läuft dann ohne Diagonale auf.
 
+## Nur Hochformat
+
+`UISupportedInterfaceOrientations` steht auf `UIInterfaceOrientationPortrait`, iPhone wie iPad. Der ganze Entwurf haengt an einer Spalte: der Zeitstrahl ist ein Tag von 24 Stunden in 96 Rasterspalten, die Anzeige benutzt dasselbe Raster, und die Erfassung kommt als Bottom Sheet von unten. Quer waere das Raster entweder gedehnt oder verloren — und ein Layout, das niemand entworfen hat, ist schlechter als eines, das gar nicht erst erscheint.
+
 ## Bewusst weggelassen
 
 - **Ein eigener Scanner-Screen.** Der Barcode-Weg ist gebaut (`VNDetectBarcodesRequest` + Open Food Facts), aber ohne zweite Tür: das Foto, das du ohnehin machst, wird vorher geprüft. Ein Live-Scanner (`DataScannerViewController`) wäre die Nachrüstung, falls sich EANs aus normalem Abstand zu selten lesen lassen — siehe [Nährwertdatenbank](anbieter.md#nährwertdatenbank).
