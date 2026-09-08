@@ -60,6 +60,72 @@ struct EstimateParsingTests {
     }
 }
 
+/// Gesprochene Einträge liefern **mehrere** Gerichte und oft einen Zeitpunkt.
+/// Modelle sind sich uneins, ob sie ein Array, ein Objekt mit `items` oder —
+/// bei nur einem Gericht — doch ein einzelnes Objekt schicken. Alle drei
+/// müssen durchgehen, sonst scheitert ein Nachtrag an der Verpackung.
+struct SpokenParsingTests {
+
+    @Test func arrayMitZweiGerichten() {
+        let items = VisionEstimator.parseList("""
+        [{"name":"Spaghetti Bolognese","kcal":620,"proteinG":28,"carbsG":72,"fatG":22},
+         {"name":"Minestrone, klein","kcal":95,"proteinG":4,"carbsG":14,"fatG":2}]
+        """)
+        #expect(items.count == 2)
+        #expect(items[0].name == "Spaghetti Bolognese")
+        #expect(items[1].kcal == 95)
+    }
+
+    @Test func objektMitItems() {
+        let items = VisionEstimator.parseList(#"{"items":[{"name":"Ramen","kcal":450}]}"#)
+        #expect(items.map(\.name) == ["Ramen"])
+    }
+
+    @Test func einzelnesObjektGehtAuch() {
+        let items = VisionEstimator.parseList(#"{"name":"Apfel","kcal":95}"#)
+        #expect(items.map(\.kcal) == [95])
+    }
+
+    @Test func inCodeblockUndMitGeplauder() {
+        let items = VisionEstimator.parseList("""
+        Gern, hier die Schätzung:
+        ```json
+        [{"name":"Baguette mit Butter","kcal":210}]
+        ```
+        Die Mengen sind geschätzt.
+        """)
+        #expect(items.map(\.name) == ["Baguette mit Butter"])
+    }
+
+    /// Der Zeitpunkt kommt in Ortszeit ohne Zone zurück — so verlangt es der
+    /// Prompt, und nur so trifft ein Nachtrag den richtigen Tag.
+    @Test func zeitpunktInOrtszeit() throws {
+        let items = VisionEstimator.parseList(
+            #"[{"name":"Ramen","kcal":450,"date":"2026-09-07T21:00:00"}]"#
+        )
+        let date = try #require(items.first?.date)
+        let parts = Calendar.current.dateComponents([.year, .month, .day, .hour], from: date)
+        #expect(parts.day == 7)
+        #expect(parts.hour == 21)
+    }
+
+    @Test func ohneZeitpunktBleibtOffen() {
+        #expect(VisionEstimator.parseList(#"[{"name":"Ramen","kcal":450}]"#).first?.date == nil)
+    }
+
+    /// Ein Gericht ohne kcal ist wertlos und darf die anderen nicht mitreissen.
+    @Test func eintragOhneKcalFaelltRaus() {
+        let items = VisionEstimator.parseList(
+            #"[{"name":"Wasser"},{"name":"Brot","kcal":180}]"#
+        )
+        #expect(items.map(\.name) == ["Brot"])
+    }
+
+    @Test func ohneJSONLeereListe() {
+        #expect(VisionEstimator.parseList("Ich habe das nicht verstanden.").isEmpty)
+    }
+}
+
 /// Die Modellliste, aus der man in den Einstellungen auswählt. Wichtig ist
 /// die Dreiwertigkeit von `seesImages`: die meisten Dienste sagen nichts über
 /// Bildeingänge, und „weiss nicht" darf nicht zu „nein" werden — sonst

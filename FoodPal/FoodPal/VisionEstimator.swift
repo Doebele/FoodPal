@@ -1,6 +1,18 @@
 import Foundation
 import UIKit
 
+extension ISO8601DateFormatter {
+    /// Ortszeit ohne Zonenangabe — in dieser Schreibweise fragt der Prompt
+    /// nach dem Zeitpunkt, und in ihr kommt die Antwort zurück.
+    static let local: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate, .withTime, .withDashSeparatorInDate,
+                                   .withColonSeparatorInTime]
+        formatter.timeZone = .current
+        return formatter
+    }()
+}
+
 /// Woher die Schätzung kommt.
 ///
 /// Es gibt nur **zwei Körperformen**, nicht eine je Anbieter: Anthropic hat
@@ -120,6 +132,9 @@ struct MealEstimate: Codable, Equatable, Sendable {
     var proteinG: Double?
     var carbsG: Double?
     var fatG: Double?
+    /// Nur bei gesprochenen Einträgen belegt: „gestern Abend um neun" löst das
+    /// Modell auf, weil es die Ortszeit im Prompt mitbekommt.
+    var date: Date?
 }
 
 enum VisionEstimator {
@@ -141,12 +156,29 @@ enum VisionEstimator {
         }
     }
 
-    private static let prompt = """
+    private static let photoPrompt = """
     Schätze die Nährwerte dieser Mahlzeit anhand des Fotos.
     Antworte ausschließlich mit JSON, ohne Erklärung und ohne Codeblock:
     {"name":"kurze deutsche Bezeichnung","kcal":0,"proteinG":0,"carbsG":0,"fatG":0}
     Portionsgröße aus dem Bild abschätzen. Zahlen ohne Einheiten.
     """
+
+    /// Anders als beim Foto ein **Array**: „Spaghetti Bolognese, dazu eine
+    /// kleine Minestrone" sind zwei Gerichte und sollen zwei Einträge werden.
+    /// Und mit der Ortszeit im Prompt kann das Modell „gestern Abend um neun"
+    /// selbst auflösen — sonst müsste man jeden Nachtrag von Hand datieren.
+    private static func spokenPrompt(now: Date) -> String {
+        let stamp = ISO8601DateFormatter.local.string(from: now)
+        return """
+        Jetzt ist \(stamp) (Ortszeit). Schätze die Nährwerte der beschriebenen Mahlzeit.
+        Antworte ausschließlich mit einem JSON-Array, ohne Erklärung und ohne Codeblock:
+        [{"name":"kurze deutsche Bezeichnung","kcal":0,"proteinG":0,"carbsG":0,"fatG":0,"date":"JJJJ-MM-TTTHH:MM"}]
+        Ein Objekt je Gericht — nenne Beilagen und Getränke einzeln, fasse sie nicht zusammen.
+        Mengenangaben wie "klein", "drei Scheiben" oder "dünn bestrichen" berücksichtigen.
+        "date" ist der genannte Zeitpunkt in Ortszeit; ohne Angabe das Feld weglassen.
+        Zahlen ohne Einheiten.
+        """
+    }
 
     // MARK: - Aufruf
 
@@ -157,15 +189,48 @@ enum VisionEstimator {
         baseURL: String
     ) async throws -> MealEstimate {
         guard let jpeg = downscaled(image) else { throw Failure.badImage }
-        let base64 = jpeg.base64EncodedString()
+        let answer = try await send(
+            base64: jpeg.base64EncodedString(),
+            prompt: photoPrompt,
+            provider: provider, model: model, baseURL: baseURL
+        )
+        return try parse(answer)
+    }
 
+    /// Derselbe Weg ohne Bild. Es braucht keine neue Anbieterform: beide
+    /// Körper tragen ohnehin eine Liste von Inhaltsblöcken, der Bildblock
+    /// entfällt hier einfach.
+    static func estimate(
+        text: String,
+        provider: Provider,
+        model: String,
+        baseURL: String,
+        now: Date = .now
+    ) async throws -> [MealEstimate] {
+        let answer = try await send(
+            base64: nil,
+            prompt: spokenPrompt(now: now) + "\n\nBeschreibung:\n" + text,
+            provider: provider, model: model, baseURL: baseURL
+        )
+        let items = parseList(answer)
+        guard !items.isEmpty else { throw Failure.unreadable(answer) }
+        return items
+    }
+
+    private static func send(
+        base64: String?,
+        prompt: String,
+        provider: Provider,
+        model: String,
+        baseURL: String
+    ) async throws -> String {
         let key = Keychain.get(provider.keychainAccount)
         if provider.needsKey, key?.isEmpty != false { throw Failure.missingKey }
 
         let base = provider.fixedBaseURL ?? baseURL
         let request = provider == .claude
-            ? anthropicRequest(base64: base64, model: model, key: key ?? "", baseURL: base)
-            : openAIRequest(base64: base64, model: model, key: key, baseURL: base)
+            ? anthropicRequest(base64: base64, prompt: prompt, model: model, key: key ?? "", baseURL: base)
+            : openAIRequest(base64: base64, prompt: prompt, model: model, key: key, baseURL: base)
 
         let (data, response) = try await URLSession.shared.data(for: request)
         let code = (response as? HTTPURLResponse)?.statusCode ?? 0
@@ -173,11 +238,9 @@ enum VisionEstimator {
             throw Failure.badResponse(code, String(data: data, encoding: .utf8) ?? "")
         }
 
-        let text = provider == .claude
-            ? anthropicText(from: data)
-            : openAIText(from: data)
+        let text = provider == .claude ? anthropicText(from: data) : openAIText(from: data)
         guard let text else { throw Failure.unreadable("") }
-        return try parse(text)
+        return text
     }
 
     // MARK: - Antwort lesen
@@ -222,6 +285,72 @@ enum VisionEstimator {
         )
     }
 
+    /// Mehrere Gerichte aus einer gesprochenen Beschreibung.
+    ///
+    /// Ebenso nachsichtig wie `parse`: Modelle liefern hier mal ein Array, mal
+    /// ein Objekt mit `items`, mal — wenn nur ein Gericht genannt war — doch
+    /// wieder ein einzelnes Objekt. Alle drei sind brauchbar, also werden alle
+    /// drei genommen.
+    static func parseList(_ raw: String) -> [MealEstimate] {
+        guard let data = slice(raw) else { return [] }
+
+        let objects: [[String: Any]]
+        switch try? JSONSerialization.jsonObject(with: data) {
+        case let array as [[String: Any]]:
+            objects = array
+        case let object as [String: Any]:
+            objects = (object["items"] as? [[String: Any]])
+                ?? (object["meals"] as? [[String: Any]])
+                ?? [object]
+        default:
+            return []
+        }
+
+        return objects.compactMap { object in
+            func number(_ key: String) -> Double? {
+                if let value = object[key] as? Double { return value }
+                if let value = object[key] as? Int { return Double(value) }
+                if let text = object[key] as? String {
+                    return Double(text.replacingOccurrences(of: ",", with: "."))
+                }
+                return nil
+            }
+            guard let kcal = number("kcal") else { return nil }
+            return MealEstimate(
+                name: (object["name"] as? String) ?? "Mahlzeit",
+                kcal: kcal,
+                proteinG: number("proteinG"),
+                carbsG: number("carbsG"),
+                fatG: number("fatG"),
+                date: (object["date"] as? String).flatMap(localDate)
+            )
+        }
+    }
+
+    /// Vom ersten `{` oder `[` bis zur passenden letzten Klammer — dieselbe
+    /// Nachsicht wie bei `parse`, nur auch für Arrays.
+    private static func slice(_ raw: String) -> Data? {
+        let openers: [(Character, Character)] = [("[", "]"), ("{", "}")]
+        let found = openers.compactMap { open, close -> (Int, String.Index, String.Index)? in
+            guard let start = raw.firstIndex(of: open),
+                  let end = raw.lastIndex(of: close), start < end else { return nil }
+            return (raw.distance(from: raw.startIndex, to: start), start, end)
+        }
+        // Die äussere Klammer ist die, die zuerst auftaucht.
+        guard let outer = found.min(by: { $0.0 < $1.0 }) else { return nil }
+        return String(raw[outer.1...outer.2]).data(using: .utf8)
+    }
+
+    /// Das Modell antwortet in Ortszeit ohne Zonenangabe — genau so, wie der
+    /// Prompt es verlangt. Mit Zone geschriebene Antworten werden trotzdem
+    /// genommen; manche Modelle hängen sie unaufgefordert an.
+    static func localDate(_ text: String) -> Date? {
+        if let date = ISO8601DateFormatter.local.date(from: text) { return date }
+        let withZone = ISO8601DateFormatter()
+        withZone.formatOptions = [.withInternetDateTime]
+        return withZone.date(from: text)
+    }
+
     private static func anthropicText(from data: Data) -> String? {
         struct Response: Decodable {
             struct Block: Decodable { let text: String? }
@@ -246,7 +375,7 @@ enum VisionEstimator {
     // MARK: - Anfragen
 
     private static func anthropicRequest(
-        base64: String, model: String, key: String, baseURL: String
+        base64: String?, prompt: String, model: String, key: String, baseURL: String
     ) -> URLRequest {
         var request = URLRequest(url: URL(string: trimmed(baseURL) + "/messages")!)
         request.httpMethod = "POST"
@@ -254,23 +383,24 @@ enum VisionEstimator {
         request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
         request.setValue("application/json", forHTTPHeaderField: "content-type")
         request.timeoutInterval = 60
+
+        var content: [[String: Any]] = []
+        if let base64 {
+            content.append(["type": "image",
+                            "source": ["type": "base64", "media_type": "image/jpeg", "data": base64]])
+        }
+        content.append(["type": "text", "text": prompt])
+
         request.httpBody = try? JSONSerialization.data(withJSONObject: [
             "model": model,
-            "max_tokens": 300,
-            "messages": [[
-                "role": "user",
-                "content": [
-                    ["type": "image",
-                     "source": ["type": "base64", "media_type": "image/jpeg", "data": base64]],
-                    ["type": "text", "text": prompt]
-                ]
-            ]]
+            "max_tokens": 800,
+            "messages": [["role": "user", "content": content]]
         ])
         return request
     }
 
     private static func openAIRequest(
-        base64: String, model: String, key: String?, baseURL: String
+        base64: String?, prompt: String, model: String, key: String?, baseURL: String
     ) -> URLRequest {
         var request = URLRequest(url: URL(string: trimmed(baseURL) + "/chat/completions")!)
         request.httpMethod = "POST"
@@ -279,17 +409,17 @@ enum VisionEstimator {
         }
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = 120
+
+        var content: [[String: Any]] = [["type": "text", "text": prompt]]
+        if let base64 {
+            content.append(["type": "image_url",
+                            "image_url": ["url": "data:image/jpeg;base64,\(base64)"]])
+        }
+
         request.httpBody = try? JSONSerialization.data(withJSONObject: [
             "model": model,
-            "max_tokens": 300,
-            "messages": [[
-                "role": "user",
-                "content": [
-                    ["type": "text", "text": prompt],
-                    ["type": "image_url",
-                     "image_url": ["url": "data:image/jpeg;base64,\(base64)"]]
-                ]
-            ]]
+            "max_tokens": 800,
+            "messages": [["role": "user", "content": content]]
         ])
         return request
     }

@@ -20,6 +20,11 @@ final class Entry {
 
     @Attribute(.externalStorage) var photo: Data?
 
+    /// Ob das Bild aufgenommen oder erzeugt wurde. Ein erzeugtes Bild ist kein
+    /// Beleg, sondern eine Merkhilfe — im Tagebuch muss der Unterschied
+    /// nachlesbar bleiben, nicht nur am Stil erkennbar sein.
+    var generatedImage: Bool = false
+
     init(
         date: Date = .now,
         name: String,
@@ -29,7 +34,8 @@ final class Entry {
         proteinG: Double? = nil,
         carbsG: Double? = nil,
         fatG: Double? = nil,
-        photo: Data? = nil
+        photo: Data? = nil,
+        generatedImage: Bool = false
     ) {
         self.date = date
         self.name = name
@@ -41,6 +47,7 @@ final class Entry {
         self.fatG = fatG
         self.hkIDs = []
         self.photo = photo
+        self.generatedImage = generatedImage
     }
 
     var kind: Kind { Kind(rawValue: kindRaw) ?? .meal }
