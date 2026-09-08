@@ -271,15 +271,18 @@ enum VisionEstimator {
         prompt: String,
         provider: Provider,
         model: String,
-        baseURL: String
+        baseURL: String,
+        maxTokens: Int = 800
     ) async throws -> String {
         let key = Keychain.get(provider.keychainAccount)
         if provider.needsKey, key?.isEmpty != false { throw Failure.missingKey }
 
         let base = provider.fixedBaseURL ?? baseURL
         let request = provider == .claude
-            ? anthropicRequest(base64: base64, prompt: prompt, model: model, key: key ?? "", baseURL: base)
-            : openAIRequest(base64: base64, prompt: prompt, model: model, key: key, baseURL: base)
+            ? anthropicRequest(base64: base64, prompt: prompt, model: model, key: key ?? "",
+                               baseURL: base, maxTokens: maxTokens)
+            : openAIRequest(base64: base64, prompt: prompt, model: model, key: key,
+                            baseURL: base, maxTokens: maxTokens)
 
         let (data, response) = try await URLSession.shared.data(for: request)
         let code = (response as? HTTPURLResponse)?.statusCode ?? 0
@@ -440,7 +443,8 @@ enum VisionEstimator {
     // MARK: - Anfragen
 
     private static func anthropicRequest(
-        base64: String?, prompt: String, model: String, key: String, baseURL: String
+        base64: String?, prompt: String, model: String, key: String,
+        baseURL: String, maxTokens: Int
     ) -> URLRequest {
         var request = URLRequest(url: URL(string: trimmed(baseURL) + "/messages")!)
         request.httpMethod = "POST"
@@ -458,14 +462,15 @@ enum VisionEstimator {
 
         request.httpBody = try? JSONSerialization.data(withJSONObject: [
             "model": model,
-            "max_tokens": 800,
+            "max_tokens": maxTokens,
             "messages": [["role": "user", "content": content]]
         ])
         return request
     }
 
     private static func openAIRequest(
-        base64: String?, prompt: String, model: String, key: String?, baseURL: String
+        base64: String?, prompt: String, model: String, key: String?,
+        baseURL: String, maxTokens: Int
     ) -> URLRequest {
         var request = URLRequest(url: URL(string: trimmed(baseURL) + "/chat/completions")!)
         request.httpMethod = "POST"
@@ -483,7 +488,7 @@ enum VisionEstimator {
 
         request.httpBody = try? JSONSerialization.data(withJSONObject: [
             "model": model,
-            "max_tokens": 800,
+            "max_tokens": maxTokens,
             "messages": [["role": "user", "content": content]]
         ])
         return request
@@ -525,38 +530,60 @@ extension VisionEstimator {
         let seesImages: Bool?
     }
 
+    /// Prüft nicht die Erreichbarkeit, sondern **ob eine Schätzung durchginge**.
+    ///
+    /// Die Modellliste allein log: sie antwortete brav, während `/messages`
+    /// mit „you have reached your specified API usage limits" abwies. Ein
+    /// Ausgabenlimit, ein abgekündigtes Modell, ein Modell ohne Bildeingang —
+    /// nichts davon sieht man an `/models`. Deshalb zwei echte Anfragen mit
+    /// Token-Deckel 8: erst Text, dann dasselbe mit einem 64-px-Bild. Zusammen
+    /// kosten sie den Bruchteil eines Cents und beantworten die Frage wirklich.
     static func probe(provider: Provider, model: String, baseURL: String) async -> String {
         if provider == .apple {
             guard #available(iOS 26.0, *) else { return "Dieser Dienst braucht iOS 26." }
             return AppleEstimator.status
         }
 
-        guard let request = modelsRequest(provider, baseURL) else {
-            return provider.needsKey && !Keychain.has(provider.keychainAccount)
-                ? "Kein Schlüssel hinterlegt."
-                : "Adresse fehlt oder ist ungültig."
+        // Der Name zuerst — ein Tippfehler erklärt sich besser als ein 404.
+        var aside = ""
+        if let request = modelsRequest(provider, baseURL),
+           let (data, response) = try? await URLSession.shared.data(for: request) {
+            let code = (response as? HTTPURLResponse)?.statusCode ?? 0
+            if code == 401 || code == 403 { return "Schlüssel wird abgelehnt (\(code))." }
+            let listed = parseModels(data)
+            if !listed.isEmpty, !listed.contains(where: { $0.id == model }) {
+                aside = " \(model) steht allerdings nicht in seiner Modellliste."
+            }
         }
 
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            let code = (response as? HTTPURLResponse)?.statusCode ?? 0
-            switch code {
-            case 200..<300:
-                // Modell-IDs wandern; ein Tippfehler oder ein abgekündigter
-                // Name fiele sonst erst beim ersten Foto auf. Geprüft wird
-                // gegen die **ganze** Liste: die Frage ist, ob es den Namen
-                // gibt, nicht ob das Modell sehen kann.
-                let listed = parseModels(data)
-                if listed.isEmpty { return "Verbindung steht." }
-                return listed.contains { $0.id == model }
-                    ? "Verbindung steht, Modell vorhanden."
-                    : "Verbindung steht, aber \(model) ist nicht in der Liste."
-            case 401, 403: return "Schlüssel wird abgelehnt (\(code))."
-            default: return "Antwort \(code)."
-            }
+            _ = try await send(base64: nil, prompt: "Antworte nur mit: ok",
+                               provider: provider, model: model, baseURL: baseURL, maxTokens: 8)
         } catch {
             return error.localizedDescription
         }
+
+        guard provider.readsPhotos else { return "Verbindung steht, Modell antwortet." + aside }
+
+        do {
+            _ = try await send(base64: probeImage(), prompt: "Antworte nur mit: ok",
+                               provider: provider, model: model, baseURL: baseURL, maxTokens: 8)
+            return "Verbindung steht, Modell antwortet und nimmt Bilder." + aside
+        } catch {
+            return "Text geht, Bilder nicht — für Fotos ein anderes Modell wählen. "
+                + error.localizedDescription
+        }
+    }
+
+    /// Ein graues 64-px-Quadrat. Klein genug, um nichts zu kosten, gross genug,
+    /// dass kein Dienst es als kaputt abweist.
+    private static func probeImage() -> String {
+        let size = CGSize(width: 64, height: 64)
+        let image = UIGraphicsImageRenderer(size: size).image { context in
+            UIColor.gray.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+        }
+        return image.jpegData(compressionQuality: 0.5)?.base64EncodedString() ?? ""
     }
 
     /// Die Modellliste des Dienstes, für die Auswahl in den Einstellungen.
