@@ -205,17 +205,17 @@ struct DayView: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.top, 20)
 
-                Text(mode == .kcal ? "kcal" : "mg")
-                    .font(.system(size: 11))
-                    .tracking(0.8)
-                    .foregroundStyle(Palette.ink2)
-                    .padding(.top, 10)
-
+                // Keine Einheit neben der Zahl: der Umschalter direkt darunter
+                // sagt bereits, ob kcal oder mg gemeint sind. Zweimal dasselbe
+                // in zwei Zeilen ist eine Zeile zu viel.
                 ModeToggle(mode: mode, roast: roast) { new in
                     captureMode = new == .kcal ? Entry.Kind.meal.rawValue : Entry.Kind.coffee.rawValue
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.top, 20)
+                // Der Weissraum, den vorher die Einheitenzeile fuellte, bleibt:
+                // die Karten brauchen Luft nach unten, sonst klebt die Pille an
+                // ihnen.
+                .padding(.top, 46)
 
                 if entries.isEmpty {
                     Text("Noch nichts erfasst.")
