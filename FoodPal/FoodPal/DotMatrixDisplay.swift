@@ -31,6 +31,10 @@ struct DotMatrixDisplay: View {
     /// Wechselt der Schlüssel, ist es ein Moduswechsel und kein Zählschritt.
     let resetKey: String
 
+    /// Der diagonale Durchlauf ist Bewegung; bei „Bewegung reduzieren" wird
+    /// stattdessen ueberblendet.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var shown: [Int] = []
     @State private var shownKey = ""
     @State private var sweep: Double = 1
@@ -99,9 +103,10 @@ struct DotMatrixDisplay: View {
         }
         guard shown != target else { return }
 
-        sweep = 0
-        withAnimation(.easeInOut(duration: 0.45)) { sweep = 1 }
-        try? await Task.sleep(for: .seconds(0.45))
+        let duration = reduceMotion ? 0.2 : 0.45
+        sweep = reduceMotion ? 1 : 0
+        withAnimation(.easeInOut(duration: duration)) { sweep = 1 }
+        try? await Task.sleep(for: .seconds(duration))
         shown = target
 
         // Ein Impuls, wenn der Wert steht — nicht je Punkt. Beim Nullen des

@@ -140,16 +140,23 @@ struct FlipDisplay: View {
     var resetKey: String = ""
 
     /// Zwischenschritt im Durchrollen.
-    static let step: Double = 0.09
+    static let step: Double = 0.14
     /// Aufsetzen auf den Zielwert.
-    static let landing: Double = 0.15
+    static let landing: Double = 0.26
     /// Klappe beim stummen Nullen und beim Setzen nach dem Moduswechsel.
-    private static let reset: Double = 0.11
+    private static let reset: Double = 0.16
     /// Ein- und Ausblenden einer Stelle.
     private static let shift: Double = 0.22
     /// Sicherheitsventil: darüber wird gesetzt statt gerollt. Greift im
     /// normalen Betrieb nie — ein Eintrag ändert die Summe um wenige Stellen.
-    private static let maxFlaps = 20
+    /// Mit der laengeren Stufe wuerden zwanzig Klappen fast drei Sekunden
+    /// dauern. Vierzehn sind rund zwei — darueber springt die Anzeige.
+    private static let maxFlaps = 14
+
+    /// Wer „Bewegung reduzieren" eingeschaltet hat, will kein Zaehlwerk
+    /// durchlaufen sehen. Der Wert wird dann gesetzt, mit **einem** Impuls
+    /// statt einer Kaskade — die Rueckmeldung bleibt, die Bewegung geht.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var shown: [Int] = []
     @State private var shownKey = ""
@@ -166,7 +173,9 @@ struct FlipDisplay: View {
         .task(id: "\(resetKey)|\(value)") {
             await update(to: Digits.of(value), key: resetKey)
         }
-        .haptic(trigger: flap)
+        // Kraeftiger als der Standardimpuls: eine Karte, die aufsetzt, ist
+        // ein mechanischer Anschlag und kein Antippen.
+        .haptic(.impact(weight: .medium, intensity: 0.9), trigger: flap)
         .accessibilityElement()
         .accessibilityLabel("\(value)")
     }
@@ -177,6 +186,13 @@ struct FlipDisplay: View {
 
         guard !shown.isEmpty else {
             shown = target
+            return
+        }
+
+        if reduceMotion {
+            guard shown != target else { return }
+            withAnimation(.easeInOut(duration: 0.2)) { shown = target }
+            if previous == key { flap += 1 }
             return
         }
 

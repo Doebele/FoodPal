@@ -25,6 +25,9 @@ struct EntryDetailView: View {
     @State private var askDelete = false
     @State private var editingTime = false
     @State private var loaded = false
+    /// Nach dem Loeschen feuert `onDisappear` ebenfalls — ohne diese Marke
+    /// schriebe das Sichern auf einen Eintrag, den es nicht mehr gibt.
+    @State private var deleted = false
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
 
@@ -67,6 +70,12 @@ struct EntryDetailView: View {
             load()
             loaded = true
         }
+        // **Beim Verschwinden**, nicht beim Knopf: sonst gingen die
+        // Aenderungen verloren, sobald man das Sheet nach unten wischt statt
+        // „Fertig" zu tippen. Einen Abbrechen-Weg gibt es hier nicht — der
+        // Screen bearbeitet an Ort und Stelle, und Loeschen hat seine eigene
+        // Nachfrage.
+        .onDisappear { persist() }
         .confirmationDialog(
             "Eintrag löschen?",
             isPresented: $askDelete,
@@ -81,21 +90,11 @@ struct EntryDetailView: View {
         }
     }
 
+    /// Dieselbe Kopfzeile wie die uebrigen Sheets, nur mit „Fertig" —
+    /// samt Impuls beim Aufklappen.
     private var header: some View {
-        HStack {
-            Text("Eintrag")
-                .font(.system(size: 13, weight: .medium))
-                .tracking(0.9)
-                .foregroundStyle(Palette.ink2)
-            Spacer()
-            Button("Fertig") { finish() }
-                .buttonStyle(.plain)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(Palette.ink)
-        }
-        .padding(.horizontal, Metric.margin)
-        .padding(.top, 20)
-        .padding(.bottom, 24)
+        SheetHeader(title: "Eintrag", action: "Fertig")
+            .padding(.bottom, 16)
     }
 
     private var deleteSection: some View {
@@ -270,7 +269,12 @@ struct EntryDetailView: View {
     /// Übernimmt die Änderungen und schreibt sie **auch nach Health** —
     /// alte Samples löschen, neue anlegen. Sonst driftet Health von der
     /// App weg und niemand merkt es.
-    private func finish() {
+    private func persist() {
+        // Ohne die Sperren schriebe ein Verschwinden vor dem Laden leere
+        // Felder ueber den Eintrag — und eines nach dem Loeschen auf einen,
+        // den es nicht mehr gibt.
+        guard loaded, !deleted else { return }
+
         let changed = name != entry.name
             || date != entry.date
             || parse(kcal) != entry.kcal
@@ -294,10 +298,10 @@ struct EntryDetailView: View {
                 entry.hkIDs = (try? await health.save(entry)) ?? []
             }
         }
-        dismiss()
     }
 
     private func remove() {
+        deleted = true
         let ids = entry.hkIDs
         context.delete(entry)
         Task { try? await health.delete(ids: ids) }

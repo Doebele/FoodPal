@@ -60,7 +60,11 @@ struct SheetHeader: View {
     /// Text woertlich und schlaegt nichts nach. Genau daran waere die halbe
     /// Oberflaeche unuebersetzt geblieben.
     let title: LocalizedStringKey
+    /// „Fertig" statt „Schliessen", wo etwas uebernommen wird.
+    var action: LocalizedStringKey = "Schließen"
+
     @Environment(\.dismiss) private var dismiss
+    @State private var appeared = false
 
     var body: some View {
         HStack {
@@ -69,7 +73,7 @@ struct SheetHeader: View {
                 .tracking(0.9)
                 .foregroundStyle(Palette.ink2)
             Spacer()
-            Button("Schließen") { dismiss() }
+            Button(action) { dismiss() }
                 .buttonStyle(.plain)
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(Palette.ink)
@@ -77,6 +81,10 @@ struct SheetHeader: View {
         .padding(.horizontal, Metric.margin)
         .padding(.top, 20)
         .padding(.bottom, 8)
+        // Ein Sheet, das von unten hereinfaehrt, ist eine Bewegung — die darf
+        // man spueren. Leicht, denn es rastet nichts ein, es kommt nur an.
+        .haptic(.impact(weight: .light, intensity: 0.5), trigger: appeared)
+        .task { appeared = true }
     }
 }
 
