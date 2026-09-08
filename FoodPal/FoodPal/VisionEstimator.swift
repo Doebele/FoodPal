@@ -27,15 +27,15 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
     /// eigenen Netz hängt oder frei gewählt wird.
     private var spec: (label: String, url: String?, model: String, keys: String) {
         switch self {
-        case .claude:     ("Claude", "https://api.anthropic.com/v1", "claude-sonnet-5", "console.anthropic.com")
-        case .openAI:     ("OpenAI", "https://api.openai.com/v1", "gpt-4o", "platform.openai.com")
-        case .openRouter: ("OpenRouter", "https://openrouter.ai/api/v1", "anthropic/claude-sonnet-5", "openrouter.ai/keys")
-        case .gemini:     ("Gemini", "https://generativelanguage.googleapis.com/v1beta/openai", "gemini-2.5-flash", "aistudio.google.com")
-        case .grok:       ("Grok", "https://api.x.ai/v1", "grok-4", "console.x.ai")
-        case .glm:        ("GLM", "https://api.z.ai/api/paas/v4", "glm-4.5v", "z.ai")
-        case .deepSeek:   ("DeepSeek", "https://api.deepseek.com/v1", "deepseek-v4-flash-vision-exp", "platform.deepseek.com")
-        case .muse:       ("Muse", "https://api.meta.ai/v1", "muse-spark-1.1", "dev.meta.ai")
-        case .mistral:    ("Mistral", "https://api.mistral.ai/v1", "pixtral-large-latest", "console.mistral.ai")
+        case .claude:     ("Claude", "https://api.anthropic.com/v1", "claude-sonnet-5", "https://console.anthropic.com/settings/keys")
+        case .openAI:     ("OpenAI", "https://api.openai.com/v1", "gpt-4o", "https://platform.openai.com/api-keys")
+        case .openRouter: ("OpenRouter", "https://openrouter.ai/api/v1", "anthropic/claude-sonnet-5", "https://openrouter.ai/keys")
+        case .gemini:     ("Gemini", "https://generativelanguage.googleapis.com/v1beta/openai", "gemini-2.5-flash", "https://aistudio.google.com/apikey")
+        case .grok:       ("Grok", "https://api.x.ai/v1", "grok-4", "https://console.x.ai")
+        case .glm:        ("GLM", "https://api.z.ai/api/paas/v4", "glm-4.5v", "https://z.ai/manage-apikey/apikey-list")
+        case .deepSeek:   ("DeepSeek", "https://api.deepseek.com/v1", "deepseek-v4-flash-vision-exp", "https://platform.deepseek.com/api_keys")
+        case .muse:       ("Muse", "https://api.meta.ai/v1", "muse-spark-1.1", "https://dev.meta.ai")
+        case .mistral:    ("Mistral", "https://api.mistral.ai/v1", "pixtral-large-latest", "https://console.mistral.ai/api-keys")
         case .lmStudio:   ("LM Studio", nil, "zai-org/glm-4.6v-flash", "")
         case .ollama:     ("Ollama", nil, "qwen3-vl", "")
         case .custom:     ("Eigener Dienst", nil, "", "")
@@ -44,7 +44,15 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
 
     var label: String { spec.label }
     var defaultModel: String { spec.model }
-    var keyOrigin: String { spec.keys }
+
+    /// Seite, auf der man den Schlüssel holt — leer bei den schlüssellosen.
+    var keyPage: URL? { spec.keys.isEmpty ? nil : URL(string: spec.keys) }
+
+    /// Dieselbe Adresse als Beschriftung. Das Schema wegzulassen ist die
+    /// gewohnte Schreibweise und spart eine Zeile Umbruch.
+    var keyPageLabel: String {
+        spec.keys.replacingOccurrences(of: "https://", with: "")
+    }
 
     /// Feste Adresse, wo es eine gibt. Sonst kommt sie aus den Einstellungen.
     var fixedBaseURL: String? { spec.url }

@@ -347,14 +347,29 @@ struct VisionSheet: View {
 
     /// Der Satz, der beim Einrichten fehlt: wo der Schluessel herkommt und
     /// dass die Liste kein Zaun ist.
-    private var hint: String {
-        if provider.editableAddress {
-            return "Adresse ohne /chat/completions. Jeder Dienst, der die "
-                + "OpenAI-API spricht, passt hier hinein — auch einer, der "
-                + "oben nicht steht."
+    private var hint: AttributedString {
+        let markdown: String
+        if let page = provider.keyPage {
+            markdown = "Schlüssel von [\(provider.keyPageLabel)](\(page.absoluteString)). "
+                + "Modellnamen ändern sich; „Verbindung testen\" sagt, ob es den "
+                + "eingetragenen noch gibt."
+        } else {
+            markdown = "Adresse ohne /chat/completions. Jeder Dienst, der die "
+                + "OpenAI-API spricht, passt hier hinein — auch einer, der oben "
+                + "nicht steht."
         }
-        return "Schlüssel von \(provider.keyOrigin). Modellnamen ändern sich; "
-            + "„Verbindung testen\" sagt, ob es den eingetragenen noch gibt."
+
+        guard var text = try? AttributedString(markdown: markdown) else {
+            return AttributedString(markdown)
+        }
+        // Der Akzent gehoert dem Koffein, auch hier: der Link ist Ink und
+        // unterstrichen statt farbig. Die Bereiche vorher einsammeln — waehrend
+        // des Laufs ueber runs darf der String nicht veraendert werden.
+        for range in text.runs.filter({ $0.link != nil }).map(\.range) {
+            text[range].foregroundColor = Palette.ink
+            text[range].underlineStyle = .single
+        }
+        return text
     }
 
     @ViewBuilder private var providerFields: some View {

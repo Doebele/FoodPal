@@ -13,15 +13,15 @@ Ein Anbieter ist deshalb nur eine Zeile Daten, kein Code. Die Liste steht in
 
 | Dienst | Adresse | Schlüssel von | Vorgabemodell |
 |---|---|---|---|
-| Claude | `https://api.anthropic.com/v1` | console.anthropic.com | `claude-sonnet-5` |
-| OpenAI | `https://api.openai.com/v1` | platform.openai.com | `gpt-4o` |
-| OpenRouter | `https://openrouter.ai/api/v1` | openrouter.ai/keys | `anthropic/claude-sonnet-5` |
-| Gemini | `https://generativelanguage.googleapis.com/v1beta/openai` | aistudio.google.com | `gemini-2.5-flash` |
-| Grok | `https://api.x.ai/v1` | console.x.ai | `grok-4` |
-| GLM | `https://api.z.ai/api/paas/v4` | z.ai | `glm-4.5v` |
-| DeepSeek | `https://api.deepseek.com/v1` | platform.deepseek.com | `deepseek-v4-flash-vision-exp` |
-| Muse | `https://api.meta.ai/v1` | dev.meta.ai | `muse-spark-1.1` |
-| Mistral | `https://api.mistral.ai/v1` | console.mistral.ai | `pixtral-large-latest` |
+| Claude | `https://api.anthropic.com/v1` | [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys) | `claude-sonnet-5` |
+| OpenAI | `https://api.openai.com/v1` | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) | `gpt-4o` |
+| OpenRouter | `https://openrouter.ai/api/v1` | [openrouter.ai/keys](https://openrouter.ai/keys) | `anthropic/claude-sonnet-5` |
+| Gemini | `https://generativelanguage.googleapis.com/v1beta/openai` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | `gemini-2.5-flash` |
+| Grok | `https://api.x.ai/v1` | [console.x.ai](https://console.x.ai) | `grok-4` |
+| GLM | `https://api.z.ai/api/paas/v4` | [z.ai/manage-apikey/apikey-list](https://z.ai/manage-apikey/apikey-list) | `glm-4.5v` |
+| DeepSeek | `https://api.deepseek.com/v1` | [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) | `deepseek-v4-flash-vision-exp` |
+| Muse | `https://api.meta.ai/v1` | [dev.meta.ai](https://dev.meta.ai) | `muse-spark-1.1` |
+| Mistral | `https://api.mistral.ai/v1` | [console.mistral.ai/api-keys](https://console.mistral.ai/api-keys) | `pixtral-large-latest` |
 | LM Studio | `http://<Mac-IP>:1234/v1` | — | `zai-org/glm-4.6v-flash` |
 | Ollama | `http://<Mac-IP>:11434/v1` | — | `qwen3-vl` |
 | Eigener Dienst | frei | optional | frei |
@@ -32,7 +32,8 @@ Groq (`https://api.groq.com/openai/v1`), DeepInfra, Together, ein eigener
 Proxy. Die Adresse endet **ohne** `/chat/completions`, das hängt die App an.
 
 Jeder Anbieter hat ein eigenes Keychain-Fach, Wechseln kostet also keinen
-Schlüssel.
+Schlüssel. Die Schlüsselseite steht auch im Sheet selbst und ist dort
+antippbar — Ink und unterstrichen, nicht im Akzent: der gehört dem Koffein.
 
 ## Modellnamen wandern
 
