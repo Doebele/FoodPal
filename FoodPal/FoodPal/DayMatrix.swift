@@ -15,6 +15,9 @@ import SwiftUI
 struct DayMatrix: View {
     let entries: [Entry]
     var roast: Roast = .hell
+    /// Der Jetzt-Punkt, nur am heutigen Tag gesetzt — an vergangenen Tagen
+    /// gibt es kein Jetzt, und ein Zeiger dort wäre eine Behauptung.
+    var now: Date? = nil
 
     private static let calorieRows = 12
     private static let coffeeRows = 5
@@ -58,9 +61,34 @@ struct DayMatrix: View {
                         color: i < cofDots ? roast.color : Palette.rule)
                 }
             }
+
+            // Jetzt: je ein Punkt in der obersten und der untersten Reihe wird
+            // in Papier gesetzt, also weggenommen. Zwei Kerben an den Rändern
+            // klammern die laufende Viertelstunde ein.
+            //
+            // Weggenommen statt geschwärzt, weil ein schwarzer Punkt in der
+            // obersten Kalorienreihe genau das hiesse, was er dort sonst sagt:
+            // 1800 kcal in dieser Stunde. Eine Lücke kann man mit nichts
+            // verwechseln — und in einem regelmässigen Raster sieht man sie
+            // sofort.
+            if let column = Self.column(for: now) {
+                dot(column: column, y: 0, color: Palette.paper)
+                dot(column: column,
+                    y: Self.coffeeTop + CGFloat(Self.coffeeRows - 1) * Grid.pitch,
+                    color: Palette.paper)
+            }
         }
         .aspectRatio(Grid.naturalWidth / Self.naturalHeight, contentMode: .fit)
         .accessibilityLabel("Tagesverlauf als Punktraster")
+    }
+
+    /// Die Spalte der laufenden Viertelstunde — dieselbe Auflösung, in der
+    /// auch die Einträge rasten.
+    static func column(for date: Date?) -> Int? {
+        guard let date else { return nil }
+        let parts = Calendar.current.dateComponents([.hour, .minute], from: date)
+        guard let hour = parts.hour, let minute = parts.minute else { return nil }
+        return hour * Grid.perHour + min(Grid.perHour - 1, minute / (60 / Grid.perHour))
     }
 
     private var hourly: [(kcal: Double, mg: Double)] {

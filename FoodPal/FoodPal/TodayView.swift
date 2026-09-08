@@ -54,7 +54,8 @@ struct TodayView: View {
                         DayView(
                             entries: entries(on: day),
                             mode: mode,
-                            roast: roast
+                            roast: roast,
+                            isToday: calendar.isDateInToday(day)
                         )
                         .containerRelativeFrame(.horizontal)
                         .id(day)
@@ -177,6 +178,8 @@ struct DayView: View {
     let entries: [Entry]
     let mode: DisplayMode
     let roast: Roast
+    /// Nur heute traegt die Jetzt-Kerbe.
+    var isToday = false
 
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
@@ -199,8 +202,16 @@ struct DayView: View {
                 // einer Kante abzubrechen.
                 VStack(alignment: .leading, spacing: 0) {
                     hourLabels
-                    DayMatrix(entries: entries, roast: roast)
-                        .padding(.top, 2)
+                    // Die Kerbe soll wandern, ohne dass man die App neu
+                    // oeffnet — einmal je Minute genuegt bei Viertelstunden.
+                    TimelineView(.periodic(from: .now, by: 60)) { tick in
+                        DayMatrix(
+                            entries: entries,
+                            roast: roast,
+                            now: isToday ? tick.date : nil
+                        )
+                    }
+                    .padding(.top, 2)
                 }
                 .padding(.horizontal, -(Metric.margin - Self.timelineInset))
 
