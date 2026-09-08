@@ -219,7 +219,7 @@ struct DayView: View {
                 // mit einem Punkt je Stundengruppe und haette im neuen nur noch
                 // eine zweite, groeber gerasterte Reihe unter dem Zeitstrahl
                 // ergeben. Der Weissraum trennt genauso gut.
-                numberDisplay.padding(.top, 16)
+                numberDisplay
 
                 // Keine Einheit neben der Zahl: der Umschalter direkt darunter
                 // sagt bereits, ob kcal oder mg gemeint sind. Zweimal dasselbe
@@ -263,11 +263,16 @@ struct DayView: View {
             resetKey: mode.rawValue
         )
         if style == .dotMatrix {
-            display.padding(.horizontal, -(Metric.margin - Self.timelineInset))
+            // Eine Rasterreihe Abstand, derselbe wie zwischen Koffein- und
+            // Kalorienband: es ist dasselbe Feld, nur mit anderen Punkten.
+            display
+                .padding(.horizontal, -(Metric.margin - Self.timelineInset))
+                .padding(.top, Grid.pitch)
         } else {
             display
                 .frame(height: 112)
                 .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.top, 16)
         }
     }
 

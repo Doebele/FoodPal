@@ -15,6 +15,16 @@ enum DotMatrixFont {
     static let columns = 20
     static let rows = 33
 
+    /// Die Reihen, in denen ueberhaupt Punkte liegen. Die Vorlage hat oben
+    /// **eine** leere Reihe und unten **sechs** — wer den Kasten unbesehen
+    /// nimmt, bekommt Ziffern, die im Feld nach oben rutschen. Berechnet und
+    /// nicht eingetragen, damit es beim naechsten Entwurf von selbst stimmt.
+    static let inkRows: ClosedRange<Int> = {
+        let filled = (0..<rows).filter { row in glyphs.contains { $0[row] != 0 } }
+        guard let first = filled.first, let last = filled.last else { return 0...(rows - 1) }
+        return first...last
+    }()
+
     /// Je Ziffer eine Reihe von Bitmasken; Bit *n* ist Spalte *n* von links.
     static let glyphs: [[UInt32]] = shapes.map { runs in
         runs.flatMap { run in Array(repeating: mask(run.1), count: run.0) }

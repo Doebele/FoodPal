@@ -207,8 +207,14 @@ genauso gut.
    Jede Ziffer ist **20 Spalten breit**, alle gleich — die Anzeige rastert wie ein Zählwerk, nicht wie ein Schriftsatz. Zwischen den Ziffern steht je eine **Trennspalte**; ohne sie stossen zwei Ziffern mit ihren leeren Randspalten aneinander und eine 11 sähe aus wie ein breiter Balken. Die Ziffern stehen **rechtsbündig**, links wird mit leeren Rasterspalten aufgefüllt:
 
    ```
-   13 Füller │ 20 Ziffer │ 1 │ 20 │ 1 │ 20 │ 1 │ 20  =  96
+   11 Füller │ 20 Ziffer │ 1 │ 20 │ 1 │ 20 │ 1 │ 20 │ 2  =  96
    ```
+
+   Rechts bleiben zwei Spalten stehen, damit die Einerstelle nicht an der Kante klebt — mit der leeren Randspalte der Ziffer selbst sind es drei.
+
+   **Senkrecht mittig.** Die Vorlage hat oben eine und unten sechs leere Reihen; übernähme man den Kasten unbesehen, sässen die Ziffern sichtbar zu hoch. Gezeichnet werden deshalb nur die Reihen mit Punkten, mit je drei Rasterreihen darüber und darunter. `DotMatrixFont.inkRows` rechnet den Bereich aus den Daten aus, statt ihn einzutragen — beim nächsten Entwurf stimmt es dann von selbst.
+
+   **Der Abstand zum Zeitstrahl ist eine Rasterreihe**, derselbe wie zwischen Koffein- und Kalorienband. Damit lesen sich Diagramm und Anzeige als ein durchgehendes Feld, was sie ja auch sind.
 
    Damit läuft die Anzeige **genauso randlos wie der Zeitstrahl** — es ist dasselbe Raster, nur mit anderen Punkten beleuchtet. Flip und 7-Segment bleiben dagegen im Satzspiegel: sie sind Schrift auf einer Fläche.
 
