@@ -1,6 +1,32 @@
 import Foundation
 import SwiftData
 
+extension Date {
+    /// Auf die Viertelstunde gerundet.
+    ///
+    /// Dieselbe Auflösung wie der Zeitstrahl, der je Stunde vier Spalten hat —
+    /// feiner kann das Diagramm ohnehin nichts zeigen. Und genauer muss es
+    /// nicht sein: ob der Kaffee um 10:28 oder 10:30 war, ändert an einem
+    /// Ernährungstagebuch nichts, macht das Eintragen aber umständlicher.
+    var roundedToQuarterHour: Date {
+        let calendar = Calendar.current
+        var parts = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: self)
+        let minute = parts.minute ?? 0
+        parts.second = 0
+        parts.minute = Int((Double(minute) / 15).rounded()) * 15
+        guard let rounded = calendar.date(from: parts) else { return self }
+
+        // 23:58 würde auf morgen 00:00 rollen — und der späte Snack zählte
+        // zum falschen Tag. Über die Mitternachtsgrenze wird deshalb
+        // abgerundet, nicht aufgerundet.
+        guard calendar.isDate(rounded, inSameDayAs: self) else {
+            parts.minute = minute / 15 * 15
+            return calendar.date(from: parts) ?? self
+        }
+        return rounded
+    }
+}
+
 /// Ein Eintrag — Mahlzeit oder Kaffee. Bewusst ein Modell für beides:
 /// die Tagesübersicht braucht ohnehin eine gemischte Chronologie.
 @Model
@@ -37,7 +63,9 @@ final class Entry {
         photo: Data? = nil,
         generatedImage: Bool = false
     ) {
-        self.date = date
+        // Hier und nicht beim Aufrufer: sonst haette die Regel vier Wohnorte —
+        // Foto, Kaffee, Beschreibung, Nachtrag — und einer vergaesse sie.
+        self.date = date.roundedToQuarterHour
         self.name = name
         self.kindRaw = kind.rawValue
         self.kcal = kcal

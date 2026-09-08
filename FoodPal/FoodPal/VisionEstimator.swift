@@ -184,7 +184,7 @@ enum VisionEstimator {
             switch self {
             case .missingKey: "Kein API-Schlüssel hinterlegt."
             case .badResponse(let code, let body):
-                "Der Dienst antwortete mit \(code). \(body.prefix(140))"
+                "Der Dienst antwortete mit \(code). \(body.prefix(300))"
             case .unreadable: "Die Antwort war nicht lesbar."
             case .badImage: "Das Bild ließ sich nicht aufbereiten."
             case .noPhotos(let label):
@@ -210,10 +210,13 @@ enum VisionEstimator {
         return """
         Jetzt ist \(stamp) (Ortszeit). Schätze die Nährwerte der beschriebenen Mahlzeit.
         Antworte ausschließlich mit einem JSON-Array, ohne Erklärung und ohne Codeblock:
-        [{"name":"kurze deutsche Bezeichnung","kcal":0,"proteinG":0,"carbsG":0,"fatG":0,"date":"JJJJ-MM-TTTHH:MM"}]
+        [{"name":"kurze deutsche Bezeichnung","kcal":0,"proteinG":0,"carbsG":0,"fatG":0,"date":"2026-01-31T21:00"}]
         Ein Objekt je Gericht — nenne Beilagen und Getränke einzeln, fasse sie nicht zusammen.
         Mengenangaben wie "klein", "drei Scheiben" oder "dünn bestrichen" berücksichtigen.
-        "date" ist der genannte Zeitpunkt in Ortszeit; ohne Angabe das Feld weglassen.
+        "date" ist der genannte Zeitpunkt, gerechnet ab dem Jetzt oben, in Ortszeit
+        und in der Schreibweise des Beispiels. "gestern Abend um neun" ist ein
+        Zeitpunkt, "zum Frühstück" auch — dann 08:00 annehmen. Nur wenn gar nichts
+        auf eine Zeit hindeutet, das Feld weglassen.
         Zahlen ohne Einheiten.
         """
     }
@@ -387,14 +390,30 @@ enum VisionEstimator {
         return String(raw[outer.1...outer.2]).data(using: .utf8)
     }
 
-    /// Das Modell antwortet in Ortszeit ohne Zonenangabe — genau so, wie der
-    /// Prompt es verlangt. Mit Zone geschriebene Antworten werden trotzdem
-    /// genommen; manche Modelle hängen sie unaufgefordert an.
+    /// Das Modell antwortet in Ortszeit ohne Zonenangabe, so wie der Prompt es
+    /// verlangt — aber eben nicht immer in derselben Schreibweise.
+    ///
+    /// `ISO8601DateFormatter` besteht auf Sekunden und lehnt genau die Form ab,
+    /// nach der der Prompt fragt (`2026-09-07T21:00`). Deshalb hier eine kurze
+    /// Liste der Formen, die tatsächlich zurückkommen, statt einer strengen.
     static func localDate(_ text: String) -> Date? {
-        if let date = ISO8601DateFormatter.local.date(from: text) { return date }
-        let withZone = ISO8601DateFormatter()
-        withZone.formatOptions = [.withInternetDateTime]
-        return withZone.date(from: text)
+        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return nil }
+
+        // Mit Zonenangabe — manche Modelle hängen sie unaufgefordert an.
+        let zoned = ISO8601DateFormatter()
+        zoned.formatOptions = [.withInternetDateTime]
+        if let date = zoned.date(from: text) { return date }
+
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = .current
+        for format in ["yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd'T'HH:mm",
+                       "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd"] {
+            formatter.dateFormat = format
+            if let date = formatter.date(from: text) { return date }
+        }
+        return nil
     }
 
     private static func anthropicText(from data: Data) -> String? {

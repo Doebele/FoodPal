@@ -31,7 +31,7 @@ enum AppleEstimator {
         var carbsG: Int
         @Guide(description: "Fett in Gramm")
         var fatG: Int
-        @Guide(description: "Zeitpunkt als JJJJ-MM-TTTHH:MM in Ortszeit; leer lassen, wenn keiner genannt wurde")
+        @Guide(description: "Genannter Zeitpunkt in Ortszeit, Schreibweise 2026-01-31T21:00; leer lassen, wenn gar keine Zeit genannt wurde")
         var date: String
     }
 
@@ -63,7 +63,8 @@ enum AppleEstimator {
         Jetzt ist \(ISO8601DateFormatter.local.string(from: now)) in Ortszeit.
         Nenne jedes Gericht einzeln; fasse Beilagen und Getränke nicht zusammen.
         Berücksichtige Mengenangaben wie "klein", "drei Scheiben" oder "dünn bestrichen".
-        Rechne Zeitangaben wie "gestern Abend um neun" in einen Zeitpunkt um.
+        Rechne Zeitangaben in einen Zeitpunkt um: "gestern Abend um neun" ebenso
+        wie "zum Fruehstueck" (dann 08:00 annehmen).
         """)
 
         let answer = try await session.respond(to: text, generating: Meals.self)

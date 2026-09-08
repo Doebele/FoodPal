@@ -129,6 +129,8 @@ struct EntryDetailView: View {
     /// Der Wert steht als schlichter Text wie jeder andere; erst beim
     /// Antippen klappt das Rad aus. Apples kompakter DatePicker bringt sonst
     /// eine graue Kastenpille mit, die es sonst nirgends gibt.
+    ///
+    /// Das Rad rastet in Viertelstunden — siehe `QuarterHourPicker`.
     private var timeField: some View {
         VStack(alignment: .leading, spacing: 6) {
             Button {
@@ -149,15 +151,8 @@ struct EntryDetailView: View {
             .buttonStyle(.plain)
 
             if editingTime {
-                DatePicker(
-                    "",
-                    selection: $date,
-                    in: ...Date.now,
-                    displayedComponents: [.date, .hourAndMinute]
-                )
-                .datePickerStyle(.wheel)
-                .labelsHidden()
-                .frame(maxWidth: .infinity)
+                QuarterHourPicker(date: $date)
+                    .frame(maxWidth: .infinity)
             }
 
             Rectangle().fill(Palette.rule).frame(height: 1)

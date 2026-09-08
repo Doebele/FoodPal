@@ -99,14 +99,37 @@ struct SpokenParsingTests {
 
     /// Der Zeitpunkt kommt in Ortszeit ohne Zone zurück — so verlangt es der
     /// Prompt, und nur so trifft ein Nachtrag den richtigen Tag.
-    @Test func zeitpunktInOrtszeit() throws {
+    ///
+    /// **Ohne Sekunden**, denn genau danach fragt der Prompt. Der frühere Test
+    /// prüfte mit Sekunden und ging deshalb durch, während die Zeitangabe in
+    /// der App stillschweigend verloren ging — ein Test, der dem Code recht
+    /// gab statt der Wirklichkeit.
+    @Test(arguments: [
+        "2026-09-07T21:00",
+        "2026-09-07T21:00:00",
+        "2026-09-07 21:00"
+    ])
+    func zeitpunktInJederSchreibweise(_ raw: String) throws {
         let items = VisionEstimator.parseList(
-            #"[{"name":"Ramen","kcal":450,"date":"2026-09-07T21:00:00"}]"#
+            #"[{"name":"Ramen","kcal":450,"date":"\#(raw)"}]"#
         )
-        let date = try #require(items.first?.date)
-        let parts = Calendar.current.dateComponents([.year, .month, .day, .hour], from: date)
+        let date = try #require(items.first?.date, "nicht geparst: \(raw)")
+        let parts = Calendar.current.dateComponents([.day, .hour], from: date)
         #expect(parts.day == 7)
         #expect(parts.hour == 21)
+    }
+
+    /// Nur ein Datum ohne Uhrzeit ist besser als gar nichts — der Eintrag
+    /// landet dann am richtigen Tag, die Uhrzeit korrigiert man von Hand.
+    @Test func nurDatumGehtAuch() throws {
+        let items = VisionEstimator.parseList(#"[{"name":"Brot","kcal":180,"date":"2026-09-07"}]"#)
+        let date = try #require(items.first?.date)
+        #expect(Calendar.current.component(.day, from: date) == 7)
+    }
+
+    @Test func unbrauchbarerZeitpunktBleibtOffen() {
+        #expect(VisionEstimator.localDate("gestern Abend") == nil)
+        #expect(VisionEstimator.localDate("") == nil)
     }
 
     @Test func ohneZeitpunktBleibtOffen() {

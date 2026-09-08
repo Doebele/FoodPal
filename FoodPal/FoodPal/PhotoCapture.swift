@@ -194,10 +194,24 @@ struct PhotoCapture: View {
                 .font(.system(size: 22, weight: .light))
                 .foregroundStyle(Palette.ink)
                 .padding(.top, 20)
-            Text(message)
-                .font(.system(size: 13))
+
+            // Anbieter und Modell mit dazu: ohne sie ist eine Fehlermeldung
+            // nicht zuzuordnen, wenn zwoelf Dienste in Frage kommen.
+            Text(provider.label + " · " + effectiveModel)
+                .font(.system(size: 12, design: .monospaced))
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 6)
+
+            ScrollView {
+                Text(message)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Palette.ink2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .textSelection(.enabled)
+            }
+            .scrollIndicators(.hidden)
+            .frame(maxHeight: 160)
+            .padding(.top, 8)
 
             Spacer(minLength: 0)
 
@@ -393,7 +407,7 @@ private struct Confirm: View {
                     date: estimate.date
                 )
             }
-            when = estimates.first?.date ?? .now
+            when = (estimates.first?.date ?? .now).roundedToQuarterHour
             if per100g { rescale() }
             loaded = true
         }
@@ -435,9 +449,8 @@ private struct Confirm: View {
     // MARK: - Zeitpunkt
 
     /// Aus „gestern Abend um neun" kommt der Zeitpunkt schon richtig zurueck;
-    /// hier laesst er sich nachbessern. Nach vorn ist bei jetzt Schluss — ein
-    /// Eintrag in der Zukunft waere unsichtbar, weil die Tagesansicht bei heute
-    /// endet.
+    /// hier laesst er sich nachbessern. Das Rad rastet in Viertelstunden, und
+    /// nach vorn ist bei jetzt Schluss.
     private var timeField: some View {
         VStack(alignment: .leading, spacing: 6) {
             Button {
@@ -457,10 +470,7 @@ private struct Confirm: View {
             .buttonStyle(.plain)
 
             if editingTime {
-                DatePicker("", selection: $when, in: ...Date.now,
-                           displayedComponents: [.date, .hourAndMinute])
-                    .datePickerStyle(.wheel)
-                    .labelsHidden()
+                QuarterHourPicker(date: $when)
                     .frame(maxWidth: .infinity)
             }
 
