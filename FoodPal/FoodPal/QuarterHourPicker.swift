@@ -18,10 +18,8 @@ struct QuarterHourPicker: UIViewRepresentable {
         picker.preferredDatePickerStyle = .wheels
         picker.minuteInterval = 15
         // Nach vorn ist bei jetzt Schluss: ein Eintrag in der Zukunft wäre
-        // unsichtbar, weil die Tagesansicht bei heute endet. Gerundet, sonst
-        // liesse sich ein um 10:08 gespeicherter Eintrag (10:15) nicht mehr
-        // auf seinem eigenen Wert stehen lassen.
-        picker.maximumDate = Date.now.roundedToQuarterHour
+        // unsichtbar, weil die Tagesansicht bei heute endet.
+        picker.maximumDate = Date.now.startOfQuarterHour
         picker.addTarget(context.coordinator,
                          action: #selector(Coordinator.changed(_:)),
                          for: .valueChanged)
@@ -30,7 +28,7 @@ struct QuarterHourPicker: UIViewRepresentable {
 
     func updateUIView(_ picker: UIDatePicker, context: Context) {
         context.coordinator.date = $date
-        picker.maximumDate = Date.now.roundedToQuarterHour
+        picker.maximumDate = Date.now.startOfQuarterHour
         if abs(picker.date.timeIntervalSince(date)) > 1 {
             picker.setDate(date, animated: false)
         }

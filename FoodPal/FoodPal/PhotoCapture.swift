@@ -407,7 +407,7 @@ private struct Confirm: View {
                     date: estimate.date
                 )
             }
-            when = (estimates.first?.date ?? .now).roundedToQuarterHour
+            when = (estimates.first?.date ?? .now).startOfQuarterHour
             if per100g { rescale() }
             loaded = true
         }
