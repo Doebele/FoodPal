@@ -269,14 +269,26 @@ struct DotBlock: View {
 /// dauerhaft im Weg — hier stehen sie, wenn man sie sucht.
 struct VisionSheet: View {
     @AppStorage(Preference.provider) private var providerRaw = Provider.claude.rawValue
-    @AppStorage(Preference.model) private var model = ""
-    @AppStorage(Preference.localURL) private var localURL = ""
+    @AppStorage(Preference.models) private var modelsJSON = "{}"
+    @AppStorage(Preference.addresses) private var addressesJSON = "{}"
 
     @State private var apiKey = ""
     @State private var probeResult: String?
     @State private var probing = false
 
     private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
+
+    /// Schreibt in das JSON je Anbieter statt in einen gemeinsamen Wert — der
+    /// Eintrag des vorherigen Dienstes bleibt dadurch unangetastet.
+    private var modelField: Binding<String> {
+        Binding(get: { PerProvider.value(modelsJSON, provider) },
+                set: { modelsJSON = PerProvider.setting(modelsJSON, provider, $0) })
+    }
+
+    private var addressField: Binding<String> {
+        Binding(get: { PerProvider.value(addressesJSON, provider) },
+                set: { addressesJSON = PerProvider.setting(addressesJSON, provider, $0) })
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -320,9 +332,7 @@ struct VisionSheet: View {
                             .font(.system(size: 16, weight: option == provider ? .medium : .regular))
                             .foregroundStyle(option == provider ? Palette.ink : Palette.ink2)
                         Spacer()
-                        Rectangle()
-                            .fill(option == provider ? Palette.ink : .clear)
-                            .frame(width: 9, height: 9)
+                        marker(option)
                     }
                     .frame(height: 48)
                     .contentShape(Rectangle())
@@ -335,13 +345,30 @@ struct VisionSheet: View {
         }
     }
 
-    /// Modell und Adresse kommen vom neuen Dienst — ein Modellname des alten
-    /// waere beim neuen fast sicher falsch. Der Schluessel bleibt, er liegt je
-    /// Anbieter in einem eigenen Keychain-Fach.
+    /// Drei Zustaende in einem 9-pt-Quadrat, ohne ein Wort Erklaerung:
+    /// **gefuellt** ist aktiv, **umrandet** ist eingerichtet — dorthin
+    /// zurueckzuwechseln kostet kein neues Eintragen —, **nichts** heisst,
+    /// dass noch ein Schluessel fehlt.
+    @ViewBuilder private func marker(_ option: Provider) -> some View {
+        if option == provider {
+            Rectangle()
+                .fill(Palette.ink)
+                .frame(width: 9, height: 9)
+        } else if option.isConfigured {
+            // strokeBorder statt stroke: der Strich liegt innen, das Quadrat
+            // misst damit wirklich 9 pt und sitzt buendig zum gefuellten.
+            Rectangle()
+                .strokeBorder(Palette.ink, lineWidth: 1)
+                .frame(width: 9, height: 9)
+        }
+    }
+
+    /// Wechseln loescht nichts. Schluessel, Modellname und Adresse liegen je
+    /// Anbieter getrennt — wer einmal einen Dienst eingerichtet hat, findet ihn
+    /// beim Zurueckwechseln unveraendert vor. Nur das Testergebnis gilt nicht
+    /// mehr, das gehoerte dem vorherigen.
     private func select(_ option: Provider) {
         providerRaw = option.rawValue
-        model = ""
-        if option.editableAddress { localURL = option.defaultAddress }
         probeResult = nil
     }
 
@@ -376,7 +403,7 @@ struct VisionSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             if provider.editableAddress {
                 row("Adresse") {
-                    TextField("https://…/v1", text: $localURL)
+                    TextField(provider.defaultAddress, text: addressField)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
@@ -398,7 +425,7 @@ struct VisionSheet: View {
             }
 
             row("Modell") {
-                TextField(provider.defaultModel.isEmpty ? "eintragen" : provider.defaultModel, text: $model)
+                TextField(provider.defaultModel.isEmpty ? "eintragen" : provider.defaultModel, text: modelField)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .multilineTextAlignment(.trailing)
@@ -411,8 +438,8 @@ struct VisionSheet: View {
                     probing = true
                     probeResult = await VisionEstimator.probe(
                         provider: provider,
-                        model: model.isEmpty ? provider.defaultModel : model,
-                        baseURL: localURL
+                        model: provider.model(from: modelsJSON),
+                        baseURL: provider.address(from: addressesJSON)
                     )
                     probing = false
                 }

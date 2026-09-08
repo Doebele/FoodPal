@@ -13,8 +13,8 @@ struct PhotoCapture: View {
     @Environment(\.modelContext) private var context
     @AppStorage(Preference.healthSync) private var healthSync = true
     @AppStorage(Preference.provider) private var providerRaw = Provider.claude.rawValue
-    @AppStorage(Preference.model) private var model = ""
-    @AppStorage(Preference.localURL) private var localURL = "http://192.168.1.42:1234/v1"
+    @AppStorage(Preference.models) private var modelsJSON = "{}"
+    @AppStorage(Preference.addresses) private var addressesJSON = "{}"
 
     @State private var health = HealthKitSync()
     @State private var phase = Phase.idle
@@ -34,7 +34,7 @@ struct PhotoCapture: View {
     }
 
     private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
-    private var effectiveModel: String { model.isEmpty ? provider.defaultModel : model }
+    private var effectiveModel: String { provider.model(from: modelsJSON) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -189,7 +189,7 @@ struct PhotoCapture: View {
                 image: image,
                 provider: provider,
                 model: effectiveModel,
-                baseURL: localURL
+                baseURL: provider.address(from: addressesJSON)
             )
             phase = .ready(image, estimate, per100g: false)
         } catch {

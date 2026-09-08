@@ -88,6 +88,30 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
         default: rawValue + "-key"
         }
     }
+
+    /// Eingerichtet heisst: es liegt ein Schlüssel bereit, oder der Dienst
+    /// braucht keinen. Nur so lässt sich in der Liste sehen, wohin man
+    /// zurückwechseln kann, ohne etwas neu einzutragen.
+    var isConfigured: Bool {
+        needsKey ? Keychain.has(keychainAccount) : true
+    }
+
+    // MARK: - Werte je Anbieter
+    //
+    // Beide lesen aus dem JSON der Einstellungen und fallen auf die Vorgabe
+    // zurueck. Dadurch bleibt erhalten, was fuer einen Anbieter eingerichtet
+    // wurde, auch wenn zwischendurch ein anderer benutzt wird.
+
+    func model(from json: String) -> String {
+        let stored = PerProvider.value(json, self)
+        return stored.isEmpty ? defaultModel : stored
+    }
+
+    func address(from json: String) -> String {
+        if let fixed = fixedBaseURL { return fixed }
+        let stored = PerProvider.value(json, self)
+        return stored.isEmpty ? defaultAddress : stored
+    }
 }
 
 struct MealEstimate: Codable, Equatable, Sendable {

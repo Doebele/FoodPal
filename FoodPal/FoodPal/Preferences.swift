@@ -10,8 +10,13 @@ enum Preference {
     static let captureMode = "captureMode"
     static let appearance = "appearance"
     static let provider = "visionProvider"
-    static let model = "visionModel"
-    static let localURL = "lmStudioURL"
+    /// Modellname **je Anbieter**, als JSON. Siehe `PerProvider`.
+    static let models = "visionModels"
+    /// Adresse je Anbieter, als JSON — betrifft nur die ohne feste Adresse.
+    static let addresses = "visionAddresses"
+
+    private static let legacyModel = "visionModel"
+    private static let legacyURL = "lmStudioURL"
 
     /// Voreinstellungen. Haptik ist **an** — abschaltbar, aber wer sie nicht
     /// vorfindet, entdeckt sie nie.
@@ -24,9 +29,59 @@ enum Preference {
             captureMode: Entry.Kind.coffee.rawValue,
             appearance: Appearance.auto.rawValue,
             provider: Provider.claude.rawValue,
-            model: "",
-            localURL: "http://192.168.1.42:1234/v1"
+            models: "{}",
+            addresses: "{}"
         ])
+        migrateSingleValues()
+    }
+
+    /// Frueher gab es **einen** Modellnamen und **eine** Adresse für alle
+    /// Anbieter. Beim Wechsel ging deshalb verloren, was für den vorherigen
+    /// eingerichtet war. Die Altwerte gehörten dem damals gewählten Anbieter —
+    /// dorthin werden sie einmalig übernommen.
+    private static func migrateSingleValues() {
+        let store = UserDefaults.standard
+        let owner = Provider(rawValue: store.string(forKey: provider) ?? "") ?? .claude
+
+        if let old = store.string(forKey: legacyModel), !old.isEmpty {
+            store.set(PerProvider.setting(store.string(forKey: models) ?? "{}", owner, old),
+                      forKey: models)
+        }
+        if let old = store.string(forKey: legacyURL), !old.isEmpty, owner.editableAddress {
+            store.set(PerProvider.setting(store.string(forKey: addresses) ?? "{}", owner, old),
+                      forKey: addresses)
+        }
+        store.removeObject(forKey: legacyModel)
+        store.removeObject(forKey: legacyURL)
+    }
+}
+
+/// Ein Wert je Anbieter, als JSON in einem einzigen `UserDefaults`-Eintrag.
+///
+/// `@AppStorage` kann keine Dictionaries, und je Anbieter und Feld einen
+/// eigenen Schlüssel anzulegen wären zwei Dutzend Namen, die auseinanderlaufen
+/// können. Ein kleines JSON-Objekt bleibt beobachtbar und wächst mit der Liste
+/// mit, ohne dass irgendwo etwas nachgetragen werden muss.
+enum PerProvider {
+    static func value(_ json: String, _ provider: Provider) -> String {
+        decoded(json)[provider.rawValue] ?? ""
+    }
+
+    /// Gibt das neue JSON zurück, statt selbst zu schreiben — so bleibt der
+    /// Schreibweg die `@AppStorage`-Bindung und die Views aktualisieren sich.
+    static func setting(_ json: String, _ provider: Provider, _ value: String) -> String {
+        var map = decoded(json)
+        map[provider.rawValue] = value.isEmpty ? nil : value
+        guard let data = try? JSONEncoder().encode(map),
+              let text = String(data: data, encoding: .utf8) else { return json }
+        return text
+    }
+
+    private static func decoded(_ json: String) -> [String: String] {
+        guard let data = json.data(using: .utf8),
+              let map = try? JSONDecoder().decode([String: String].self, from: data)
+        else { return [:] }
+        return map
     }
 }
 
