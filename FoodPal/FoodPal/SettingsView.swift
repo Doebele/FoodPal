@@ -36,8 +36,35 @@ struct SettingsView: View {
 
     var body: some View {
         ScrollView {
+            // Sortiert nach Häufigkeit, nicht nach Bedeutung: oben, woran man
+            // öfter dreht, unten, was einmal eingerichtet wird und dann steht.
             VStack(alignment: .leading, spacing: 0) {
-                section("apple health", topPadding: 16) {
+                caption("akzent · röstung", trailing: roast.label, topPadding: 16)
+                roastPicker.padding(.top, 12)
+
+                caption("erscheinungsbild", trailing: appearance.label, topPadding: 28)
+                appearancePicker.padding(.top, 12)
+
+                caption("anzeige · ziffern", trailing: style.label, topPadding: 28)
+                stylePicker.padding(.top, 12)
+
+                section("bedienung", topPadding: 28) {
+                    row("Haptik") {
+                        Toggle("", isOn: $haptics)
+                            .labelsHidden()
+                            .tint(Palette.ink)
+                    }
+                }
+
+                // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
+                // nur beim Einrichten gebraucht werden. Sie stehen deshalb hinter
+                // einer Zeile statt dauerhaft zwischen den Schaltern.
+                section("bildanalyse", trailing: provider.label, topPadding: 28) {
+                    actionRow("Anbieter und Modell") { showVision = true }
+                }
+
+                // Zuletzt: einmal verbunden, nie wieder angefasst.
+                section("apple health", topPadding: 28) {
                     row("Verbindung") {
                         HStack(spacing: 8) {
                             Rectangle()
@@ -74,30 +101,6 @@ struct SettingsView: View {
                         .foregroundStyle(Palette.ink2)
                         .padding(.top, 8)
                 }
-
-                section("bedienung", topPadding: 28) {
-                    row("Haptik") {
-                        Toggle("", isOn: $haptics)
-                            .labelsHidden()
-                            .tint(Palette.ink)
-                    }
-                }
-
-                // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
-                // nur beim Einrichten gebraucht werden. Sie stehen deshalb hinter
-                // einer Zeile statt dauerhaft zwischen den Schaltern.
-                section("bildanalyse", trailing: provider.label, topPadding: 28) {
-                    actionRow("Anbieter und Modell") { showVision = true }
-                }
-
-                caption("erscheinungsbild", trailing: appearance.label, topPadding: 28)
-                appearancePicker.padding(.top, 12)
-
-                caption("anzeige · ziffern", trailing: style.label, topPadding: 28)
-                stylePicker.padding(.top, 12)
-
-                caption("akzent · röstung", trailing: roast.label, topPadding: 28)
-                roastPicker.padding(.top, 12)
             }
             .padding(.horizontal, Metric.margin)
             .padding(.bottom, 32)
