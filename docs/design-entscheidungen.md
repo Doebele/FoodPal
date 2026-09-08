@@ -375,6 +375,10 @@ Der Schalter greift damit überall, ohne dass jeder Screen ihn selbst abfragt. V
 
 **Die Untergrenze der Taktung:** iOS fasst Haptik-Ereignisse unter rund 50 ms zusammen. Bei der Flip-Kaskade heißt das: unter etwa 110 ms je Stelle verschmelzen die Impulse zu einem Brummen. Nicht die Animation setzt hier das Limit, sondern die Haptik.
 
+**Auch das Nullen ist spürbar.** Ursprünglich war der Wechsel kcal ↔ mg stumm: erst geräuschlos auf null, dann hörbar auf den neuen Wert. Umgekehrt entschieden — es ist eine echte Klappe, und was sich bewegt, soll sich auch anfühlen. Der Rücksetz-Schritt läuft mit 110 ms je Stelle, also genau auf der Grenze, an der die Impulse noch einzeln ankommen.
+
+Was sich **nicht** meldet, ist eine Stelle, die schon steht: eine 0, die 0 bleibt, klappt nicht.
+
 `PhotosPicker` läuft außerhalb des App-Prozesses und braucht **keine** Fotoberechtigung — es bleibt nur `NSCameraUsageDescription`.
 
 ---

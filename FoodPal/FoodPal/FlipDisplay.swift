@@ -181,10 +181,12 @@ struct FlipDisplay: View {
         }
 
         if !previous.isEmpty && previous != key {
-            // Moduswechsel: stumm löschen, dann hörbar setzen.
-            await flipEach(to: Array(repeating: 0, count: shown.count), silent: true)
+            // Moduswechsel: erst auf null, dann auf den neuen Wert — beides
+            // spürbar. Das Nullen war früher stumm, aber es ist eine echte
+            // Klappe: was sich bewegt, soll sich auch anfühlen.
+            await flipEach(to: Array(repeating: 0, count: shown.count))
             await resize(to: target.count)
-            await flipEach(to: target, silent: false)
+            await flipEach(to: target)
             return
         }
 
@@ -210,14 +212,16 @@ struct FlipDisplay: View {
         }
     }
 
-    /// Setzt jede Stelle mit genau einer Klappe. `silent` unterdrückt den
-    /// Impuls — beim Nullen soll nichts zu spüren sein.
-    private func flipEach(to target: [Int], silent: Bool) async {
+    /// Setzt jede Stelle mit genau einer Klappe, je Stelle ein Impuls.
+    ///
+    /// Nur Stellen, die sich wirklich ändern: eine 0, die 0 bleibt, klappt
+    /// nicht und darf sich deshalb auch nicht melden.
+    private func flipEach(to target: [Int]) async {
         for index in target.indices where shown[index] != target[index] {
             stepDuration = Self.reset
             shown[index] = target[index]
             try? await Task.sleep(for: .seconds(Self.reset))
-            if !silent { flap += 1 }
+            flap += 1
         }
     }
 
