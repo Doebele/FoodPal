@@ -6,6 +6,10 @@ import SwiftUI
 /// Damit entfällt die Tabbar. Sie hätte drei Ziele angeboten, von denen
 /// zwei gar keine Orte sind, sondern Handlungen.
 struct AppShell: View {
+    @Environment(\.modelContext) private var context
+    @AppStorage(Preference.healthSync) private var healthSync = true
+    @State private var health = HealthKitSync()
+
     @State private var showCapture = {
         #if DEBUG
         return ProcessInfo.processInfo.environment["START_SHEET"] == "1"
@@ -27,6 +31,13 @@ struct AppShell: View {
             onSettings: { showSettings = true }
         )
         .background(Palette.paper)
+        // Einmalig: Altbestand auf die Viertelstunde nachziehen. Health folgt
+        // nur, wenn der Sync ueberhaupt an ist — sonst gehoert dort nichts hin.
+        .task {
+            let moved = QuarterHourMigration.run(context)
+            guard healthSync, !moved.isEmpty else { return }
+            await QuarterHourMigration.resync(moved, with: health)
+        }
         .sheet(isPresented: $showCapture) {
             CaptureSheet()
                 .presentationDragIndicator(.visible)
