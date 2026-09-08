@@ -226,7 +226,11 @@ Ziffern sind **proportional**, nicht monospaced, und ihre Breiten sind Vielfache
 
 In Figma liegen die zehn Ziffern als Komponenten `Ziffer/0` … `Ziffer/9`; jede enthält alle Zellen, an wie aus. Feintuning heißt: einen Punkt anklicken und seine Füllung zwischen `ink` und `rule` umstellen — die Änderung wirkt in beiden Anzeigen. Die Anzeige selbst ist ein Hintergrundraster mit Instanzen darüber.
 
-**Rechtsbündig gesetzt.** Nicht nur Konvention: so bleibt die Einerstelle beim Wechsel von 1849 auf 206 stehen, statt dass die ganze Zahl springt — für die Animation entscheidend.
+**Ausrichtung.** Ursprünglich rechtsbündig, damit die Einerstelle beim Wechsel von 1849 auf 206 stehen bleibt statt dass die ganze Zahl springt. Seit `Digits.of` immer vier Stellen zeigt, springt ohnehin nichts mehr, und das Argument ist hinfällig: **Flip und 7-Segment stehen zentriert** — waagerecht auf derselben Achse wie der Umschalter darunter, senkrecht mit gleichem Abstand nach oben und unten (36 · 112 · 36). Die Dot-Matrix bleibt rechtsbündig: sie sitzt nicht im Satzspiegel, sondern im Raster des Zeitstrahls, und füllt links mit leeren Rasterspalten auf.
+
+Dabei kam ein Layoutfehler heraus, der lange unbemerkt blieb: **die Flipkarte zeichnete 28 pt unter ihrem eigenen Rahmen.** Ihr `ZStack(alignment: .top)` enthält zwei Kartenhälften, die untere nur per `offset` platziert — und ein Offset lässt das Layout nicht mitwachsen. Der ZStack war damit eine halbe Karte hoch, und das umschließende `.frame(height: h)` zentrierte diese halbe Höhe: die ganze Karte rutschte um `h/4` nach unten. Sichtbar wurde es erst im Vergleich, weil 7-Segment korrekt sass und beide Stile deshalb 28 pt auseinanderlagen. `alignment: .top` auf demselben `frame` behebt es.
+
+Die Abstände um die Anzeige waren an diesem Fehler ausgerichtet und stimmten nur für Flip. Sie stehen jetzt **je Stil in seinem eigenen Zweig** statt gemeinsam am Umschalter — die Dot-Matrix braucht mehr Luft nach unten als die Karten, und ein gemeinsamer Wert hätte den Umschalter bei einem der beiden verrückt.
 
 **Konstruktion der Glyphen — gerade Strecken mit gerundeten Ecken, keine Ellipsen.** Das ist die Machart klassischer Punktmatrix-Schriften: rechteckige Innenräume, flache Ober- und Unterkanten, gerade Flanken. Grundformen sind das gerundete Rechteck (`0`, `8`, obere Schale der `9`, untere der `6`) und die rechts offene Schale (`3`, `5`); `1`, `4` und `7` sind reine Strecken. Ein erster Versuch mit reinen Ellipsenbögen war zu rund und blasig und traf den Charakter nicht.
 
@@ -272,11 +276,17 @@ Ein Klappschritt in zwei Hälften:
 3. Ab 90° dreht ein zweites Blatt mit der **neuen** unteren Hälfte von +90° auf 0°, Anker `.top`, ~90 ms.
 4. Die untere statische Hälfte wechselt beim Aufsetzen.
 
-`PhaseAnimator` (iOS 17+) bildet die zwei Phasen sauber ab. Ziffern laufen **von rechts nach links** mit 45 ms Versatz, wie der Übertrag in einem mechanischen Zählwerk.
+**Alle Räder drehen gleichzeitig, und immer aufwärts.** Ein Zählwerk, das man von Hand hochdreht, rollt 3→4→5→6→7 — und es dreht alle Räder zugleich, nicht eines nach dem anderen. Wer weniger Weg vor sich hat, steht früher still; genau dieses ungleiche Auslaufen ist der Effekt. Von 0189 auf 0344 heisst das: die Hunderter sind nach zwei Klappen fertig, die Zehner brauchen sechs, und dazwischen dreht sich immer weniger, bis nur noch ein Rad läuft.
 
-Durchblättern: echtes Zählwerk rollt 3→4→5→6→7. Pro Ziffer auf **höchstens sechs Schritte** deckeln, darüber direkt auf den Zielwert klappen — sonst rollt die Einerstelle bei 1849 → 2469 sechshundertmal.
+Das galt zuerst nur nach dem Nullen (Moduswechsel), ist aber die Regel für **jede** Wertänderung — auch nach dem Sichern eines Eintrags. Die Bewegung wird dadurch länger, und das ist beabsichtigt: sie zeigt, dass etwas dazugekommen ist, statt nur ein Ergebnis zu setzen.
 
-Haptik, und hier liegt die Falle: `UIFeedbackGenerator` fasst Ereignisse unter ~50 ms zusammen. Vier Ziffern à Klappe ergäben Matsch statt Rhythmus. Deshalb **ein Impuls je Klappwelle**, ausgelöst vom führenden Blatt, nicht je Ziffer:
+Vorwärts zu zählen begrenzt die Sache von selbst: von 8 auf 1 sind es drei Schritte über 9 und 0, nie sieben rückwärts. **Keine Stelle braucht mehr als neun Klappen**, egal wie weit der Wert springt — bei rund 0,14 s je Klappe ist die längste Bewegung gut eine Sekunde. Solange die Stellen nacheinander liefen, addierten sich ihre Schritte und es brauchte eine Deckelung (vierzehn Klappen, darüber wurde gesetzt); gleichzeitig ist sie überflüssig und wieder draussen.
+
+**Ein Vorlauf von 0,4 s vor dem Rollen.** Der Wert ändert sich in dem Moment, in dem gesichert wird — das Bottom Sheet fährt danach erst heraus und läge sonst über den ersten, informationsreichsten Klappen. Beim Moduswechsel entfällt der Vorlauf: dort ist nichts im Weg.
+
+**`Task.sleep` mit `try?` allein reicht nicht.** Wird die Animation abgebrochen (zwei Einträge kurz hintereinander), schluckt `try?` den Abbruch und die Restschleife rattert ohne jede Pause durch. Deshalb prüft `pause(_:)` das Ergebnis und bricht ab.
+
+Haptik, und hier liegt die Falle: `UIFeedbackGenerator` fasst Ereignisse unter ~50 ms zusammen. Vier Ziffern à Klappe ergäben Matsch statt Rhythmus. Deshalb **ein Impuls je Klappwelle**, nicht je Ziffer:
 
 ```swift
 .sensoryFeedback(.impact(weight: .light, intensity: 0.6), trigger: flapWave)

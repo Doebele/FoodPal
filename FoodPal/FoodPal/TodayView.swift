@@ -233,10 +233,10 @@ struct DayView: View {
                     captureMode = new == .kcal ? Entry.Kind.meal.rawValue : Entry.Kind.coffee.rawValue
                 }
                 .frame(maxWidth: .infinity)
-                // Der Weissraum, den vorher die Einheitenzeile fuellte, bleibt:
-                // die Karten brauchen Luft nach unten, sonst klebt die Pille an
-                // ihnen.
-                .padding(.top, 56)
+                // Der Abstand nach oben steht bei jedem Stil in seinem eigenen
+                // Zweig: die Dot-Matrix braucht mehr Luft als die Karten, und
+                // ein gemeinsamer Wert hier haette den Umschalter bei einem der
+                // beiden verrueckt.
 
                 if entries.isEmpty {
                     Text("Noch nichts erfasst.")
@@ -273,11 +273,20 @@ struct DayView: View {
             display
                 .padding(.horizontal, -(Metric.margin - Self.timelineInset))
                 .padding(.top, Grid.pitch)
+                .padding(.bottom, 56)
         } else {
+            // Zentriert, nicht rechtsbündig. Das Argument für rechts war, dass
+            // die Einerstelle beim Wechsel von 1849 auf 206 stehen bleibt —
+            // seit `Digits.of` immer vier Stellen zeigt, springt ohnehin
+            // nichts, und mittig stehen Anzeige und Umschalter auf einer Achse.
+            // Oben und unten gleich viel: die Anzeige steht mittig zwischen
+            // Zeitstrahl und Umschalter, nicht nur mittig in der Breite.
+            // 36 + 112 + 36 ist derselbe Gesamtabstand wie vorher — der
+            // Umschalter bleibt, wo er war, die Anzeige rueckt in die Mitte.
             display
                 .frame(height: 112)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.top, 16)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.vertical, 36)
         }
     }
 
