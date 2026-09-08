@@ -60,16 +60,19 @@ enum Roast: String, CaseIterable, Identifiable, Codable {
 /// Die Teilung ergibt sich aus der verfügbaren Breite und gilt für **beide**
 /// Achsen; nur so bleiben die Punkte quadratisch und nichts wird gestaucht.
 enum Grid {
-    static let columns = 72
+    /// Vier Punkte je Stunde statt drei — eine Viertelstunde je Spalte.
+    static let perHour = 4
+    static let columns = 24 * perHour
     static let dot: CGFloat = 3
-    static let pitch: CGFloat = 5
-    static let groupPitch: CGFloat = 15
-    /// x(71) + dot bei natürlicher Teilung.
-    static let naturalWidth: CGFloat = 358
+    static let gap: CGFloat = 1
+    /// **Gleichmässig.** Früher sass zwischen den Stunden eine breitere Lücke;
+    /// die ist weg. Ohne Gruppierung läuft das Raster bis an den Rand, und
+    /// beim Wischen von Tag zu Tag geht die Fläche fliessend ineinander über.
+    static let pitch: CGFloat = dot + gap
+    /// x(95) + dot.
+    static let naturalWidth: CGFloat = CGFloat(columns) * pitch - gap
 
-    static func x(_ column: Int) -> CGFloat {
-        CGFloat(column / 3) * groupPitch + CGFloat(column % 3) * pitch
-    }
+    static func x(_ column: Int) -> CGFloat { CGFloat(column) * pitch }
 
     static func scale(forWidth width: CGFloat) -> CGFloat {
         width / naturalWidth

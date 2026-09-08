@@ -182,6 +182,10 @@ struct DayView: View {
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
     @State private var selected: Entry?
 
+    /// Rest-Aussenrand des Zeitstrahls. Nicht null: ganz bis zur Kante saehe
+    /// nach Beschnitt aus statt nach Absicht.
+    private static let timelineInset: CGFloat = 5
+
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
     private var kcal: Int { Int(entries.reduce(0) { $0 + $1.kcal }.rounded()) }
     private var mg: Int { Int(entries.reduce(0) { $0 + $1.caffeineMg }.rounded()) }
@@ -189,12 +193,21 @@ struct DayView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                hourLabels
-                DayMatrix(entries: entries, roast: roast)
-                    .padding(.top, 4)
-                DottedRule()
-                    .padding(.top, 14)
+                // Der Zeitstrahl laeuft aus dem Seitenrand heraus bis fast an
+                // den Bildschirmrand. Beim Wischen von Tag zu Tag geht die
+                // Rasterflaeche dadurch fliessend ineinander ueber, statt an
+                // einer Kante abzubrechen.
+                VStack(alignment: .leading, spacing: 0) {
+                    hourLabels
+                    DayMatrix(entries: entries, roast: roast)
+                        .padding(.top, 2)
+                }
+                .padding(.horizontal, -(Metric.margin - Self.timelineInset))
 
+                // Die gepunktete Trennlinie ist weg: sie sass im alten Raster
+                // mit einem Punkt je Stundengruppe und haette im neuen nur noch
+                // eine zweite, groeber gerasterte Reihe unter dem Zeitstrahl
+                // ergeben. Der Weissraum trennt genauso gut.
                 NumberDisplay(
                     value: mode == .kcal ? kcal : mg,
                     style: style,
@@ -203,7 +216,7 @@ struct DayView: View {
                 )
                 .frame(height: 112)
                 .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.top, 20)
+                .padding(.top, 16)
 
                 // Keine Einheit neben der Zahl: der Umschalter direkt darunter
                 // sagt bereits, ob kcal oder mg gemeint sind. Zweimal dasselbe
@@ -232,14 +245,17 @@ struct DayView: View {
         .scrollIndicators(.hidden)
     }
 
+    /// Nur noch vier Marken statt sechs — 02, 08, 14, 20. Ein Tag hat vier
+    /// Sechserblöcke, und die Zahl steht am Anfang des zweiten davon; mehr
+    /// Marken waren Lärm über einem Raster, das den Verlauf ohnehin zeigt.
     private var hourLabels: some View {
         GeometryReader { geo in
             let s = Grid.scale(forWidth: geo.size.width)
-            ForEach(Array(stride(from: 0, to: 24, by: 4)), id: \.self) { hour in
+            ForEach([2, 8, 14, 20], id: \.self) { hour in
                 Text(String(format: "%02d", hour))
                     .font(.system(size: 10, design: .monospaced))
                     .foregroundStyle(Palette.ink2)
-                    .position(x: Grid.x(hour * 3) * s + 9, y: 7)
+                    .position(x: Grid.x(hour * Grid.perHour) * s + 7, y: 7)
             }
         }
         .frame(height: 14)

@@ -1,24 +1,28 @@
 import SwiftUI
 
-/// Der Tag als Punktraster: 24 Stundenspalten zu je drei Punkten Breite.
+/// Der Tag als Punktraster: 24 Stunden zu je vier Punkten Breite.
 ///
-/// Oben zehn Reihen Kalorien zu je 200 kcal, unten drei Reihen Koffein zu
-/// je 100 mg. Beide Bänder wachsen von der gemeinsamen Trennlinie aus
-/// auseinander — Kalorien nach oben, Koffein nach unten.
+/// Oben zwölf Reihen Kalorien zu je 150 kcal, unten fünf Reihen Koffein zu
+/// je 65 mg. Beide Bänder wachsen von der gemeinsamen Fuge aus auseinander —
+/// Kalorien nach oben, Koffein nach unten.
 ///
-/// Ein `Canvas` statt 936 Views: die Punkte sind eine Zeichnung, keine
+/// **Die Koffein-Skala hat einen Anker:** eine Reihe ist ungefähr ein
+/// Espresso. Drei Espresso in einer Stunde füllen damit knapp drei Reihen,
+/// statt bei 100 mg je Reihe kaum zwei.
+///
+/// Ein `Canvas` statt 1632 Views: die Punkte sind eine Zeichnung, keine
 /// Hierarchie.
 struct DayMatrix: View {
     let entries: [Entry]
     var roast: Roast = .hell
 
-    private static let calorieRows = 10
-    private static let coffeeRows = 3
-    private static let kcalPerRow: Double = 200
-    private static let mgPerRow: Double = 100
-    /// Beginn des Koffeinbandes in natürlichen Einheiten (10 Reihen + Abstand).
-    private static let coffeeTop: CGFloat = 52
-    private static let naturalHeight: CGFloat = 65
+    private static let calorieRows = 12
+    private static let coffeeRows = 5
+    private static let kcalPerRow: Double = 150
+    private static let mgPerRow: Double = 65
+    /// Beginn des Koffeinbandes: 12 Reihen (47) plus eine Reihe Fuge.
+    private static let coffeeTop: CGFloat = 51
+    private static let naturalHeight: CGFloat = 70
 
     var body: some View {
         Canvas { ctx, size in
@@ -31,26 +35,27 @@ struct DayMatrix: View {
                 ctx.fill(Path(rect), with: .color(color))
             }
 
+            let perDot = Grid.perHour
             for hour in 0..<24 {
-                let calDots = Int((lit[hour].kcal / (Self.kcalPerRow / 3)).rounded())
-                let cofDots = Int((lit[hour].mg / (Self.mgPerRow / 3)).rounded())
+                let calDots = Int((lit[hour].kcal / (Self.kcalPerRow / Double(perDot))).rounded())
+                let cofDots = Int((lit[hour].mg / (Self.mgPerRow / Double(perDot))).rounded())
 
                 // Kalorien: von der untersten Reihe nach oben
-                for i in 0..<(Self.calorieRows * 3) {
-                    let row = Self.calorieRows - 1 - i / 3
-                    let col = hour * 3 + i % 3
+                for i in 0..<(Self.calorieRows * perDot) {
+                    let row = Self.calorieRows - 1 - i / perDot
+                    let col = hour * perDot + i % perDot
                     dot(column: col,
                         y: CGFloat(row) * Grid.pitch,
-                        color: i < calDots ? Palette.ink : Palette.ink3)
+                        color: i < calDots ? Palette.ink : Palette.rule)
                 }
 
                 // Koffein: von der obersten Reihe nach unten
-                for i in 0..<(Self.coffeeRows * 3) {
-                    let row = i / 3
-                    let col = hour * 3 + i % 3
+                for i in 0..<(Self.coffeeRows * perDot) {
+                    let row = i / perDot
+                    let col = hour * perDot + i % perDot
                     dot(column: col,
                         y: Self.coffeeTop + CGFloat(row) * Grid.pitch,
-                        color: i < cofDots ? roast.color : Palette.ink3)
+                        color: i < cofDots ? roast.color : Palette.rule)
                 }
             }
         }
@@ -70,23 +75,6 @@ struct DayMatrix: View {
     }
 }
 
-/// Gepunktete Trennlinie zwischen Diagramm und Anzeige — ein Punkt je
-/// Stundengruppe, damit sie im selben Raster bleibt.
-struct DottedRule: View {
-    var body: some View {
-        Canvas { ctx, size in
-            let s = Grid.scale(forWidth: size.width)
-            let d = Grid.dot * s
-            for column in stride(from: 0, to: Grid.columns, by: 3) {
-                let rect = CGRect(x: Grid.x(column) * s, y: 0, width: d, height: d)
-                ctx.fill(Path(rect), with: .color(Palette.ink2))
-            }
-        }
-        .aspectRatio(Grid.naturalWidth / Grid.dot, contentMode: .fit)
-        .accessibilityHidden(true)
-    }
-}
-
 #Preview {
     let day = Calendar.current.startOfDay(for: .now)
     func at(_ hour: Int) -> Date { day.addingTimeInterval(TimeInterval(hour * 3600)) }
@@ -99,7 +87,6 @@ struct DottedRule: View {
             Entry(date: at(15), name: "Espresso", kind: .coffee, kcal: 2, caffeineMg: 63),
             Entry(date: at(19), name: "Ofengemüse", kind: .meal, kcal: 741)
         ])
-        DottedRule()
     }
     .padding(Metric.margin)
     .background(Palette.paper)

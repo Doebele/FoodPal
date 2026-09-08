@@ -163,20 +163,46 @@ Ein echtes On-Device-Modell auf dem iPhone habe ich verworfen: Apples Foundation
 
 **Schrift.** Fließtext SF Pro. Alle Zahlen — Uhrzeiten, kcal, mg, Gramm — in **Fira Mono**. Die Flip-Ziffern ebenfalls Fira Mono.
 
-**Tages-Matrix.** 24 Stundenspalten à 13 pt (3 Punkte zu 3 pt, 2 pt Abstand), 2 pt zwischen den Stunden. Je Spalte 13 Reihen à 3 pt mit 2 pt Abstand:
+**Tages-Matrix.** 24 Stunden zu je **vier** Punkten Breite — eine Viertelstunde
+je Spalte, 96 Spalten. Punkt 3 pt, Lücke 1 pt, **gleichmässige Teilung 4 pt**;
+die frühere breitere Lücke zwischen den Stunden ist weg. Natürliche Breite
+`96 · 4 − 1 = 383 pt`.
 
 | Band | Reihen | Skala | Punktwert |
 |---|---|---|---|
-| Kalorien (oben) | 10 | 200 kcal je Reihe, bis 2000 | 66,7 kcal |
-| Koffein (unten) | 3 | 100 mg je Reihe, bis 300 | 33,3 mg |
+| Kalorien (oben) | 12 | 150 kcal je Reihe, bis 1800 je Stunde | 37,5 kcal |
+| Koffein (unten) | 5 | 65 mg je Reihe, bis 325 je Stunde | 16,25 mg |
 
-Unbeleuchtete Punkte in `Ink3`. In Figma existiert das als Komponente `Hour` (13 × 65) und `Day` (24 Instanzen) — bei der Umsetzung als ein `Canvas`- oder `Grid`-View nachbauen, nicht als 936 einzelne Views.
+Zwischen den Bändern eine Reihe Fuge (4 pt), natürliche Gesamthöhe 70 pt.
+
+**Die Koffein-Skala hat einen Anker: eine Reihe ist ungefähr ein Espresso**
+(63 mg). Drei Espresso in einer Stunde füllen damit knapp drei Reihen. Bei den
+früheren 100 mg je Reihe waren es kaum zwei — die Skala sagte nichts, was man
+im Kopf nachrechnen konnte.
+
+Unbeleuchtete Punkte in `rule`, nicht mehr in `ink3`: bei 1632 Punkten ist der
+hellere Ton der Unterschied zwischen Raster und Rauschen.
+
+**Der Zeitstrahl läuft aus dem Seitenrand heraus** bis 5 pt an den
+Bildschirmrand. Das ist keine Kosmetik: beim Wischen von Tag zu Tag geht die
+Rasterfläche dadurch nahezu fliessend ineinander über, statt an einer Kante
+abzubrechen. Ganz bis zur Kante wäre falsch — das sähe nach Beschnitt aus statt
+nach Absicht.
+
+**Stundenmarken: nur noch 02, 08, 14, 20.** Vier statt sechs. Ein Tag hat vier
+Sechserblöcke, und die Zahl steht am Anfang des zweiten davon. Mehr Marken waren
+Lärm über einem Raster, das den Verlauf ohnehin zeigt.
+
+**Die gepunktete Trennlinie zwischen Diagramm und Anzeige entfällt.** Sie sass
+im alten Raster mit einem Punkt je Stundengruppe; im neuen wäre sie eine zweite,
+gröber gerasterte Reihe direkt unter dem Zeitstrahl gewesen. Weissraum trennt
+genauso gut.
 
 **Kalorienanzeige — drei Darstellungen, in den Einstellungen wählbar.**
 
 1. **Flip** — vier Karten 80 × 112, geteilt bei y = 55 mit 2 pt Fuge, Achsnocken (2 × 10, Radius 2) bei x = 7 und x = 72. Helle Karte, dunkle Ziffer.
 2. **7-Segment** — abgeschrägte Segmentenden, unbeleuchtete Segmente in `Ink3` sichtbar.
-3. **Dot-Matrix** — die ganze Fläche ist ein durchgehendes Punktfeld im **Spaltenraster des Tagesdiagramms**: Dreiergruppen mit 2 pt Zwischenraum, also `x(c) = ⌊c/3⌋ · 15 + (c mod 3) · 5`, Punkt 3 pt. 72 Spalten, 25 Reihen, davon 2 Reihen Rand oben und unten.
+3. **Dot-Matrix** — die ganze Fläche ist ein durchgehendes Punktfeld im **Spaltenraster des Tagesdiagramms**: gleichmässige Teilung, also `x(c) = c · 4`, Punkt 3 pt. 96 Spalten. (Noch nicht umgesetzt; die Ziffern warten auf das Feintuning in Figma.)
 
 Ziffern sind **proportional**, nicht monospaced, und ihre Breiten sind Vielfache von 3 — also einer Stundengruppe: `1` = 12 Spalten, `4` = 18, alle übrigen 15. Ziffernabstand 3 Spalten. Höhe 21 Reihen, **Strich 2,7 pt** (feine Fassung).
 
@@ -194,10 +220,10 @@ Zwischen Diagramm und Anzeige trennt eine **gepunktete Linie** — ein Punkt je 
 
 ### Skalierung über Bildschirmgrößen
 
-Die Frage „kommen Segmente hinzu oder fallen weg?" beantwortet sich aus der Fixierung des Diagramms: ein Tag hat immer 24 Stunden, also hat das Raster **immer 72 Spalten**. Die Spaltenzahl ist damit gesetzt, und die Teilung ergibt sich aus der verfügbaren Breite:
+Die Frage „kommen Segmente hinzu oder fallen weg?" beantwortet sich aus der Fixierung des Diagramms: ein Tag hat immer 24 Stunden, also hat das Raster **immer 96 Spalten**. Die Spaltenzahl ist damit gesetzt, und die Teilung ergibt sich aus der verfügbaren Breite:
 
 ```
-pitch = verfügbareBreite / 71,6      // 358 pt natürliche Breite bei Teilung 5
+pitch = verfügbareBreite / 95,75     // 383 pt natürliche Breite bei Teilung 4
 ```
 
 | Gerät | Breite (ohne Rand) | Teilung | Punkt | Ziffernhöhe |
