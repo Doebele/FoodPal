@@ -128,7 +128,7 @@ struct PhotoCapture: View {
         .background(Palette.paper)
     }
 
-    private var workTitle: String {
+    private var workTitle: LocalizedStringKey {
         switch phase {
         case .describing: "Beschreiben"
         case .analysing: "Analyse"
@@ -297,13 +297,13 @@ struct PhotoCapture: View {
 
     // MARK: - Bausteine
 
-    private func action(_ title: String, run: @escaping () -> Void) -> some View {
+    private func action(_ title: LocalizedStringKey, run: @escaping () -> Void) -> some View {
         Button(action: run) { rowLabel(title) }
             .buttonStyle(.plain)
             .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
     }
 
-    private func rowLabel(_ title: String) -> some View {
+    private func rowLabel(_ title: LocalizedStringKey) -> some View {
         HStack {
             Text(title)
                 .font(.system(size: 17, weight: .medium))
@@ -376,7 +376,7 @@ struct PhotoCapture: View {
         for item in items {
             let entry = Entry(
                 date: item.date ?? when,
-                name: item.name.isEmpty ? "Mahlzeit" : item.name,
+                name: item.name.isEmpty ? String(localized: "Mahlzeit") : item.name,
                 kind: .meal,
                 kcal: item.kcal,
                 proteinG: item.proteinG,
@@ -583,7 +583,7 @@ private struct Confirm: View {
         .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
     }
 
-    private func field(_ label: String, text: Binding<String>, mono: Bool) -> some View {
+    private func field(_ label: LocalizedStringKey, text: Binding<String>, mono: Bool) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(label)
                 .font(.system(size: 11)).tracking(0.8)

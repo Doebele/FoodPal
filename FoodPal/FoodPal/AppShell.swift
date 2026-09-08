@@ -56,7 +56,10 @@ struct AppShell: View {
 /// Kopfzeile jedes Sheets: Titel links, Schliessen rechts. Beim dritten
 /// Vorkommen ausgelagert — vorher waren es zwei Kopien, jetzt eine Regel.
 struct SheetHeader: View {
-    let title: String
+    /// `LocalizedStringKey` und nicht `String`: `Text(einString)` setzt den
+    /// Text woertlich und schlaegt nichts nach. Genau daran waere die halbe
+    /// Oberflaeche unuebersetzt geblieben.
+    let title: LocalizedStringKey
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {

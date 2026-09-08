@@ -130,7 +130,7 @@ struct TodayView: View {
         .buttonStyle(.plain)
         .opacity(enabled ? 1 : 0)
         .disabled(!enabled)
-        .accessibilityLabel(delta < 0 ? "Vorheriger Tag" : "Naechster Tag")
+        .accessibilityLabel(delta < 0 ? "Vorheriger Tag" : "Nächster Tag")
     }
 
     private func canStep(_ delta: Int) -> Bool {
@@ -163,8 +163,8 @@ struct TodayView: View {
     }
 
     private func title(for day: Date) -> String {
-        if calendar.isDateInToday(day) { return "Heute" }
-        if calendar.isDateInYesterday(day) { return "Gestern" }
+        if calendar.isDateInToday(day) { return String(localized: "Heute") }
+        if calendar.isDateInYesterday(day) { return String(localized: "Gestern") }
         return day.formatted(.dateTime.day().month(.wide))
     }
 

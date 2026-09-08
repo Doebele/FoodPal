@@ -21,7 +21,7 @@ enum AppleEstimator {
 
     @Generable
     struct Meal {
-        @Guide(description: "Kurze deutsche Bezeichnung des Gerichts")
+        @Guide(description: "Kurze Bezeichnung des Gerichts in der Sprache der App")
         var name: String
         @Guide(description: "Kalorien der genannten Portion, ohne Einheit")
         var kcal: Int
@@ -45,21 +45,22 @@ enum AppleEstimator {
     static var status: String {
         switch SystemLanguageModel.default.availability {
         case .available:
-            "Bereit — ohne Netz, ohne Schlüssel."
+            String(localized: "Bereit — ohne Netz, ohne Schlüssel.")
         case .unavailable(.deviceNotEligible):
-            "Dieses Gerät unterstützt Apple Intelligence nicht."
+            String(localized: "Dieses Gerät unterstützt Apple Intelligence nicht.")
         case .unavailable(.appleIntelligenceNotEnabled):
-            "Apple Intelligence ist in den Systemeinstellungen ausgeschaltet."
+            String(localized: "Apple Intelligence ist in den Systemeinstellungen ausgeschaltet.")
         case .unavailable(.modelNotReady):
-            "Das Modell wird noch geladen. Später erneut versuchen."
+            String(localized: "Das Modell wird noch geladen. Später erneut versuchen.")
         @unknown default:
-            "Nicht verfügbar."
+            String(localized: "Nicht verfügbar.")
         }
     }
 
     static func estimate(text: String, now: Date = .now) async throws -> [MealEstimate] {
         let session = LanguageModelSession(instructions: """
         Du schätzt Nährwerte von Mahlzeiten aus einer Beschreibung.
+        Die Bezeichnungen gibst du auf \(VisionEstimator.answerLanguage) zurück.
         Jetzt ist \(ISO8601DateFormatter.local.string(from: now)) in Ortszeit.
         Nenne jedes Gericht einzeln; fasse Beilagen und Getränke nicht zusammen.
         Berücksichtige Mengenangaben wie "klein", "drei Scheiben" oder "dünn bestrichen".

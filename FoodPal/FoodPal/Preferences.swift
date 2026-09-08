@@ -94,9 +94,9 @@ enum Appearance: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .auto: "Auto"
-        case .light: "Hell"
-        case .dark: "Dunkel"
+        case .auto: String(localized: "Auto")
+        case .light: String(localized: "Hell")
+        case .dark: String(localized: "Dunkel")
         }
     }
 

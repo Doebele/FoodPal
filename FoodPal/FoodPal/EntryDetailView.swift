@@ -198,9 +198,9 @@ struct EntryDetailView: View {
         let calendar = Calendar.current
         let day: String
         if calendar.isDateInToday(date) {
-            day = "Heute"
+            day = String(localized: "Heute")
         } else if calendar.isDateInYesterday(date) {
-            day = "Gestern"
+            day = String(localized: "Gestern")
         } else {
             day = date.formatted(.dateTime.day().month(.abbreviated))
         }
@@ -209,7 +209,8 @@ struct EntryDetailView: View {
 
     // MARK: - Bausteine
 
-    private func field<Content: View>(_ label: String, @ViewBuilder content: () -> Content) -> some View {
+    private func field<Content: View>(
+        _ label: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(label)
                 .font(.system(size: 11))
@@ -221,7 +222,7 @@ struct EntryDetailView: View {
         .padding(.bottom, 20)
     }
 
-    private func numberField(_ label: String, text: Binding<String>, tint: Color) -> some View {
+    private func numberField(_ label: LocalizedStringKey, text: Binding<String>, tint: Color) -> some View {
         field(label) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)

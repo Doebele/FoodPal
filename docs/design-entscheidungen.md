@@ -452,6 +452,21 @@ Phase D braucht kein Xcode — die Installation kann nebenher laufen.
 
 ---
 
+## Sprachen
+
+**Deutsch ist die Quellsprache**, übersetzt sind **Englisch, Französisch, Italienisch, Spanisch**. Die Schlüssel im String-Katalog *sind* der deutsche Text; das hält die Vorlage im Quelltext lesbar.
+
+**Kein eigener Sprachschalter in der App.** Sobald mehrere Sprachen im Bundle liegen, zeigt iOS unter *Einstellungen → FoodPal → Sprache* eine Auswahl je App — genau der Fall „deutsche App auf englischem Gerät". Ein eigener Schalter wäre schlechter: er könnte `Locale.current` nicht mitdrehen, und Datum, Uhrzeit und Monatsnamen liefen weiter der Gerätesprache nach. Genau diese Mischung gab es vorher zu sehen — deutsche Beschriftungen neben „8 Sep 2026 at 12:30".
+
+**Die Modelle antworten in der App-Sprache**, nicht in der Sprache der Eingabe: `VisionEstimator.answerLanguage` steht im Prompt. Wer die App auf Italienisch stellt, will keine deutschen Gerichtsnamen in seiner Liste — beschreiben darf er trotzdem auf Deutsch, das verstehen die Modelle ohnehin.
+
+Zwei Stolpersteine, die dabei auffielen und im Code stehen:
+
+- **`Text(einString)` übersetzt nicht.** Nur `Text(einLiteral)` wird als `LocalizedStringKey` gelesen. Die Bausteine `row`, `caption`, `actionRow`, `field` und `SheetHeader` nahmen `String` — dadurch war die halbe Oberfläche nicht extrahierbar, ohne dass es irgendwo aufgefallen wäre. Erst nach der Umstellung auf `LocalizedStringKey` stieg die Zahl der Schlüssel von 89 auf 130.
+- **Anzeigetexte gehören nicht in `rawValue`.** `HealthKitSync.Status` trug seine deutschen Wörter als Rohwert; damit hing die Übersetzung an der Datenhaltung. Jetzt ist der Rohwert ein Bezeichner und `label` die Anzeige.
+
+Die Übersetzungen für FR, IT und ES stammen von mir und sollten vor einem App-Store-Start von Muttersprachlern gegengelesen werden.
+
 ## Bewusst weggelassen
 
 - **Ein eigener Scanner-Screen.** Der Barcode-Weg ist gebaut (`VNDetectBarcodesRequest` + Open Food Facts), aber ohne zweite Tür: das Foto, das du ohnehin machst, wird vorher geprüft. Ein Live-Scanner (`DataScannerViewController`) wäre die Nachrüstung, falls sich EANs aus normalem Abstand zu selten lesen lassen — siehe [Nährwertdatenbank](anbieter.md#nährwertdatenbank).

@@ -70,7 +70,7 @@ struct SettingsView: View {
                             Rectangle()
                                 .fill(health.status == .authorized ? Palette.ink : Palette.ink2)
                                 .frame(width: 9, height: 9)
-                            Text(health.status.rawValue)
+                            Text(health.status.label)
                                 .font(.system(size: 16))
                                 .foregroundStyle(Palette.ink)
                         }
@@ -308,6 +308,16 @@ struct VisionSheet: View {
                 set: { addressesJSON = PerProvider.setting(addressesJSON, provider, $0) })
     }
 
+    /// Der Anzeigename der Gruppe steht hier und nicht am `Provider`: der
+    /// kennt kein SwiftUI, und Bezeichnungen sind Sache der Ansicht.
+    private static func title(for group: Provider.Group) -> LocalizedStringKey {
+        switch group {
+        case .onDevice: "auf dem gerät"
+        case .hosted: "gehostet · mit schlüssel"
+        case .selfRun: "selbst betrieben"
+        }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             SheetHeader(title: "Bildanalyse")
@@ -327,7 +337,7 @@ struct VisionSheet: View {
                     // Drei Gruppen statt einer langen Reihe: was es kostet und
                     // wohin das Bild geht, ist die Frage beim Einrichten.
                     ForEach(Array(Provider.Group.allCases.enumerated()), id: \.element) { index, group in
-                        caption(group.rawValue, topPadding: index == 0 ? 32 : 28)
+                        caption(Self.title(for: group), topPadding: index == 0 ? 32 : 28)
                         list(Provider.allCases.filter { $0.group == group })
                     }
                 }
@@ -588,7 +598,7 @@ struct VisionSheet: View {
 
 // MARK: - Bausteine, dateiweit
 
-private func caption(_ title: String, trailing: String? = nil, topPadding: CGFloat = 0) -> some View {
+private func caption(_ title: LocalizedStringKey, trailing: String? = nil, topPadding: CGFloat = 0) -> some View {
     HStack {
         Text(title)
             .font(.system(size: 11))
@@ -610,7 +620,7 @@ private func caption(_ title: String, trailing: String? = nil, topPadding: CGFlo
 }
 
 private func section<Content: View>(
-    _ title: String,
+    _ title: LocalizedStringKey,
     trailing: String? = nil,
     topPadding: CGFloat = 0,
     @ViewBuilder content: () -> Content
@@ -621,7 +631,7 @@ private func section<Content: View>(
     }
 }
 
-private func row<Value: View>(_ label: String, @ViewBuilder value: () -> Value) -> some View {
+private func row<Value: View>(_ label: LocalizedStringKey, @ViewBuilder value: () -> Value) -> some View {
     HStack {
         Text(label)
             .font(.system(size: 16))
@@ -635,7 +645,7 @@ private func row<Value: View>(_ label: String, @ViewBuilder value: () -> Value) 
     }
 }
 
-private func actionRow(_ label: String, action: @escaping () -> Void) -> some View {
+private func actionRow(_ label: LocalizedStringKey, action: @escaping () -> Void) -> some View {
     Button(action: action) {
         HStack {
             Text(label)

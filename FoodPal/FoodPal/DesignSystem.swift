@@ -30,14 +30,17 @@ enum Roast: String, CaseIterable, Identifiable, Codable {
 
     var id: String { rawValue }
 
+    /// `String(localized:)` und nicht `Text`, weil die Bezeichnung auch in
+    /// Ueberschriften interpoliert wird. Der deutsche Text ist zugleich der
+    /// Schluessel — die Quellsprache des Katalogs ist Deutsch.
     var label: String {
         switch self {
-        case .zimt: "Zimt"
-        case .hell: "Hell"
-        case .mittel: "Mittel"
-        case .wien: "Wien"
-        case .franzoesisch: "Französisch"
-        case .italienisch: "Italienisch"
+        case .zimt: String(localized: "Zimt")
+        case .hell: String(localized: "Hell")
+        case .mittel: String(localized: "Mittel")
+        case .wien: String(localized: "Wien")
+        case .franzoesisch: String(localized: "Französisch")
+        case .italienisch: String(localized: "Italienisch")
         }
     }
 

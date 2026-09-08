@@ -7,11 +7,19 @@ import HealthKit
 @Observable
 final class HealthKitSync {
 
+    /// Der Rohwert ist ein Bezeichner, kein Anzeigetext — sonst waere die
+    /// Uebersetzung an die Datenhaltung gekettet.
     enum Status: String {
-        case unavailable = "nicht verfügbar"
-        case notDetermined = "nicht verbunden"
-        case denied = "abgelehnt"
-        case authorized = "verbunden"
+        case unavailable, notDetermined, denied, authorized
+
+        var label: String {
+            switch self {
+            case .unavailable: String(localized: "nicht verfügbar")
+            case .notDetermined: String(localized: "nicht verbunden")
+            case .denied: String(localized: "abgelehnt")
+            case .authorized: String(localized: "verbunden")
+            }
+        }
     }
 
     private let store = HKHealthStore()

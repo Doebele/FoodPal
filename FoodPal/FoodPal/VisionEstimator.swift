@@ -36,9 +36,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
     /// Frage, die beim Einrichten wirklich zählt: was kostet es und wohin geht
     /// das Bild. Die Gruppe leitet auch ab, welche Felder überhaupt nötig sind.
     enum Group: String, CaseIterable, Identifiable {
-        case onDevice = "auf dem gerät"
-        case hosted = "gehostet · mit schlüssel"
-        case selfRun = "selbst betrieben"
+        case onDevice, hosted, selfRun
 
         var id: String { rawValue }
     }
@@ -74,7 +72,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
         case .mistral:    ("Mistral", "https://api.mistral.ai/v1", "pixtral-large-latest", "https://console.mistral.ai/api-keys")
         case .lmStudio:   ("LM Studio", nil, "zai-org/glm-4.6v-flash", "")
         case .ollama:     ("Ollama", nil, "qwen3-vl", "")
-        case .custom:     ("Eigener Dienst", nil, "", "")
+        case .custom:     (String(localized: "Eigener Dienst"), nil, "", "")
         }
     }
 
@@ -182,24 +180,35 @@ enum VisionEstimator {
 
         var errorDescription: String? {
             switch self {
-            case .missingKey: "Kein API-Schlüssel hinterlegt."
+            case .missingKey: String(localized: "Kein API-Schlüssel hinterlegt.")
             case .badResponse(let code, let body):
                 "Der Dienst antwortete mit \(code). \(body.prefix(300))"
-            case .unreadable: "Die Antwort war nicht lesbar."
-            case .badImage: "Das Bild ließ sich nicht aufbereiten."
+            case .unreadable: String(localized: "Die Antwort war nicht lesbar.")
+            case .badImage: String(localized: "Das Bild ließ sich nicht aufbereiten.")
             case .noPhotos(let label):
                 "\(label) schätzt nur aus Beschreibungen. Für Fotos in den Einstellungen einen anderen Dienst wählen."
-            case .needsNewerOS: "Dieser Dienst braucht iOS 26."
+            case .needsNewerOS: String(localized: "Dieser Dienst braucht iOS 26.")
             }
         }
     }
 
-    private static let photoPrompt = """
-    Schätze die Nährwerte dieser Mahlzeit anhand des Fotos.
-    Antworte ausschließlich mit JSON, ohne Erklärung und ohne Codeblock:
-    {"name":"kurze deutsche Bezeichnung","kcal":0,"proteinG":0,"carbsG":0,"fatG":0}
-    Portionsgröße aus dem Bild abschätzen. Zahlen ohne Einheiten.
-    """
+    /// Die Sprache, in der das Modell antworten soll — dieselbe, in der die
+    /// App gerade läuft. Wer sie auf Italienisch stellt, will keine deutschen
+    /// Gerichtsnamen in seiner Liste. Die **Eingabe** darf davon abweichen;
+    /// Modelle verstehen sie ohnehin in jeder Sprache.
+    static var answerLanguage: String {
+        let code = Locale.current.language.languageCode?.identifier ?? "de"
+        return Locale(identifier: "de").localizedString(forLanguageCode: code) ?? "Deutsch"
+    }
+
+    private static var photoPrompt: String {
+        """
+        Schätze die Nährwerte dieser Mahlzeit anhand des Fotos.
+        Antworte ausschließlich mit JSON, ohne Erklärung und ohne Codeblock:
+        {"name":"kurze Bezeichnung auf \(answerLanguage)","kcal":0,"proteinG":0,"carbsG":0,"fatG":0}
+        Portionsgröße aus dem Bild abschätzen. Zahlen ohne Einheiten.
+        """
+    }
 
     /// Anders als beim Foto ein **Array**: „Spaghetti Bolognese, dazu eine
     /// kleine Minestrone" sind zwei Gerichte und sollen zwei Einträge werden.
@@ -210,7 +219,7 @@ enum VisionEstimator {
         return """
         Jetzt ist \(stamp) (Ortszeit). Schätze die Nährwerte der beschriebenen Mahlzeit.
         Antworte ausschließlich mit einem JSON-Array, ohne Erklärung und ohne Codeblock:
-        [{"name":"kurze deutsche Bezeichnung","kcal":0,"proteinG":0,"carbsG":0,"fatG":0,"date":"2026-01-31T21:00"}]
+        [{"name":"kurze Bezeichnung auf \(answerLanguage)","kcal":0,"proteinG":0,"carbsG":0,"fatG":0,"date":"2026-01-31T21:00"}]
         Ein Objekt je Gericht — nenne Beilagen und Getränke einzeln, fasse sie nicht zusammen.
         Mengenangaben wie "klein", "drei Scheiben" oder "dünn bestrichen" berücksichtigen.
         "date" ist der genannte Zeitpunkt, gerechnet ab dem Jetzt oben, in Ortszeit
@@ -329,7 +338,7 @@ enum VisionEstimator {
         }
         guard let kcal = number("kcal") else { throw Failure.unreadable(raw) }
         return MealEstimate(
-            name: (object["name"] as? String) ?? "Mahlzeit",
+            name: (object["name"] as? String) ?? String(localized: "Mahlzeit"),
             kcal: kcal,
             proteinG: number("proteinG"),
             carbsG: number("carbsG"),
@@ -369,7 +378,7 @@ enum VisionEstimator {
             }
             guard let kcal = number("kcal") else { return nil }
             return MealEstimate(
-                name: (object["name"] as? String) ?? "Mahlzeit",
+                name: (object["name"] as? String) ?? String(localized: "Mahlzeit"),
                 kcal: kcal,
                 proteinG: number("proteinG"),
                 carbsG: number("carbsG"),
@@ -540,7 +549,7 @@ extension VisionEstimator {
     /// kosten sie den Bruchteil eines Cents und beantworten die Frage wirklich.
     static func probe(provider: Provider, model: String, baseURL: String) async -> String {
         if provider == .apple {
-            guard #available(iOS 26.0, *) else { return "Dieser Dienst braucht iOS 26." }
+            guard #available(iOS 26.0, *) else { return String(localized: "Dieser Dienst braucht iOS 26.") }
             return AppleEstimator.status
         }
 
@@ -563,12 +572,12 @@ extension VisionEstimator {
             return error.localizedDescription
         }
 
-        guard provider.readsPhotos else { return "Verbindung steht, Modell antwortet." + aside }
+        guard provider.readsPhotos else { return String(localized: "Verbindung steht, Modell antwortet.") + aside }
 
         do {
             _ = try await send(base64: probeImage(), prompt: "Antworte nur mit: ok",
                                provider: provider, model: model, baseURL: baseURL, maxTokens: 8)
-            return "Verbindung steht, Modell antwortet und nimmt Bilder." + aside
+            return String(localized: "Verbindung steht, Modell antwortet und nimmt Bilder.") + aside
         } catch {
             return "Text geht, Bilder nicht — für Fotos ein anderes Modell wählen. "
                 + error.localizedDescription
@@ -591,7 +600,7 @@ extension VisionEstimator {
         guard let request = modelsRequest(provider, baseURL) else {
             throw provider.needsKey && !Keychain.has(provider.keychainAccount)
                 ? Failure.missingKey
-                : Failure.unreadable("Adresse fehlt oder ist ungültig.")
+                : Failure.unreadable(String(localized: "Adresse fehlt oder ist ungültig."))
         }
         let (data, response) = try await URLSession.shared.data(for: request)
         let code = (response as? HTTPURLResponse)?.statusCode ?? 0
