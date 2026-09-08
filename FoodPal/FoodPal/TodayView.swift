@@ -215,7 +215,7 @@ struct DayView: View {
                 // Der Weissraum, den vorher die Einheitenzeile fuellte, bleibt:
                 // die Karten brauchen Luft nach unten, sonst klebt die Pille an
                 // ihnen.
-                .padding(.top, 46)
+                .padding(.top, 56)
 
                 if entries.isEmpty {
                     Text("Noch nichts erfasst.")

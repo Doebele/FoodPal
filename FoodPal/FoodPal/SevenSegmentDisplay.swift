@@ -118,7 +118,7 @@ struct SevenSegmentDisplay: View {
             }
         }
         .task(id: "\(resetKey)|\(value)") {
-            await run(to: Self.digits(of: value), key: resetKey)
+            await run(to: Digits.of(value), key: resetKey)
         }
         .accessibilityElement()
         .accessibilityLabel("\(value)")
@@ -151,9 +151,6 @@ struct SevenSegmentDisplay: View {
         withAnimation(.easeInOut(duration: Self.blank)) { shown = target }
     }
 
-    private static func digits(of value: Int) -> [Int] {
-        String(max(0, value)).compactMap(\.wholeNumberValue)
-    }
 }
 
 #Preview {

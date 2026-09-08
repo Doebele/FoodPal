@@ -164,7 +164,7 @@ struct FlipDisplay: View {
             }
         }
         .task(id: "\(resetKey)|\(value)") {
-            await update(to: Self.digits(of: value), key: resetKey)
+            await update(to: Digits.of(value), key: resetKey)
         }
         .haptic(trigger: flap)
         .accessibilityElement()
@@ -238,9 +238,6 @@ struct FlipDisplay: View {
         (to - from + 10) % 10
     }
 
-    private static func digits(of value: Int) -> [Int] {
-        String(max(0, value)).compactMap(\.wholeNumberValue)
-    }
 }
 
 #Preview {

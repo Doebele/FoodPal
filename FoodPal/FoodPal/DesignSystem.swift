@@ -81,6 +81,23 @@ enum Metric {
     static let rowHeight: CGFloat = 56
 }
 
+/// Die grosse Anzeige zeigt **immer vier Stellen**, führende Nullen bleiben
+/// stehen. Das ist die Machart eines Zählwerks: das Feld hat so viele Räder,
+/// wie es hat, und leere Räder zeigen die Null statt zu verschwinden.
+///
+/// Praktisch heisst das, dass beim Wechsel von 1849 auf 74 keine Karten mehr
+/// auftauchen und verschwinden — es klappen nur Ziffern um. Werte über 9999
+/// bekommen trotzdem ihre Stelle; abgeschnitten wird nichts.
+enum Digits {
+    static let places = 4
+
+    static func of(_ value: Int) -> [Int] {
+        let text = String(max(0, value))
+        return Array(repeating: 0, count: max(0, places - text.count))
+            + text.compactMap(\.wholeNumberValue)
+    }
+}
+
 private extension UIColor {
     convenience init(hex: UInt32) {
         self.init(
