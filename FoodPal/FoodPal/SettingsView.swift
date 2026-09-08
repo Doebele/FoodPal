@@ -182,6 +182,10 @@ struct SettingsView: View {
             styleCell(.sevenSegment) {
                 SevenSegmentDigit(digit: 8).frame(height: 50)
             }
+            Rectangle().fill(Palette.rule).frame(width: 1, height: 64)
+            styleCell(.dotMatrix) {
+                DotMatrixDigit(digit: 8).frame(height: 64)
+            }
         }
     }
 

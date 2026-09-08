@@ -202,7 +202,19 @@ genauso gut.
 
 1. **Flip** — vier Karten 80 × 112, geteilt bei y = 55 mit 2 pt Fuge, Achsnocken (2 × 10, Radius 2) bei x = 7 und x = 72. Helle Karte, dunkle Ziffer.
 2. **7-Segment** — abgeschrägte Segmentenden, unbeleuchtete Segmente in `Ink3` sichtbar.
-3. **Dot-Matrix** — die ganze Fläche ist ein durchgehendes Punktfeld im **Spaltenraster des Tagesdiagramms**: gleichmässige Teilung, also `x(c) = c · 4`, Punkt 3 pt. 96 Spalten. (Noch nicht umgesetzt; die Ziffern warten auf das Feintuning in Figma.)
+3. **Dot-Matrix** — die ganze Fläche ist ein durchgehendes Punktfeld im **Spaltenraster des Tagesdiagramms**: gleichmässige Teilung, also `x(c) = c · 4`, Punkt 3 pt, 96 Spalten × 33 Reihen.
+
+   Jede Ziffer ist **20 Spalten breit**, alle gleich — die Anzeige rastert wie ein Zählwerk, nicht wie ein Schriftsatz. Zwischen den Ziffern steht je eine **Trennspalte**; ohne sie stossen zwei Ziffern mit ihren leeren Randspalten aneinander und eine 11 sähe aus wie ein breiter Balken. Die Ziffern stehen **rechtsbündig**, links wird mit leeren Rasterspalten aufgefüllt:
+
+   ```
+   13 Füller │ 20 Ziffer │ 1 │ 20 │ 1 │ 20 │ 1 │ 20  =  96
+   ```
+
+   Damit läuft die Anzeige **genauso randlos wie der Zeitstrahl** — es ist dasselbe Raster, nur mit anderen Punkten beleuchtet. Flip und 7-Segment bleiben dagegen im Satzspiegel: sie sind Schrift auf einer Fläche.
+
+   Die Glyphen stehen als Lauflängen in `DotMatrixFont.swift`, übertragen aus Figma (Node `101:253908`). Vier Tests prüfen die Unversehrtheit der Tabelle — bei übertragenen Daten fände sich ein Kopierfehler sonst erst am Bildschirm.
+
+   Vier Räder heissen vier Stellen: über 9999 zeigt das Zählwerk 9999.
 
 Ziffern sind **proportional**, nicht monospaced, und ihre Breiten sind Vielfache von 3 — also einer Stundengruppe: `1` = 12 Spalten, `4` = 18, alle übrigen 15. Ziffernabstand 3 Spalten. Höhe 21 Reihen, **Strich 2,7 pt** (feine Fassung).
 

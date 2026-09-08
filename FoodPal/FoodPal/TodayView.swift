@@ -219,15 +219,7 @@ struct DayView: View {
                 // mit einem Punkt je Stundengruppe und haette im neuen nur noch
                 // eine zweite, groeber gerasterte Reihe unter dem Zeitstrahl
                 // ergeben. Der Weissraum trennt genauso gut.
-                NumberDisplay(
-                    value: mode == .kcal ? kcal : mg,
-                    style: style,
-                    tint: mode == .kcal ? Palette.ink : roast.color,
-                    resetKey: mode.rawValue
-                )
-                .frame(height: 112)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.top, 16)
+                numberDisplay.padding(.top, 16)
 
                 // Keine Einheit neben der Zahl: der Umschalter direkt darunter
                 // sagt bereits, ob kcal oder mg gemeint sind. Zweimal dasselbe
@@ -259,6 +251,26 @@ struct DayView: View {
     /// Nur noch vier Marken statt sechs — 02, 08, 14, 20. Ein Tag hat vier
     /// Sechserblöcke, und die Zahl steht am Anfang des zweiten davon; mehr
     /// Marken waren Lärm über einem Raster, das den Verlauf ohnehin zeigt.
+    /// Die Dot-Matrix ist **dasselbe Raster** wie der Zeitstrahl, nur mit
+    /// anderen Punkten beleuchtet — sie laeuft deshalb genauso bis an den Rand
+    /// und bringt ihre Hoehe selbst mit. Flip und 7-Segment sind Schrift auf
+    /// einer Flaeche und bleiben im Satzspiegel.
+    @ViewBuilder private var numberDisplay: some View {
+        let display = NumberDisplay(
+            value: mode == .kcal ? kcal : mg,
+            style: style,
+            tint: mode == .kcal ? Palette.ink : roast.color,
+            resetKey: mode.rawValue
+        )
+        if style == .dotMatrix {
+            display.padding(.horizontal, -(Metric.margin - Self.timelineInset))
+        } else {
+            display
+                .frame(height: 112)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+    }
+
     private var hourLabels: some View {
         GeometryReader { geo in
             let s = Grid.scale(forWidth: geo.size.width)
@@ -371,10 +383,10 @@ struct NumberDisplay: View {
         switch style {
         case .flip:
             FlipDisplay(value: value, tint: tint, resetKey: resetKey)
-        case .sevenSegment, .dotMatrix:
-            // ponytail: Dot-Matrix-Ziffern folgen, sobald der Feinschliff
-            // der Figma-Komponenten steht — bis dahin 7-Segment.
+        case .sevenSegment:
             SevenSegmentDisplay(value: value, tint: tint, resetKey: resetKey)
+        case .dotMatrix:
+            DotMatrixDisplay(value: value, tint: tint, resetKey: resetKey)
         }
     }
 }
