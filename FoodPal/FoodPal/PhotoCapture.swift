@@ -29,6 +29,8 @@ struct PhotoCapture: View {
     @State private var showCamera = false
     @State private var saves = 0
     @State private var spoken = ""
+    /// Merkt sich, dass der Abgang ein Erfolg war und nicht ein Abbruch.
+    @State private var saved = false
 
     private enum Phase {
         case idle
@@ -73,7 +75,17 @@ struct PhotoCapture: View {
             }
             // Alles nach der Wahl des Wegs liegt eine Ebene tiefer — siehe
             // `work`. Nach unten wischen bricht ab, ohne etwas zu speichern.
-            .sheet(isPresented: working) {
+            //
+            // Das Schliessen der Erfassung haengt an `onDismiss` und nicht
+            // direkt am Sichern: solange das innere Sheet noch verschwindet,
+            // schluckt UIKit die zweite Anweisung, und die Erfassung bliebe
+            // offen stehen. `onDismiss` feuert, wenn wirklich nichts mehr da
+            // ist.
+            .sheet(isPresented: working, onDismiss: {
+                guard saved else { return }
+                saved = false
+                onSaved()
+            }) {
                 work
                     .presentationDragIndicator(.visible)
                     .presentationDetents([.large])
@@ -379,11 +391,12 @@ struct PhotoCapture: View {
             }
         }
         saves += 1
+        saved = true
 
+        // Kurz warten, damit der Impuls ankommt, bevor sich etwas bewegt.
         Task {
             try? await Task.sleep(for: .milliseconds(120))
             phase = .idle
-            onSaved()
         }
     }
 }
