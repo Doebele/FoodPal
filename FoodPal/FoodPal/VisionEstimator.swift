@@ -26,10 +26,33 @@ extension ISO8601DateFormatter {
 enum Provider: String, CaseIterable, Identifiable, Codable {
     // Rohwert "local" bleibt bei custom, damit bestehende Einstellungen und
     // der dort hinterlegte Keychain-Eintrag weitergelten.
+    case apple
     case claude, openAI, openRouter, gemini, grok, glm, deepSeek, muse, mistral
     case lmStudio, ollama, custom = "local"
 
     var id: String { rawValue }
+
+    /// Die drei Arten, an eine Schätzung zu kommen — und damit die einzige
+    /// Frage, die beim Einrichten wirklich zählt: was kostet es und wohin geht
+    /// das Bild. Die Gruppe leitet auch ab, welche Felder überhaupt nötig sind.
+    enum Group: String, CaseIterable, Identifiable {
+        case onDevice = "auf dem gerät"
+        case hosted = "gehostet · mit schlüssel"
+        case selfRun = "selbst betrieben"
+
+        var id: String { rawValue }
+    }
+
+    var group: Group {
+        switch self {
+        case .apple: .onDevice
+        case .lmStudio, .ollama, .custom: .selfRun
+        default: .hosted
+        }
+    }
+
+    /// Apples Modell kennt genau sich selbst — dort gibt es nichts zu wählen.
+    var hasModelChoice: Bool { group != .onDevice }
 
     /// Adresse, Standardmodell und Bezugsquelle des Schlüssels — eine Zeile je
     /// Anbieter. Eine Tabelle statt drei paralleler `switch`, damit beim
@@ -39,6 +62,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
     /// eigenen Netz hängt oder frei gewählt wird.
     private var spec: (label: String, url: String?, model: String, keys: String) {
         switch self {
+        case .apple:      ("Apple", nil, "", "")
         case .claude:     ("Claude", "https://api.anthropic.com/v1", "claude-sonnet-5", "https://console.anthropic.com/settings/keys")
         case .openAI:     ("OpenAI", "https://api.openai.com/v1", "gpt-4o", "https://platform.openai.com/api-keys")
         case .openRouter: ("OpenRouter", "https://openrouter.ai/api/v1", "anthropic/claude-sonnet-5", "https://openrouter.ai/keys")
@@ -68,7 +92,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
 
     /// Feste Adresse, wo es eine gibt. Sonst kommt sie aus den Einstellungen.
     var fixedBaseURL: String? { spec.url }
-    var editableAddress: Bool { spec.url == nil }
+    var editableAddress: Bool { group == .selfRun }
 
     /// Vorschlag fürs Adressfeld — die Portnummern unterscheiden die beiden,
     /// die IP muss ohnehin jeder selbst eintragen.
@@ -80,14 +104,13 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
         }
     }
 
+    /// Fotos kann nur, wer Bilder entgegennimmt. Apples `Prompt` kennt in
+    /// iOS 26 keinen Bildeingang — dort bleibt es bei Beschreibungen.
+    var readsPhotos: Bool { self != .apple }
+
     /// Die Dienste im eigenen Netz kommen ohne Schlüssel aus, beim freien Slot
     /// ist er erlaubt, aber nicht verlangt. Alles Gehostete braucht einen.
-    var needsKey: Bool {
-        switch self {
-        case .lmStudio, .ollama, .custom: false
-        default: true
-        }
-    }
+    var needsKey: Bool { group == .hosted }
 
     /// Je Anbieter ein eigenes Fach — wer zwischen zweien wechselt, tippt den
     /// Schlüssel nicht jedes Mal neu ein. Die drei ersten Namen sind
@@ -105,7 +128,17 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
     /// braucht keinen. Nur so lässt sich in der Liste sehen, wohin man
     /// zurückwechseln kann, ohne etwas neu einzutragen.
     var isConfigured: Bool {
-        needsKey ? Keychain.has(keychainAccount) : true
+        switch group {
+        case .hosted:
+            Keychain.has(keychainAccount)
+        case .onDevice:
+            // Nicht eingerichtet, sondern nicht vorhanden: ohne Apple
+            // Intelligence bleibt das Quadrat leer, statt Bereitschaft zu
+            // behaupten, die das Geraet nicht hat.
+            if #available(iOS 26.0, *) { AppleEstimator.isAvailable } else { false }
+        case .selfRun:
+            true
+        }
     }
 
     // MARK: - Werte je Anbieter
@@ -144,6 +177,8 @@ enum VisionEstimator {
         case badResponse(Int, String)
         case unreadable(String)
         case badImage
+        case noPhotos(String)
+        case needsNewerOS
 
         var errorDescription: String? {
             switch self {
@@ -152,6 +187,9 @@ enum VisionEstimator {
                 "Der Dienst antwortete mit \(code). \(body.prefix(140))"
             case .unreadable: "Die Antwort war nicht lesbar."
             case .badImage: "Das Bild ließ sich nicht aufbereiten."
+            case .noPhotos(let label):
+                "\(label) schätzt nur aus Beschreibungen. Für Fotos in den Einstellungen einen anderen Dienst wählen."
+            case .needsNewerOS: "Dieser Dienst braucht iOS 26."
             }
         }
     }
@@ -188,6 +226,7 @@ enum VisionEstimator {
         model: String,
         baseURL: String
     ) async throws -> MealEstimate {
+        guard provider.readsPhotos else { throw Failure.noPhotos(provider.label) }
         guard let jpeg = downscaled(image) else { throw Failure.badImage }
         let answer = try await send(
             base64: jpeg.base64EncodedString(),
@@ -207,6 +246,13 @@ enum VisionEstimator {
         baseURL: String,
         now: Date = .now
     ) async throws -> [MealEstimate] {
+        // Apple laeuft nicht ueber HTTP, sondern ueber FoundationModels — die
+        // Antwort ist dort bereits die Struktur, es gibt nichts zu parsen.
+        if provider == .apple {
+            guard #available(iOS 26.0, *) else { throw Failure.needsNewerOS }
+            return try await AppleEstimator.estimate(text: text, now: now)
+        }
+
         let answer = try await send(
             base64: nil,
             prompt: spokenPrompt(now: now) + "\n\nBeschreibung:\n" + text,
@@ -461,6 +507,11 @@ extension VisionEstimator {
     }
 
     static func probe(provider: Provider, model: String, baseURL: String) async -> String {
+        if provider == .apple {
+            guard #available(iOS 26.0, *) else { return "Dieser Dienst braucht iOS 26." }
+            return AppleEstimator.status
+        }
+
         guard let request = modelsRequest(provider, baseURL) else {
             return provider.needsKey && !Keychain.has(provider.keychainAccount)
                 ? "Kein Schlüssel hinterlegt."

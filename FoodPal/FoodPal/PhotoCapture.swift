@@ -89,7 +89,9 @@ struct PhotoCapture: View {
                 phase = .ready(nil, [MealEstimate(name: "", kcal: 0)], per100g: false)
             }
 
-            Text("Geschätzt wird von \(provider.label).")
+            Text(provider.readsPhotos
+                 ? "Geschätzt wird von \(provider.label)."
+                 : "\(provider.label) schätzt nur aus Beschreibungen.")
                 .font(.system(size: 11))
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 12)

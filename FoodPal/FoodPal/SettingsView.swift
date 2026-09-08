@@ -311,11 +311,12 @@ struct VisionSheet: View {
                         .foregroundStyle(Palette.ink2)
                         .padding(.top, 20)
 
-                    caption("gehostet · mit schlüssel", topPadding: 32)
-                    list(Provider.allCases.filter(\.needsKey))
-
-                    caption("ohne schlüssel", topPadding: 28)
-                    list(Provider.allCases.filter { !$0.needsKey })
+                    // Drei Gruppen statt einer langen Reihe: was es kostet und
+                    // wohin das Bild geht, ist die Frage beim Einrichten.
+                    ForEach(Array(Provider.Group.allCases.enumerated()), id: \.element) { index, group in
+                        caption(group.rawValue, topPadding: index == 0 ? 32 : 28)
+                        list(Provider.allCases.filter { $0.group == group })
+                    }
                 }
                 .padding(.horizontal, Metric.margin)
                 .padding(.bottom, 32)
@@ -384,6 +385,11 @@ struct VisionSheet: View {
     /// dass die Liste kein Zaun ist.
     private var hint: AttributedString {
         let markdown: String
+        if provider == .apple {
+            return "Läuft auf dem Gerät: kein Schlüssel, keine Kosten, nichts "
+                + "verlässt das Telefon. Schätzt allerdings nur aus "
+                + "Beschreibungen — Fotos brauchen einen der Dienste unten."
+        }
         if let page = provider.keyPage {
             markdown = "Schlüssel von [\(provider.keyPageLabel)](\(page.absoluteString)). "
                 + "Modellnamen ändern sich; „Verbindung testen\" sagt, ob es den "
@@ -507,29 +513,31 @@ struct VisionSheet: View {
                 }
             }
 
-            row("API-Schlüssel") {
-                SecureField(provider.needsKey ? "nicht hinterlegt" : "optional", text: $apiKey)
+            if provider.hasModelChoice {
+                row("API-Schlüssel") {
+                    SecureField(provider.needsKey ? "nicht hinterlegt" : "optional", text: $apiKey)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .multilineTextAlignment(.trailing)
                     .font(.system(size: 15, design: .monospaced))
                     .foregroundStyle(Palette.ink)
                     .onSubmit { storeKey() }
-                    .onChange(of: apiKey) { _, _ in storeKey() }
+                        .onChange(of: apiKey) { _, _ in storeKey() }
+                }
+
+                row("Modell") {
+                    TextField(provider.defaultModel.isEmpty ? "eintragen" : provider.defaultModel, text: modelField)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .multilineTextAlignment(.trailing)
+                        .font(.system(size: 15, design: .monospaced))
+                        .foregroundStyle(Palette.ink)
+                }
+
+                modelList
             }
 
-            row("Modell") {
-                TextField(provider.defaultModel.isEmpty ? "eintragen" : provider.defaultModel, text: modelField)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .multilineTextAlignment(.trailing)
-                    .font(.system(size: 15, design: .monospaced))
-                    .foregroundStyle(Palette.ink)
-            }
-
-            modelList
-
-            actionRow(probing ? "Prüfe …" : "Verbindung testen") {
+            actionRow(probing ? "Prüfe …" : provider.hasModelChoice ? "Verbindung testen" : "Verfügbarkeit prüfen") {
                 Task {
                     probing = true
                     probeResult = await VisionEstimator.probe(

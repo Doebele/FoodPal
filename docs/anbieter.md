@@ -13,6 +13,7 @@ Ein Anbieter ist deshalb nur eine Zeile Daten, kein Code. Die Liste steht in
 
 | Dienst | Adresse | Schlüssel von | Vorgabemodell |
 |---|---|---|---|
+| **Apple** | — (auf dem Gerät) | — | — |
 | Claude | `https://api.anthropic.com/v1` | [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys) | `claude-sonnet-5` |
 | OpenAI | `https://api.openai.com/v1` | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) | `gpt-4o` |
 | OpenRouter | `https://openrouter.ai/api/v1` | [openrouter.ai/keys](https://openrouter.ai/keys) | `anthropic/claude-sonnet-5` |
@@ -25,6 +26,19 @@ Ein Anbieter ist deshalb nur eine Zeile Daten, kein Code. Die Liste steht in
 | LM Studio | `http://<Mac-IP>:1234/v1` | — | `zai-org/glm-4.6v-flash` |
 | Ollama | `http://<Mac-IP>:11434/v1` | — | `qwen3-vl` |
 | Eigener Dienst | frei | optional | frei |
+
+**Apple** läuft über keinen der beiden Wege, sondern über das
+FoundationModels-Framework: kein Schlüssel, kein Netz, keine Kosten, und dank
+`@Generable` **ist** die Antwort die Struktur — der nachsichtige JSON-Parser
+entfällt dort. Der Preis steht im SDK: `Prompt` kennt in iOS 26 keinen
+Bildeingang, Apple schätzt deshalb **nur aus Beschreibungen**. Fotos bleiben
+Sache der gehosteten Modelle, bis das nachgereicht wird (angekündigt für
+iOS 27) — dann kommt in `VisionEstimator.estimate(image:)` ein Zweig dazu und
+`Provider.readsPhotos` fällt weg.
+
+Ausserdem ist es ein rund 3B grosses Modell auf dem Telefon. Kalorienschätzung
+ist eine **Wissensaufgabe**, und darin sind kleine Modelle schwächer. Ob es für
+den Alltag reicht, beantwortet nur der Vergleich an eigenen Mahlzeiten.
 
 Nur Claude spricht die Anthropic-Form; alles darunter läuft durch denselben
 OpenAI-Request. **Eigener Dienst** bleibt für alles, was hier nicht steht —
