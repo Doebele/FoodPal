@@ -15,24 +15,36 @@ struct CaptureSheet: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            // Der Kopf bleibt stehen: „Schließen" muss erreichbar sein, auch
+            // wenn der Rest bei grosser Schrift unter den Rand laeuft.
             SheetHeader(title: mode == .mg ? "Kaffee" : "Neue Mahlzeit")
 
-            if mode == .mg {
-                CoffeeCapture(roast: roast) { dismiss() }
-            } else {
-                PhotoCapture { dismiss() }
-            }
+            ScrollsWhenNeeded {
+                VStack(spacing: 0) {
+                    if mode == .mg {
+                        CoffeeCapture(roast: roast) { dismiss() }
+                    } else {
+                        PhotoCapture { dismiss() }
+                    }
 
-            ModeToggle(mode: mode, roast: roast) { new in
-                captureMode = new == .kcal ? Entry.Kind.meal.rawValue : Entry.Kind.coffee.rawValue
-            }
-            .padding(.top, 16)
+                    ModeToggle(mode: mode, roast: roast) { new in
+                        captureMode = new == .kcal
+                            ? Entry.Kind.meal.rawValue
+                            : Entry.Kind.coffee.rawValue
+                    }
+                    .padding(.top, 16)
 
-            Text(mode == .mg ? "Auf kcal wechseln für Foto" : "Auf mg wechseln für Kaffee")
-                .font(.system(size: 11))
-                .foregroundStyle(Palette.ink2)
-                .padding(.top, 10)
-                .padding(.bottom, 12)
+                    Text(mode == .mg
+                         ? "Für Mahlzeiten auf kcal wechseln"
+                         : "Für Kaffee auf mg wechseln")
+                        .scaledFont(11)
+                        .foregroundStyle(Palette.ink2)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, Metric.margin)
+                        .padding(.top, 10)
+                        .padding(.bottom, 12)
+                }
+            }
         }
         .background(Palette.paper)
     }
@@ -51,11 +63,17 @@ struct CoffeeCapture: View {
     @Query private var all: [Entry]
     @AppStorage(Preference.healthSync) private var healthSync = true
 
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var health = HealthKitSync()
     @State private var saves = 0
 
-    private static let columns = 2
     private static let dots = 12
+
+    /// Zwei Spalten sind bei Bedienhilfen-Groessen keine zwei Spalten mehr,
+    /// sondern zwei Stummel: „Macc…" neben „Cold…", und 13 kcal bricht auf
+    /// zwei Zeilen um. Eine Spalte gibt jeder Sorte die volle Breite — die
+    /// haeufigsten stehen weiterhin unten.
+    private var columns: Int { typeSize.isAccessibilitySize ? 1 : 2 }
     private static let mgPerDot: Double = 160 / 12
 
     var body: some View {
@@ -84,14 +102,14 @@ struct CoffeeCapture: View {
             Text("koffein")
                 .foregroundStyle(roast.color)
         }
-        .font(.system(size: 11))
+        .scaledFont(11)
         .tracking(0.8)
         .padding(.top, 16)
         .padding(.bottom, 12)
     }
 
     private var grid: some View {
-        let rows = ordered.chunked(into: Self.columns)
+        let rows = ordered.chunked(into: columns)
         return VStack(spacing: 0) {
             Rectangle().fill(Palette.rule).frame(height: 1)
             ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
@@ -117,19 +135,21 @@ struct CoffeeCapture: View {
         } label: {
             VStack(alignment: .leading, spacing: 8) {
                 Text(preset.name)
-                    .font(.system(size: 15))
+                    .scaledFont(15)
                     .foregroundStyle(Palette.ink)
-                    .lineLimit(1)
+                    .lineLimit(typeSize.isAccessibilitySize ? 2 : 1)
                 HStack(spacing: 8) {
                     DotBar(lit: lit(for: preset), total: Self.dots, color: roast.color)
                         .frame(width: 52)
                     Spacer(minLength: 0)
                     Text("\(Int(preset.kcal))")
-                        .font(.system(size: 12, design: .monospaced))
+                        .scaledFont(12, design: .monospaced)
                         .foregroundStyle(Palette.ink)
+                        .fixedSize()
                     Text("\(Int(preset.caffeineMg))")
-                        .font(.system(size: 12, design: .monospaced))
+                        .scaledFont(12, design: .monospaced)
                         .foregroundStyle(roast.color)
+                        .fixedSize()
                 }
             }
             .padding(.horizontal, 14)

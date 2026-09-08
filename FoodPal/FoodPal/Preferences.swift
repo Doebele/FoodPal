@@ -9,6 +9,9 @@ enum Preference {
     static let numberStyle = "numberStyle"
     static let captureMode = "captureMode"
     static let appearance = "appearance"
+    /// Ob die Schrift der Systemgroesse folgt. **An**, das ist die
+    /// zugaengliche Vorgabe — der Schalter ist die Ausnahme, nicht die Regel.
+    static let scaleText = "scaleText"
     static let provider = "visionProvider"
     /// Modellname **je Anbieter**, als JSON. Siehe `PerProvider`.
     static let models = "visionModels"
@@ -28,6 +31,7 @@ enum Preference {
             numberStyle: NumberStyle.flip.rawValue,
             captureMode: Entry.Kind.coffee.rawValue,
             appearance: Appearance.auto.rawValue,
+            scaleText: true,
             provider: Provider.claude.rawValue,
             models: "{}",
             addresses: "{}"

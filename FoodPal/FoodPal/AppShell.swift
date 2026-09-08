@@ -64,19 +64,25 @@ struct SheetHeader: View {
     var action: LocalizedStringKey = "Schließen"
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var appeared = false
 
     var body: some View {
-        HStack {
-            Text(title)
-                .font(.system(size: 13, weight: .medium))
-                .tracking(0.9)
-                .foregroundStyle(Palette.ink2)
-            Spacer()
-            Button(action) { dismiss() }
-                .buttonStyle(.plain)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(Palette.ink)
+        // Nebeneinander, solange beides nebeneinander passt. Bei den
+        // Bedienhilfen-Groessen tut es das nicht mehr — dort brach
+        // „Schließen" mitten im Wort um. Untereinander bleibt beides lesbar,
+        // und der Knopf behaelt seine Trefferflaeche.
+        //
+        // `ViewThatFits` waere hier falsch: die Zeile lebt von einem `Spacer`,
+        // und dessen Idealbreite ist null — die Kopfzeile stuende dann immer
+        // zusammengeschoben in der Mitte statt an den Raendern.
+        Group {
+            if typeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 8) { label; button }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                HStack { label; Spacer(); button }
+            }
         }
         .padding(.horizontal, Metric.margin)
         .padding(.top, 20)
@@ -85,6 +91,20 @@ struct SheetHeader: View {
         // man spueren. Leicht, denn es rastet nichts ein, es kommt nur an.
         .haptic(.impact(weight: .light, intensity: 0.5), trigger: appeared)
         .task { appeared = true }
+    }
+
+    private var label: some View {
+        Text(title)
+            .scaledFont(13, weight: .medium)
+            .tracking(0.9)
+            .foregroundStyle(Palette.ink2)
+    }
+
+    private var button: some View {
+        Button(action) { dismiss() }
+            .buttonStyle(.plain)
+            .scaledFont(13, weight: .medium)
+            .foregroundStyle(Palette.ink)
     }
 }
 
@@ -96,11 +116,11 @@ struct PlaceholderScreen: View {
         VStack {
             Spacer()
             Text(title)
-                .font(.system(size: 13, weight: .medium))
+                .scaledFont(13, weight: .medium)
                 .tracking(0.9)
                 .foregroundStyle(Palette.ink2)
             Text("folgt")
-                .font(.system(size: 22, weight: .light))
+                .scaledFont(22, weight: .light)
                 .foregroundStyle(Palette.ink)
             Spacer()
         }

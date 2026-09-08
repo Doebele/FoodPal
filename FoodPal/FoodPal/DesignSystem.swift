@@ -5,7 +5,12 @@ import SwiftUI
 enum Palette {
     static let paper = dynamic(light: 0xFAFAF8, dark: 0x121211)
     static let ink   = dynamic(light: 0x161614, dark: 0xF0F0EA)
-    static let ink2  = dynamic(light: 0x8A8A82, dark: 0x85857D)
+    /// Hell abgedunkelt von `8A8A82` auf `727269`: der alte Ton kam auf
+    /// 3,33 : 1 gegen Papier und fiel damit fuer die 11-pt-Ueberschriften
+    /// durch (WCAG AA verlangt 4,5 : 1 unter 18 pt). Jetzt 4,64 : 1 — knapp
+    /// darueber, damit moeglichst wenig von der Ruhe verlorengeht. Dunkel lag
+    /// mit 5,04 : 1 schon richtig und bleibt.
+    static let ink2  = dynamic(light: 0x72726A, dark: 0x85857D)
     /// Erloschene Punkte im Diagramm — etwas kräftiger als `rule`.
     static let ink3  = dynamic(light: 0xC9C9BD, dark: 0x33332E)
     static let rule  = dynamic(light: 0xE2E2DA, dark: 0x2A2A27)
@@ -101,6 +106,28 @@ enum Digits {
         let text = String(max(0, value))
         return Array(repeating: 0, count: max(0, places - text.count))
             + text.compactMap(\.wholeNumberValue)
+    }
+}
+
+/// Scrollt erst, wenn der Inhalt nicht mehr passt.
+///
+/// Bei den Bedienhilfen-Groessen ist Fliesstext 53 statt 17 pt — dann passt
+/// kein Sheet mehr auf den Schirm, und SwiftUI staucht die erste Zeile zu
+/// „Foto aufneh…". Ein gewoehnlicher `ScrollView` waere der Preis dafuer,
+/// dass ein `Spacer` darin nichts mehr haelt: die Getraenkeliste haengt aber
+/// absichtlich unten, im Daumenbereich. `minHeight` aus der Container-Hoehe
+/// loest beides — unter der Schwelle steht alles wie entworfen, darueber
+/// wird gescrollt.
+struct ScrollsWhenNeeded<Content: View>: View {
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        GeometryReader { geo in
+            ScrollView {
+                content.frame(minHeight: geo.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
     }
 }
 

@@ -14,6 +14,7 @@ struct SettingsSheet: View {
 struct SettingsView: View {
     @AppStorage(Preference.healthSync) private var healthSync = true
     @AppStorage(Preference.haptics) private var haptics = true
+    @AppStorage(Preference.scaleText) private var scaleText = true
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
     @AppStorage(Preference.appearance) private var appearanceRaw = Appearance.auto.rawValue
@@ -54,6 +55,14 @@ struct SettingsView: View {
                             .labelsHidden()
                             .tint(Palette.ink)
                     }
+                    // Aus nagelt die Schrift auf die Groesse fest, in der die
+                    // Entwuerfe gesetzt sind. An ist Vorgabe: wer die Schrift
+                    // groesser stellt, tut das aus einem Grund.
+                    row("Schrift folgt dem System") {
+                        Toggle("", isOn: $scaleText)
+                            .labelsHidden()
+                            .tint(Palette.ink)
+                    }
                 }
 
                 // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
@@ -71,7 +80,7 @@ struct SettingsView: View {
                                 .fill(health.status == .authorized ? Palette.ink : Palette.ink2)
                                 .frame(width: 9, height: 9)
                             Text(health.status.label)
-                                .font(.system(size: 16))
+                                .scaledFont(16)
                                 .foregroundStyle(Palette.ink)
                         }
                     }
@@ -90,14 +99,14 @@ struct SettingsView: View {
                     }
                     row("Schreibt") {
                         Text("Kalorien · Koffein · Makros")
-                            .font(.system(size: 16))
+                            .scaledFont(16)
                             .foregroundStyle(Palette.ink2)
                     }
                 }
 
                 if let authError {
                     Text(authError)
-                        .font(.system(size: 12))
+                        .scaledFont(12)
                         .foregroundStyle(Palette.ink2)
                         .padding(.top, 8)
                 }
@@ -130,7 +139,7 @@ struct SettingsView: View {
                     VStack(spacing: 10) {
                         swatch(option)
                         Text(option.label)
-                            .font(.system(size: 11, weight: option == appearance ? .medium : .regular))
+                            .scaledFont(11, weight: option == appearance ? .medium : .regular)
                             .foregroundStyle(option == appearance ? Palette.ink : Palette.ink2)
                         Rectangle()
                             .fill(option == appearance ? Palette.ink : .clear)
@@ -204,8 +213,13 @@ struct SettingsView: View {
             VStack(spacing: 10) {
                 preview()
                 Text(target.label)
-                    .font(.system(size: 11, weight: active ? .medium : .regular))
+                    .scaledFont(11, weight: active ? .medium : .regular)
                     .foregroundStyle(active ? Palette.ink : Palette.ink2)
+                    // Drei gleich breite Spalten geben „7-Segment" bei den
+                    // Bedienhilfen-Groessen nicht genug Platz; ohne diese
+                    // Reserve brach es zu „7-Segme / nt".
+                    .multilineTextAlignment(.center)
+                    .minimumScaleFactor(0.7)
                 Rectangle()
                     .fill(active ? Palette.ink : .clear)
                     .frame(height: 3)
@@ -330,7 +344,7 @@ struct VisionSheet: View {
                     providerFields
 
                     Text(hint)
-                        .font(.system(size: 12))
+                        .scaledFont(12)
                         .foregroundStyle(Palette.ink2)
                         .padding(.top, 20)
 
@@ -360,12 +374,12 @@ struct VisionSheet: View {
                 Button { select(option) } label: {
                     HStack {
                         Text(option.label)
-                            .font(.system(size: 16, weight: option == provider ? .medium : .regular))
+                            .scaledFont(16, weight: option == provider ? .medium : .regular)
                             .foregroundStyle(option == provider ? Palette.ink : Palette.ink2)
                         Spacer()
                         marker(option)
                     }
-                    .frame(height: 48)
+                    .frame(minHeight: 48)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -453,7 +467,7 @@ struct VisionSheet: View {
         if showModels {
             if let modelsNote {
                 Text(modelsNote)
-                    .font(.system(size: 12))
+                    .scaledFont(12)
                     .foregroundStyle(Palette.ink2)
                     .padding(.vertical, 10)
             }
@@ -470,7 +484,7 @@ struct VisionSheet: View {
 
             if choices.count < models.count {
                 Text("\(models.count - choices.count) ohne Bildeingang ausgeblendet.")
-                    .font(.system(size: 12))
+                    .scaledFont(12)
                     .foregroundStyle(Palette.ink2)
                     .padding(.top, 10)
             }
@@ -487,7 +501,7 @@ struct VisionSheet: View {
         } label: {
             HStack {
                 Text(id)
-                    .font(.system(size: 14, design: .monospaced))
+                    .scaledFont(14, design: .monospaced)
                     .foregroundStyle(active ? Palette.ink : Palette.ink2)
                     .lineLimit(1)
                     .truncationMode(.middle)
@@ -496,7 +510,7 @@ struct VisionSheet: View {
                     .fill(active ? Palette.ink : .clear)
                     .frame(width: 9, height: 9)
             }
-            .frame(height: 44)
+            .frame(minHeight: 44)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -531,7 +545,7 @@ struct VisionSheet: View {
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
                         .multilineTextAlignment(.trailing)
-                        .font(.system(size: 15, design: .monospaced))
+                        .scaledFont(15, design: .monospaced)
                         .foregroundStyle(Palette.ink)
                 }
             }
@@ -542,7 +556,7 @@ struct VisionSheet: View {
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .multilineTextAlignment(.trailing)
-                    .font(.system(size: 15, design: .monospaced))
+                    .scaledFont(15, design: .monospaced)
                     .foregroundStyle(Palette.ink)
                     .onSubmit { storeKey() }
                         .onChange(of: apiKey) { _, _ in storeKey() }
@@ -553,7 +567,7 @@ struct VisionSheet: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .multilineTextAlignment(.trailing)
-                        .font(.system(size: 15, design: .monospaced))
+                        .scaledFont(15, design: .monospaced)
                         .foregroundStyle(Palette.ink)
                 }
 
@@ -574,7 +588,7 @@ struct VisionSheet: View {
 
             if let probeResult {
                 Text(probeResult)
-                    .font(.system(size: 12))
+                    .scaledFont(12)
                     .foregroundStyle(Palette.ink2)
                     .padding(.top, 8)
             }
@@ -601,13 +615,13 @@ struct VisionSheet: View {
 private func caption(_ title: LocalizedStringKey, trailing: String? = nil, topPadding: CGFloat = 0) -> some View {
     HStack {
         Text(title)
-            .font(.system(size: 11))
+            .scaledFont(11)
             .tracking(0.8)
             .foregroundStyle(Palette.ink2)
         Spacer()
         if let trailing {
             Text(trailing)
-                .font(.system(size: 11))
+                .scaledFont(11)
                 .tracking(0.8)
                 .foregroundStyle(Palette.ink2)
         }
@@ -634,12 +648,12 @@ private func section<Content: View>(
 private func row<Value: View>(_ label: LocalizedStringKey, @ViewBuilder value: () -> Value) -> some View {
     HStack {
         Text(label)
-            .font(.system(size: 16))
+            .scaledFont(16)
             .foregroundStyle(Palette.ink)
         Spacer()
         value()
     }
-    .frame(height: 48)
+    .frame(minHeight: 48)
     .overlay(alignment: .bottom) {
         Rectangle().fill(Palette.rule).frame(height: 1)
     }
@@ -649,11 +663,11 @@ private func actionRow(_ label: LocalizedStringKey, action: @escaping () -> Void
     Button(action: action) {
         HStack {
             Text(label)
-                .font(.system(size: 16, weight: .medium))
+                .scaledFont(16, weight: .medium)
                 .foregroundStyle(Palette.ink)
             Spacer()
         }
-        .frame(height: 48)
+        .frame(minHeight: 48)
         .contentShape(Rectangle())
     }
     .buttonStyle(.plain)

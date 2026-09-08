@@ -159,7 +159,7 @@ struct PhotoCapture: View {
             Text(provider.readsPhotos
                  ? "Geschätzt wird von \(provider.label)."
                  : "\(provider.label) schätzt nur aus Beschreibungen.")
-                .font(.system(size: 11))
+                .scaledFont(11)
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 12)
         }
@@ -175,7 +175,7 @@ struct PhotoCapture: View {
     private var describe: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("was und wann")
-                .font(.system(size: 11)).tracking(0.8)
+                .scaledFont(11).tracking(0.8)
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 16)
 
@@ -185,14 +185,14 @@ struct PhotoCapture: View {
                 axis: .vertical
             )
             .lineLimit(4...12)
-            .font(.system(size: 17))
+            .scaledFont(17)
             .foregroundStyle(Palette.ink)
             .padding(.top, 10)
 
             Rectangle().fill(Palette.rule).frame(height: 1).padding(.top, 10)
 
             Text("Diktieren über das Mikrofon der Tastatur. Zeitangaben wie \u{201E}gestern Abend um neun\u{201C} werden übernommen; mehrere Gerichte werden einzeln erfasst.")
-                .font(.system(size: 11))
+                .scaledFont(11)
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 12)
 
@@ -202,10 +202,10 @@ struct PhotoCapture: View {
                 Task { await analyse(spoken) }
             } label: {
                 Text("Schätzen")
-                    .font(.system(size: 17, weight: .medium))
+                    .scaledFont(17, weight: .medium)
                     .foregroundStyle(Palette.paper)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 54)
+                    .frame(minHeight: 54)
                     .background(spoken.isEmpty ? Palette.ink2 : Palette.ink)
             }
             .buttonStyle(.plain)
@@ -228,7 +228,7 @@ struct PhotoCapture: View {
                 // Ohne Foto steht der gesprochene Text an seiner Stelle — man
                 // sieht beim Warten, was gerade geschaetzt wird.
                 Text(spoken)
-                    .font(.system(size: 15))
+                    .scaledFont(15)
                     .foregroundStyle(Palette.ink2)
                     .padding(.top, 20)
             }
@@ -236,11 +236,11 @@ struct PhotoCapture: View {
             ProgressDots().padding(.top, 14)
 
             Text("Analysiere")
-                .font(.system(size: 22, weight: .light))
+                .scaledFont(22, weight: .light)
                 .foregroundStyle(Palette.ink)
                 .padding(.top, 18)
             Text(source)
-                .font(.system(size: 13))
+                .scaledFont(13)
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 4)
 
@@ -258,20 +258,20 @@ struct PhotoCapture: View {
                     .padding(.top, 12)
             }
             Text("Schätzung fehlgeschlagen")
-                .font(.system(size: 22, weight: .light))
+                .scaledFont(22, weight: .light)
                 .foregroundStyle(Palette.ink)
                 .padding(.top, 20)
 
             // Anbieter und Modell mit dazu: ohne sie ist eine Fehlermeldung
             // nicht zuzuordnen, wenn zwoelf Dienste in Frage kommen.
             Text(provider.label + " · " + effectiveModel)
-                .font(.system(size: 12, design: .monospaced))
+                .scaledFont(12, design: .monospaced)
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 6)
 
             ScrollView {
                 Text(message)
-                    .font(.system(size: 13))
+                    .scaledFont(13)
                     .foregroundStyle(Palette.ink2)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .textSelection(.enabled)
@@ -306,11 +306,11 @@ struct PhotoCapture: View {
     private func rowLabel(_ title: LocalizedStringKey) -> some View {
         HStack {
             Text(title)
-                .font(.system(size: 17, weight: .medium))
+                .scaledFont(17, weight: .medium)
                 .foregroundStyle(Palette.ink)
             Spacer()
         }
-        .frame(height: 56)
+        .frame(minHeight: 56)
         .contentShape(Rectangle())
     }
 
@@ -449,10 +449,10 @@ private struct Confirm: View {
 
                 Button { commit() } label: {
                     Text(drafts.count > 1 ? "\(drafts.count) Einträge sichern" : "Sichern")
-                        .font(.system(size: 17, weight: .medium))
+                        .scaledFont(17, weight: .medium)
                         .foregroundStyle(Palette.paper)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 54)
+                        .frame(minHeight: 54)
                         .background(Palette.ink)
                 }
                 .buttonStyle(.plain)
@@ -494,7 +494,7 @@ private struct Confirm: View {
                 .overlay(alignment: .bottomLeading) {
                     if image == nil {
                         Text("erzeugt")
-                            .font(.system(size: 10)).tracking(0.8)
+                            .scaledFont(10).tracking(0.8)
                             .foregroundStyle(Palette.paper)
                             .padding(.horizontal, 6).padding(.vertical, 3)
                             .background(Palette.ink)
@@ -527,11 +527,11 @@ private struct Confirm: View {
             } label: {
                 HStack {
                     Text("zeitpunkt")
-                        .font(.system(size: 11)).tracking(0.8)
+                        .scaledFont(11).tracking(0.8)
                         .foregroundStyle(Palette.ink2)
                     Spacer()
                     Text(when.formatted(.dateTime.day().month().year().hour().minute()))
-                        .font(.system(size: 17, weight: .light, design: .monospaced))
+                        .scaledFont(17, weight: .light, design: .monospaced)
                         .foregroundStyle(Palette.ink)
                 }
                 .contentShape(Rectangle())
@@ -567,30 +567,30 @@ private struct Confirm: View {
     private func compactRow(_ draft: Binding<Draft>) -> some View {
         HStack(spacing: 12) {
             TextField("Gericht", text: draft.name)
-                .font(.system(size: 17))
+                .scaledFont(17)
                 .foregroundStyle(Palette.ink)
             TextField("0", text: draft.kcal)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
-                .font(.system(size: 17, design: .monospaced))
+                .scaledFont(17, design: .monospaced)
                 .foregroundStyle(Palette.ink)
                 .frame(width: 70)
             Text("kcal")
-                .font(.system(size: 11))
+                .scaledFont(11)
                 .foregroundStyle(Palette.ink2)
         }
-        .frame(height: 52)
+        .frame(minHeight: 52)
         .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
     }
 
     private func field(_ label: LocalizedStringKey, text: Binding<String>, mono: Bool) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(label)
-                .font(.system(size: 11)).tracking(0.8)
+                .scaledFont(11).tracking(0.8)
                 .foregroundStyle(Palette.ink2)
             TextField("", text: text)
                 .keyboardType(mono ? .decimalPad : .default)
-                .font(.system(size: 22, weight: .light, design: mono ? .monospaced : .default))
+                .scaledFont(22, weight: .light, design: mono ? .monospaced : .default)
                 .foregroundStyle(Palette.ink)
             Rectangle().fill(Palette.rule).frame(height: 1)
         }
@@ -648,11 +648,11 @@ private struct GenerateImageRow: View {
             Button(action: action) {
                 HStack {
                     Text("Bild erzeugen")
-                        .font(.system(size: 17, weight: .medium))
+                        .scaledFont(17, weight: .medium)
                         .foregroundStyle(disabled ? Palette.ink2 : Palette.ink)
                     Spacer()
                 }
-                .frame(height: 56)
+                .frame(minHeight: 56)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)

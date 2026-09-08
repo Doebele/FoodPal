@@ -80,7 +80,7 @@ struct TodayView: View {
             HStack(spacing: 4) {
                 stepButton("<", delta: -1, enabled: canStep(-1))
                 Text(title(for: currentDay))
-                    .font(.system(size: 14, weight: .medium))
+                    .scaledFont(14, weight: .medium)
                     .foregroundStyle(Palette.ink)
                     .frame(minWidth: 132)
                 stepButton(">", delta: 1, enabled: canStep(1))
@@ -89,8 +89,12 @@ struct TodayView: View {
             HStack {
                 // Einstellungen sind selten gebraucht — die Ecke genuegt.
                 Button(action: onSettings) {
+                    // Das Piktogramm bleibt 22 pt; die Trefferflaeche
+                    // dahinter ist 44 — Apples Mindestmass, und der Grund,
+                    // warum sich kleine Symbole trotzdem treffen lassen.
                     Pictogram(kind: .settings, color: Palette.ink2)
                         .frame(width: 22, height: 22)
+                        .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -105,7 +109,7 @@ struct TodayView: View {
                         withAnimation { scrolled = today }
                     } label: {
                         Text("Heute")
-                            .font(.system(size: 13, weight: .medium))
+                            .scaledFont(13, weight: .medium)
                             .foregroundStyle(Palette.ink)
                     }
                     .buttonStyle(.plain)
@@ -122,9 +126,9 @@ struct TodayView: View {
     private func stepButton(_ glyph: String, delta: Int, enabled: Bool) -> some View {
         Button { step(delta) } label: {
             Text(glyph)
-                .font(.system(size: 15))
+                .scaledFont(15)
                 .foregroundStyle(Palette.ink2)
-                .frame(width: 32, height: 40)
+                .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -151,10 +155,10 @@ struct TodayView: View {
             Rectangle().fill(Palette.rule).frame(height: 1)
             Button(action: onCapture) {
                 Text("Erfassen")
-                    .font(.system(size: 17, weight: .medium))
+                    .scaledFont(17, weight: .medium)
                     .foregroundStyle(Palette.ink)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 56)
+                    .frame(minHeight: 56)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -183,6 +187,7 @@ struct DayView: View {
 
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var selected: Entry?
 
     /// Rest-Aussenrand des Zeitstrahls. Nicht null: ganz bis zur Kante saehe
@@ -235,7 +240,7 @@ struct DayView: View {
 
                 if entries.isEmpty {
                     Text("Noch nichts erfasst.")
-                        .font(.system(size: 22, weight: .light))
+                        .scaledFont(22, weight: .light)
                         .foregroundStyle(Palette.ink)
                         .padding(.top, 40)
                 } else {
@@ -276,6 +281,47 @@ struct DayView: View {
         }
     }
 
+    /// Drei Spalten in einer Zeile — bis die Schrift so gross wird, dass der
+    /// Name dazwischen nur noch Stummel zeigt („Ofen ge…"). Ab den
+    /// Bedienhilfen-Groessen ruecken Uhrzeit und Wert deshalb in eine eigene
+    /// Zeile und der Name bekommt die ganze Breite: lieber zwei Zeilen als
+    /// ein abgeschnittenes Wort.
+    @ViewBuilder private func row(_ entry: Entry) -> some View {
+        let time = Text(entry.date.formatted(date: .omitted, time: .shortened))
+            .scaledFont(13, design: .monospaced)
+            .foregroundStyle(Palette.ink2)
+        let name = Text(entry.name)
+            .scaledFont(17)
+            .foregroundStyle(Palette.ink)
+        let value = Text("\(Int(entry.kcal))")
+            .scaledFont(17, weight: .medium, design: .monospaced)
+            .foregroundStyle(Palette.ink)
+
+        Group {
+            if typeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 8) {
+                        time
+                        Spacer(minLength: 8)
+                        value
+                    }
+                    name.frame(maxWidth: .infinity, alignment: .leading)
+                }
+            } else {
+                HStack(spacing: 8) {
+                    // Die 52 pt der Uhrzeitspalte waren schon bei xxLarge zu
+                    // eng — „19:15" wurde zu „1…".
+                    time.fixedSize().frame(minWidth: 44, alignment: .leading)
+                    name.lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
+                    value.fixedSize()
+                }
+            }
+        }
+        .padding(.vertical, 10)
+        .frame(minHeight: Metric.rowHeight)
+        .contentShape(Rectangle())
+    }
+
     private var hourLabels: some View {
         GeometryReader { geo in
             let s = Grid.scale(forWidth: geo.size.width)
@@ -296,23 +342,7 @@ struct DayView: View {
     private var entryList: some View {
         VStack(spacing: 0) {
             ForEach(entries.sorted { $0.date > $1.date }) { entry in
-                Button { selected = entry } label: {
-                HStack(spacing: 0) {
-                    Text(entry.date.formatted(date: .omitted, time: .shortened))
-                        .font(.system(size: 13, design: .monospaced))
-                        .foregroundStyle(Palette.ink2)
-                        .frame(width: 52, alignment: .leading)
-                    Text(entry.name)
-                        .font(.system(size: 17))
-                        .foregroundStyle(Palette.ink)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("\(Int(entry.kcal))")
-                        .font(.system(size: 17, weight: .medium, design: .monospaced))
-                        .foregroundStyle(Palette.ink)
-                }
-                .frame(height: Metric.rowHeight)
-                .contentShape(Rectangle())
-                }
+                Button { selected = entry } label: { row(entry) }
                 .buttonStyle(.plain)
                 .overlay(alignment: .bottom) {
                     Rectangle().fill(Palette.rule).frame(height: 1)
@@ -355,16 +385,20 @@ struct ModeToggle: View {
         }
         .padding(4)
         .background(Capsule().fill(Palette.rule))
-        .frame(width: 124, height: 40)
     }
 
     private func segment(_ target: DisplayMode, _ label: String) -> some View {
         let active = mode == target
         return Button { onChange(target) } label: {
             Text(label)
-                .font(.system(size: 13, weight: active ? .medium : .regular))
+                .scaledFont(13, weight: active ? .medium : .regular)
                 .foregroundStyle(active ? Palette.paper : Palette.ink2)
-                .frame(width: 58, height: 32)
+                // Feste 58 x 32 schnitten „kcal" bei grosser Schrift ab.
+                // Jetzt legt der Text die Groesse fest, das Polster haelt die
+                // Trefferflaeche.
+                .padding(.horizontal, 20)
+                .padding(.vertical, 8)
+                .frame(minWidth: 58)
                 .background {
                     if active {
                         Capsule().fill(target == .kcal ? Palette.ink : roast.color)

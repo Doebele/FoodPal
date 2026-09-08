@@ -473,6 +473,35 @@ Zwei Stolpersteine, die dabei auffielen und im Code stehen:
 
 Die Übersetzungen für FR, IT und ES stammen von mir und sollten vor einem App-Store-Start von Muttersprachlern gegengelesen werden.
 
+## Barrierefreiheit
+
+Drei Schritte, in dieser Reihenfolge — Trefferflächen und Kontrast zuerst, weil sie **jeden** betreffen und nichts am Entwurf kosten; Dynamic Type danach, weil es das Layout anfasst.
+
+**Trefferflächen ≥ 44 × 44.** Das Zahnrad und die Tagespfeile waren kleiner als ihr Glyph vermuten liess. Die sichtbare Marke bleibt gleich gross; nur die `frame` darum wuchs.
+
+**Kontrast.** `ink2` hell stand bei `#8A8A82` — 3,33 : 1 gegen `paper` und damit unter der WCAG-AA-Schwelle von 4,5 : 1 für Text unter 18 pt. Jetzt `#72726A`, gemessen 4,64 : 1. Dunkel lag mit 5,04 : 1 schon darüber und blieb unverändert.
+
+**Dynamic Type über `scaledFont`, nicht `UIFontMetrics`.** Die App setzt Grössen fest (`13`, `17`, `82 · k`), weil der Entwurf auf ihnen steht. `UIFontMetrics` liest die Merkmale des *Bildschirms* und wäre deshalb taub gegen `.dynamicTypeSize()` — also gegen den Schalter in den Einstellungen. `scaledFont` nimmt stattdessen `\.dynamicTypeSize` aus der Umgebung und multipliziert mit Apples eigener Fliesstext-Staffelung (14 · 15 · 16 · **17** · 19 · 21 · 23, in den Bedienhilfen 28 · 33 · 40 · 47 · 53), normiert auf 17.
+
+**Der Schalter „Schrift folgt dem System" ist voreingestellt an.** Aus nagelt die App auf `.large` fest, die Grösse, in der die Entwürfe gesetzt sind. Er ist für den Fall da, dass jemand die Systemschrift aus anderen Gründen gross stellt und in dieser einen App den Satz behalten will — nicht als Vorgabe.
+
+Fest bleiben zwei Stellen, an denen Schrift Geometrie ist und keine Sprache: die Ziffer auf der Flipkarte (`82 · k`, sie füllt die Karte) und die Stundenmarken über dem Zeitstrahl (10 pt, sie sitzen auf Rasterspalten).
+
+**Was bei 53 pt umbrechen musste.** Die Screenshots bei `accessibility-extra-extra-extra-large` zeigten vier Stellen, an denen der Satz nicht nur gross, sondern kaputt war — und jede brauchte eine andere Antwort:
+
+| Stelle | Vorher | Jetzt |
+|---|---|---|
+| Eintragszeile | Uhrzeit auf 52 pt genagelt → „1…" | Ab Bedienhilfen-Grösse zweizeilig: Uhrzeit und Wert oben, Name darunter über die volle Breite |
+| Umschalter kcal/mg | feste 124 × 40 → „kcal" abgeschnitten | Polster statt Rahmen, die Kapsel wächst mit |
+| Sheet-Kopf | „Schließe / n" mitten im Wort | Titel und Knopf untereinander |
+| Getränkeraster | zwei Spalten → „Macc…" neben „Cold…" | eine Spalte, volle Breite je Sorte |
+
+`ViewThatFits` schied für den Sheet-Kopf aus: die Zeile lebt von einem `Spacer`, dessen Idealbreite null ist — die Kopfzeile stünde dann immer zusammengeschoben in der Mitte.
+
+**`ScrollsWhenNeeded`** (in `DesignSystem.swift`) löst das allgemeinere Problem: bei 53 pt passt kein Sheet mehr auf den Schirm, und SwiftUI staucht dann die erste Zeile. Ein gewöhnlicher `ScrollView` wäre der Preis dafür, dass ein `Spacer` darin nichts mehr hält — die Getränkeliste hängt aber absichtlich unten, im Daumenbereich. `minHeight` aus der Container-Höhe hält beides: unter der Schwelle steht alles, wo es entworfen wurde, darüber wird gescrollt.
+
+**Bewegung.** `accessibilityReduceMotion` schaltet das Zählwerk der Flipkarten ab: der Wert wird gesetzt, mit **einem** Impuls statt einer Kaskade. Die Rückmeldung bleibt, die Bewegung geht. Die Dot-Matrix läuft dann ohne Diagonale auf.
+
 ## Bewusst weggelassen
 
 - **Ein eigener Scanner-Screen.** Der Barcode-Weg ist gebaut (`VNDetectBarcodesRequest` + Open Food Facts), aber ohne zweite Tür: das Foto, das du ohnehin machst, wird vorher geprüft. Ein Live-Scanner (`DataScannerViewController`) wäre die Nachrüstung, falls sich EANs aus normalem Abstand zu selten lesen lassen — siehe [Nährwertdatenbank](anbieter.md#nährwertdatenbank).

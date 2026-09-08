@@ -41,7 +41,7 @@ struct EntryDetailView: View {
 
                     field("bezeichnung") {
                         TextField("", text: $name)
-                            .font(.system(size: 22, weight: .light))
+                            .scaledFont(22, weight: .light)
                             .foregroundStyle(Palette.ink)
                     }
 
@@ -106,18 +106,18 @@ struct EntryDetailView: View {
             } label: {
                 HStack {
                     Text("Eintrag löschen")
-                        .font(.system(size: 17, weight: .medium))
+                        .scaledFont(17, weight: .medium)
                         .foregroundStyle(Palette.ink)
                     Spacer()
                 }
-                .frame(height: 56)
+                .frame(minHeight: 56)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
 
             if healthSync {
                 Text("Wird auch aus Apple Health entfernt.")
-                    .font(.system(size: 12))
+                    .scaledFont(12)
                     .foregroundStyle(Palette.ink2)
             }
         }
@@ -141,7 +141,7 @@ struct EntryDetailView: View {
                 .overlay(alignment: .bottomLeading) {
                     if entry.generatedImage {
                         Text("erzeugt")
-                            .font(.system(size: 10))
+                            .scaledFont(10)
                             .tracking(0.8)
                             .foregroundStyle(Palette.paper)
                             .padding(.horizontal, 6)
@@ -171,12 +171,12 @@ struct EntryDetailView: View {
             } label: {
                 HStack {
                     Text("zeitpunkt")
-                        .font(.system(size: 11))
+                        .scaledFont(11)
                         .tracking(0.8)
                         .foregroundStyle(Palette.ink2)
                     Spacer()
                     Text(stamp)
-                        .font(.system(size: 22, weight: .light, design: .monospaced))
+                        .scaledFont(22, weight: .light, design: .monospaced)
                         .foregroundStyle(Palette.ink)
                 }
                 .contentShape(Rectangle())
@@ -212,7 +212,7 @@ struct EntryDetailView: View {
         _ label: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(label)
-                .font(.system(size: 11))
+                .scaledFont(11)
                 .tracking(0.8)
                 .foregroundStyle(Palette.ink2)
             content()
@@ -225,7 +225,7 @@ struct EntryDetailView: View {
         field(label) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
-                .font(.system(size: 22, weight: .light, design: .monospaced))
+                .scaledFont(22, weight: .light, design: .monospaced)
                 .foregroundStyle(tint)
         }
     }
@@ -233,13 +233,13 @@ struct EntryDetailView: View {
     private func row<Value: View>(_ label: String, @ViewBuilder value: () -> Value) -> some View {
         HStack {
             Text(label)
-                .font(.system(size: 11))
+                .scaledFont(11)
                 .tracking(0.8)
                 .foregroundStyle(Palette.ink2)
             Spacer()
             value()
         }
-        .frame(height: 48)
+        .frame(minHeight: 48)
         .overlay(alignment: .bottom) {
             Rectangle().fill(Palette.rule).frame(height: 1)
         }

@@ -1,114 +1,114 @@
-﻿Schlüssel (deutsch);en  (Übersetzung);fr  (Übersetzung);it  (Übersetzung);es  (Übersetzung);Anmerkung
-%@ schätzt nur aus Beschreibungen.;%@ estimates from descriptions only.;%@ n’estime qu’à partir de descriptions.;%@ stima solo da descrizioni.;%@ solo estima a partir de descripciones.;
-%@, %lld Milligramm Koffein;%@, %lld milligrams of caffeine;%@, %lld milligrammes de caféine;%@, %lld milligrammi di caffeina;%@, %lld miligramos de cafeína;
-%lld Einträge sichern;Save %lld entries;Enregistrer %lld entrées;Salva %lld voci;Guardar %lld entradas;
-%lld ohne Bildeingang ausgeblendet.;%lld without image input hidden.;%lld sans entrée d’image masqués.;%lld senza ingresso immagine nascosti.;%lld sin entrada de imagen ocultos.;
-API-Schlüssel;API key;Clé API;Chiave API;Clave API;
-Abbrechen;Cancel;Annuler;Annulla;Cancelar;
-Adresse;Address;Adresse;Indirizzo;Dirección;
-Adresse fehlt oder ist ungültig.;The address is missing or invalid.;L’adresse est absente ou invalide.;Indirizzo mancante o non valido.;Falta la dirección o no es válida.;
-Analyse;Analysis;Analyse;Analisi;Análisis;
-Analysiere;Analysing;Analyse en cours;Analisi in corso;Analizando;
-Anbieter und Modell;Provider and model;Fournisseur et modèle;Servizio e modello;Proveedor y modelo;
-Apple Intelligence ist in den Systemeinstellungen ausgeschaltet.;Apple Intelligence is switched off in System Settings.;Apple Intelligence est désactivé dans les réglages.;Apple Intelligence è disattivato nelle impostazioni.;Apple Intelligence está desactivado en los ajustes.;
-Auf kcal wechseln für Foto;Switch to kcal for a photo;Passer en kcal pour une photo;Passa a kcal per una foto;Cambia a kcal para una foto;
-Auf mg wechseln für Kaffee;Switch to mg for coffee;Passer en mg pour le café;Passa a mg per il caffè;Cambia a mg para el café;
-Aus Fotos wählen;Choose from Photos;Choisir dans Photos;Scegli da Foto;Elegir de Fotos;
-Auto;Auto;Auto;Auto;Auto;
-Bereit — ohne Netz, ohne Schlüssel.;Ready — no network, no key.;Prêt — sans réseau, sans clé.;Pronto — senza rete, senza chiave.;Listo — sin red, sin clave.;
-Beschreiben;Describe;Décrire;Descrivi;Describir;
-Beschreibung ändern;Edit description;Modifier la description;Modifica la descrizione;Editar la descripción;
-Bestätigen;Confirm;Confirmer;Conferma;Confirmar;
-Bild erzeugen;Generate an image;Générer une image;Genera un’immagine;Generar una imagen;
-Bildanalyse;Image analysis;Analyse d’image;Analisi immagine;Análisis de imagen;
-Das Bild ließ sich nicht aufbereiten.;The image could not be prepared.;L’image n’a pas pu être préparée.;Non è stato possibile preparare l’immagine.;No se pudo preparar la imagen.;
-Das Modell wird noch geladen. Später erneut versuchen.;The model is still downloading. Try again later.;Le modèle est en cours de téléchargement. Réessayez plus tard.;Il modello è ancora in download. Riprova più tardi.;El modelo se está descargando. Inténtalo más tarde.;
-Der Eintrag wird auch aus Apple Health entfernt.;The entry will also be removed from Apple Health.;L’entrée sera aussi retirée d’Apple Santé.;La voce verrà rimossa anche da Apple Salute.;La entrada también se eliminará de Apple Salud.;
-Der Eintrag wird gelöscht.;The entry will be deleted.;L’entrée sera supprimée.;La voce verrà eliminata.;La entrada se eliminará.;
-Die Antwort war nicht lesbar.;The answer could not be read.;La réponse était illisible.;La risposta non era leggibile.;No se pudo leer la respuesta.;
-Dieser Dienst braucht iOS 26.;This service needs iOS 26.;Ce service exige iOS 26.;Questo servizio richiede iOS 26.;Este servicio requiere iOS 26.;
-Dieses Gerät unterstützt Apple Intelligence nicht.;This device does not support Apple Intelligence.;Cet appareil ne prend pas en charge Apple Intelligence.;Questo dispositivo non supporta Apple Intelligence.;Este dispositivo no admite Apple Intelligence.;
-"Diktieren über das Mikrofon der Tastatur. Zeitangaben wie „gestern Abend um neun“ werden übernommen; mehrere Gerichte werden einzeln erfasst.";"Dictate with the keyboard’s microphone. Times such as “yesterday at nine” are picked up; several dishes are logged separately.";"Dictez avec le microphone du clavier. Les heures comme « hier à neuf heures » sont reprises ; plusieurs plats sont enregistrés séparément.";"Detta con il microfono della tastiera. Orari come “ieri alle nove” vengono ripresi; più piatti vengono registrati separatamente.";"Dicta con el micrófono del teclado. Horas como «ayer a las nueve» se recogen; varios platos se registran por separado.";
-Dunkel;Dark;Sombre;Scuro;Oscuro;
-Eigener Dienst;Custom service;Service personnalisé;Servizio proprio;Servicio propio;
-Einstellungen;Settings;Réglages;Impostazioni;Ajustes;
-Eintrag;Entry;Entrée;Voce;Entrada;
-Eintrag löschen;Delete entry;Supprimer l’entrée;Elimina la voce;Eliminar entrada;
-Eintrag löschen?;Delete entry?;Supprimer l’entrée ?;Eliminare la voce?;¿Eliminar la entrada?;
-Erfassen;Add;Ajouter;Aggiungi;Añadir;
-Erneut versuchen;Try again;Réessayer;Riprova;Reintentar;
-Fehlgeschlagen;Failed;Échec;Non riuscito;Error;
-Fertig;Done;Terminé;Fatto;Listo;
-Foto aufnehmen;Take a photo;Prendre une photo;Scatta una foto;Hacer una foto;
-Französisch;French;Française;Francese;Francés;
-Gericht;Dish;Plat;Piatto;Plato;
-Geschätzt wird von %@.;Estimated by %@.;Estimation par %@.;Stima a cura di %@.;Estimado por %@.;
-Gestern;Yesterday;Hier;Ieri;Ayer;
-Gestern Abend um neun eine kleine Ramensuppe mit Frühlingszwiebel, dazu drei Scheiben Baguette dünn mit Butter;Yesterday at nine a small bowl of ramen with spring onion, and three thin slices of baguette with butter;Hier à neuf heures un petit bol de ramen à l’oignon nouveau, et trois fines tranches de baguette beurrées;Ieri alle nove una piccola zuppa di ramen con cipollotto e tre fette sottili di baguette con burro;Ayer a las nueve un cuenco pequeño de ramen con cebolleta y tres rebanadas finas de baguette con mantequilla;
-Haptik;Haptics;Retour haptique;Feedback aptico;Respuesta háptica;
-Hell;Light;Clair;Chiaro;Claro;
-Heute;Today;Aujourd’hui;Oggi;Hoy;
-Italienisch;Italian;Italienne;Italiana;Italiano;
-Kaffee;Coffee;Café;Caffè;Café;
-Kalorien · Koffein · Makros;Calories · caffeine · macros;Calories · caféine · macros;Calorie · caffeina · macro;Calorías · cafeína · macros;
-Kein API-Schlüssel hinterlegt.;No API key set.;Aucune clé API renseignée.;Nessuna chiave API impostata.;No hay clave API.;
-Liste ausblenden;Hide the list;Masquer la liste;Nascondi l’elenco;Ocultar la lista;
-Lädt …;Loading …;Chargement …;Caricamento …;Cargando …;
-Löschen;Delete;Supprimer;Elimina;Eliminar;
-Mahlzeit;Meal;Repas;Pasto;Comida;
-Manuell eingeben;Enter manually;Saisir manuellement;Inserisci a mano;Introducir a mano;
-Mit Health verbinden;Connect to Health;Se connecter à Santé;Connetti a Salute;Conectar con Salud;
-Mittel;Medium;Moyen;Medio;Medio;
-Modell;Model;Modèle;Modello;Modelo;
-Modelle vom Dienst laden;Load models from the service;Charger les modèles du service;Carica i modelli dal servizio;Cargar modelos del servicio;
-Modus wechseln;Switch mode;Changer de mode;Cambia modalità;Cambiar de modo;
-Neue Mahlzeit;New meal;Nouveau repas;Nuovo pasto;Nueva comida;
-Nicht verfügbar.;Unavailable.;Indisponible.;Non disponibile.;No disponible.;
-Noch nichts erfasst.;Nothing logged yet.;Rien d’enregistré.;Ancora nulla.;Nada registrado aún.;
-Nächster Tag;Next day;Jour suivant;Giorno successivo;Día siguiente;
-Prüfe …;Checking …;Vérification …;Verifica …;Comprobando …;
-Schließen;Close;Fermer;Chiudi;Cerrar;
-Schreibt;Writes;Écrit;Scrive;Escribe;
-Schätzen;Estimate;Estimer;Stima;Estimar;
-Schätzung fehlgeschlagen;Estimate failed;Échec de l’estimation;Stima non riuscita;La estimación falló;
-Sichern;Save;Enregistrer;Salva;Guardar;
-Sync;Sync;Synchro;Sincronizza;Sincronizar;
-Tagesverlauf als Punktraster;Day as a dot matrix;La journée en matrice de points;La giornata come matrice di punti;El día como matriz de puntos;
-Verbindung;Connection;Connexion;Connessione;Conexión;
-Verbindung steht, Modell antwortet und nimmt Bilder.;Connected, the model answers and accepts images.;Connexion établie, le modèle répond et accepte les images.;Connessione attiva, il modello risponde e accetta immagini.;Conectado, el modelo responde y acepta imágenes.;
-Verbindung steht, Modell antwortet.;Connected, the model answers.;Connexion établie, le modèle répond.;Connessione attiva, il modello risponde.;Conectado, el modelo responde.;
-Verbindung testen;Test the connection;Tester la connexion;Prova la connessione;Probar la conexión;
-Verfügbarkeit prüfen;Check availability;Vérifier la disponibilité;Verifica disponibilità;Comprobar disponibilidad;
-Vorheriger Tag;Previous day;Jour précédent;Giorno precedente;Día anterior;
-Wert ändern;Change value;Modifier la valeur;Cambia valore;Cambiar valor;
-Wien;Vienna;Vienne;Vienna;Viena;
-Wird auch aus Apple Health entfernt.;Also removed from Apple Health.;Retiré aussi d’Apple Santé.;Rimossa anche da Apple Salute.;También se elimina de Apple Salud.;
-Zimt;Cinnamon;Cannelle;Cannella;Canela;
-abgelehnt;denied;refusé;negato;denegado;
-aktiv;active;actif;attivo;activo;
-akzent · röstung;accent · roast;accent · torréfaction;accento · tostatura;acento · tueste;
-anzeige · ziffern;display · digits;affichage · chiffres;display · cifre;pantalla · dígitos;
-apple health;apple health;apple santé;apple salute;apple salud;
-auf dem gerät;on this device;sur l’appareil;sul dispositivo;en el dispositivo;
-bedienung;interaction;utilisation;uso;manejo;
-bezeichnung;name;nom;nome;nombre;
-bildanalyse;image analysis;analyse d’image;analisi immagine;análisis de imagen;
-erscheinungsbild;appearance;apparence;aspetto;apariencia;
-erzeugt;generated;générée;generata;generada;
-fett · g;fat · g;lipides · g;grassi · g;grasas · g;
-gehostet · mit schlüssel;hosted · needs a key;hébergé · avec clé;ospitato · con chiave;alojado · con clave;
-häufigste unten;most used at the bottom;les plus fréquents en bas;i più frequenti in basso;los más usados abajo;
-kcal / mg;kcal / mg;kcal / mg;kcal / mg;kcal / mg;
-koffein;caffeine;caféine;caffeina;cafeína;
-koffein · mg;caffeine · mg;caféine · mg;caffeina · mg;cafeína · mg;
-kohlenhydrate · g;carbs · g;glucides · g;carboidrati · g;carbohidratos · g;
-menge · g;amount · g;quantité · g;quantità · g;cantidad · g;
-nicht hinterlegt;not set;non renseignée;non impostata;sin definir;
-nicht verbunden;not connected;non connecté;non connesso;sin conectar;
-nicht verfügbar;unavailable;indisponible;non disponibile;no disponible;
-optional;optional;facultative;facoltativa;opcional;
-protein · g;protein · g;protéines · g;proteine · g;proteínas · g;
-selbst betrieben;self-hosted;auto-hébergé;in proprio;propio;
-verbunden;connected;connecté;connesso;conectado;
-was und wann;what and when;quoi et quand;cosa e quando;qué y cuándo;
-zeitpunkt;time;moment;orario;momento;
+﻿Schlüssel (deutsch),en,fr,it,es,Anmerkung
+%@ schätzt nur aus Beschreibungen.,%@ estimates from descriptions only.,%@ n’estime qu’à partir de descriptions.,%@ stima solo da descrizioni.,%@ solo estima a partir de descripciones.,
+"%@, %lld Milligramm Koffein","%@, %lld milligrams of caffeine","%@, %lld milligrammes de caféine","%@, %lld milligrammi di caffeina","%@, %lld miligramos de cafeína",
+%lld Einträge sichern,Save %lld entries,Enregistrer %lld entrées,Salva %lld voci,Guardar %lld entradas,
+%lld ohne Bildeingang ausgeblendet.,%lld without image input hidden.,%lld sans entrée d’image masqués.,%lld senza ingresso immagine nascosti.,%lld sin entrada de imagen ocultos.,
+API-Schlüssel,API key,Clé API,Chiave API,Clave API,
+Abbrechen,Cancel,Annuler,Annulla,Cancelar,
+Adresse,Address,Adresse,Indirizzo,Dirección,
+Adresse fehlt oder ist ungültig.,The address is missing or invalid.,L’adresse est absente ou invalide.,Indirizzo mancante o non valido.,Falta la dirección o no es válida.,
+Analyse,Analysis,Analyse,Analisi,Análisis,
+Analysiere,Analysing,Analyse en cours,Analisi in corso,Analizando,
+Anbieter und Modell,Provider and model,Fournisseur et modèle,Servizio e modello,Proveedor y modelo,
+Apple Intelligence ist in den Systemeinstellungen ausgeschaltet.,Apple Intelligence is switched off in System Settings.,Apple Intelligence est désactivé dans les réglages.,Apple Intelligence è disattivato nelle impostazioni.,Apple Intelligence está desactivado en los ajustes.,
+Aus Fotos wählen,Choose from Photos,Choisir dans Photos,Scegli da Foto,Elegir de Fotos,
+Auto,Auto,Auto,Auto,Auto,
+"Bereit — ohne Netz, ohne Schlüssel.","Ready — no network, no key.","Prêt — sans réseau, sans clé.","Pronto — senza rete, senza chiave.","Listo — sin red, sin clave.",
+Beschreiben,Describe,Décrire,Descrivi,Describir,
+Beschreibung ändern,Edit description,Modifier la description,Modifica la descrizione,Editar la descripción,
+Bestätigen,Confirm,Confirmer,Conferma,Confirmar,
+Bild erzeugen,Generate an image,Générer une image,Genera un’immagine,Generar una imagen,
+Bildanalyse,Image analysis,Analyse d’image,Analisi immagine,Análisis de imagen,
+Das Bild ließ sich nicht aufbereiten.,The image could not be prepared.,L’image n’a pas pu être préparée.,Non è stato possibile preparare l’immagine.,No se pudo preparar la imagen.,
+Das Modell wird noch geladen. Später erneut versuchen.,The model is still downloading. Try again later.,Le modèle est en cours de téléchargement. Réessayez plus tard.,Il modello è ancora in download. Riprova più tardi.,El modelo se está descargando. Inténtalo más tarde.,
+Der Eintrag wird auch aus Apple Health entfernt.,The entry will also be removed from Apple Health.,L’entrée sera aussi retirée d’Apple Santé.,La voce verrà rimossa anche da Apple Salute.,La entrada también se eliminará de Apple Salud.,
+Der Eintrag wird gelöscht.,The entry will be deleted.,L’entrée sera supprimée.,La voce verrà eliminata.,La entrada se eliminará.,
+Die Antwort war nicht lesbar.,The answer could not be read.,La réponse était illisible.,La risposta non era leggibile.,No se pudo leer la respuesta.,
+Dieser Dienst braucht iOS 26.,This service needs iOS 26.,Ce service exige iOS 26.,Questo servizio richiede iOS 26.,Este servicio requiere iOS 26.,
+Dieses Gerät unterstützt Apple Intelligence nicht.,This device does not support Apple Intelligence.,Cet appareil ne prend pas en charge Apple Intelligence.,Questo dispositivo non supporta Apple Intelligence.,Este dispositivo no admite Apple Intelligence.,
+Diktieren über das Mikrofon der Tastatur. Zeitangaben wie „gestern Abend um neun“ werden übernommen; mehrere Gerichte werden einzeln erfasst.,Dictate with the keyboard’s microphone. Times such as “yesterday at nine” are picked up; several dishes are logged separately.,Dictez avec le microphone du clavier. Les heures comme « hier à neuf heures » sont reprises ; plusieurs plats sont enregistrés séparément.,Detta con il microfono della tastiera. Orari come “ieri alle nove” vengono ripresi; più piatti vengono registrati separatamente.,Dicta con el micrófono del teclado. Horas como «ayer a las nueve» se recogen; varios platos se registran por separado.,
+Dunkel,Dark,Sombre,Scuro,Oscuro,
+Eigener Dienst,Custom service,Service personnalisé,Servizio proprio,Servicio propio,
+Einstellungen,Settings,Réglages,Impostazioni,Ajustes,
+Eintrag,Entry,Entrée,Voce,Entrada,
+Eintrag löschen,Delete entry,Supprimer l’entrée,Elimina la voce,Eliminar entrada,
+Eintrag löschen?,Delete entry?,Supprimer l’entrée ?,Eliminare la voce?,¿Eliminar la entrada?,
+Erfassen,Add,Ajouter,Aggiungi,Añadir,
+Erneut versuchen,Try again,Réessayer,Riprova,Reintentar,
+Fehlgeschlagen,Failed,Échec,Non riuscito,Error,
+Fertig,Done,Terminé,Fatto,Listo,
+Foto aufnehmen,Take a photo,Prendre une photo,Scatta una foto,Hacer una foto,
+Französisch,French,Française,Francese,Francés,
+Für Kaffee auf mg wechseln,Switch to mg for coffee,Passer en mg pour le café,Passa a mg per il caffè,Cambia a mg para el café,
+Für Mahlzeiten auf kcal wechseln,Switch to kcal for meals,Passer en kcal pour les repas,Passa a kcal per i pasti,Cambia a kcal para las comidas,
+Gericht,Dish,Plat,Piatto,Plato,
+Geschätzt wird von %@.,Estimated by %@.,Estimation par %@.,Stima a cura di %@.,Estimado por %@.,
+Gestern,Yesterday,Hier,Ieri,Ayer,
+"Gestern Abend um neun eine kleine Ramensuppe mit Frühlingszwiebel, dazu drei Scheiben Baguette dünn mit Butter","Yesterday at nine a small bowl of ramen with spring onion, and three thin slices of baguette with butter","Hier à neuf heures un petit bol de ramen à l’oignon nouveau, et trois fines tranches de baguette beurrées",Ieri alle nove una piccola zuppa di ramen con cipollotto e tre fette sottili di baguette con burro,Ayer a las nueve un cuenco pequeño de ramen con cebolleta y tres rebanadas finas de baguette con mantequilla,
+Haptik,Haptics,Retour haptique,Feedback aptico,Respuesta háptica,
+Hell,Light,Clair,Chiaro,Claro,
+Heute,Today,Aujourd’hui,Oggi,Hoy,
+Italienisch,Italian,Italienne,Italiana,Italiano,
+Kaffee,Coffee,Café,Caffè,Café,
+Kalorien · Koffein · Makros,Calories · caffeine · macros,Calories · caféine · macros,Calorie · caffeina · macro,Calorías · cafeína · macros,
+Kein API-Schlüssel hinterlegt.,No API key set.,Aucune clé API renseignée.,Nessuna chiave API impostata.,No hay clave API.,
+Liste ausblenden,Hide the list,Masquer la liste,Nascondi l’elenco,Ocultar la lista,
+Lädt …,Loading …,Chargement …,Caricamento …,Cargando …,
+Löschen,Delete,Supprimer,Elimina,Eliminar,
+Mahlzeit,Meal,Repas,Pasto,Comida,
+Manuell eingeben,Enter manually,Saisir manuellement,Inserisci a mano,Introducir a mano,
+Mit Health verbinden,Connect to Health,Se connecter à Santé,Connetti a Salute,Conectar con Salud,
+Mittel,Medium,Moyen,Medio,Medio,
+Modell,Model,Modèle,Modello,Modelo,
+Modelle vom Dienst laden,Load models from the service,Charger les modèles du service,Carica i modelli dal servizio,Cargar modelos del servicio,
+Modus wechseln,Switch mode,Changer de mode,Cambia modalità,Cambiar de modo,
+Neue Mahlzeit,New meal,Nouveau repas,Nuovo pasto,Nueva comida,
+Nicht verfügbar.,Unavailable.,Indisponible.,Non disponibile.,No disponible.,
+Noch nichts erfasst.,Nothing logged yet.,Rien d’enregistré.,Ancora nulla.,Nada registrado aún.,
+Nächster Tag,Next day,Jour suivant,Giorno successivo,Día siguiente,
+Prüfe …,Checking …,Vérification …,Verifica …,Comprobando …,
+Schließen,Close,Fermer,Chiudi,Cerrar,
+Schreibt,Writes,Écrit,Scrive,Escribe,
+Schätzen,Estimate,Estimer,Stima,Estimar,
+Schätzung fehlgeschlagen,Estimate failed,Échec de l’estimation,Stima non riuscita,La estimación falló,
+Sichern,Save,Enregistrer,Salva,Guardar,
+Sync,Sync,Synchro,Sincronizza,Sincronizar,
+Tagesverlauf als Punktraster,Day as a dot matrix,La journée en matrice de points,La giornata come matrice di punti,El día como matriz de puntos,
+Verbindung,Connection,Connexion,Connessione,Conexión,
+"Verbindung steht, Modell antwortet und nimmt Bilder.","Connected, the model answers and accepts images.","Connexion établie, le modèle répond et accepte les images.","Connessione attiva, il modello risponde e accetta immagini.","Conectado, el modelo responde y acepta imágenes.",
+"Verbindung steht, Modell antwortet.","Connected, the model answers.","Connexion établie, le modèle répond.","Connessione attiva, il modello risponde.","Conectado, el modelo responde.",
+Verbindung testen,Test the connection,Tester la connexion,Prova la connessione,Probar la conexión,
+Verfügbarkeit prüfen,Check availability,Vérifier la disponibilité,Verifica disponibilità,Comprobar disponibilidad,
+Vorheriger Tag,Previous day,Jour précédent,Giorno precedente,Día anterior,
+Wert ändern,Change value,Modifier la valeur,Cambia valore,Cambiar valor,
+Wien,Vienna,Vienne,Vienna,Viena,
+Wird auch aus Apple Health entfernt.,Also removed from Apple Health.,Retiré aussi d’Apple Santé.,Rimossa anche da Apple Salute.,También se elimina de Apple Salud.,
+Zimt,Cinnamon,Cannelle,Cannella,Canela,
+abgelehnt,denied,refusé,negato,denegado,
+aktiv,active,actif,attivo,activo,
+akzent · röstung,accent · roast,accent · torréfaction,accento · tostatura,acento · tueste,
+anzeige · ziffern,display · digits,affichage · chiffres,display · cifre,pantalla · dígitos,
+apple health,apple health,apple santé,apple salute,apple salud,
+auf dem gerät,on this device,sur l’appareil,sul dispositivo,en el dispositivo,
+bedienung,interaction,utilisation,uso,manejo,
+bezeichnung,name,nom,nome,nombre,
+bildanalyse,image analysis,analyse d’image,analisi immagine,análisis de imagen,
+erscheinungsbild,appearance,apparence,aspetto,apariencia,
+erzeugt,generated,générée,generata,generada,
+fett · g,fat · g,lipides · g,grassi · g,grasas · g,
+gehostet · mit schlüssel,hosted · needs a key,hébergé · avec clé,ospitato · con chiave,alojado · con clave,
+häufigste unten,most used at the bottom,les plus fréquents en bas,i più frequenti in basso,los más usados abajo,
+kcal / mg,kcal / mg,kcal / mg,kcal / mg,kcal / mg,
+koffein,caffeine,caféine,caffeina,cafeína,
+koffein · mg,caffeine · mg,caféine · mg,caffeina · mg,cafeína · mg,
+kohlenhydrate · g,carbs · g,glucides · g,carboidrati · g,carbohidratos · g,
+menge · g,amount · g,quantité · g,quantità · g,cantidad · g,
+nicht hinterlegt,not set,non renseignée,non impostata,sin definir,
+nicht verbunden,not connected,non connecté,non connesso,sin conectar,
+nicht verfügbar,unavailable,indisponible,non disponibile,no disponible,
+optional,optional,facultative,facoltativa,opcional,
+protein · g,protein · g,protéines · g,proteine · g,proteínas · g,
+selbst betrieben,self-hosted,auto-hébergé,in proprio,propio,
+verbunden,connected,connecté,connesso,conectado,
+was und wann,what and when,quoi et quand,cosa e quando,qué y cuándo,
+zeitpunkt,time,moment,orario,momento,

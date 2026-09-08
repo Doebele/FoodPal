@@ -9,8 +9,9 @@ jemandem zum Gegenlesen gibt. Deshalb schreibt der Import ausschließlich
 Werte zurück und legt keine Schlüssel an: was in der Tabelle steht und im
 Katalog fehlt, ist ein Tippfehler und keine neue Zeile.
 
-Semikolon statt Komma, weil Excel im deutschen Sprachraum sonst nicht
-richtig aufteilt; UTF-8 mit BOM aus demselben Grund.
+Komma und die nackten Sprachkürzel als Spaltenköpfe — genau so, wie
+Google Sheets die Tabelle wieder ausgibt. Der Import erkennt das Trennzeichen
+selbst, damit auch eine mit Semikolon gespeicherte Fassung durchgeht.
 """
 
 import csv
@@ -21,7 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "FoodPal" / "FoodPal" / "Localizable.xcstrings"
 LANGS = ["de", "en", "fr", "it", "es"]
-HEADER = ["Schlüssel (deutsch)"] + [f"{l}  ({'Original' if l == 'de' else 'Übersetzung'})" for l in LANGS[1:]] + ["Anmerkung"]
+HEADER = ["Schlüssel (deutsch)"] + LANGS[1:] + ["Anmerkung"]
 
 
 def load():
@@ -42,7 +43,7 @@ def export(target: Path):
         rows.append([key] + [value(entry, l) for l in LANGS[1:]] + [""])
 
     with target.open("w", encoding="utf-8-sig", newline="") as f:
-        writer = csv.writer(f, delimiter=";")
+        writer = csv.writer(f)
         writer.writerow(HEADER)
         writer.writerows(rows)
     print(f"{len(rows)} Zeilen → {target}")
@@ -53,7 +54,10 @@ def import_(source: Path):
     changed, unknown = 0, []
 
     with source.open(encoding="utf-8-sig", newline="") as f:
-        for row in csv.DictReader(f, delimiter=";"):
+        # Semikolon oder Komma: was in der Kopfzeile öfter vorkommt, trennt.
+        head = f.readline()
+        f.seek(0)
+        for row in csv.DictReader(f, delimiter=";" if head.count(";") > head.count(",") else ","):
             key = (row.get(HEADER[0]) or "").strip()
             entry = catalog["strings"].get(key)
             if not entry:
