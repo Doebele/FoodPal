@@ -173,10 +173,16 @@ struct SettingsView: View {
     /// man wählt, was man sieht.
     private var stylePicker: some View {
         HStack(spacing: 0) {
-            // Optischer Ausgleich: die massive Segment-Acht traegt schwerer
-            // als die kleine Ziffer auf der Karte, deshalb kleiner gesetzt.
+            // Optischer Ausgleich, zweimal: die massive Segment-Acht traegt
+            // schwerer als die kleine Ziffer auf der Karte, deshalb kleiner
+            // gesetzt — und die Ziffer sitzt in der Mitte ihrer Karte, waehrend
+            // die beiden anderen ihr Feld fuellen. Ausgemessen sass sie
+            // dadurch 18 pt tiefer als die Nachbarn. Der Versatz gilt nur der
+            // Vorschau; auf dem Startscreen steht die Anzeige allein.
             styleCell(.flip) {
-                FlipCard(digit: 8).frame(height: 64)
+                FlipCard(digit: 8)
+                    .frame(height: 64)
+                    .offset(y: -18)
             }
             Rectangle().fill(Palette.rule).frame(width: 1, height: 64)
             styleCell(.sevenSegment) {
