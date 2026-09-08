@@ -275,6 +275,11 @@ struct VisionSheet: View {
     @State private var apiKey = ""
     @State private var probeResult: String?
     @State private var probing = false
+    @State private var models: [VisionEstimator.ListedModel] = []
+    @State private var modelsNote: String?
+    @State private var loadingModels = false
+    @State private var showModels = false
+    @State private var picks = 0
 
     private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
 
@@ -318,7 +323,9 @@ struct VisionSheet: View {
             .scrollIndicators(.hidden)
         }
         .background(Palette.paper)
-        .haptic(.selection, trigger: providerRaw)
+        // Zaehler statt providerRaw: so quittiert auch die Modellwahl, und
+        // das Tippen im Schluesselfeld loest nichts aus.
+        .haptic(.selection, trigger: picks)
     }
 
     /// Eine Zeile je Dienst statt eines Umschalters: bei zwoelf Eintraegen
@@ -370,6 +377,7 @@ struct VisionSheet: View {
     private func select(_ option: Provider) {
         providerRaw = option.rawValue
         probeResult = nil
+        picks += 1
     }
 
     /// Der Satz, der beim Einrichten fehlt: wo der Schluessel herkommt und
@@ -397,6 +405,92 @@ struct VisionSheet: View {
             text[range].underlineStyle = .single
         }
         return text
+    }
+
+    // MARK: - Modellauswahl
+
+    /// Den Namen abzutippen ist die schlechteste Art, ein Modell zu waehlen:
+    /// die IDs sind lang, sie wandern, und der Dienst kennt sie ohnehin. Die
+    /// Liste kommt deshalb aus derselben Abfrage, die auch der Verbindungstest
+    /// benutzt — geladen wird sie erst beim Aufklappen, nicht auf Verdacht.
+    @ViewBuilder private var modelList: some View {
+        actionRow(loadingModels ? "Lädt …"
+                  : showModels ? "Liste ausblenden"
+                  : "Modelle vom Dienst laden") {
+            showModels.toggle()
+            if showModels, models.isEmpty { loadModels() }
+        }
+
+        if showModels {
+            if let modelsNote {
+                Text(modelsNote)
+                    .font(.system(size: 12))
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.vertical, 10)
+            }
+
+            // Ausgeblendet wird nur, was sich selbst als bildblind ausweist.
+            // Wo der Dienst nichts dazu sagt, steht alles in der Liste — raten
+            // waere schlimmer als eine Zeile zu viel.
+            let choices = models.filter { $0.seesImages != false }
+            LazyVStack(alignment: .leading, spacing: 0) {
+                ForEach(choices, id: \.self) { entry in
+                    modelRow(entry.id)
+                }
+            }
+
+            if choices.count < models.count {
+                Text("\(models.count - choices.count) ohne Bildeingang ausgeblendet.")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.top, 10)
+            }
+        }
+    }
+
+    private func modelRow(_ id: String) -> some View {
+        let active = PerProvider.value(modelsJSON, provider) == id
+        return Button {
+            modelField.wrappedValue = id
+            probeResult = nil
+            picks += 1
+            showModels = false
+        } label: {
+            HStack {
+                Text(id)
+                    .font(.system(size: 14, design: .monospaced))
+                    .foregroundStyle(active ? Palette.ink : Palette.ink2)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                Spacer(minLength: 12)
+                Rectangle()
+                    .fill(active ? Palette.ink : .clear)
+                    .frame(width: 9, height: 9)
+            }
+            .frame(height: 44)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Palette.rule).frame(height: 1)
+        }
+    }
+
+    private func loadModels() {
+        Task {
+            loadingModels = true
+            modelsNote = nil
+            do {
+                models = try await VisionEstimator.models(
+                    provider: provider,
+                    baseURL: provider.address(from: addressesJSON)
+                )
+                if models.isEmpty { modelsNote = "Der Dienst nennt keine Modelle." }
+            } catch {
+                modelsNote = error.localizedDescription
+            }
+            loadingModels = false
+        }
     }
 
     @ViewBuilder private var providerFields: some View {
@@ -433,6 +527,8 @@ struct VisionSheet: View {
                     .foregroundStyle(Palette.ink)
             }
 
+            modelList
+
             actionRow(probing ? "Prüfe …" : "Verbindung testen") {
                 Task {
                     probing = true
@@ -454,6 +550,10 @@ struct VisionSheet: View {
         }
         .task(id: providerRaw) {
             apiKey = Keychain.get(provider.keychainAccount) ?? ""
+            // Die Liste gehoerte dem vorherigen Dienst.
+            models = []
+            modelsNote = nil
+            showModels = false
         }
     }
 

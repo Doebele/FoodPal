@@ -320,23 +320,22 @@ extension VisionEstimator {
     /// Fragt die Modellliste ab. Billiger und ehrlicher als eine
     /// Probe-Schätzung: es kostet keine Tokens und sagt trotzdem, ob
     /// Adresse, Schlüssel und Erreichbarkeit stimmen.
+    /// Ein Eintrag aus `/models`.
+    ///
+    /// `seesImages` ist **dreiwertig**: manche Dienste nennen die Eingabearten
+    /// je Modell, die meisten nicht. `nil` heisst deshalb „unbekannt", nicht
+    /// „nein" — geraten wird hier nicht.
+    struct ListedModel: Hashable, Sendable {
+        let id: String
+        let seesImages: Bool?
+    }
+
     static func probe(provider: Provider, model: String, baseURL: String) async -> String {
-        let key = Keychain.get(provider.keychainAccount)
-        if provider.needsKey, key?.isEmpty != false { return "Kein Schlüssel hinterlegt." }
-
-        let base = provider.fixedBaseURL ?? baseURL
-        guard !base.isEmpty, let url = URL(string: trimmed(base) + "/models") else {
-            return "Adresse fehlt oder ist ungültig."
+        guard let request = modelsRequest(provider, baseURL) else {
+            return provider.needsKey && !Keychain.has(provider.keychainAccount)
+                ? "Kein Schlüssel hinterlegt."
+                : "Adresse fehlt oder ist ungültig."
         }
-
-        var request = URLRequest(url: url)
-        if provider == .claude {
-            request.setValue(key, forHTTPHeaderField: "x-api-key")
-            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
-        } else if let key, !key.isEmpty {
-            request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
-        }
-        request.timeoutInterval = 12
 
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
@@ -344,10 +343,12 @@ extension VisionEstimator {
             switch code {
             case 200..<300:
                 // Modell-IDs wandern; ein Tippfehler oder ein abgekündigter
-                // Name fiele sonst erst beim ersten Foto auf.
-                let ids = listedModels(data)
-                if ids.isEmpty { return "Verbindung steht." }
-                return ids.contains(model)
+                // Name fiele sonst erst beim ersten Foto auf. Geprüft wird
+                // gegen die **ganze** Liste: die Frage ist, ob es den Namen
+                // gibt, nicht ob das Modell sehen kann.
+                let listed = parseModels(data)
+                if listed.isEmpty { return "Verbindung steht." }
+                return listed.contains { $0.id == model }
                     ? "Verbindung steht, Modell vorhanden."
                     : "Verbindung steht, aber \(model) ist nicht in der Liste."
             case 401, 403: return "Schlüssel wird abgelehnt (\(code))."
@@ -358,10 +359,54 @@ extension VisionEstimator {
         }
     }
 
+    /// Die Modellliste des Dienstes, für die Auswahl in den Einstellungen.
+    static func models(provider: Provider, baseURL: String) async throws -> [ListedModel] {
+        guard let request = modelsRequest(provider, baseURL) else {
+            throw provider.needsKey && !Keychain.has(provider.keychainAccount)
+                ? Failure.missingKey
+                : Failure.unreadable("Adresse fehlt oder ist ungültig.")
+        }
+        let (data, response) = try await URLSession.shared.data(for: request)
+        let code = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard (200..<300).contains(code) else {
+            throw Failure.badResponse(code, String(data: data, encoding: .utf8) ?? "")
+        }
+        return parseModels(data)
+    }
+
+    /// Eine Anfrage für beide Zwecke — Test und Auswahl fragen dasselbe ab.
+    private static func modelsRequest(_ provider: Provider, _ baseURL: String) -> URLRequest? {
+        let key = Keychain.get(provider.keychainAccount)
+        if provider.needsKey, key?.isEmpty != false { return nil }
+
+        let base = provider.fixedBaseURL ?? baseURL
+        guard !base.isEmpty, let url = URL(string: trimmed(base) + "/models") else { return nil }
+
+        var request = URLRequest(url: url)
+        if provider == .claude {
+            request.setValue(key, forHTTPHeaderField: "x-api-key")
+            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+        } else if let key, !key.isEmpty {
+            request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+        }
+        request.timeoutInterval = 12
+        return request
+    }
+
     /// Anthropic und die OpenAI-Form liefern beide `{"data":[{"id":…}]}`.
-    private static func listedModels(_ data: Data) -> Set<String> {
+    ///
+    /// Manche Dienste — OpenRouter etwa — nennen dort unter `architecture`
+    /// auch die Eingabearten. Wo sie stehen, lässt sich sagen, ob ein Modell
+    /// Bilder annimmt; wo nicht, bleibt es offen.
+    static func parseModels(_ data: Data) -> [ListedModel] {
         guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let items = root["data"] as? [[String: Any]] else { return [] }
-        return Set(items.compactMap { $0["id"] as? String })
+
+        return items.compactMap { item in
+            guard let id = item["id"] as? String else { return nil }
+            let modalities = (item["architecture"] as? [String: Any])?["input_modalities"] as? [String]
+            return ListedModel(id: id, seesImages: modalities.map { $0.contains("image") })
+        }
+        .sorted { $0.id < $1.id }
     }
 }

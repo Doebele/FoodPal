@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import FoodPal
 
@@ -56,5 +57,44 @@ struct EstimateParsingTests {
         #expect(throws: (any Error).self) {
             try VisionEstimator.parse("Ich kann auf diesem Bild kein Essen erkennen.")
         }
+    }
+}
+
+/// Die Modellliste, aus der man in den Einstellungen auswählt. Wichtig ist
+/// die Dreiwertigkeit von `seesImages`: die meisten Dienste sagen nichts über
+/// Bildeingänge, und „weiss nicht" darf nicht zu „nein" werden — sonst
+/// verschwände die halbe Liste.
+struct ModelListParsingTests {
+
+    private func json(_ raw: String) -> Data { Data(raw.utf8) }
+
+    @Test func openAIFormOhneAngabenSortiert() {
+        let listed = VisionEstimator.parseModels(json("""
+        {"object":"list","data":[{"id":"gpt-4o-mini"},{"id":"dall-e-3"},{"id":"gpt-4o"}]}
+        """))
+        #expect(listed.map(\.id) == ["dall-e-3", "gpt-4o", "gpt-4o-mini"])
+        #expect(listed.allSatisfy { $0.seesImages == nil })
+    }
+
+    /// OpenRouter nennt die Eingabearten — dort laesst es sich wirklich sagen.
+    @Test func erklaerteEingabeartenWerdenUebernommen() {
+        let listed = VisionEstimator.parseModels(json("""
+        {"data":[
+          {"id":"a/seher","architecture":{"input_modalities":["text","image"]}},
+          {"id":"b/blind","architecture":{"input_modalities":["text"]}}
+        ]}
+        """))
+        #expect(listed.first { $0.id == "a/seher" }?.seesImages == true)
+        #expect(listed.first { $0.id == "b/blind" }?.seesImages == false)
+    }
+
+    @Test func eintragOhneIDFaelltRaus() {
+        let listed = VisionEstimator.parseModels(json(#"{"data":[{"name":"ohne id"},{"id":"gut"}]}"#))
+        #expect(listed.map(\.id) == ["gut"])
+    }
+
+    @Test func kaputteAntwortGibtLeereListe() {
+        #expect(VisionEstimator.parseModels(json("<html>Fehler</html>")).isEmpty)
+        #expect(VisionEstimator.parseModels(json(#"{"error":"kaputt"}"#)).isEmpty)
     }
 }
