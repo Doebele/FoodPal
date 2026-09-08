@@ -297,7 +297,10 @@ struct DayView: View {
             #if DEBUG
             // Erlaubt einen Screenshot des Eintrags ohne Bedienung des Simulators.
             if ProcessInfo.processInfo.environment["START_ENTRY"] == "1" {
-                selected = entries.sorted { $0.date < $1.date }.last
+                let sorted = entries.sorted { $0.date < $1.date }
+                // Bevorzugt einer mit Bild — sonst zeigt der Screenshot genau
+                // den Teil nicht, um den es geht.
+                selected = sorted.last { $0.photo != nil } ?? sorted.last
             }
             #endif
         }

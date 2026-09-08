@@ -1,6 +1,7 @@
 #if DEBUG
 import SwiftData
 import Foundation
+import UIKit
 
 /// Beispieltag für die Sichtprüfung, solange es keinen Erfassungs-Screen gibt.
 /// Läuft nur im Debug-Build und nur, wenn der Speicher leer ist.
@@ -46,6 +47,28 @@ enum DemoData {
                   proteinG: 18, carbsG: 74, fatG: 33)
         ]
         for entry in samples { context.insert(entry) }
+
+        // Je ein Eintrag mit Bild, damit sich die Detailansicht mit Foto und
+        // mit erzeugtem Bild pruefen laesst.
+        samples[1].photo = placeholder(0xC9793A)
+        samples[3].photo = placeholder(0x7A3A1B)
+        samples[3].generatedImage = true
+    }
+
+    /// Kein echtes Foto, nur eine Flaeche in Roestungsfarbe — es geht um das
+    /// Layout, nicht um den Inhalt.
+    private static func placeholder(_ hex: UInt32) -> Data? {
+        let size = CGSize(width: 900, height: 600)
+        let colour = UIColor(
+            red: CGFloat((hex >> 16) & 0xFF) / 255,
+            green: CGFloat((hex >> 8) & 0xFF) / 255,
+            blue: CGFloat(hex & 0xFF) / 255,
+            alpha: 1
+        )
+        return UIGraphicsImageRenderer(size: size).image { context in
+            colour.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+        }.jpegData(compressionQuality: 0.7)
     }
 }
 #endif

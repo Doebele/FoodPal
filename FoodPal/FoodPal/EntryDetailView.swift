@@ -34,6 +34,8 @@ struct EntryDetailView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
+                    picture
+
                     field("bezeichnung") {
                         TextField("", text: $name)
                             .font(.system(size: 22, weight: .light))
@@ -119,6 +121,38 @@ struct EntryDetailView: View {
                     .font(.system(size: 12))
                     .foregroundStyle(Palette.ink2)
             }
+        }
+    }
+
+    /// Das Bild zum Eintrag — bis hierher wurde es gespeichert und nirgends
+    /// gezeigt.
+    ///
+    /// Ein **erzeugtes** Bild trägt seine Marke. Am Stil sieht man es ohnehin,
+    /// Image Playground zeichnet und fotografiert nicht; aber in einem
+    /// Tagebuch soll der Unterschied zwischen Beleg und Merkhilfe nachlesbar
+    /// sein und nicht nur erkennbar.
+    @ViewBuilder private var picture: some View {
+        if let data = entry.photo, let image = UIImage(data: data) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(height: 220)
+                .frame(maxWidth: .infinity)
+                .clipped()
+                .overlay(alignment: .bottomLeading) {
+                    if entry.generatedImage {
+                        Text("erzeugt")
+                            .font(.system(size: 10))
+                            .tracking(0.8)
+                            .foregroundStyle(Palette.paper)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 3)
+                            .background(Palette.ink)
+                            .padding(8)
+                    }
+                }
+                .padding(.top, 12)
+                .padding(.bottom, 24)
         }
     }
 
