@@ -7,34 +7,46 @@ Die App kennt **zwei Request-Formen**, nicht eine je Anbieter:
 | Anthropic Messages | Claude |
 | OpenAI Chat Completions | alle übrigen |
 
-Deshalb gibt es in den Einstellungen drei Einträge, nicht dreizehn:
+Ein Anbieter ist deshalb nur eine Zeile Daten, kein Code. Die Liste steht in
+`Provider.spec` in [`VisionEstimator.swift`](../FoodPal/FoodPal/VisionEstimator.swift)
+— Adresse, Standardmodell und Bezugsquelle des Schlüssels je Zeile:
 
-| Einstellung | Adresse | Schlüssel |
-|---|---|---|
-| **Claude** | fest | nötig |
-| **OpenAI** | fest | nötig |
-| **Eigener Dienst** | frei | optional |
-
-„Eigener Dienst" ist der Sammelplatz für alles, was die OpenAI-Form spricht.
-Adresse, Modellname und — falls der Dienst einen verlangt — Schlüssel eintragen,
-„Verbindung testen" drücken, fertig. Kein Code je Anbieter.
-
-## Getestete Adressen
-
-| Dienst | Adresse | Schlüssel | Beispielmodell |
+| Dienst | Adresse | Schlüssel von | Vorgabemodell |
 |---|---|---|---|
-| OpenRouter | `https://openrouter.ai/api/v1` | ja | `anthropic/claude-sonnet-5` |
-| Google Gemini | `https://generativelanguage.googleapis.com/v1beta/openai` | ja | `gemini-2.5-flash` |
-| xAI Grok | `https://api.x.ai/v1` | ja | `grok-4` |
-| Z.ai GLM | `https://api.z.ai/api/paas/v4` | ja | `glm-4.5v` |
-| DeepSeek | `https://api.deepseek.com/v1` | ja | `deepseek-v4-flash-vision-exp` |
-| Meta Muse | `https://api.meta.ai/v1` | ja | `muse-spark-1.1` |
-| Groq | `https://api.groq.com/openai/v1` | ja | — |
-| Mistral | `https://api.mistral.ai/v1` | ja | `pixtral-large-latest` |
-| LM Studio | `http://<Mac-IP>:1234/v1` | nein | `zai-org/glm-4.6v-flash` |
-| Ollama | `http://<Mac-IP>:11434/v1` | nein | `qwen3-vl` |
+| Claude | `https://api.anthropic.com/v1` | console.anthropic.com | `claude-sonnet-5` |
+| OpenAI | `https://api.openai.com/v1` | platform.openai.com | `gpt-4o` |
+| OpenRouter | `https://openrouter.ai/api/v1` | openrouter.ai/keys | `anthropic/claude-sonnet-5` |
+| Gemini | `https://generativelanguage.googleapis.com/v1beta/openai` | aistudio.google.com | `gemini-2.5-flash` |
+| Grok | `https://api.x.ai/v1` | console.x.ai | `grok-4` |
+| GLM | `https://api.z.ai/api/paas/v4` | z.ai | `glm-4.5v` |
+| DeepSeek | `https://api.deepseek.com/v1` | platform.deepseek.com | `deepseek-v4-flash-vision-exp` |
+| Muse | `https://api.meta.ai/v1` | dev.meta.ai | `muse-spark-1.1` |
+| Mistral | `https://api.mistral.ai/v1` | console.mistral.ai | `pixtral-large-latest` |
+| LM Studio | `http://<Mac-IP>:1234/v1` | — | `zai-org/glm-4.6v-flash` |
+| Ollama | `http://<Mac-IP>:11434/v1` | — | `qwen3-vl` |
+| Eigener Dienst | frei | optional | frei |
 
-Die Adresse endet **ohne** `/chat/completions` — das hängt die App an.
+Nur Claude spricht die Anthropic-Form; alles darunter läuft durch denselben
+OpenAI-Request. **Eigener Dienst** bleibt für alles, was hier nicht steht —
+Groq (`https://api.groq.com/openai/v1`), DeepInfra, Together, ein eigener
+Proxy. Die Adresse endet **ohne** `/chat/completions`, das hängt die App an.
+
+Jeder Anbieter hat ein eigenes Keychain-Fach, Wechseln kostet also keinen
+Schlüssel.
+
+## Modellnamen wandern
+
+Die Vorgaben oben stimmen zum Zeitpunkt des Eintragens und veralten. Deshalb
+prüft **„Verbindung testen"** nicht nur die Erreichbarkeit, sondern vergleicht
+das eingetragene Modell mit `/models` des Dienstes:
+
+- *„Verbindung steht, Modell vorhanden."* — passt
+- *„Verbindung steht, aber X ist nicht in der Liste."* — Adresse und Schlüssel
+  stimmen, der Modellname nicht
+- *„Verbindung steht."* — der Dienst gibt keine Modellliste heraus
+
+Was der Test nicht sagen kann: ob das Modell **sehen** kann. `deepseek-chat`
+existiert, nimmt aber keine Bilder — das zeigt sich erst am ersten Foto.
 
 ## Was nicht geht
 
@@ -42,9 +54,8 @@ Die Adresse endet **ohne** `/chat/completions` — das hängt die App an.
 sich ein Foto schicken ließe.
 
 **Textmodelle.** Der Anbieter ist gleichgültig, das Modell nicht: `gpt-4o` sieht,
-`deepseek-chat` nicht. Der Verbindungstest fragt nur die Modellliste ab und meldet
-deshalb „Verbindung steht", auch wenn das eingetragene Modell blind ist — das
-zeigt sich erst beim ersten Foto als 400er.
+`deepseek-chat` nicht. Siehe oben — der Verbindungstest findet den Namen, aber
+nicht die fehlenden Augen.
 
 ## Lokal im eigenen Netz
 
