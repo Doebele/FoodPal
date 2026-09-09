@@ -21,7 +21,12 @@ struct PhotoCapture: View {
     @State private var health = HealthKitSync()
     @State private var phase = {
         #if DEBUG
-        return ProcessInfo.processInfo.environment["START_DESCRIBE"] == "1" ? Phase.describing : .idle
+        let env = ProcessInfo.processInfo.environment
+        if env["START_DESCRIBE"] == "1" { return Phase.describing }
+        // Der Wartezustand ist sonst nur zu sehen, solange ein Modell
+        // tatsaechlich rechnet — fuer einen Blick darauf zu kurz.
+        if env["START_ANALYSING"] == "1" { return Phase.analysing(nil, source: "Claude · claude-sonnet-5") }
+        return .idle
         #else
         return Phase.idle
         #endif
@@ -295,7 +300,7 @@ struct PhotoCapture: View {
                     .padding(.top, 20)
             }
 
-            ProgressDots().padding(.top, 14)
+            ProgressMatrix().padding(.top, 14)
 
             Text("Analysiere")
                 .scaledFont(22, weight: .light)
@@ -771,26 +776,72 @@ private struct PlaygroundSheet: ViewModifier {
 }
 
 /// Fortschritt im Punktraster statt als Spinner — ein Balken, der durchläuft.
-private struct ProgressDots: View {
-    @State private var lit = 0
-    private let total = 24
+/// Der Verlauf während der Schätzung — **im Raster des Zeitstrahls**.
+///
+/// Vorher war es eine einzelne Reihe, die sich von links füllte: ein
+/// Segmentbalken, wie ihn jede App hat. Jetzt läuft eine diagonale Welle
+/// durch ein Punktfeld, dieselben 96 Spalten wie oben auf dem Startscreen und
+/// dieselbe Bewegung wie beim Wechsel der Dot-Matrix-Ziffern. Die App hat ein
+/// Vokabular; ein Wartezeichen ist kein Grund, daraus auszubrechen.
+///
+/// Ein Balken, der sich füllt, verspricht ausserdem etwas, das er nicht
+/// halten kann: wie lange ein Modell braucht, weiss hier niemand. Eine Welle
+/// sagt nur „es läuft" — und genau das ist die Wahrheit.
+private struct ProgressMatrix: View {
+    /// Bewegung, nicht Fortschritt: wer sie abgestellt hat, bekommt ein
+    /// Pulsieren an Ort und Stelle statt eines wandernden Bandes.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    @State private var phase: Double = 0
+
+    private static let rows = 7
+    /// Länge der Welle und Breite des leuchtenden Bandes darin, in Zellen der
+    /// Diagonale.
+    ///
+    /// Das Band muss deutlich breiter sein als das Feld hoch ist, sonst
+    /// bleibt vom Parallelogramm nur seine Spitze übrig: bei 9 zu 7 Reihen
+    /// liefen Keile durch das Bild, keine Streifen.
+    private static let period: Double = 44
+    private static let band: Double = 20
 
     var body: some View {
         Canvas { ctx, size in
-            let s = size.width / (Grid.x(total - 1) + Grid.dot)
-            for index in 0..<total {
-                let rect = CGRect(x: Grid.x(index) * s, y: 0,
-                                  width: Grid.dot * s, height: Grid.dot * s)
-                ctx.fill(Path(rect), with: .color(index < lit ? Palette.ink : Palette.rule))
+            let s = Grid.scale(forWidth: size.width)
+            for row in 0..<Self.rows {
+                for column in 0..<Grid.columns {
+                    let rect = CGRect(
+                        x: Grid.x(column) * s,
+                        y: CGFloat(row) * Grid.pitch * s,
+                        width: Grid.dot * s,
+                        height: Grid.dot * s
+                    )
+                    ctx.fill(Path(rect), with: .color(lit(row: row, column: column) ? Palette.ink : Palette.rule))
+                }
             }
         }
-        .aspectRatio((Grid.x(total - 1) + Grid.dot) / Grid.dot, contentMode: .fit)
+        .aspectRatio(
+            Grid.naturalWidth / (CGFloat(Self.rows - 1) * Grid.pitch + Grid.dot),
+            contentMode: .fit
+        )
+        .opacity(reduceMotion ? 0.4 + 0.6 * abs(sin(phase / 6)) : 1)
         .task {
+            // 24 Schritte je Sekunde: fein genug, dass die Welle fliesst, und
+            // grob genug, dass das Zeichnen des Feldes nicht auffaellt.
             while !Task.isCancelled {
-                try? await Task.sleep(for: .milliseconds(90))
-                lit = lit >= total ? 0 : lit + 1
+                try? await Task.sleep(for: .milliseconds(42))
+                phase += 1
             }
         }
+        .accessibilityLabel("Analysiere")
+    }
+
+    /// Eine diagonale Welle: die Zelle leuchtet, solange die Front über ihr
+    /// steht. `row + column` ist die Diagonale, der Rest ist Modulo.
+    private func lit(row: Int, column: Int) -> Bool {
+        guard !reduceMotion else { return (row + column) % 3 == 0 }
+        let offset = (Double(row + column) - phase).truncatingRemainder(dividingBy: Self.period)
+        let wrapped = offset < 0 ? offset + Self.period : offset
+        return wrapped < Self.band
     }
 }
 

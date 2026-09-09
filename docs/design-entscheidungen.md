@@ -575,6 +575,28 @@ Gewischt wird von Tag zu Tag — das ist der Weg für gestern und vorgestern. F�
 
 Er schliesst sich von selbst: nach der Wahl und sobald jemand doch wischt.
 
+## Der Wartezustand im Raster
+
+Während ein Modell rechnet, lief bisher eine einzelne Reihe von links voll —
+ein Segmentbalken, wie ihn jede App hat. Jetzt läuft eine **diagonale Welle
+durch ein Punktfeld**: dieselben 96 Spalten wie der Zeitstrahl auf dem
+Startscreen, sieben Reihen hoch, dieselbe Bewegung wie beim Wechsel der
+Dot-Matrix-Ziffern. Die App hat ein Vokabular; ein Wartezeichen ist kein
+Grund, daraus auszubrechen.
+
+Ein Balken, der sich füllt, verspricht ausserdem etwas, das er nicht halten
+kann: wie lange ein Modell braucht, weiss hier niemand. Eine Welle sagt nur
+„es läuft" — und das ist die Wahrheit.
+
+**Das Band muss deutlich breiter sein als das Feld hoch ist.** Der erste
+Versuch hatte 9 Zellen Band auf 7 Reihen; vom Parallelogramm blieb dann nur
+seine Spitze, und es liefen Keile durch das Bild statt Streifen. Mit 20 zu 44
+(Band zu Wellenlänge) steht ein sauberes Parallelogramm, das seine Neigung
+über die ganze Höhe behält.
+
+Bei „Bewegung reduzieren" wandert nichts: dann steht ein festes Punktmuster
+und pulsiert an Ort und Stelle.
+
 ## Barrierefreiheit
 
 Drei Schritte, in dieser Reihenfolge — Trefferflächen und Kontrast zuerst, weil sie **jeden** betreffen und nichts am Entwurf kosten; Dynamic Type danach, weil es das Layout anfasst.
