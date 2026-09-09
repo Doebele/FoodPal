@@ -630,6 +630,8 @@ Das Erzeugen selbst hat mit dem gewählten Schätzdienst **nichts** zu tun: es l
 
 **Das Zeitrad kommt von unten.** Ein `UIDatePicker` braucht die volle Breite für seine drei Räder; in der 213 pt schmalen Spalte lief es rechts aus dem Bild und die Minuten waren nicht mehr zu sehen. Als Bottom Sheet mit fester Höhe bekommt es die ganze Breite — und passt zum Rest der App, in der alles, was eine Sache erledigt und wieder geht, von unten kommt.
 
+**Unter „eintrag löschen" steht nichts mehr.** Dass Health mit aufgeräumt wird, stand dort als Hinweis — und noch einmal in der Nachfrage, einen Tap später. Zweimal dasselbe macht den Schirm nur unruhig, und in der Nachfrage steht es rechtzeitig: dort, wo man sich entscheidet.
+
 **Der Platz oben links bleibt leer.** Das ist die halbe Miete: oben links bleibt es leer, und was man anfassen und eintippen muss, rückt nach unten, wo der Daumen ist. Ohne Bild bleibt der Platz dafür trotzdem stehen — der Weissraum ist Teil des Satzes, nicht das Loch, das ein fehlendes Bild hinterlässt.
 
 Drei Dinge, an denen der erste Versuch scheiterte:
@@ -650,7 +652,7 @@ Gesetzt wird das mit `.textCase(.lowercase)` beim Anzeigen, nicht in den Schlüs
 
 **Drei Ausnahmen**, und jede hat einen Grund:
 
-- **Fliesstext bleibt Fliesstext.** „Wird auch aus Apple Health entfernt.", „Noch nichts erfasst.", Fehlermeldungen — das sind Sätze, keine Etiketten. Ein Satz ohne Versal liest sich als Versehen.
+- **Fliesstext bleibt Fliesstext.** „Der Eintrag wird auch aus Apple Health entfernt.", „Noch nichts erfasst.", Fehlermeldungen — das sind Sätze, keine Etiketten. Ein Satz ohne Versal liest sich als Versehen.
 - **Werte behalten ihre eigene Schreibung.** „Apple", „Bowl mit Lachs", „Coca-Cola Zero" — was aus den Daten kommt, gehört den Daten. Klein gesetzt sind die Etiketten links davon, nicht die Werte rechts.
 - **Systemdialoge.** Die Knöpfe in der Löschen-Nachfrage („Löschen", „Abbrechen") zeichnet iOS selbst; sie nehmen `textCase` nicht an und würden klein auch falsch aussehen, denn dort ist die Schreibung Konvention der Plattform.
 

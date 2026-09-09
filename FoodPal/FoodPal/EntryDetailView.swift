@@ -179,12 +179,9 @@ struct EntryDetailView: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-
-            if healthSync {
-                Text("Wird auch aus Apple Health entfernt.")
-                    .scaledFont(12)
-                    .foregroundStyle(Palette.ink2)
-            }
+            // Kein Hinweis unter dem Knopf: dass Health mit aufgeraeumt wird,
+            // steht in der Nachfrage — und dort steht es rechtzeitig. Zweimal
+            // dasselbe macht den Schirm nur unruhig.
         }
     }
 

@@ -3268,41 +3268,6 @@
         }
       }
     },
-    "Wird auch aus Apple Health entfernt.": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wird auch aus Apple Health entfernt."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Also removed from Apple Health."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Retiré aussi d’Apple Santé."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rimossa anche da Apple Salute."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "También se elimina de Apple Salud."
-          }
-        }
-      }
-    },
     "Zimt": {
       "extractionState": "manual",
       "localizations": {
