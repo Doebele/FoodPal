@@ -175,6 +175,17 @@ einer Firma. Das ist nicht nur sauberer, es hält sie auch haltbar.
 | Cà phê sữa đá | a Vietnamese iced coffee in a straight tumbler (G2), condensed milk at the bottom, dark coffee above, clear ice cubes, a small matte steel phin filter resting on the rim |
 | Espresso Tonic | an espresso tonic in a straight tumbler (G2), clear tonic with fine bubbles and clear ice below, a dark espresso layer floating on top |
 
+### Kaffee mit Schnaps
+
+| Sorte | `{{DRINK}}` |
+|---|---|
+| Schümli Pflümli | a schümli pflümli in a warmed stemmed glass, light brown coffee filling it to a finger below the rim, a thick dome of whipped cream on top, a light dusting of cocoa |
+| Kafi Fertig | a kafi fertig in a small straight coffee glass with a handle, the coffee so pale and thin that the sugar cubes at the bottom show through it, no cream, no foam |
+| Café Baileys | a café baileys in a warmed stemmed glass, pale caramel coffee below, a layer of half-whipped cream floating on top, a light dusting of cocoa |
+
+Für alle drei gilt: **keine Flasche, kein Etikett, kein Markenzeichen im Bild** —
+das Getränk steht allein, wie bei allen anderen.
+
 ---
 
 ## Erster Durchgang, und was er zeigte
@@ -286,6 +297,8 @@ Sorte ohne bestellt, korrigiert den Wert im Bestätigen-Schirm.
 | Schlagrahm, ungesüsst | 340 kcal/100 g |
 | Zucker | 4 kcal/g |
 | Whiskey 40 % vol, 40 ml | 90 kcal |
+| Obstbrand 40 % vol, 2 cl | 44 kcal |
+| Irish Cream, 17 % vol, 4 cl | 131 kcal |
 | Vanilleeis | 200 kcal/100 g |
 | Tonic Water | 35 kcal/100 ml |
 | Türkischer Kaffee, 60 ml | 51–60 mg (Studie Ege-Universität, 858 mg/l) |
@@ -311,6 +324,9 @@ Sorte ohne bestellt, korrigiert den Wert im Bestätigen-Schirm.
 | Freddo Cappuccino | 55 | 126 | dazu 80 ml kalter Milchschaum |
 | Cà phê sữa đá | 100 | 130 | Phin-Kaffee + 30 g Kondensmilch |
 | Espresso Tonic | 55 | 63 | Espresso + 150 ml Tonic |
+| Schümli Pflümli | 130 | 80 | Kaffee + 2 cl Pflümli + 1 TL Zucker + 20 ml Schlagrahm |
+| Kafi Fertig | 95 | 40 | dünner Kaffee + 3 Würfelzucker + 2 cl Träsch |
+| Café Baileys | 200 | 80 | Kaffee + 4 cl Irish Cream + 20 ml Schlagrahm |
 
 **Warum überhaupt rechnen.** Für einen Barraquito gibt es keine
 Herstellerangabe, und es wird auch nie eine geben — er entsteht in einer Bar auf
@@ -325,6 +341,11 @@ Sahne und Milchmenge schwanken von Haus zu Haus — der Bestätigen-Schirm steht
 genau deshalb vor jedem Speichern.
 
 ### Nachtrag zum Bestand
+
+**Kafi Fertig und Kafi Luz sind dasselbe Getränk** — in Luzern heisst es Kafi
+Luz oder Träschkaffee, in Bern Kafi Fertig, andernorts Cheli. Es steht deshalb
+**einmal** im Bestand, und die Warenkunde nennt die anderen Namen. Zwei Presets
+mit identischen Werten wären eine Sorte zu viel.
 
 **Der Cortado steht jetzt auf einem Doppio: 126 mg statt 63, 30 kcal statt 45.**
 Die Quellen sind einig — 30 bis 40 ml Espresso auf gleich viel Milch, im Glas
@@ -343,6 +364,9 @@ Bestehende Einträge behalten ihre Werte; das Preset gilt für neue.
 - [Gezuckerte Kondensmilch, 321 kcal/100 g (USDA FoodData Central 171275)](https://tools.myfooddata.com/nutrition-facts/171275/wt1)
 - [Kaffeerahm-Portion, Emmi](https://fddb.info/db/de/lebensmittel/emmi_kaffeerahm_portion/index.html)
 - [Phin-Kaffee, Koffein](https://hanoidrip.coffee/blog/caffeine-in-vietnamese-coffee)
+- [Kafi Luz und Kafi Fertig — Herkunft und Regel](https://www.drinkdirect.ch/de/blog/trends/kafi-luz-herkunft-rezept-zubereitung), [Volg-Rezept](https://www.volg.ch/dorfplatz/rezepte/artikel/kafi-fertig/)
+- [Schümli Pflümli, Rezept](https://www.gutekueche.ch/schuemli-pfluemli-rezept-12483)
+- [Irish Cream, 327 kcal/100 ml](https://www.nutritionix.com/food/baileys-irish-cream), [Zubereitung](https://www.diageobaracademy.com/de-de/home/entdecke-alle-rezepte/baileys-coffee)
 
 ## Auf die App
 
