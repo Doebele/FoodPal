@@ -98,6 +98,19 @@ im Text half nicht. Also:
 4. Am Ende alle nebeneinander ansehen, nicht einzeln. Was auffällt, fällt nur
    im Vergleich auf.
 
+**Positiv beschreiben, nicht verneinen.** Das ist der zweite harte Befund:
+`no text, no logo, no print` wurde dreimal überlesen — eine Tasse trug am Ende
+„kaffee", eine andere einen erfundenen Röstereinamen, eine dritte bekam den
+ausdrücklich ausgeschlossenen Goldrand. Was hilft, ist die Fläche zu
+**beschreiben**, statt ihren Inhalt zu verbieten: *„its whole surface is one
+uniform plain white glaze from rim to foot, blank and undecorated"* — damit kam
+die Tazzina auf Anhieb blank. Dieselbe Regel gilt für alles, was fehlen soll:
+lieber „empty in every direction" als „no table, no edge, no horizon".
+
+**Rechne mit zwei bis drei Anläufen je Sorte.** Von acht Bildern des dritten
+Durchgangs waren fünf brauchbar; von vier Tazzina-Versuchen einer. Für vierzig
+Sorten heisst das rund hundert Erzeugungen und eine Sichtung — nicht vierzig.
+
 **Der Kamerastand gehört nach vorn.** Hinten im Prompt wird er überlesen —
 vier von sechs Bildern kamen von oben. In Grossbuchstaben und als erster Satz
 (`SIDE VIEW AT CUP HEIGHT …`) sass er auf Anhieb bei allen vieren.
