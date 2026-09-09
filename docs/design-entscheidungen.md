@@ -605,6 +605,10 @@ Bestätigen und Eintrag ändern stehen jetzt in **zwei Spalten**: links die Zahl
 
 **Koffein steht zuoberst, wo es vorkommt.** Bei einem Getränk ist es der Wert, um den es geht — die drei Kalorien einer Cola Zero sind daneben eine Fussnote. Bei einer Mahlzeit ohne Koffein steht das Feld gar nicht erst da.
 
+**Ein erzeugtes Bild lässt sich ersetzen, ein Foto nicht.** Die Zeile „Neues Bild erzeugen" steht deshalb auch dort, wo schon ein Bild hängt — solange die App es selbst gezeichnet hat. Ein Foto ist ein Beleg; was aus einer Bezeichnung entstanden ist, ist eine Merkhilfe und darf neu entstehen, wenn der Wurf danebenging. Die Zeile ist rechtsbündig gesetzt wie im Entwurf, ihre Trefferfläche läuft trotzdem über die ganze Spalte.
+
+Das Erzeugen selbst hat mit dem gewählten Schätzdienst **nichts** zu tun: es läuft über Apples Image Playground auf dem Gerät. `supportsImagePlayground` blendet die Zeile aus, wo das nicht geht — im Simulator also immer, und auf dem Gerät, solange Apple Intelligence aus oder das Modell noch nicht geladen ist.
+
 **Das Zeitrad kommt von unten.** Ein `UIDatePicker` braucht die volle Breite für seine drei Räder; in der 213 pt schmalen Spalte lief es rechts aus dem Bild und die Minuten waren nicht mehr zu sehen. Als Bottom Sheet mit fester Höhe bekommt es die ganze Breite — und passt zum Rest der App, in der alles, was eine Sache erledigt und wieder geht, von unten kommt.
 
 **Der Platz oben links bleibt leer.** Das ist die halbe Miete: oben links bleibt es leer, und was man anfassen und eintippen muss, rückt nach unten, wo der Daumen ist. Ohne Bild bleibt der Platz dafür trotzdem stehen — der Weissraum ist Teil des Satzes, nicht das Loch, das ein fehlendes Bild hinterlässt.

@@ -2393,6 +2393,41 @@
         }
       }
     },
+    "Neues Bild erzeugen": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neues Bild erzeugen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generate a new image"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Générer une nouvelle image"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genera una nuova immagine"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generar una nueva imagen"
+          }
+        }
+      }
+    },
     "Nicht verfügbar.": {
       "extractionState": "manual",
       "localizations": {

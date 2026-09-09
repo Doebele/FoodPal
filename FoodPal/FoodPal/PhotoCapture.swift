@@ -696,11 +696,15 @@ private struct Confirm: View {
                     .foregroundStyle(Palette.ink)
                 Rectangle().fill(Palette.rule).frame(height: 1)
 
-                if image == nil, generated == nil, #available(iOS 18.1, *) {
-                    HStack {
-                        Spacer(minLength: 0)
-                        GenerateImageRow(disabled: concept.isEmpty) { showPlayground = true }
-                    }
+                // Auch wenn schon ein erzeugtes Bild steht: das laesst sich
+                // ersetzen, ein **Foto** nicht. Ein Foto ist ein Beleg; was
+                // die App gezeichnet hat, ist eine Merkhilfe und darf neu
+                // gezeichnet werden.
+                if image == nil, #available(iOS 18.1, *) {
+                    GenerateImageRow(
+                        label: generated == nil ? "Bild erzeugen" : "Neues Bild erzeugen",
+                        disabled: concept.isEmpty
+                    ) { showPlayground = true }
                 }
             }
             .padding(.bottom, 18)
@@ -808,17 +812,23 @@ private struct Confirm: View {
 @available(iOS 18.1, *)
 struct GenerateImageRow: View {
     @Environment(\.supportsImagePlayground) private var supported
+    /// „Neues Bild erzeugen", wo schon eins steht — sonst liest sich die
+    /// Zeile, als gäbe es noch keins.
+    var label: LocalizedStringKey = "Bild erzeugen"
     let disabled: Bool
     let action: () -> Void
 
     var body: some View {
         if supported {
+            // **Rechtsbuendig**, wie im Entwurf — und die Trefferflaeche
+            // trotzdem ueber die ganze Spalte. Der Spacer stand vorher links
+            // vom Text und schob ihn an den linken Rand.
             Button(action: action) {
                 HStack {
-                    Text("Bild erzeugen")
+                    Spacer(minLength: 0)
+                    Text(label)
                         .scaledFont(17, weight: .medium)
                         .foregroundStyle(disabled ? Palette.ink2 : Palette.ink)
-                    Spacer()
                 }
                 .frame(minHeight: 56)
                 .contentShape(Rectangle())

@@ -147,13 +147,15 @@ struct EntryDetailView: View {
             }
 
             // Auch nachtraeglich: ein Eintrag ohne Bild bekommt hier eins,
-            // aus seiner Bezeichnung. Die Zeile erscheint nur, wo das Geraet
-            // Image Playground kann — und nur, solange kein Bild da ist.
-            if entry.photo == nil, #available(iOS 18.1, *) {
-                HStack {
-                    Spacer(minLength: 0)
-                    GenerateImageRow(disabled: name.isEmpty) { showPlayground = true }
-                }
+            // aus seiner Bezeichnung. Und ein **erzeugtes** Bild laesst sich
+            // ersetzen — ein Foto nicht. Ein Foto ist ein Beleg; was die App
+            // gezeichnet hat, ist eine Merkhilfe und darf neu gezeichnet
+            // werden, wenn der Wurf danebenging.
+            if entry.photo == nil || entry.generatedImage, #available(iOS 18.1, *) {
+                GenerateImageRow(
+                    label: entry.photo == nil ? "Bild erzeugen" : "Neues Bild erzeugen",
+                    disabled: name.isEmpty
+                ) { showPlayground = true }
             }
         }
     }
