@@ -216,6 +216,44 @@ Bild. Für den zweiten Durchgang also: den Espresso so lange wiederholen, bis
 Tasse, Winkel und Schatten stimmen, und ihn danach jedem weiteren Prompt als
 Referenz mitgeben.
 
+## Das Modell: Flux 2, nicht Soul
+
+Vier Modelle, zwei Motive, derselbe Prompt — Espresso in der Tazzina und
+Vanilla Latte im hohen Glas, weil das Gefäss, der Schatten und der Grund
+zusammen die Probe sind.
+
+| Modell | Gefäss | Schatten | Grund | Credits/Bild |
+|---|---|---|---|---|
+| **Flux 2 pro** | **beide richtig** | **weich, kurz, rechts unten** | warm, gleichmässig | 1,00 |
+| Recraft V4.1 utility | Tasse verfehlt, Glas gut | weich | sehr sauber, aber **kühl** | 1,25 |
+| Soul 2 | brauchbar | **hart, schwarz** | Fleck in der Ecke | 0,12 |
+| Seedream 4.5 | gut | **hart, lang, diagonal** | **Verlauf**, dunkle Ecke | 1,00 |
+
+**Flux 2 pro** nimmt als einziges alle drei Angaben gleichzeitig an. Recraft
+setzt den Hintergrund über einen **Parameter** (`background_color`) statt über
+den Prompt — technisch der sauberste Weg, nur trifft es die Gefässe nicht und
+rendert kühl statt warm. Soul ist achtmal billiger, liefert aber harte
+Schlagschatten und Flecken im Grund; für vierzig Bilder aus einer Hand
+zu unruhig.
+
+## Der Grund wird nicht erzeugt, er wird gezogen
+
+Kein Modell trifft `#FAFAF8` zweimal gleich — Flux lag bei (241, 233, 218),
+(247, 237, 218), Seedream hatte eine Ecke bei (73, 58, 35). Darauf zu hoffen
+ist der falsche Weg: **`tools/kaffeebilder.py`** misst den Randstreifen, nimmt
+sein oberes Quartil (damit ein Schatten am Rand nicht mitzählt) und skaliert
+die drei Kanäle so, dass der Grund auf Papier landet. Die Tasse dreht mit —
+sie soll ja unter demselben Licht stehen wie ihr Grund. Danach auf **1600 px**.
+
+```bash
+python3 tools/kaffeebilder.py bild.png    # -> bild-1600.jpg
+```
+
+**Warum 1600.** Aufgespreizt läuft das Bild über die volle Breite: auf einem
+iPhone 17 Pro Max sind das 440 pt, also **1320 px** auf @3x. 1600 gibt gut ein
+Fünftel Reserve und wiegt rund 285 kB — vierzig Sorten also **etwa 10 MB** im
+Bündel.
+
 ## Werte
 
 Recherchiert am 9. September 2026. **Zwei Herkünfte, sauber getrennt** — was
