@@ -565,6 +565,16 @@ Zwei Fallen beim Abgleich der Bezeichnung, beide durch Tests festgehalten:
 - **`folding(.diacriticInsensitive)` macht aus „ü" ein „u", nicht „ue".** „Gruentee" hätte „Grüntee" damit nie gefunden. Die Umlaute werden vorher deutsch aufgelöst.
 - **Deutsche Komposita zwingen zur Teilzeichenkette** — „Milchkaffee" und „Energydrink" wären mit Wortgrenzen nicht zu finden. Die holt sich dann aber **Rucola** als Cola und **Tomate** als Mate. Deshalb je Eintrag eine kurze Ausschlussliste, und „mate" allein ist kein Schlüssel mehr.
 
+## Kalender hinter dem Datum
+
+Gewischt wird von Tag zu Tag — das ist der Weg für gestern und vorgestern. Für „irgendwann letzte Woche" wären das ein Dutzend Wischer, und deshalb klappt jetzt ein Kalender auf, sobald man das Datum in der Kopfzeile antippt.
+
+**`UICalendarView` statt `DatePicker`:** nur der erste kann Tage **markieren**. Wo schon etwas erfasst ist, sitzt ein kleines Quadrat unter der Zahl — dasselbe Zeichen wie im Zeitstrahl, und man sieht auf einen Blick, wo es etwas zu sehen gibt. Der wählbare Bereich reicht vom ersten Eintrag bis heute; nach vorn ist Schluss, wie beim Wischen auch.
+
+**Der Kalender liegt über dem Tag, nicht davor.** Im Layoutfluss hat er Zeitstrahl und Anzeige zusammengeschoben, sodass von dem Tag, den man gerade wählt, nur noch ein Streifen zu sehen war. Als `overlay` auf Papier mit einer Haarlinie darunter fällt er wie ein Auszug aus der Kopfzeile herunter und lässt darunter alles stehen.
+
+Er schliesst sich von selbst: nach der Wahl und sobald jemand doch wischt.
+
 ## Barrierefreiheit
 
 Drei Schritte, in dieser Reihenfolge — Trefferflächen und Kontrast zuerst, weil sie **jeden** betreffen und nichts am Entwurf kosten; Dynamic Type danach, weil es das Layout anfasst.

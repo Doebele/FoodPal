@@ -23,6 +23,7 @@ struct TodayView: View {
     // Gleich auf heute gesetzt, nicht erst in onAppear — sonst feuert
     // beim Start ein Haptik-Impuls ohne Anlass.
     @State private var scrolled: Date? = Calendar.current.startOfDay(for: .now)
+    @State private var pickingDay = false
 
     private var calendar: Calendar { .current }
     private var today: Date { calendar.startOfDay(for: .now) }
@@ -43,6 +44,34 @@ struct TodayView: View {
     }
 
     private var currentDay: Date { scrolled ?? today }
+
+    @ViewBuilder private var calendar_: some View {
+        if pickingDay {
+            VStack(spacing: 0) {
+                DayPicker(
+                    selection: .constant(currentDay),
+                    marked: markedDays,
+                    range: (days.first ?? today)...today
+                ) { day in
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        scrolled = day
+                        pickingDay = false
+                    }
+                }
+                .padding(.horizontal, Metric.margin - 8)
+                .padding(.bottom, 12)
+
+                Rectangle().fill(Palette.rule).frame(height: 1)
+            }
+            .background(Palette.paper)
+            .transition(.move(edge: .top).combined(with: .opacity))
+        }
+    }
+
+    /// Tage, an denen etwas steht — das ist die Markierung im Kalender.
+    private var markedDays: Set<Date> {
+        Set(all.map { calendar.startOfDay(for: $0.date) })
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -67,6 +96,14 @@ struct TodayView: View {
             .scrollPosition(id: $scrolled, anchor: .center)
             .scrollIndicators(.hidden)
             .haptic(.selection, trigger: currentDay)
+            // Wer wischt, hat den Kalender nicht mehr noetig.
+            .onChange(of: currentDay) { _, _ in
+                if pickingDay { withAnimation(.easeInOut(duration: 0.2)) { pickingDay = false } }
+            }
+            // **Ueber** dem Tag, nicht davor: im Fluss haette der Kalender den
+            // Zeitstrahl und die Anzeige zusammengeschoben, und man saehe von
+            // dem Tag, den man gerade waehlt, nur noch einen Streifen.
+            .overlay(alignment: .top) { calendar_ }
 
             captureAction
         }
@@ -79,10 +116,22 @@ struct TodayView: View {
             // unabhaengig davon, ob der Heute-Sprung gerade da ist.
             HStack(spacing: 4) {
                 stepButton("<", delta: -1, enabled: canStep(-1))
-                Text(title(for: currentDay))
-                    .scaledFont(14, weight: .medium)
-                    .foregroundStyle(Palette.ink)
-                    .frame(minWidth: 132)
+                // Das Datum ist zugleich der Weg in die Vergangenheit: fuer
+                // gestern wischt man, fuer „letzten Dienstag" waeren das ein
+                // Dutzend Wischer.
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) { pickingDay.toggle() }
+                } label: {
+                    Text(title(for: currentDay))
+                        .scaledFont(14, weight: .medium)
+                        .foregroundStyle(Palette.ink)
+                        .frame(minWidth: 132)
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Tag wählen")
+                .accessibilityValue(title(for: currentDay))
                 stepButton(">", delta: 1, enabled: canStep(1))
             }
 

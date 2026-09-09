@@ -433,6 +433,41 @@
         }
       }
     },
+    "Auf die Rosette tippen, um zu diktieren. Zeitangaben wie „gestern Abend um neun“ werden übernommen; mehrere Gerichte werden einzeln erfasst.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf die Rosette tippen, um zu diktieren. Zeitangaben wie „gestern Abend um neun“ werden übernommen; mehrere Gerichte werden einzeln erfasst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap the rosette to dictate. Times such as “yesterday at nine” are picked up; several dishes are logged separately."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touchez la rosace pour dicter. Les heures comme « hier à neuf heures » sont reprises ; plusieurs plats sont enregistrés séparément."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocca la rosetta per dettare. Orari come “ieri alle nove” vengono ripresi; più piatti vengono registrati separatamente."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca la roseta para dictar. Horas como «ayer a las nueve» se recogen; varios platos se registran por separado."
+          }
+        }
+      }
+    },
     "Aus Fotos wählen": {
       "extractionState": "manual",
       "localizations": {
@@ -954,6 +989,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "Este dispositivo no admite Apple Intelligence."
+          }
+        }
+      }
+    },
+    "Diktat beenden": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diktat beenden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop dictation"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrêter la dictée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferma la dettatura"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detener el dictado"
+          }
+        }
+      }
+    },
+    "Diktieren": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diktieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dictate"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dicter"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detta"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dictar"
           }
         }
       }
@@ -1724,6 +1829,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hoy"
+          }
+        }
+      }
+    },
+    "Hört zu. Nochmal tippen beendet das Diktat.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hört zu. Nochmal tippen beendet das Diktat."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listening. Tap again to stop."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À l’écoute. Touchez à nouveau pour arrêter."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In ascolto. Tocca di nuovo per fermare."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escuchando. Toca otra vez para parar."
           }
         }
       }
@@ -2568,6 +2708,76 @@
         }
       }
     },
+    "Sprache": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprache"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voice"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voix"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voce"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voz"
+          }
+        }
+      }
+    },
+    "Spracherkennung ist hier nicht verfügbar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spracherkennung ist hier nicht verfügbar."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speech recognition is not available here."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La reconnaissance vocale n’est pas disponible ici."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il riconoscimento vocale non è disponibile qui."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El reconocimiento de voz no está disponible aquí."
+          }
+        }
+      }
+    },
     "Sync": {
       "extractionState": "manual",
       "localizations": {
@@ -2599,6 +2809,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sincronizar"
+          }
+        }
+      }
+    },
+    "Tag wählen": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag wählen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a day"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisir un jour"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli un giorno"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elegir un día"
           }
         }
       }
@@ -2984,6 +3229,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Canela"
+          }
+        }
+      }
+    },
+    "Zugriff auf Mikrofon oder Spracherkennung fehlt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zugriff auf Mikrofon oder Spracherkennung fehlt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Microphone or speech recognition access is missing."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’accès au micro ou à la reconnaissance vocale manque."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manca l’accesso al microfono o al riconoscimento vocale."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falta el acceso al micrófono o al reconocimiento de voz."
           }
         }
       }
