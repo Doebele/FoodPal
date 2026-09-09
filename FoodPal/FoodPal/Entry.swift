@@ -149,7 +149,13 @@ struct CoffeePreset: Identifiable, Hashable {
         .init(name: "Affogato", kcal: 100, caffeineMg: 63),
         .init(name: "Freddo Espresso", kcal: 5, caffeineMg: 126),
         .init(name: "Freddo Cappuccino", kcal: 55, caffeineMg: 126),
-        .init(name: "Cà phê sữa đá", kcal: 100, caffeineMg: 130)
+        .init(name: "Cà phê sữa đá", kcal: 100, caffeineMg: 130),
+
+        // Kaffee mit Schnaps. Die Werte tragen den Alkohol mit: 2 cl Obstbrand
+        // zu 40 % sind rund 44 kcal, 4 cl Irish Cream rund 131.
+        .init(name: "Schümli Pflümli", kcal: 130, caffeineMg: 80),
+        .init(name: "Kafi Fertig", kcal: 95, caffeineMg: 40),
+        .init(name: "Café Baileys", kcal: 200, caffeineMg: 80)
     ]
 
     func entry(at date: Date = .now) -> Entry {

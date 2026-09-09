@@ -10,6 +10,7 @@ import UIKit
 enum CoffeeInfo: String, CaseIterable {
     case espresso, ristretto, doppio, lungo, americano, filter, mokka
     case macchiato, cortado, cappuccino, latte, latteMacchiato, flatWhite, coldBrew
+    case pfluemli, fertig, baileys
 
     /// Bezeichnung im Bestand — so heisst der Eintrag, der daraus entsteht.
     var preset: String {
@@ -28,6 +29,9 @@ enum CoffeeInfo: String, CaseIterable {
         case .latteMacchiato: "Latte Macchiato"
         case .flatWhite: "Flat White"
         case .coldBrew: "Cold Brew"
+        case .pfluemli: "Schümli Pflümli"
+        case .fertig: "Kafi Fertig"
+        case .baileys: "Café Baileys"
         }
     }
 
@@ -42,6 +46,9 @@ enum CoffeeInfo: String, CaseIterable {
         case .macchiato: [.espresso, .milchschaum]
         case .cortado, .flatWhite: [.espresso, .milch]
         case .cappuccino, .latte, .latteMacchiato: [.espresso, .milch, .milchschaum]
+        case .pfluemli: [.kaffee, .obstbrand, .zucker, .schlagrahm]
+        case .fertig: [.kaffee, .obstbrand, .zucker]
+        case .baileys: [.kaffee, .irishCream, .schlagrahm]
         }
     }
 
@@ -77,6 +84,12 @@ enum CoffeeInfo: String, CaseIterable {
             String(localized: "Doppelter Ristretto mit feinporigem Mikroschaum, flach eingegossen. Stärker als der Cappuccino und ohne Schaumhaube.")
         case .coldBrew:
             String(localized: "Zwölf bis zwanzig Stunden kalt gezogen statt heiss gebrüht. Wenig Säure, viel Koffein.")
+        case .pfluemli:
+            String(localized: "Zucker ins vorgewärmte Stielglas, Pflümli darüber, mit Kaffee auffüllen bis einen Finger unter den Rand, Schlagrahm obenauf.")
+        case .fertig:
+            String(localized: "Drei Würfelzucker ins Glas, Kaffee darüber, bis man sie nicht mehr sieht — dann Träsch, bis man sie wieder sieht.")
+        case .baileys:
+            String(localized: "Vier Zentiliter Irish Cream ins vorgewärmte Glas, den heissen Kaffee über den Löffelrücken darübergiessen, halbsteifen Rahm obenauf.")
         }
     }
 
@@ -109,6 +122,12 @@ enum CoffeeInfo: String, CaseIterable {
             String(localized: "Australien oder Neuseeland, 1980er-Jahre — welches von beiden, streiten beide bis heute.")
         case .coldBrew:
             String(localized: "Zwei Linien: der langsame Tropfturm aus Kyoto und der Kaltauszug aus New Orleans, dort mit Zichorie.")
+        case .pfluemli:
+            String(localized: "Schweizer Wintergetränk, nach dem Skitag. „Schümli\u{201C} ist der Kaffee mit seinem Schaum, „Pflümli\u{201C} der Zwetschgenbrand dazu.")
+        case .fertig:
+            String(localized: "Innerschweiz. In Luzern heisst er Kafi Luz oder Träschkaffee, in Bern Kafi Fertig — dasselbe Getränk. Entstanden aus Sparsamkeit: dünner Kaffee, gestreckt mit Selbstgebranntem. Die Regel dazu lautet, durch einen richtigen müsse man Zeitung lesen können.")
+        case .baileys:
+            String(localized: "Der jüngste im Feld: Irish Cream gibt es erst seit 1974. Zum Irish Coffee verhält er sich wie Rahm zu Whiskey — süsser, milder, und der Alkohol versteckt sich.")
         }
     }
 
@@ -130,6 +149,7 @@ enum CoffeeInfo: String, CaseIterable {
 
     enum Ingredient {
         case espresso, kaffee, wasser, milch, milchschaum, eis
+        case zucker, obstbrand, schlagrahm, irishCream
 
         var label: String {
             switch self {
@@ -139,6 +159,10 @@ enum CoffeeInfo: String, CaseIterable {
             case .milch: String(localized: "Milch")
             case .milchschaum: String(localized: "Milchschaum")
             case .eis: String(localized: "Eis")
+            case .zucker: String(localized: "Zucker")
+            case .obstbrand: String(localized: "Obstbrand")
+            case .schlagrahm: String(localized: "Schlagrahm")
+            case .irishCream: String(localized: "Irish Cream")
             }
         }
     }

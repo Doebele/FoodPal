@@ -1028,6 +1028,41 @@
         }
       }
     },
+    "Der jüngste im Feld: Irish Cream gibt es erst seit 1974. Zum Irish Coffee verhält er sich wie Rahm zu Whiskey — süsser, milder, und der Alkohol versteckt sich.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der jüngste im Feld: Irish Cream gibt es erst seit 1974. Zum Irish Coffee verhält er sich wie Rahm zu Whiskey — süsser, milder, und der Alkohol versteckt sich."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The youngest of the field: Irish cream has only existed since 1974. To an Irish coffee it stands as cream to whiskey — sweeter, milder, and the alcohol hides."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le plus jeune du lot : la crème irlandaise n’existe que depuis 1974. Face à l’Irish coffee, elle est ce que la crème est au whiskey — plus douce, plus ronde, et l’alcool s’y cache."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il più giovane del gruppo: la crema irlandese esiste solo dal 1974. Rispetto all’Irish coffee sta come la panna al whiskey — più dolce, più morbida, e l’alcol si nasconde."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El más joven del grupo: la crema irlandesa existe solo desde 1974. Frente al Irish coffee es lo que la nata al whiskey — más dulce, más suave, y el alcohol se esconde."
+          }
+        }
+      }
+    },
     "Die Antwort war nicht lesbar.": {
       "extractionState": "manual",
       "localizations": {
@@ -1304,6 +1339,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Un ristretto doble con microespuma fina, vertida plana. Más fuerte que el capuchino y sin cúpula de espuma."
+          }
+        }
+      }
+    },
+    "Drei Würfelzucker ins Glas, Kaffee darüber, bis man sie nicht mehr sieht — dann Träsch, bis man sie wieder sieht.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drei Würfelzucker ins Glas, Kaffee darüber, bis man sie nicht mehr sieht — dann Träsch, bis man sie wieder sieht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Three sugar cubes in the glass, coffee over them until they disappear — then fruit brandy until they show again."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trois morceaux de sucre dans le verre, du café jusqu’à ce qu’ils disparaissent — puis de l’eau-de-vie jusqu’à ce qu’ils réapparaissent."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tre zollette nel bicchiere, caffè finché non si vedono più — poi acquavite finché non riappaiono."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tres terrones en el vaso, café hasta que desaparezcan — luego aguardiente hasta que vuelvan a verse."
           }
         }
       }
@@ -2428,6 +2498,76 @@
         }
       }
     },
+    "Innerschweiz. In Luzern heisst er Kafi Luz oder Träschkaffee, in Bern Kafi Fertig — dasselbe Getränk. Entstanden aus Sparsamkeit: dünner Kaffee, gestreckt mit Selbstgebranntem. Die Regel dazu lautet, durch einen richtigen müsse man Zeitung lesen können.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Innerschweiz. In Luzern heisst er Kafi Luz oder Träschkaffee, in Bern Kafi Fertig — dasselbe Getränk. Entstanden aus Sparsamkeit: dünner Kaffee, gestreckt mit Selbstgebranntem. Die Regel dazu lautet, durch einen richtigen müsse man Zeitung lesen können."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Central Switzerland. In Lucerne it is called Kafi Luz or Träschkaffee, in Bern Kafi Fertig — the same drink. Born of thrift: thin coffee, stretched with home-distilled spirit. The rule says you must be able to read a newspaper through a proper one."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suisse centrale. À Lucerne on l’appelle Kafi Luz ou Träschkaffee, à Berne Kafi Fertig — la même boisson. Née de l’économie : un café léger allongé d’eau-de-vie maison. La règle veut qu’à travers un vrai, on puisse lire le journal."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svizzera centrale. A Lucerna si chiama Kafi Luz o Träschkaffee, a Berna Kafi Fertig — la stessa bevanda. Nata dal risparmio: caffè leggero allungato con distillato di casa. La regola dice che attraverso uno vero si deve poter leggere il giornale."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suiza central. En Lucerna se llama Kafi Luz o Träschkaffee; en Berna, Kafi Fertig — la misma bebida. Nació del ahorro: café flojo alargado con aguardiente casero. La regla dice que a través de uno de verdad se ha de poder leer el periódico."
+          }
+        }
+      }
+    },
+    "Irish Cream": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Irish Cream"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Irish cream"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crème irlandaise"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crema irlandese"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crema irlandesa"
+          }
+        }
+      }
+    },
     "Italien, Zweiter Weltkrieg: die Geschichte erzählt von amerikanischen Soldaten, denen der Espresso zu klein war.": {
       "extractionState": "manual",
       "localizations": {
@@ -3408,6 +3548,41 @@
         }
       }
     },
+    "Obstbrand": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obstbrand"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fruit brandy"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eau-de-vie de fruits"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acquavite di frutta"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aguardiente de fruta"
+          }
+        }
+      }
+    },
     "Prüfe …": {
       "extractionState": "manual",
       "localizations": {
@@ -3439,6 +3614,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comprobando …"
+          }
+        }
+      }
+    },
+    "Schlagrahm": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlagrahm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whipped cream"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crème fouettée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Panna montata"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nata montada"
           }
         }
       }
@@ -3509,6 +3719,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Escribe"
+          }
+        }
+      }
+    },
+    "Schweizer Wintergetränk, nach dem Skitag. „Schümli“ ist der Kaffee mit seinem Schaum, „Pflümli“ der Zwetschgenbrand dazu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schweizer Wintergetränk, nach dem Skitag. „Schümli“ ist der Kaffee mit seinem Schaum, „Pflümli“ der Zwetschgenbrand dazu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A Swiss winter drink, for after a day on the slopes. “Schümli” is the coffee with its foam, “Pflümli” the plum brandy that goes in it."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boisson d’hiver suisse, pour après une journée de ski. « Schümli », c’est le café et sa mousse ; « Pflümli », l’eau-de-vie de prune qu’on y verse."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bevanda invernale svizzera, per il dopo-sci. «Schümli» è il caffè con la sua schiuma, «Pflümli» l’acquavite di prugne che ci va dentro."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bebida suiza de invierno, para después de esquiar. «Schümli» es el café con su espuma; «Pflümli», el aguardiente de ciruela que lleva."
           }
         }
       }
@@ -4108,6 +4353,41 @@
         }
       }
     },
+    "Vier Zentiliter Irish Cream ins vorgewärmte Glas, den heissen Kaffee über den Löffelrücken darübergiessen, halbsteifen Rahm obenauf.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vier Zentiliter Irish Cream ins vorgewärmte Glas, den heissen Kaffee über den Löffelrücken darübergiessen, halbsteifen Rahm obenauf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Four centilitres of Irish cream into the warmed glass, the hot coffee poured over the back of a spoon, half-whipped cream on top."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quatre centilitres de crème irlandaise dans le verre préchauffé, le café chaud versé sur le dos d’une cuillère, crème à demi fouettée dessus."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quattro centilitri di crema irlandese nel bicchiere preriscaldato, il caffè caldo versato sul dorso di un cucchiaio, panna semimontata sopra."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuatro centilitros de crema irlandesa en el vaso precalentado, el café caliente vertido sobre el dorso de una cuchara, nata semimontada encima."
+          }
+        }
+      }
+    },
     "Vorheriger Tag": {
       "extractionState": "manual",
       "localizations": {
@@ -4349,6 +4629,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "Preparación"
+          }
+        }
+      }
+    },
+    "Zucker": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zucker"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sucre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zucchero"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azúcar"
+          }
+        }
+      }
+    },
+    "Zucker ins vorgewärmte Stielglas, Pflümli darüber, mit Kaffee auffüllen bis einen Finger unter den Rand, Schlagrahm obenauf.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zucker ins vorgewärmte Stielglas, Pflümli darüber, mit Kaffee auffüllen bis einen Finger unter den Rand, Schlagrahm obenauf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugar into the warmed stemmed glass, plum brandy over it, fill with coffee to a finger below the rim, whipped cream on top."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du sucre dans le verre à pied préchauffé, l’eau-de-vie de prune par-dessus, remplir de café jusqu’à un doigt du bord, crème fouettée dessus."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zucchero nel bicchiere a stelo preriscaldato, acquavite di prugne sopra, caffè fino a un dito dal bordo, panna montata in cima."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azúcar en la copa precalentada, aguardiente de ciruela encima, café hasta un dedo del borde, nata montada arriba."
           }
         }
       }
