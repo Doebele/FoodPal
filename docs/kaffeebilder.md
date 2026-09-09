@@ -32,12 +32,13 @@ Sechs Gefässe, mehr nicht; jede Sorte verweist auf eines davon:
 
 | | Gefäss |
 |---|---|
-| **V1** | Espressotasse, 60 ml, dickwandig, mattes warmweisses Porzellan, gerade Wandung, kleiner Henkel, kein Dekor, kein Goldrand |
-| **V2** | Tasse, 180 ml, dieselbe Familie |
-| **V3** | Grosse Tasse, 300 ml, dieselbe Familie |
-| **G1** | Glas, 90 ml, dünnwandig, gerade, ungeschliffen |
-| **G2** | Becherglas, 250 ml, dieselbe Familie |
-| **G3** | Hohes Glas, 350 ml, dieselbe Familie |
+| **V1** | **Tazzina**, die italienische Espressotasse: klein und schwer, dickwandiges weisses Porzellan, der Körper ein Kegelstumpf, der sich zu einem kleinen massiven Fuss verjüngt, der Rand leicht ausgestellt und dick gewulstet, ein kleiner runder Ohrhenkel, durch den gerade ein Finger passt. 6 cm hoch, 60 ml |
+| **V1o** | dieselbe Grösse **ohne Henkel** — der türkische *fincan*: gerade, leicht konische Wandung, dickes Porzellan, steht auf seinem Boden |
+| **V2** | Tasse, 180 ml: gerader, leicht konischer Körper, kleiner runder Ohrhenkel, niedriger massiver Fuss, kein Dekor, kein Goldrand |
+| **V3** | dieselbe Form in 300 ml |
+| **G1** | Glas, 100 ml: gerade Wandung, dünnes klares Glas, ohne Schliff, ohne Stiel, ohne Henkel |
+| **G2** | Becherglas, 250 ml, dieselbe Machart |
+| **G3** | hohes Glas, 350 ml, dieselbe Machart |
 
 Ausnahmen, wo das Gefäss die Sorte *ist*: Stielglas (Einspänner, Irish Coffee),
 Schale ohne Henkel (Café au Lait), Phin-Filter (Cà phê sữa đá).
@@ -81,15 +82,25 @@ falsch aussähe, steht sie in der Zeile der Sorte — sonst nicht.
 
 ## Reihenfolge, damit der Satz ein Satz wird
 
-1. **Espresso zuerst.** Er ist das einfachste Bild und legt Geschirr, Licht und
-   Schattenlänge fest. So lange wiederholen, bis er sitzt.
-2. Diesen einen als **Stilreferenz** in Higgsfield hinterlegen und für alle
-   weiteren mitgeben, mittlere Gewichtung — stark genug fürs Geschirr, schwach
-   genug, dass ein Glas ein Glas wird.
-3. **Seed festhalten**, falls die Fassung ihn hergibt, und alles in *einer*
-   Sitzung erzeugen. Ein Modellwechsel zwischendurch bricht den Satz.
-4. Am Ende alle vierzig **nebeneinander** ansehen, nicht einzeln. Was auffällt,
-   fällt nur im Vergleich auf: eine Tasse zu gross, ein Schatten zu lang.
+**Ein Hero je Gefäss, nicht einer für alles.** Das ist am zweiten Durchgang
+gelernt: eine Referenz überträgt Kamera, Licht und Grund tadellos — und
+**überschreibt das Gefäss**. Mit einer Tasse als Referenz kamen Barraquito und
+Vanilla Latte, die in Gläsern stehen, als dieselbe Tasse zurück; die Anweisung
+im Text half nicht. Also:
+
+1. Je Gefäss aus der Tabelle **einen Hero erzeugen**, jeweils in mehreren
+   Anläufen, bis Form, Winkel und Schatten sitzen. Sieben Bilder, die den
+   ganzen Satz tragen.
+2. Jede Sorte dann aus **ihrem** Hero, mit ihm als Referenz: „Match the
+   reference exactly … only the drink changes."
+3. Seed festhalten, wo die Fassung ihn hergibt, und je Gruppe in einer
+   Sitzung erzeugen.
+4. Am Ende alle nebeneinander ansehen, nicht einzeln. Was auffällt, fällt nur
+   im Vergleich auf.
+
+**Der Kamerastand gehört nach vorn.** Hinten im Prompt wird er überlesen —
+vier von sechs Bildern kamen von oben. In Grossbuchstaben und als erster Satz
+(`SIDE VIEW AT CUP HEIGHT …`) sass er auf Anhieb bei allen vieren.
 
 ---
 

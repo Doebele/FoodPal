@@ -150,7 +150,15 @@ struct CoffeeCapture: View {
         .padding(.horizontal, Metric.margin)
         .frame(maxWidth: .infinity)
         .frame(height: Self.legendHeight)
-        .background(.ultraThinMaterial)
+        // **Papier, nicht Systemgrau.** `ultraThinMaterial` allein bringt
+        // seinen eigenen kühlen Ton mit — die Zeile stand dann grau neben der
+        // Kopfzeile darüber. Eine Papierwäsche darauf nimmt ihn heraus; das
+        // Glas darunter bleibt und lässt die Kacheln verschwimmen, die
+        // hindurchlaufen.
+        .background {
+            Palette.paper.opacity(0.86)
+                .background(.ultraThinMaterial)
+        }
     }
 
     // MARK: - Kacheln
