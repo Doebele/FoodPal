@@ -43,42 +43,31 @@ Sechs Gefässe, mehr nicht; jede Sorte verweist auf eines davon:
 Ausnahmen, wo das Gefäss die Sorte *ist*: Stielglas (Einspänner, Irish Coffee),
 Schale ohne Henkel (Café au Lait), Phin-Filter (Cà phê sữa đá).
 
-## Der Stilblock
+## Der Produktionsprompt
 
-Steht **unverändert** unter jedem Prompt. Nur die erste Zeile wechselt.
-
-```
-Still-life product photograph of {{DRINK}}.
-
-Camera straight on at eye level, tilted 10° above the rim so the surface reads
-as a thin ellipse. 85 mm lens, no perspective distortion, deep focus, the whole
-vessel sharp. Single vessel, centred, alone in frame.
-
-Seamless warm off-white background, hex #FAFAF8, no horizon line, no table
-edge, no surface texture. One large soft light from the upper left, gentle fill
-from the right, a single soft shadow falling short to the lower right. Matte
-surfaces throughout, no specular hotspots, no rim light, no reflections.
-
-Palette limited to off-white, near-black and roasted browns between #3D1C0E and
-#C9793A. No other hue anywhere.
-
-Restrained Swiss product photography in the spirit of a 1960s Braun catalogue:
-quiet, exact, unstyled, nothing decorative. Square 1:1, high resolution.
-```
-
-**Negativ**, ebenfalls unverändert:
+Kurz gehalten: was Flux nachweislich befolgt, steht drin, der Rest ist Ballast.
+Nur die `SUBJECT`-Zeile wechselt.
 
 ```
-text, letters, numbers, logo, branding, label, packaging, watermark, hands,
-people, coffee beans, scattered grounds, spoon, saucer, napkin, plant, flower,
-book, wood, marble, linen, fabric, steam, splash, drips, bokeh, vignette,
-gradient backdrop, colored background, blue tint, teal, pink, neon, glare,
-lens flare, tilted horizon, multiple cups, cropped vessel
+CAMERA 25 degrees above the rim plane, vessel upright and square to camera,
+base in frame. SUBJECT: {{DRINK}}. GROUND: one flat warm off-white tone
+#FAFAF8, empty in every direction, no horizon, no gradient, no visible
+surface. LIGHT: one large soft light from the upper left; exactly one soft
+shadow, on the ground to the lower right, about one vessel-width long, fading
+out. Matte throughout, no gloss, no reflection, no rim light. 85mm, whole
+vessel sharp, centred, alone in frame. Palette: off-white, near-black, roasted
+brown. Quiet Braun-catalogue product photography, blank undecorated surfaces.
 ```
 
-`saucer` steht bewusst im Negativ: eine Untertasse verdoppelt die Silhouette und
-macht aus vierzig ruhigen Bildern vierzig unruhige. Wo eine Sorte ohne sie
-falsch aussähe, steht sie in der Zeile der Sorte — sonst nicht.
+**Warum 25° und nicht 10°.** Bei 10° liegt der Rand als schmale Ellipse da und
+vom Getränk sieht man nichts — beim Ristretto, der nur zu einem Drittel steht,
+gar nichts. 25° schaut weit genug hinein, dass die Fläche liest, und lässt dem
+Gefäss seine Silhouette. Bei 32° wird die Tasse gedrungen; nachgemessen an
+genau diesen drei Fassungen.
+
+**Vier Varianten je Sorte, eine wird genommen.** Nicht weil das Modell schlecht
+wäre, sondern weil es bei Schatten und Schaum streut — und der Satz lebt davon,
+dass alle vierzig dieselbe Hand haben.
 
 ## Reihenfolge, damit der Satz ein Satz wird
 
