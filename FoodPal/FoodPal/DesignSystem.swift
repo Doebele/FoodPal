@@ -14,6 +14,11 @@ enum Palette {
     /// Erloschene Punkte im Diagramm — etwas kräftiger als `rule`.
     static let ink3  = dynamic(light: 0xC9C9BD, dark: 0x33332E)
     static let rule  = dynamic(light: 0xE2E2DA, dark: 0x2A2A27)
+    /// Die Kachel der Getränkeauswahl: Papier, eine Spur zurückgenommen.
+    /// Im Entwurf ist es ein radialer Verlauf von Papier nach `rule` bei 20 %
+    /// Deckkraft — sichtbar davon ist nur, dass die Kachel nicht ganz Papier
+    /// ist. Eine Fläche sagt dasselbe mit einer Zeile.
+    static let tile  = dynamic(light: 0xF4F4EF, dark: 0x1B1B19)
 
     /// Fester Farbwert, unabhängig vom aktuellen Modus — für Vorschauen,
     /// die zeigen sollen, wie der *andere* Modus aussieht.

@@ -164,6 +164,34 @@ einer Firma. Das ist nicht nur sauberer, es hält sie auch haltbar.
 
 ---
 
+## Erster Durchgang, und was er zeigte
+
+Sechs Bilder mit **Soul v2** (Higgsfield), 2048 × 2048, aus den Prompts oben:
+Espresso, Türkischer Mokka, Barraquito, Vanilla Latte, Wiener Melange, Kaffee
+Crème. Was daraus zu lernen war:
+
+**Was hält:** Palette, Licht und Leere. Kein Requisit, keine Bohne, kein Dampf,
+kein Löffel — die Negativliste greift. Der Barraquito kam auf Anhieb richtig,
+mit vier Bändern und Zimtstaub.
+
+**Was nicht hält — und das ist der eigentliche Befund:**
+
+- **Der Kamerastand wird überlesen.** „Eye level, tilted 10°" stand in jedem
+  Prompt; vier von sechs Bildern kamen von oben, eins schräg. Aus Text allein
+  entsteht kein Satz.
+- **Das Geschirr wechselt von Bild zu Bild.** Genau dagegen war die
+  Gefäss-Tabelle gedacht — sie wirkt nur als **Referenzbild**, nicht als Wort.
+- **„No text" reicht nicht.** In einer Tasse stand am Ende „kaffee".
+- **Der Grund ist nicht immer nahtlos**; in drei Bildern schneidet eine Kante
+  durchs Feld.
+
+**Folgerung: die Reihenfolge in dieser Akte ist nicht Zierat, sondern die
+halbe Miete.** Ein Hero-Bild, das sitzt, dann alle weiteren mit ihm als
+Stilreferenz — was Soul aus Text nicht zuverlässig nimmt, nimmt es aus einem
+Bild. Für den zweiten Durchgang also: den Espresso so lange wiederholen, bis
+Tasse, Winkel und Schatten stimmen, und ihn danach jedem weiteren Prompt als
+Referenz mitgeben.
+
 ## Werte
 
 Recherchiert am 9. September 2026. **Zwei Herkünfte, sauber getrennt** — was

@@ -94,25 +94,62 @@ struct CoffeePreset: Identifiable, Hashable {
 
     var id: String { name }
 
+    /// **Reihenfolge = Vorrang bei Gleichstand.** Wer noch nie etwas getippt
+    /// hat, sieht unten den Espresso und oben die Exoten; von da an zählt,
+    /// was tatsächlich getrunken wird.
+    ///
+    /// Werte: die vierzehn Klassiker aus europäischen Standardportionen, die
+    /// Kettenkaffees aus der Herstellertabelle (Grande, 473 ml, 2 % Milch),
+    /// Schweizer Sorten und Exoten gerechnet. Herkunft je Zahl steht in
+    /// `docs/kaffeebilder.md`.
     static let all: [CoffeePreset] = [
-        .init(name: "Macchiato", kcal: 13, caffeineMg: 63),
-        .init(name: "Cold Brew", kcal: 6, caffeineMg: 155),
-        .init(name: "Mokka", kcal: 5, caffeineMg: 95),
+        // Klassiker
+        .init(name: "Espresso", kcal: 2, caffeineMg: 63),
+        .init(name: "Cappuccino", kcal: 74, caffeineMg: 63),
+        .init(name: "Kaffee Crème", kcal: 20, caffeineMg: 80),
+        .init(name: "Caffè Latte", kcal: 135, caffeineMg: 63),
+        .init(name: "Flat White", kcal: 155, caffeineMg: 130),
         .init(name: "Filterkaffee", kcal: 4, caffeineMg: 95),
         .init(name: "Lungo", kcal: 3, caffeineMg: 75),
         .init(name: "Americano", kcal: 3, caffeineMg: 77),
-        .init(name: "Caffè Latte", kcal: 135, caffeineMg: 63),
-        .init(name: "Latte Macchiato", kcal: 120, caffeineMg: 63),
-        // Doppio, nicht einfacher Shot: die Quellen nennen 30–40 ml Espresso
-        // auf gleich viel Milch im 60–70-ml-Glas. Damit 126 mg statt 63, und
-        // die Kalorien folgen derselben Rechnung — 4 fuer den Doppio, 26 fuer
-        // 40 ml Vollmilch.
+        .init(name: "Macchiato", kcal: 13, caffeineMg: 63),
         .init(name: "Cortado", kcal: 30, caffeineMg: 126),
-        .init(name: "Flat White", kcal: 155, caffeineMg: 130),
+        .init(name: "Latte Macchiato", kcal: 120, caffeineMg: 63),
         .init(name: "Ristretto", kcal: 1, caffeineMg: 53),
         .init(name: "Doppio", kcal: 4, caffeineMg: 126),
-        .init(name: "Cappuccino", kcal: 74, caffeineMg: 63),
-        .init(name: "Espresso", kcal: 2, caffeineMg: 63)
+        .init(name: "Schale", kcal: 80, caffeineMg: 80),
+        .init(name: "Mokka", kcal: 5, caffeineMg: 95),
+        .init(name: "Cold Brew", kcal: 6, caffeineMg: 155),
+
+        // Wien, Paris, Bar
+        .init(name: "Wiener Melange", kcal: 55, caffeineMg: 63),
+        .init(name: "Café au Lait", kcal: 100, caffeineMg: 95),
+        .init(name: "Espresso Tonic", kcal: 55, caffeineMg: 63),
+
+        // Kettenkaffee, Grande
+        .init(name: "Iced Latte", kcal: 130, caffeineMg: 150),
+        .init(name: "Iced Americano", kcal: 15, caffeineMg: 225),
+        .init(name: "Nitro Cold Brew", kcal: 5, caffeineMg: 280),
+        .init(name: "Cold Brew Süssrahm", kcal: 110, caffeineMg: 185),
+        .init(name: "Caramel Macchiato", kcal: 250, caffeineMg: 150),
+        .init(name: "Vanilla Latte", kcal: 250, caffeineMg: 150),
+        .init(name: "Caffè Mocha", kcal: 360, caffeineMg: 175),
+        .init(name: "White Chocolate Mocha", kcal: 470, caffeineMg: 150),
+        .init(name: "Pumpkin Spice Latte", kcal: 390, caffeineMg: 150),
+        .init(name: "Frappé", kcal: 410, caffeineMg: 100),
+
+        // Exoten
+        .init(name: "Türkischer Mokka", kcal: 20, caffeineMg: 55),
+        .init(name: "Barraquito", kcal: 105, caffeineMg: 63),
+        .init(name: "Café Bombón", kcal: 80, caffeineMg: 63),
+        .init(name: "Marocchino", kcal: 30, caffeineMg: 63),
+        .init(name: "Einspänner", kcal: 105, caffeineMg: 126),
+        .init(name: "Carajillo", kcal: 50, caffeineMg: 63),
+        .init(name: "Irish Coffee", kcal: 225, caffeineMg: 80),
+        .init(name: "Affogato", kcal: 100, caffeineMg: 63),
+        .init(name: "Freddo Espresso", kcal: 5, caffeineMg: 126),
+        .init(name: "Freddo Cappuccino", kcal: 55, caffeineMg: 126),
+        .init(name: "Cà phê sữa đá", kcal: 100, caffeineMg: 130)
     ]
 
     func entry(at date: Date = .now) -> Entry {

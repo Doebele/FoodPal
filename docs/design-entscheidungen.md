@@ -342,17 +342,50 @@ Der Preis, bewusst angenommen: Kaffee kostet zwei Taps, solange der Modus auf mg
 
 ### Getränkeauswahl
 
-**14 Sorten**, zweispaltig. Sortiert nach zuletzt gehäufter Nutzung — aber **die häufigsten stehen unten**, entgegen der Leserichtung: dort liegt der Daumen bei einhändiger Bedienung. Koffein je Sorte als Punktbalken im feinen Raster (12 Punkte, rund 13 mg je Punkt), Kalorien als Zahl rechts.
+**Vierzig Sorten in drei Stufen.** Zwei grosse Kacheln unten, sechs mittlere
+darüber, alle übrigen klein und scrollend darüber. Gefüllt wird von **unten
+rechts** nach oben links — dort liegt der Daumen, und dort steht, was am
+häufigsten getippt wird. Die oberste Zeile bleibt deshalb links leer: was
+fehlt, fehlt am weitesten weg vom Griff.
 
-Gestaltungsregeln, die ich durchhalte:
+| Stufe | Kachel | zeigt |
+|---|---|---|
+| die zwei häufigsten | 170 × 160 | Punktfeld **und** Zahl, Name in 32 |
+| die nächsten sechs | 170 × 80 | Punktfeld, Name in 20 |
+| alle übrigen | 83 × 80 | Punktfeld, Name in 12 |
 
-- **Typografie trägt alles.** SF Pro, eine Gewichtsrampe, keine dekorativen Schnitte. Alle Zahlen `.monospacedDigit()`, damit Summen beim Aktualisieren nicht springen.
-- **Keine Karten, keine Schatten, keine abgerundeten Kacheln auf grauem Grund.** Inhalt steht direkt auf der Fläche, getrennt durch Haarlinien und Weißraum.
-- **Nahezu farblos.** Fast-Schwarz auf Off-White, ein einziger Akzent, reserviert für den Koffeinwert. Semantische Farben, damit Dark Mode korrekt kippt.
-- **Strenges Raster.** 24 pt Außenränder, linksbündig, feste vertikale Rhythmik.
-- **Die Tagessumme ist der Held**: sehr groß, sehr leicht gesetzt, wie eine Braun-Anzeige. Darunter die Chronologie in ruhigen Zeilen.
+Die Zahlen stehen nur auf den beiden grossen. Weiter oben wird nicht gelesen,
+sondern erkannt — dort genügt das Muster, und ein Muster braucht keine Ziffern.
 
-`TodayView` — Tagessumme kcal, darunter Koffein, darunter die chronologische Liste. Leerzustand: **ein** Satz, keine Illustration, kein Onboarding-Button.
+**Das Punktfeld ist der Zeitstrahl im Kleinen**: zwölf Spalten, Punkt 3 pt,
+Teilung 4 und 4,33. Zwei Reihen je Band auf den kleinen Kacheln, fünf auf den
+grossen. Ein Punkt trägt **20 kcal** und **13,3 mg** — der Koffeinwert ist der
+aus dem Rest der App (160 mg auf zwölf Punkte), die Kalorienskala ist auf
+Kaffee gerechnet: 24 Punkte reichen bis 480 kcal, und dort endet, was in eine
+Tasse passt.
+
+**Die Stufen sind nicht gesetzt, sie werden gelernt.** Gezählt wird über den
+ganzen Bestand statt über dreissig Tage: die Anordnung soll stehen und nicht
+wöchentlich tauschen. Bei Gleichstand entscheidet, was zuletzt getrunken wurde,
+danach die Reihenfolge der Vorlage — wer noch nie etwas getippt hat, findet
+unten den Espresso und oben die Exoten.
+
+**Die Legende bleibt stehen und trägt Glas.** „häufigste unten" und
+„kcal · koffein" sind der einzige feste Punkt; die Kacheln laufen beim Scrollen
+dahinter durch, statt an ihr abgeschnitten zu werden. Technisch ist das kein
+Abstand, sondern ein `contentMargin`: nur so beginnt der Inhalt unter der
+Legende **und** verschwindet unter ihr.
+
+**Dynamic Type endet hier bei `large`.** Der ganze Schirm steht auf festen
+Kachelmassen, und bei den Bedienhilfen-Grössen bliebe davon nur Abschneiden
+übrig — 83 pt tragen kein 53-pt-Wort. Gedeckelt ist nur nach oben; kleiner
+gestellt wird weiterhin mitgemacht. Das ist die einzige Stelle der App mit
+einer solchen Grenze, und sie steht hier, weil das Raster die Information
+**ist**: nimmt man ihm die Masse, bleibt keine Liste übrig, sondern Bruch.
+
+Ein Tap sichert weiterhin sofort und schliesst das Sheet. Die neue Ordnung
+sieht man beim nächsten Öffnen — was gerade getippt wurde, steht dann unten
+rechts.
 
 ### Tageswechsel durch Wischen
 

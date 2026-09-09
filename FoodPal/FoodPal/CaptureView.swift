@@ -27,42 +27,57 @@ struct CaptureSheet: View {
             // wenn der Rest bei grosser Schrift unter den Rand laeuft.
             SheetHeader(title: mode == .mg ? "Kaffee" : "Neue Mahlzeit")
 
-            ScrollsWhenNeeded {
-                VStack(spacing: 0) {
-                    if mode == .mg {
-                        CoffeeCapture(roast: roast) { dismiss() }
-                    } else {
+            if mode == .mg {
+                // Die Getränkeauswahl **scrollt selbst**: ihre Legende bleibt
+                // oben stehen, der Umschalter unten. Ein Scrollbereich um
+                // alles herum nähme beides mit.
+                CoffeeCapture(roast: roast) { dismiss() }
+                switcher
+            } else {
+                ScrollsWhenNeeded {
+                    VStack(spacing: 0) {
                         PhotoCapture { dismiss() }
+                        switcher
                     }
-
-                    ModeToggle(mode: mode, roast: roast) { new in
-                        captureMode = new == .kcal
-                            ? Entry.Kind.meal.rawValue
-                            : Entry.Kind.coffee.rawValue
-                    }
-                    .padding(.top, 16)
-
-                    Text(mode == .mg
-                         ? "Für Mahlzeiten auf kcal wechseln"
-                         : "Für Kaffee auf mg wechseln")
-                        .scaledFont(11)
-                        .foregroundStyle(Palette.ink2)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, Metric.margin)
-                        .padding(.top, 10)
-                        .padding(.bottom, 12)
                 }
             }
         }
         .background(Palette.paper)
+    }
+
+    private var switcher: some View {
+        VStack(spacing: 0) {
+            ModeToggle(mode: mode, roast: roast) { new in
+                captureMode = new == .kcal
+                    ? Entry.Kind.meal.rawValue
+                    : Entry.Kind.coffee.rawValue
+            }
+            .padding(.top, 16)
+
+            Text(mode == .mg
+                 ? "Für Mahlzeiten auf kcal wechseln"
+                 : "Für Kaffee auf mg wechseln")
+                .scaledFont(11)
+                .foregroundStyle(Palette.ink2)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Metric.margin)
+                .padding(.top, 10)
+                .padding(.bottom, 12)
+        }
     }
 }
 
 /// Getränkeauswahl. **Ein Tap genügt** — tippen sichert sofort mit
 /// Standardportion und schließt das Sheet.
 ///
-/// Die häufigsten Sorten stehen **unten**, entgegen der Leserichtung: dort
-/// liegt der Daumen bei einhändiger Bedienung.
+/// Vierzig Sorten in **drei Stufen**, gefüllt von **unten rechts**: dort liegt
+/// der Daumen, und dort steht, was am häufigsten getippt wird. Zwei grosse
+/// Kacheln unten tragen ihre Zahlen ausgeschrieben, sechs mittlere darüber
+/// zeigen dieselben Werte nur noch als Punktfeld, alle übrigen stehen klein
+/// darüber und laufen beim Scrollen hinter der Legende durch.
+///
+/// Die Stufen sind nicht gesetzt, sie werden gelernt: gezählt wird über den
+/// ganzen Bestand, bei Gleichstand entscheidet, was zuletzt getrunken wurde.
 struct CoffeeCapture: View {
     let roast: Roast
     let onSaved: () -> Void
@@ -71,38 +86,58 @@ struct CoffeeCapture: View {
     @Query private var all: [Entry]
     @AppStorage(Preference.healthSync) private var healthSync = true
 
-    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var health = HealthKitSync()
     @State private var saves = 0
 
-    private static let dots = 12
+    private static let bigCount = 2
+    private static let midCount = 6
+    private static let columns = 4
+    private static let gap: CGFloat = 4
+    private static let legendHeight: CGFloat = 42
 
-    /// Zwei Spalten sind bei Bedienhilfen-Groessen keine zwei Spalten mehr,
-    /// sondern zwei Stummel: „Macc…" neben „Cold…", und 13 kcal bricht auf
-    /// zwei Zeilen um. Eine Spalte gibt jeder Sorte die volle Breite — die
-    /// haeufigsten stehen weiterhin unten.
-    private var columns: Int { typeSize.isAccessibilitySize ? 1 : 2 }
+    /// Ein Punkt trägt 20 kcal und 13,3 mg. Der Koffeinwert ist der aus dem
+    /// Rest der App (160 mg auf zwölf Punkte); die Kalorienskala ist auf
+    /// Kaffee gerechnet — 24 Punkte reichen bis 480 kcal, und dort endet,
+    /// was in einer Tasse landen kann.
+    private static let kcalPerDot: Double = 20
     private static let mgPerDot: Double = 160 / 12
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            caption
-            // Das Raster hängt unten: die häufigsten Sorten sollen im
-            // Daumenbereich liegen, nicht in der Mitte des Sheets.
-            Spacer(minLength: 0)
-            grid
+        ScrollView {
+            VStack(spacing: Self.gap) {
+                ForEach(Array(smallGrid.enumerated()), id: \.offset) { _, line in
+                    tileRow(line, tile: .small)
+                }
+                ForEach(Array(midGrid.enumerated()), id: \.offset) { _, line in
+                    tileRow(line, tile: .medium)
+                }
+                tileRow(bigRow, tile: .large)
+            }
+            .padding(.horizontal, Metric.margin)
+            .padding(.bottom, Self.gap)
         }
-        .padding(.horizontal, Metric.margin)
+        .scrollIndicators(.hidden)
+        // Beim Öffnen steht die häufigste Sorte unten und damit im Daumen.
+        .defaultScrollAnchor(.bottom)
+        // Der Inhalt beginnt unter der Legende und läuft beim Scrollen
+        // dahinter durch — deshalb Rand statt Abstand.
+        .contentMargins(.top, Self.legendHeight, for: .scrollContent)
+        .overlay(alignment: .top) { legend }
+        // **Dynamic Type endet hier bei `large`.** Der Entwurf steht auf
+        // festen Kachelmassen — 83 auf 80 für die kleinen —, und bei den
+        // Bedienhilfen-Grössen bliebe davon nur Abschneiden übrig. Kleiner
+        // gestellt wird weiterhin mitgemacht; gedeckelt ist nur nach oben.
+        .dynamicTypeSize(...DynamicTypeSize.large)
         .haptic(trigger: saves)
     }
 
-    /// Die Legende zeigt die Kodierung, statt sie zu beschreiben:
-    /// kcal in Ink, Koffein im Akzent — genau wie in den Zellen.
-    private var caption: some View {
+    /// Die Legende steht fest und trägt Glas: die Kacheln laufen darunter
+    /// durch, statt an ihr abgeschnitten zu werden.
+    private var legend: some View {
         HStack(spacing: 0) {
             Text("häufigste unten")
                 .foregroundStyle(Palette.ink2)
-            Spacer()
+            Spacer(minLength: 8)
             Text("kcal")
                 .foregroundStyle(Palette.ink)
             Text(" · ")
@@ -110,87 +145,171 @@ struct CoffeeCapture: View {
             Text("koffein")
                 .foregroundStyle(roast.color)
         }
-        .scaledFont(11)
-        .tracking(0.8)
-        .padding(.top, 16)
-        .padding(.bottom, 12)
+        .scaledFont(12)
+        .textCase(.lowercase)
+        .padding(.horizontal, Metric.margin)
+        .frame(maxWidth: .infinity)
+        .frame(height: Self.legendHeight)
+        .background(.ultraThinMaterial)
     }
 
-    private var grid: some View {
-        let rows = ordered.chunked(into: columns)
-        return VStack(spacing: 0) {
-            Rectangle().fill(Palette.rule).frame(height: 1)
-            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                HStack(spacing: 0) {
-                    ForEach(Array(row.enumerated()), id: \.element.id) { index, preset in
-                        if index > 0 {
-                            Rectangle().fill(Palette.rule).frame(width: 1)
-                        }
-                        cell(preset)
-                    }
-                }
-                .fixedSize(horizontal: false, vertical: true)
-                .overlay(alignment: .bottom) {
-                    Rectangle().fill(Palette.rule).frame(height: 1)
+    // MARK: - Kacheln
+
+    private enum Tile {
+        case small, medium, large
+
+        var height: CGFloat { self == .large ? 160 : 80 }
+        var nameSize: CGFloat {
+            switch self {
+            case .small: 12
+            case .medium: 20
+            case .large: 32
+            }
+        }
+        /// Reihen je Band: die grosse Kachel hat Platz für fünf, die anderen
+        /// für zwei.
+        var rows: Int { self == .large ? 5 : 2 }
+    }
+
+    private func tileRow(_ line: [CoffeePreset?], tile: Tile) -> some View {
+        HStack(spacing: Self.gap) {
+            ForEach(Array(line.enumerated()), id: \.offset) { _, preset in
+                if let preset {
+                    cell(preset, tile: tile)
+                } else {
+                    // Die oberste Zeile bleibt links leer: gefüllt wird von
+                    // unten rechts, also fehlt oben links das Letzte.
+                    Color.clear.frame(maxWidth: .infinity)
                 }
             }
         }
+        .frame(height: tile.height)
     }
 
-    private func cell(_ preset: CoffeePreset) -> some View {
+    private func cell(_ preset: CoffeePreset, tile: Tile) -> some View {
         Button {
             save(preset)
         } label: {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 0) {
+                values(preset, tile: tile)
+                Spacer(minLength: 4)
                 Text(preset.name)
-                    .scaledFont(15)
+                    .scaledFont(tile.nameSize, weight: .light)
                     .foregroundStyle(Palette.ink)
-                    .lineLimit(typeSize.isAccessibilitySize ? 2 : 1)
-                HStack(spacing: 8) {
-                    DotBar(lit: lit(for: preset), total: Self.dots, color: roast.color)
-                        .frame(width: 52)
-                    Spacer(minLength: 0)
-                    Text("\(Int(preset.kcal))")
-                        .scaledFont(12, design: .monospaced)
-                        .foregroundStyle(Palette.ink)
-                        .fixedSize()
-                    Text("\(Int(preset.caffeineMg))")
-                        .scaledFont(12, design: .monospaced)
-                        .foregroundStyle(roast.color)
-                        .fixedSize()
-                }
+                    .lineLimit(tile == .small ? 3 : 2)
+                    .minimumScaleFactor(0.7)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 14)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(8)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .background(Palette.tile)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(preset.name), \(Int(preset.caffeineMg)) Milligramm Koffein")
+        .accessibilityLabel("\(preset.name), \(Int(preset.kcal)) Kilokalorien, \(Int(preset.caffeineMg)) Milligramm Koffein")
     }
 
-    private func lit(for preset: CoffeePreset) -> Int {
-        min(Self.dots, Int((preset.caffeineMg / Self.mgPerDot).rounded()))
+    /// Die Werte: auf der grossen Kachel ausgeschrieben, sonst nur als Feld.
+    @ViewBuilder private func values(_ preset: CoffeePreset, tile: Tile) -> some View {
+        VStack(alignment: .leading, spacing: Self.gap) {
+            if tile == .large {
+                HStack(spacing: Self.gap) {
+                    dots(preset.kcal, per: Self.kcalPerDot, rows: tile.rows, color: Palette.ink)
+                    Text("\(Int(preset.kcal))")
+                        .scaledFont(20, design: .monospaced)
+                        .foregroundStyle(Palette.ink)
+                }
+                HStack(spacing: Self.gap) {
+                    dots(preset.caffeineMg, per: Self.mgPerDot, rows: tile.rows, color: roast.color)
+                    Text("\(Int(preset.caffeineMg))")
+                        .scaledFont(20, design: .monospaced)
+                        .foregroundStyle(roast.color)
+                }
+            } else {
+                dots(preset.kcal, per: Self.kcalPerDot, rows: tile.rows, color: Palette.ink)
+                dots(preset.caffeineMg, per: Self.mgPerDot, rows: tile.rows, color: roast.color)
+            }
+        }
     }
 
-    /// Aufsteigend nach Nutzung der letzten 30 Tage — selten oben,
-    /// häufig unten. Bei Gleichstand gilt die Reihenfolge der Vorlage.
-    private var ordered: [CoffeePreset] {
-        let cutoff = Calendar.current.date(byAdding: .day, value: -30, to: .now) ?? .distantPast
+    /// Zwölf Spalten im Raster des Tagesdiagramms: Punkt 3 pt, Teilung 4 und
+    /// 4,33. Gefüllt wird zeilenweise von links.
+    private func dots(_ value: Double, per: Double, rows: Int, color: Color) -> some View {
+        let total = rows * 12
+        let lit = min(total, Int((value / per).rounded(.up)))
+        return Canvas { ctx, _ in
+            for index in 0..<total {
+                let rect = CGRect(
+                    x: CGFloat(index % 12) * 4, y: CGFloat(index / 12) * 4.33,
+                    width: 3, height: 3
+                )
+                ctx.fill(Path(rect), with: .color(index < lit ? color : Palette.ink3))
+            }
+        }
+        .frame(width: 47, height: CGFloat(rows) * 4.33 - 1.33)
+        .accessibilityHidden(true)
+    }
+
+    // MARK: - Reihenfolge
+
+    /// Häufigste zuerst. Gezählt wird über den **ganzen** Bestand, nicht über
+    /// dreissig Tage: die Stufen sollen stehen und nicht wöchentlich tauschen.
+    /// Bei Gleichstand zählt, was zuletzt getrunken wurde, danach die
+    /// Reihenfolge der Vorlage.
+    private var ranked: [CoffeePreset] {
         var counts: [String: Int] = [:]
-        for entry in all where entry.kind == .coffee && entry.date >= cutoff {
+        var last: [String: Date] = [:]
+        for entry in all where entry.kind == .coffee {
             counts[entry.name, default: 0] += 1
+            if entry.date > (last[entry.name] ?? .distantPast) { last[entry.name] = entry.date }
         }
         let fallback = Dictionary(
             uniqueKeysWithValues: CoffeePreset.all.enumerated().map { ($0.element.name, $0.offset) }
         )
-        return CoffeePreset.all.sorted {
-            let a = counts[$0.name] ?? 0
-            let b = counts[$1.name] ?? 0
-            if a != b { return a < b }
-            return (fallback[$0.name] ?? 0) < (fallback[$1.name] ?? 0)
+        return CoffeePreset.all.sorted { a, b in
+            let ca = counts[a.name] ?? 0, cb = counts[b.name] ?? 0
+            if ca != cb { return ca > cb }
+            let la = last[a.name] ?? .distantPast, lb = last[b.name] ?? .distantPast
+            if la != lb { return la > lb }
+            return (fallback[a.name] ?? 0) < (fallback[b.name] ?? 0)
         }
     }
+
+    /// Zwei grosse: die häufigste **rechts**.
+    private var bigRow: [CoffeePreset?] {
+        let two = Array(ranked.prefix(Self.bigCount))
+        return [two.count > 1 ? two[1] : nil, two.first]
+    }
+
+    private var midGrid: [[CoffeePreset?]] {
+        grid(Array(ranked.dropFirst(Self.bigCount).prefix(Self.midCount)), columns: 2, rows: 3)
+    }
+
+    private var smallGrid: [[CoffeePreset?]] {
+        let rest = Array(ranked.dropFirst(Self.bigCount + Self.midCount))
+        let rows = max(1, Int((Double(rest.count) / Double(Self.columns)).rounded(.up)))
+        return grid(rest, columns: Self.columns, rows: rows)
+    }
+
+    /// Füllt von **unten rechts** nach oben links — die Reihenfolge, in der
+    /// die Liste gelesen wird, wenn der Daumen unten liegt.
+    private func grid(_ items: [CoffeePreset], columns: Int, rows: Int) -> [[CoffeePreset?]] {
+        var field = Array(
+            repeating: [CoffeePreset?](repeating: nil, count: columns),
+            count: rows
+        )
+        var index = 0
+        for row in stride(from: rows - 1, through: 0, by: -1) {
+            for column in stride(from: columns - 1, through: 0, by: -1) where index < items.count {
+                field[row][column] = items[index]
+                index += 1
+            }
+        }
+        return field
+    }
+
+    // MARK: - Sichern
 
     private func save(_ preset: CoffeePreset) {
         let entry = preset.entry()
@@ -207,27 +326,6 @@ struct CoffeeCapture: View {
             try? await Task.sleep(for: .milliseconds(120))
             onSaved()
         }
-    }
-}
-
-/// Balken aus Punkten des gemeinsamen Rasters — leuchtende zeigen die Menge.
-struct DotBar: View {
-    let lit: Int
-    let total: Int
-    let color: Color
-
-    var body: some View {
-        Canvas { ctx, size in
-            let s = size.width / (Grid.x(total - 1) + Grid.dot)
-            for index in 0..<total {
-                let rect = CGRect(
-                    x: Grid.x(index) * s, y: 0,
-                    width: Grid.dot * s, height: Grid.dot * s
-                )
-                ctx.fill(Path(rect), with: .color(index < lit ? color : Palette.ink3))
-            }
-        }
-        .aspectRatio((Grid.x(total - 1) + Grid.dot) / Grid.dot, contentMode: .fit)
     }
 }
 
