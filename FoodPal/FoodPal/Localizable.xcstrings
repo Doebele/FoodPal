@@ -538,6 +538,41 @@
         }
       }
     },
+    "Australien oder Neuseeland, 1980er-Jahre — welches von beiden, streiten beide bis heute.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Australien oder Neuseeland, 1980er-Jahre — welches von beiden, streiten beide bis heute."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Australia or New Zealand, in the 1980s — which of the two is still disputed by both."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Australie ou Nouvelle-Zélande, années 1980 — laquelle des deux, elles s’en disputent encore."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Australia o Nuova Zelanda, anni Ottanta — quale delle due, se lo contendono ancora."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Australia o Nueva Zelanda, años ochenta: cuál de las dos, aún se lo disputan."
+          }
+        }
+      }
+    },
     "Auto": {
       "extractionState": "manual",
       "localizations": {
@@ -569,6 +604,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Auto"
+          }
+        }
+      }
+    },
+    "Benannt nach Mokka, dem jemenitischen Hafen, über den Kaffee jahrhundertelang nach Europa kam.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benannt nach Mokka, dem jemenitischen Hafen, über den Kaffee jahrhundertelang nach Europa kam."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Named after Mocha, the Yemeni port through which coffee reached Europe for centuries."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nommé d’après Moka, le port yéménite par lequel le café est arrivé en Europe pendant des siècles."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prende il nome da Mokha, il porto yemenita attraverso cui il caffè arrivò in Europa per secoli."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Debe su nombre a Moca, el puerto yemení por el que el café llegó a Europa durante siglos."
           }
         }
       }
@@ -1238,6 +1308,41 @@
         }
       }
     },
+    "Dresden, 1908. Melitta Bentz legte ein Löschblatt in einen durchlöcherten Messingtopf und meldete es zum Patent an.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dresden, 1908. Melitta Bentz legte ein Löschblatt in einen durchlöcherten Messingtopf und meldete es zum Patent an."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dresden, 1908. Melitta Bentz put a sheet of blotting paper into a perforated brass pot and filed it for patent."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dresde, 1908. Melitta Bentz a placé un buvard dans un pot en laiton percé et l’a fait breveter."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dresda, 1908. Melitta Bentz mise un foglio di carta assorbente in un vaso di ottone forato e lo brevettò."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dresde, 1908. Melitta Bentz puso una hoja de papel secante en un recipiente de latón perforado y lo patentó."
+          }
+        }
+      }
+    },
     "Dunkel": {
       "extractionState": "manual",
       "localizations": {
@@ -1623,37 +1728,37 @@
         }
       }
     },
-    "Espresso, mit derselben Menge warmer Milch geschnitten — spanisch cortar. Milch, kein Schaum.": {
+    "Espresso und gleich viel warme Milch — spanisch cortar, „schneiden“: die Milch nimmt Säure und Bitterkeit, ohne den Kaffee zu verwässern. Nur leicht aufgeschäumt, feinporig statt luftig.": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Espresso, mit derselben Menge warmer Milch geschnitten — spanisch cortar. Milch, kein Schaum."
+            "value": "Espresso und gleich viel warme Milch — spanisch cortar, „schneiden“: die Milch nimmt Säure und Bitterkeit, ohne den Kaffee zu verwässern. Nur leicht aufgeschäumt, feinporig statt luftig."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Espresso cut with the same amount of warm milk — Spanish cortar. Milk, no foam."
+            "value": "Espresso and the same amount of warm milk — Spanish cortar, “to cut”: the milk takes the acidity and bitterness without watering the coffee down. Only lightly steamed, fine rather than airy."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un expresso coupé d’autant de lait chaud — de l’espagnol cortar. Du lait, pas de mousse."
+            "value": "Un expresso et autant de lait chaud — de l’espagnol cortar, « couper » : le lait ôte l’acidité et l’amertume sans diluer le café. À peine émulsionné, fin plutôt qu’aérien."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Espresso tagliato con altrettanto latte caldo — dallo spagnolo cortar. Latte, non schiuma."
+            "value": "Espresso e altrettanto latte caldo — dallo spagnolo cortar, «tagliare»: il latte toglie acidità e amaro senza annacquare il caffè. Montato appena, fine e non arioso."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Espresso cortado con la misma cantidad de leche caliente. Leche, no espuma."
+            "value": "Espresso y la misma cantidad de leche caliente — del español cortar: la leche quita acidez y amargor sin aguar el café. Apenas espumada, fina y no aireada."
           }
         }
       }
@@ -2183,6 +2288,41 @@
         }
       }
     },
+    "Herkunft": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herkunft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Origin"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Origine"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Origine"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Origen"
+          }
+        }
+      }
+    },
     "Heute": {
       "extractionState": "manual",
       "localizations": {
@@ -2284,6 +2424,181 @@
           "stringUnit": {
             "state": "translated",
             "value": "En la cafetera italiana, la presión del vapor empuja el agua a través del molido."
+          }
+        }
+      }
+    },
+    "Italien, Zweiter Weltkrieg: die Geschichte erzählt von amerikanischen Soldaten, denen der Espresso zu klein war.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italien, Zweiter Weltkrieg: die Geschichte erzählt von amerikanischen Soldaten, denen der Espresso zu klein war."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italy, the Second World War: the story tells of American soldiers who found the espresso too small."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italie, Seconde Guerre mondiale : l’histoire raconte que des soldats américains trouvaient l’expresso trop petit."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia, Seconda guerra mondiale: si racconta di soldati americani che trovavano l’espresso troppo piccolo."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia, Segunda Guerra Mundial: se cuenta que a los soldados estadounidenses el espresso les parecía pequeño."
+          }
+        }
+      }
+    },
+    "Italien, aus dem Bar-Jargon: „macchiato“ sagte der Barista dem Kellner, damit der die Tasse mit Milch von der ohne unterscheiden konnte.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italien, aus dem Bar-Jargon: „macchiato“ sagte der Barista dem Kellner, damit der die Tasse mit Milch von der ohne unterscheiden konnte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italy, from bar shorthand: the barista called out “macchiato” so the waiter could tell the cup with milk from the one without."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italie, jargon de comptoir : le barista lançait « macchiato » pour que le serveur distingue la tasse avec lait de celle sans."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia, gergo da bar: il barista diceva «macchiato» perché il cameriere distinguesse la tazza con il latte da quella senza."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia, jerga de barra: el barista decía «macchiato» para que el camarero distinguiera la taza con leche de la que no."
+          }
+        }
+      }
+    },
+    "Italien, um 1900. Die Maschine war zuerst da — das Getränk ist nach ihr benannt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italien, um 1900. Die Maschine war zuerst da — das Getränk ist nach ihr benannt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italy, around 1900. The machine came first — the drink is named after it."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italie, vers 1900. La machine est venue d’abord — la boisson porte son nom."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia, intorno al 1900. Prima è arrivata la macchina: la bevanda porta il suo nome."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia, hacia 1900. Primero llegó la máquina: la bebida lleva su nombre."
+          }
+        }
+      }
+    },
+    "Italien, ursprünglich die Fassung für Kinder: viel Milch, mit Kaffee nur befleckt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italien, ursprünglich die Fassung für Kinder: viel Milch, mit Kaffee nur befleckt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italy, originally the version for children: plenty of milk, merely stained with coffee."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italie, à l’origine la version pour les enfants : beaucoup de lait, seulement taché de café."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia, in origine la versione per i bambini: molto latte, solo macchiato di caffè."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia, en origen la versión para niños: mucha leche, apenas manchada de café."
+          }
+        }
+      }
+    },
+    "Italien. Der Name kommt von der Kutte der Kapuziner — nach der Farbe, nicht nach dem Schaum.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italien. Der Name kommt von der Kutte der Kapuziner — nach der Farbe, nicht nach dem Schaum."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italy. The name comes from the Capuchin friars’ habit — from its colour, not from the foam."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italie. Le nom vient de la bure des capucins — de sa couleur, pas de la mousse."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia. Il nome viene dal saio dei cappuccini — dal colore, non dalla schiuma."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia. El nombre viene del hábito de los capuchinos: por el color, no por la espuma."
           }
         }
       }
@@ -2953,6 +3268,41 @@
         }
       }
     },
+    "Nicht Italien: dort bekommt man auf „un latte“ ein Glas Milch. Als Getränk mit Namen entstand er in den USA.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht Italien: dort bekommt man auf „un latte“ ein Glas Milch. Als Getränk mit Namen entstand er in den USA."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not Italy: order “un latte” there and you get a glass of milk. As a drink with a name it grew up in the United States."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas l’Italie : commandez « un latte » là-bas et vous aurez un verre de lait. Comme boisson nommée, il est né aux États-Unis."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non l’Italia: lì «un latte» è un bicchiere di latte. Come bevanda con un nome è nato negli Stati Uniti."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia no: allí «un latte» es un vaso de leche. Como bebida con nombre nació en Estados Unidos."
+          }
+        }
+      }
+    },
     "Nicht verfügbar.": {
       "extractionState": "manual",
       "localizations": {
@@ -3264,6 +3614,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Guardar"
+          }
+        }
+      }
+    },
+    "Spanien, oft dem Baskenland oder Katalonien zugeschrieben; auch in Portugal und Lateinamerika zu Hause. Serviert im kleinen Glas, 60 bis 70 ml.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spanien, oft dem Baskenland oder Katalonien zugeschrieben; auch in Portugal und Lateinamerika zu Hause. Serviert im kleinen Glas, 60 bis 70 ml."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spain, often credited to the Basque Country or Catalonia; at home in Portugal and Latin America too. Served in a small glass, 60 to 70 ml."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espagne, souvent attribué au Pays basque ou à la Catalogne ; également chez lui au Portugal et en Amérique latine. Servi dans un petit verre, 60 à 70 ml."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spagna, spesso attribuito ai Paesi Baschi o alla Catalogna; di casa anche in Portogallo e in America Latina. Servito nel bicchierino, 60-70 ml."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "España, a menudo atribuido al País Vasco o a Cataluña; también está en casa en Portugal y Latinoamérica. Se sirve en vaso pequeño, de 60 a 70 ml."
           }
         }
       }
@@ -4069,6 +4454,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dos espressos de un solo filtro, en una taza: doble molido, doble volumen."
+          }
+        }
+      }
+    },
+    "Zwei Linien: der langsame Tropfturm aus Kyoto und der Kaltauszug aus New Orleans, dort mit Zichorie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwei Linien: der langsame Tropfturm aus Kyoto und der Kaltauszug aus New Orleans, dort mit Zichorie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two lines: the slow drip tower from Kyoto and the cold steep from New Orleans, there with chicory."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux lignées : la tour à goutte lente de Kyoto et l’infusion froide de La Nouvelle-Orléans, là-bas avec de la chicorée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Due filoni: la torre a goccia lenta di Kyoto e l’infusione fredda di New Orleans, lì con la cicoria."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dos líneas: la torre de goteo lento de Kioto y la infusión fría de Nueva Orleans, allí con achicoria."
           }
         }
       }

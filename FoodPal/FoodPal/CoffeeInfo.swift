@@ -66,7 +66,7 @@ enum CoffeeInfo: String, CaseIterable {
         case .macchiato:
             String(localized: "Espresso, „befleckt\u{201C} mit einem Löffel Milchschaum. Der Name ist die Zubereitung.")
         case .cortado:
-            String(localized: "Espresso, mit derselben Menge warmer Milch geschnitten — spanisch cortar. Milch, kein Schaum.")
+            String(localized: "Espresso und gleich viel warme Milch — spanisch cortar, „schneiden\u{201C}: die Milch nimmt Säure und Bitterkeit, ohne den Kaffee zu verwässern. Nur leicht aufgeschäumt, feinporig statt luftig.")
         case .cappuccino:
             String(localized: "Je ein Drittel Espresso, warme Milch und Schaum.")
         case .latte:
@@ -77,6 +77,38 @@ enum CoffeeInfo: String, CaseIterable {
             String(localized: "Doppelter Ristretto mit feinporigem Mikroschaum, flach eingegossen. Stärker als der Cappuccino und ohne Schaumhaube.")
         case .coldBrew:
             String(localized: "Zwölf bis zwanzig Stunden kalt gezogen statt heiss gebrüht. Wenig Säure, viel Koffein.")
+        }
+    }
+
+    /// Woher sie kommt — **optional**. Ristretto, Doppio und Lungo stehen ohne:
+    /// es sind Spielarten des Espresso, und „Italien" dreimal zu wiederholen
+    /// wäre eine Zeile, die nichts sagt. Ein Feld, das nur erscheint, wo es
+    /// etwas zu sagen hat, wird auch gelesen.
+    var origin: String? {
+        switch self {
+        case .ristretto, .doppio, .lungo: nil
+        case .espresso:
+            String(localized: "Italien, um 1900. Die Maschine war zuerst da — das Getränk ist nach ihr benannt.")
+        case .americano:
+            String(localized: "Italien, Zweiter Weltkrieg: die Geschichte erzählt von amerikanischen Soldaten, denen der Espresso zu klein war.")
+        case .filter:
+            String(localized: "Dresden, 1908. Melitta Bentz legte ein Löschblatt in einen durchlöcherten Messingtopf und meldete es zum Patent an.")
+        case .mokka:
+            String(localized: "Benannt nach Mokka, dem jemenitischen Hafen, über den Kaffee jahrhundertelang nach Europa kam.")
+        case .macchiato:
+            String(localized: "Italien, aus dem Bar-Jargon: „macchiato\u{201C} sagte der Barista dem Kellner, damit der die Tasse mit Milch von der ohne unterscheiden konnte.")
+        case .cortado:
+            String(localized: "Spanien, oft dem Baskenland oder Katalonien zugeschrieben; auch in Portugal und Lateinamerika zu Hause. Serviert im kleinen Glas, 60 bis 70 ml.")
+        case .cappuccino:
+            String(localized: "Italien. Der Name kommt von der Kutte der Kapuziner — nach der Farbe, nicht nach dem Schaum.")
+        case .latte:
+            String(localized: "Nicht Italien: dort bekommt man auf „un latte\u{201C} ein Glas Milch. Als Getränk mit Namen entstand er in den USA.")
+        case .latteMacchiato:
+            String(localized: "Italien, ursprünglich die Fassung für Kinder: viel Milch, mit Kaffee nur befleckt.")
+        case .flatWhite:
+            String(localized: "Australien oder Neuseeland, 1980er-Jahre — welches von beiden, streiten beide bis heute.")
+        case .coldBrew:
+            String(localized: "Zwei Linien: der langsame Tropfturm aus Kyoto und der Kaltauszug aus New Orleans, dort mit Zichorie.")
         }
     }
 

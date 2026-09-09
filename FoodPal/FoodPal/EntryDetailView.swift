@@ -316,10 +316,28 @@ struct EntryDetailView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 6)
 
+            // Zuletzt und nur, wo es etwas zu sagen gibt: die Zubereitung
+            // braucht man, die Herkunft liest man.
+            if let origin = lore.origin {
+                Text("Herkunft")
+                    .scaledFont(11).tracking(0.8).textCase(.lowercase)
+                    .foregroundStyle(.primary.opacity(0.65))
+                    .padding(.top, 20)
+                Text(origin)
+                    .scaledFont(15)
+                    .lineSpacing(3)
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 6)
+            }
+
             Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
         .padding(Metric.margin)
+        // Bei grosser Schrift wird aus drei Feldern mehr, als ins Bild passt.
+        // `basedOnSize`: es scrollt nur dann, sonst steht es still.
+        .modifier(ScrollIfTooTall())
         // `regularMaterial`, nicht `ultraThin`: über einem Foto — und diese
         // Bilder sind Fotos — bleibt vom dünnsten Glas zu wenig Kontrast für
         // 11-pt-Etiketten übrig. Glas bleibt es, nur eines, durch das man den
@@ -484,5 +502,14 @@ struct EntryDetailView: View {
         context.delete(entry)
         Task { try? await health.delete(ids: ids) }
         dismiss()
+    }
+}
+
+/// Scrollt nur, wenn der Inhalt nicht mehr passt — für die Warenkunde im Bild,
+/// die bei den Bedienhilfen-Grössen über die Bildkante hinauswächst.
+private struct ScrollIfTooTall: ViewModifier {
+    func body(content: Content) -> some View {
+        ScrollView { content }
+            .scrollBounceBehavior(.basedOnSize)
     }
 }

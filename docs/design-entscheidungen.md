@@ -702,9 +702,16 @@ las sich als Menü. Jetzt sitzen die Stammpunkte **enger als ihr Durchmesser**
 und fliessen zu einem Strich zusammen; frei steht nur das Tüpfelchen.
 
 **Die Karte liegt im Bild, nicht darunter** — Glas, das Bild bleibt sichtbar,
-nur unscharf. Zwei Felder: was drin ist, und wie es entsteht. Wasser steht nur
-dort, wo es etwas unterscheidet; eine Liste, die bei jeder Sorte dasselbe sagt,
-sagt nichts.
+nur unscharf. Drei Felder: was drin ist, wie es entsteht, und woher es kommt.
+Wasser steht nur dort, wo es etwas unterscheidet; eine Liste, die bei jeder
+Sorte dasselbe sagt, sagt nichts.
+
+**Die Herkunft ist optional** und steht zuletzt: die Zubereitung braucht man,
+die Herkunft liest man. Ristretto, Doppio und Lungo haben keine — es sind
+Spielarten des Espresso, und „Italien" dreimal zu wiederholen wäre eine Zeile,
+die nichts sagt. Ein Feld, das nur erscheint, wo es etwas zu sagen hat, wird
+auch gelesen. Wird der Satz damit höher als das Bild, scrollt die Karte in sich
+(`scrollBounceBehavior(.basedOnSize)`), statt hinauszuwachsen.
 
 **Auf Glas gilt die Palette nicht.** Was unter dem Text liegt, kommt aus dem
 Bild und ist unbekannt. Gemessen über dem Braun einer Tasse: `ink2` kam auf
