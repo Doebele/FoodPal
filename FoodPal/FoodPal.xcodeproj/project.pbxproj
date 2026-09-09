@@ -410,8 +410,8 @@
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "FoodPal liest bestehende Werte aus Health, um doppelte Eintragungen zu vermeiden.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "FoodPal schreibt Kalorien, Koffein und Makros in Apple Health.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "FoodPal spricht mit LM Studio auf deinem Mac im lokalen Netz.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "FoodPal hoert zu, waehrend du eine Mahlzeit diktierst.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "FoodPal wandelt das Diktierte in Text um, damit du es vor dem Schaetzen noch aendern kannst.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "FoodPal hört zu, während du eine Mahlzeit diktierst.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "FoodPal wandelt das Diktierte in Text um, damit du es vor dem Schätzen noch ändern kannst.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -450,8 +450,8 @@
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "FoodPal liest bestehende Werte aus Health, um doppelte Eintragungen zu vermeiden.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "FoodPal schreibt Kalorien, Koffein und Makros in Apple Health.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "FoodPal spricht mit LM Studio auf deinem Mac im lokalen Netz.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "FoodPal hoert zu, waehrend du eine Mahlzeit diktierst.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "FoodPal wandelt das Diktierte in Text um, damit du es vor dem Schaetzen noch aendern kannst.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "FoodPal hört zu, während du eine Mahlzeit diktierst.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "FoodPal wandelt das Diktierte in Text um, damit du es vor dem Schätzen noch ändern kannst.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

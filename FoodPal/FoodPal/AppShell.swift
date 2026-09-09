@@ -97,6 +97,7 @@ struct SheetHeader: View {
         Text(title)
             .scaledFont(12)
             .tracking(0.4)
+            .textCase(.lowercase)
             .foregroundStyle(Palette.ink2)
     }
 
@@ -105,6 +106,7 @@ struct SheetHeader: View {
             .buttonStyle(.plain)
             .scaledFont(12)
             .tracking(0.4)
+            .textCase(.lowercase)
             .foregroundStyle(Palette.ink)
     }
 }

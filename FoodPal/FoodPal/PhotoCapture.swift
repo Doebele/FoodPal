@@ -230,7 +230,20 @@ struct PhotoCapture: View {
                 SpokenField(
                     text: $spoken,
                     font: UIFont(name: Fira.name(.regular, .default, condensed: false), size: 17)
-                        ?? .systemFont(ofSize: 17)
+                        ?? .systemFont(ofSize: 17),
+                    // Zweiter Weg zum Diktat, dort wo die Tastatur ohnehin
+                    // steht — bei grosser Schrift ist die Rosette nach oben
+                    // aus dem Bild geschoben.
+                    dictateTitle: dictation.isRunning
+                        ? String(localized: "Diktat beenden")
+                        : String(localized: "Sprache"),
+                    dictateColor: dictation.isRunning ? roast.color : Palette.ink,
+                    onDictate: {
+                        if !dictation.isRunning {
+                            beforeDictation = spoken.isEmpty ? "" : spoken + " "
+                        }
+                        dictation.toggle()
+                    }
                 )
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -254,6 +267,7 @@ struct PhotoCapture: View {
             } label: {
                 Text("Schätzen")
                     .scaledFont(17, weight: .medium)
+                    .textCase(.lowercase)
                     .foregroundStyle(Palette.paper)
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 54)
@@ -267,23 +281,6 @@ struct PhotoCapture: View {
             spoken = beforeDictation + heard
         }
         .onDisappear { dictation.stop() }
-        .toolbar {
-            // Zweiter Weg zum Diktat, dort wo die Tastatur ohnehin steht: mit
-            // aufgeklappter Tastatur ist die Rosette nach oben aus dem Bild
-            // geschoben.
-            ToolbarItemGroup(placement: .keyboard) {
-                Button(dictation.isRunning ? "Diktat beenden" : "Sprache") {
-                    if !dictation.isRunning { beforeDictation = spoken.isEmpty ? "" : spoken + " " }
-                    dictation.toggle()
-                }
-                .scaledFont(15, weight: .medium)
-                .foregroundStyle(dictation.isRunning ? roast.color : Palette.ink)
-                Spacer()
-                Button("Fertig") { UIApplication.shared.endEditing() }
-                    .scaledFont(15)
-                    .foregroundStyle(Palette.ink)
-            }
-        }
     }
 
     // MARK: - Analyse
@@ -310,6 +307,7 @@ struct PhotoCapture: View {
 
             Text("Analysiere")
                 .scaledFont(22, weight: .light)
+                .textCase(.lowercase)
                 .foregroundStyle(Palette.ink)
                 .padding(.top, 18)
             Text(source)
@@ -332,6 +330,7 @@ struct PhotoCapture: View {
             }
             Text("Schätzung fehlgeschlagen")
                 .scaledFont(22, weight: .light)
+                .textCase(.lowercase)
                 .foregroundStyle(Palette.ink)
                 .padding(.top, 20)
 
@@ -380,6 +379,7 @@ struct PhotoCapture: View {
         HStack {
             Text(title)
                 .scaledFont(17, weight: .medium)
+                .textCase(.lowercase)
                 .foregroundStyle(Palette.ink)
             Spacer()
         }
@@ -546,6 +546,7 @@ private struct Confirm: View {
                 Button { commit() } label: {
                     Text(drafts.count > 1 ? "\(drafts.count) Einträge sichern" : "Sichern")
                         .scaledFont(17, weight: .medium)
+                        .textCase(.lowercase)
                         .foregroundStyle(Palette.paper)
                         .frame(maxWidth: .infinity)
                         .frame(minHeight: 54)
@@ -593,15 +594,24 @@ private struct Confirm: View {
         if let shown = image ?? generated {
             // Quadratisch und so breit wie seine Spalte — im Entwurf ist es
             // genau das: 212,6 auf 212,8.
-            Image(uiImage: shown)
-                .resizable().scaledToFill()
-                .aspectRatio(1, contentMode: .fill)
+            // Der Rahmen kommt von `Color.clear`, das Bild haengt als Overlay
+            // darin: ein `scaledToFill`-Bild als Rahmen meldet die
+            // ueberstehende Groesse zurueck und macht die Spalte breiter als
+            // die Seite. 212 ist die Kantenlaenge aus dem Entwurf.
+            Color.clear
+                .frame(height: 212)
                 .frame(maxWidth: .infinity)
+                .overlay {
+                    Image(uiImage: shown).resizable().scaledToFill()
+                }
                 .clipped()
-                .overlay(alignment: .bottomLeading) {
+                // Oben rechts, wie am Eintrag — die einzige Ecke, in der
+                // bei einem Essensfoto selten etwas Wichtiges steht.
+                .overlay(alignment: .topTrailing) {
                     if image == nil {
                         Text("erzeugt")
                             .scaledFont(10).tracking(0.8)
+                            .textCase(.lowercase)
                             .foregroundStyle(Palette.paper)
                             .padding(.horizontal, 6).padding(.vertical, 3)
                             .background(Palette.ink)
@@ -638,28 +648,19 @@ private struct Confirm: View {
     /// hier laesst er sich nachbessern. Das Rad rastet in Viertelstunden, und
     /// nach vorn ist bei jetzt Schluss.
     private var timeField: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Button {
-                editingTime = true
-            } label: {
-                // Untereinander, nicht als Zeile mit Spacer: in der rechten
-                // Spalte ist fuer beides nebeneinander kein Platz.
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("zeitpunkt")
-                        .scaledFont(11).tracking(0.8)
-                        .foregroundStyle(Palette.ink2)
-                    Text(when.formatted(.dateTime.day().month().year().hour().minute()))
-                        .scaledFont(22, weight: .light, condensed: true)
-                        .foregroundStyle(Palette.ink)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
+        // Durch dasselbe `FormField` wie die Zahlen — sonst sitzt der Wert
+        // enger unter seiner Beschriftung als nebenan und die Reihen der
+        // beiden Spalten stehen versetzt.
+        Button { editingTime = true } label: {
+            FormField(label: "zeitpunkt") {
+                Text(when.formatted(.dateTime.day().month().year().hour().minute()))
+                    .scaledFont(24, weight: .light, condensed: true)
+                    .foregroundStyle(Palette.ink)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .buttonStyle(.plain)
-
-            Rectangle().fill(Palette.rule).frame(height: 1)
+            .contentShape(Rectangle())
         }
-        .padding(.bottom, 18)
+        .buttonStyle(.plain)
         .onChange(of: when) { _, _ in timeTouched = true }
     }
 
@@ -692,7 +693,7 @@ private struct Confirm: View {
                     .scaledFont(11).tracking(0.8)
                     .foregroundStyle(Palette.ink2)
                 TextField("", text: draft.name, axis: .vertical)
-                    .scaledFont(22, weight: .light, condensed: true)
+                    .scaledFont(24, weight: .light, condensed: true)
                     .foregroundStyle(Palette.ink)
                 Rectangle().fill(Palette.rule).frame(height: 1)
 
@@ -719,7 +720,7 @@ private struct Confirm: View {
         FormField(label: label) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
-                .scaledFont(22, design: .monospaced)
+                .scaledFont(24, design: .monospaced)
                 .foregroundStyle(tint)
         }
     }
@@ -827,10 +828,14 @@ struct GenerateImageRow: View {
                 HStack {
                     Spacer(minLength: 0)
                     Text(label)
-                        .scaledFont(17, weight: .medium)
+                        // Dieselbe Groesse und derselbe Schnitt wie
+                        // „schliessen" in der Kopfzeile: beides sind stille
+                        // Nebenwege, keine Hauptsache.
+                        .scaledFont(12)
+                        .textCase(.lowercase)
                         .foregroundStyle(disabled ? Palette.ink2 : Palette.ink)
                 }
-                .frame(minHeight: 56)
+                .frame(minHeight: 46)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)

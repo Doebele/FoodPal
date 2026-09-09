@@ -206,6 +206,7 @@ struct SettingsView: View {
                 Text(target.label)
                     .scaledFont(12)
                     .tracking(0.4)
+                    .textCase(.lowercase)
                     .foregroundStyle(active ? Palette.ink : Palette.ink2)
                     // Drei Spalten geben „7-Segment" bei den
                     // Bedienhilfen-Groessen nicht genug Platz; ohne diese
@@ -678,6 +679,7 @@ private func row<Value: View>(_ label: LocalizedStringKey, @ViewBuilder value: (
     HStack {
         Text(label)
             .scaledFont(16, condensed: true)
+            .textCase(.lowercase)
             .foregroundStyle(Palette.ink)
         Spacer(minLength: 8)
         value()
@@ -695,6 +697,7 @@ private func actionRow(_ label: LocalizedStringKey, action: @escaping () -> Void
         HStack {
             Text(label)
                 .scaledFont(16)
+                .textCase(.lowercase)
                 .foregroundStyle(Palette.ink)
             Spacer()
         }

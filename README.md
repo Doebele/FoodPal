@@ -31,6 +31,8 @@ Koffein, wählbar als Röstung von Zimt bis Italienisch.
   Braun-Klappuhr, Sieben-Segment, Dot-Matrix im Raster des Zeitstrahls.
   Das Zählwerk dreht alle Räder gleichzeitig und immer aufwärts.
 - **Schrift: Fira** — Sans, Sans Condensed und Mono, mitgeliefert (SIL OFL).
+- **Etiketten und Knöpfe stehen klein.** Versalien setzen Akzente, und
+  die App hat genau einen. Sätze, Werte und Systemdialoge bleiben aussen vor.
 - **Nur Hochformat.** Der ganze Entwurf hängt an einer Spalte.
 
 Die Begründungen zu jeder dieser Entscheidungen — samt der Fehler, die dabei

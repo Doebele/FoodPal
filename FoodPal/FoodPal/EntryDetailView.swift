@@ -30,6 +30,7 @@ struct EntryDetailView: View {
     /// schriebe das Sichern auf einen Eintrag, den es nicht mehr gibt.
     @State private var deleted = false
     @State private var showPlayground = false
+    @State private var imageExpanded = false
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
 
@@ -142,7 +143,7 @@ struct EntryDetailView: View {
         VStack(alignment: .leading, spacing: 0) {
             FormField(label: "bezeichnung") {
                 TextField("", text: $name, axis: .vertical)
-                    .scaledFont(22, weight: .light, condensed: true)
+                    .scaledFont(24, weight: .light, condensed: true)
                     .foregroundStyle(Palette.ink)
             }
 
@@ -170,6 +171,7 @@ struct EntryDetailView: View {
                 HStack {
                     Text("Eintrag löschen")
                         .scaledFont(17, weight: .medium)
+                        .textCase(.lowercase)
                         .foregroundStyle(Palette.ink)
                     Spacer()
                 }
@@ -195,26 +197,50 @@ struct EntryDetailView: View {
     /// sein und nicht nur erkennbar.
     @ViewBuilder private var picture: some View {
         if let data = entry.photo, let image = UIImage(data: data) {
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
-                .frame(height: 220)
-                .frame(maxWidth: .infinity)
-                .clipped()
-                .overlay(alignment: .bottomLeading) {
-                    if entry.generatedImage {
-                        Text("erzeugt")
-                            .scaledFont(10)
-                            .tracking(0.8)
-                            .foregroundStyle(Palette.paper)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(Palette.ink)
-                            .padding(8)
-                    }
+            Group {
+                if imageExpanded {
+                    // Aufgespreizt: volle Breite von Kante zu Kante, Hoehe
+                    // nach dem eigenen Seitenverhaeltnis — der Rest der Seite
+                    // rutscht nach unten.
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(image.size, contentMode: .fit)
+                        .frame(maxWidth: .infinity)
+                        .overlay(alignment: .topTrailing) { badge }
+                } else {
+                    // Ruhend: genau die Breite der rechten Spalte — es steht
+                    // ueber dem Zeitpunkt, nicht ueber der ganzen Seite.
+                    //
+                    // Das Polster kommt **nach** dem Overlay. Andersherum
+                    // haengt die Marke an der Kante des gepolsterten Rahmens,
+                    // also 156 pt weiter rechts — ausserhalb des Bildes.
+                    // `Color.clear` gibt den Rahmen vor, das Bild haengt als
+                    // Overlay darin. Umgekehrt — Bild mit `scaledToFill` als
+                    // Rahmen — meldet die Ansicht die **ueberstehende** Groesse
+                    // zurueck: der Rahmen wurde breiter als die Seite, schob
+                    // die ganze rechte Spalte ueber den Rand und trug die
+                    // Marke gleich mit hinaus.
+                    Color.clear
+                        .frame(height: 220)
+                        .frame(maxWidth: .infinity)
+                        .overlay {
+                            Image(uiImage: image).resizable().scaledToFill()
+                        }
+                        .clipped()
+                        .overlay(alignment: .topTrailing) { badge }
+                        .padding(.leading, Metric.margin + FormGrid.rightInset)
+                        .padding(.trailing, Metric.margin)
                 }
-                .padding(.top, 12)
-                .padding(.bottom, 24)
+            }
+            .padding(.top, 12)
+            .padding(.bottom, 24)
+            // Langer Druck spreizt es auf und wieder zusammen. Der Bounce
+            // macht deutlich, dass es dasselbe Bild ist und kein neues.
+            .onLongPressGesture(minimumDuration: 0.4) {
+                withAnimation(.spring(duration: 0.4, bounce: 0.35)) {
+                    imageExpanded.toggle()
+                }
+            }
         } else {
             // Ohne Bild bleibt der Platz leer — derselbe Weissraum wie mit,
             // damit die Felder dort stehen, wo man sie erreicht.
@@ -223,6 +249,22 @@ struct EntryDetailView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.top, 12)
                 .padding(.bottom, 24)
+        }
+    }
+
+    /// Die Marke sitzt **im** Bild, oben rechts — die einzige Ecke, in der
+    /// bei einem Essensfoto selten etwas Wichtiges steht.
+    @ViewBuilder private var badge: some View {
+        if entry.generatedImage {
+            Text("erzeugt")
+                .scaledFont(10)
+                .tracking(0.8)
+                .textCase(.lowercase)
+                .foregroundStyle(Palette.paper)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 3)
+                .background(Palette.ink)
+                .padding(8)
         }
     }
 
@@ -236,29 +278,19 @@ struct EntryDetailView: View {
     ///
     /// Das Rad rastet in Viertelstunden — siehe `QuarterHourPicker`.
     private var timeField: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Button {
-                editingTime = true
-            } label: {
-                // Untereinander, nicht als Zeile mit Spacer: in der rechten
-                // Spalte ist fuer beides nebeneinander kein Platz.
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("zeitpunkt")
-                        .scaledFont(11)
-                        .tracking(0.8)
-                        .foregroundStyle(Palette.ink2)
-                    Text(stamp)
-                        .scaledFont(22, weight: .light, condensed: true)
-                        .foregroundStyle(Palette.ink)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
+        // Durch dasselbe `FormField` wie die Zahlen: der Abstand zwischen
+        // Beschriftung und Wert war hier null statt sechs, und dadurch sassen
+        // die Reihen der beiden Spalten versetzt.
+        Button { editingTime = true } label: {
+            FormField(label: "zeitpunkt") {
+                Text(stamp)
+                    .scaledFont(24, weight: .light, condensed: true)
+                    .foregroundStyle(Palette.ink)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .buttonStyle(.plain)
-
-            Rectangle().fill(Palette.rule).frame(height: 1)
+            .contentShape(Rectangle())
         }
-        .padding(.bottom, 20)
+        .buttonStyle(.plain)
     }
 
     private var stamp: String {
@@ -293,7 +325,7 @@ struct EntryDetailView: View {
         FormField(label: label) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
-                .scaledFont(22, design: .monospaced)
+                .scaledFont(24, design: .monospaced)
                 .foregroundStyle(tint)
         }
     }

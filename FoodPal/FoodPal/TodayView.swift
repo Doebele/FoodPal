@@ -124,6 +124,7 @@ struct TodayView: View {
                 } label: {
                     Text(title(for: currentDay))
                         .scaledFont(14, weight: .medium)
+                        .textCase(.lowercase)
                         .foregroundStyle(Palette.ink)
                         .frame(minWidth: 132)
                         .frame(minHeight: 44)
@@ -159,6 +160,7 @@ struct TodayView: View {
                     } label: {
                         Text("Heute")
                             .scaledFont(13, weight: .medium)
+                            .textCase(.lowercase)
                             .foregroundStyle(Palette.ink)
                     }
                     .buttonStyle(.plain)
@@ -205,6 +207,7 @@ struct TodayView: View {
             Button(action: onCapture) {
                 Text("Erfassen")
                     .scaledFont(17, weight: .medium)
+                    .textCase(.lowercase)
                     .foregroundStyle(Palette.ink)
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 56)

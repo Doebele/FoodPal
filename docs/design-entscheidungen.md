@@ -528,7 +528,9 @@ Beim Auslesen der Rosette lief ich in eine Falle: der Figma-Knotenbaum liefert *
 
 ### Sprache
 
-Der Beschreiben-Schirm hat beim Öffnen den Cursor im Feld, und ein Tippen auf die Rosette diktiert direkt hinein. Zweiter Weg dorthin: eine Leiste über der Tastatur, denn mit aufgeklappter Tastatur ist die Rosette nach oben aus dem Bild geschoben.
+Der Beschreiben-Schirm hat beim Öffnen den Cursor im Feld, und ein Tippen auf die Rosette diktiert direkt hinein. Zweiter Weg dorthin: eine Leiste über der Tastatur mit „sprache" und „fertig", denn bei grosser Schrift ist die Rosette nach oben aus dem Bild geschoben.
+
+**Diese Leiste hängt am Feld, nicht am Bildschirm.** `.toolbar(placement: .keyboard)` erschien nie: ein Sheet ohne `NavigationStack` hat keinen Wirt dafür, und der Erstantwortende ist hier ohnehin ein `UITextView`. Sie ist deshalb dessen `inputAccessoryView` — und ein schlichter `UIView` statt einer `UIToolbar`, weil iOS 26 Toolbar-Tasten in Glaskapseln setzt und Kapseln dieser Entwurf nicht kennt. Papier, eine Haarlinie, zwei Aufschriften in Fira.
 
 Diktiert wird über `SFSpeechRecognizer` mit `requiresOnDeviceRecognition`, wo das Gerät es kann — die Beschreibung einer Mahlzeit muss Apples Server nicht sehen. **Abgeschickt wird nicht automatisch:** Diktat verhört sich bei Essensnamen zuverlässig, und ein Weg, der aufnimmt und sofort schätzt, würde den Fehler unsichtbar weiterreichen.
 
@@ -601,9 +603,15 @@ und pulsiert an Ort und Stelle.
 
 Bestätigen und Eintrag ändern stehen jetzt in **zwei Spalten**: links die Zahlen, rechts Bild, Zeitpunkt und Bezeichnung. **124 zu 213 mit 8 pt Steg**, aus dem Entwurf abgemessen (124,4 / 8 / 212,6 auf 345). Die Aufteilung ist keine Laune — Zahlen sind kurz und brauchen wenig Breite, ein Gerichtsname ist lang und braucht viel; nebeneinander steht beides auf einem Blick, wo es untereinander zwei Bildschirme wären.
 
-**Beide Spalten beginnen auf derselben Höhe** — die erste Zahl links steht neben dem Zeitpunkt rechts. Dafür tragen alle Werte dieselbe Grösse (22), auch der Zeitpunkt, der im Entwurf kleiner gesetzt war: nur so stehen die ersten Zeilen beider Spalten im selben Raster. Beim Bestätigen beginnt die linke Spalte um die Höhe des Bildplatzes tiefer, denn dort steht das Bild in der rechten Spalte.
+**Beide Spalten beginnen auf derselben Höhe** — die erste Zahl links steht neben dem Zeitpunkt rechts. Dafür tragen alle Werte dieselbe Grösse (24), auch der Zeitpunkt, der im Entwurf kleiner gesetzt war, und jedes Feld denselben Abstand von 6 pt zwischen Etikett und Wert: nur so stehen die Zeilen beider Spalten im selben Raster. Beim Bestätigen beginnt die linke Spalte um die Höhe des Bildplatzes tiefer, denn dort steht das Bild in der rechten Spalte.
 
 **Koffein steht zuoberst, wo es vorkommt.** Bei einem Getränk ist es der Wert, um den es geht — die drei Kalorien einer Cola Zero sind daneben eine Fussnote. Bei einer Mahlzeit ohne Koffein steht das Feld gar nicht erst da.
+
+**Das Bild ist so breit wie seine Spalte, und ein langer Druck spreizt es auf.** Ruhend steht es über dem Zeitpunkt, 213 pt breit — kein Aufmacher, sondern ein Feld unter Feldern. Ein langer Druck skaliert es auf die volle Breite von Kante zu Kante, proportional, und schiebt den Rest der Seite nach unten; noch einer holt es zurück. Beides mit `spring(duration: 0.4, bounce: 0.35)` — der Nachschwinger sagt, dass es dasselbe Bild ist und kein neues.
+
+**Die Marke „erzeugt" sitzt oben rechts im Bild**, in beiden Zuständen. Sie gehört auf das Bild, nicht neben es: an der Gruppe ausgerichtet hing sie an deren Kante, und die lag 156 pt weiter rechts, ausserhalb des Bildschirms.
+
+**`scaledToFill` als Rahmen ist eine Falle.** Ein Bild mit `scaledToFill` meldet die **überstehende** Grösse zurück, nicht die des Rahmens — der Bildrahmen wurde damit breiter als die Seite, schob die ganze rechte Spalte über den Rand und trug die Marke gleich mit hinaus. `clipped()` beschneidet nur, was man sieht, nicht was gemeldet wird. Den Rahmen gibt jetzt ein `Color.clear` mit festem Mass vor, das Bild hängt als `overlay` darin: ein Overlay kann die Grösse seines Wirts nicht ändern.
 
 **Ein erzeugtes Bild lässt sich ersetzen, ein Foto nicht.** Die Zeile „Neues Bild erzeugen" steht deshalb auch dort, wo schon ein Bild hängt — solange die App es selbst gezeichnet hat. Ein Foto ist ein Beleg; was aus einer Bezeichnung entstanden ist, ist eine Merkhilfe und darf neu entstehen, wenn der Wurf danebenging. Die Zeile ist rechtsbündig gesetzt wie im Entwurf, ihre Trefferfläche läuft trotzdem über die ganze Spalte.
 
@@ -622,6 +630,18 @@ Drei Dinge, an denen der erste Versuch scheiterte:
 **Ab den Bedienhilfen-Grössen fallen die Spalten untereinander.** Bei 124 pt und „kohlenhydrate · g", das schon bei normaler Schrift 103 davon braucht, passt zwei Stufen höher kein Wert mehr daneben. Einspaltig steht erst die rechte Spalte (worum es geht), dann die linke (die Zahlen dazu) — und „Eintrag löschen" rutscht ans Ende, sonst stünde das Löschen mitten im Formular.
 
 Der Entwurf zeigt die Nährwerte in zwei verschiedenen Reihenfolgen; übernommen ist die des Eintrag-Screens (kcal, protein, kohlenhydrate, fett), weil sie der App entspricht. Bei mehreren Gerichten bleibt es bei den kompakten Zeilen: der Satzspiegel trägt **ein** Gericht, nicht drei nebeneinander.
+
+## Alles klein
+
+**Etiketten und Knöpfe stehen durchgehend klein.** „erfassen", „heute", „schliessen", „eintrag löschen", „bild erzeugen", „anzeige · ziffern". Das ist keine Marotte, sondern dieselbe Regel wie beim Raster: Versalien setzen Akzente, und Akzente hat diese App genau einen — den Koffeinwert. Ohne sie liest sich eine Oberfläche als **eine** Fläche, und was gross ist, ist gross, weil es wichtig ist, nicht weil ein Wort vorne steht.
+
+Gesetzt wird das mit `.textCase(.lowercase)` beim Anzeigen, nicht in den Schlüsseln: der String-Katalog behält „Erfassen", damit Übersetzer ganze Sätze und gross geschriebene Substantive sehen — Französisch, Italienisch und Spanisch schreiben ohnehin anders gross als Deutsch. Die Regel greift damit in allen fünf Sprachen, ohne dass eine davon nachziehen muss.
+
+**Drei Ausnahmen**, und jede hat einen Grund:
+
+- **Fliesstext bleibt Fliesstext.** „Wird auch aus Apple Health entfernt.", „Noch nichts erfasst.", Fehlermeldungen — das sind Sätze, keine Etiketten. Ein Satz ohne Versal liest sich als Versehen.
+- **Werte behalten ihre eigene Schreibung.** „Apple", „Bowl mit Lachs", „Coca-Cola Zero" — was aus den Daten kommt, gehört den Daten. Klein gesetzt sind die Etiketten links davon, nicht die Werte rechts.
+- **Systemdialoge.** Die Knöpfe in der Löschen-Nachfrage („Löschen", „Abbrechen") zeichnet iOS selbst; sie nehmen `textCase` nicht an und würden klein auch falsch aussehen, denn dort ist die Schreibung Konvention der Plattform.
 
 ## Barrierefreiheit
 

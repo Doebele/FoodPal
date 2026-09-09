@@ -13,6 +13,16 @@ import SwiftUI
 /// 37 % von 345 sind das 124 pt, und „kohlenhydrate · g" braucht schon bei
 /// normaler Schrift 103 davon; zwei Stufen höher passt es nicht mehr neben
 /// einen Wert. Dieselbe Regel wie in der Eintragsliste und im Getränkeraster.
+/// Die Masse des Satzspiegels. Eigener Typ, weil ein generischer Typ keine
+/// gespeicherten statischen Eigenschaften tragen darf — und weil das Bild im
+/// Eintrag sie ebenfalls braucht.
+enum FormGrid {
+    static let leftWidth: CGFloat = 124
+    static let gap: CGFloat = 8
+    /// Wo die rechte Spalte beginnt, vom Seitenrand aus gerechnet.
+    static var rightInset: CGFloat { leftWidth + gap }
+}
+
 struct SplitForm<Left: View, Right: View>: View {
     /// Um wie viel die linke Spalte tiefer beginnt als die rechte.
     ///
@@ -40,8 +50,7 @@ struct SplitForm<Left: View, Right: View>: View {
     /// **abgestürzt**: `GeometryReader` in diesem Sheet lässt SwiftUI in
     /// `GeometryReaderLayout.placeSubviews` mit einer Zusicherung anhalten,
     /// gleich ob im `background` der Spalten oder als eigene Zeile darüber.
-    private static var leftWidth: CGFloat { 124 }
-    private static var gap: CGFloat { 8 }
+
 
     var body: some View {
         if typeSize.isAccessibilitySize {
@@ -57,12 +66,12 @@ struct SplitForm<Left: View, Right: View>: View {
             // Ansichten ist ein TupleView, und der wird im `HStack` zu ebenso
             // vielen Geschwistern — die fuenf Zahlenfelder standen
             // nebeneinander statt untereinander.
-            HStack(alignment: .top, spacing: Self.gap) {
+            HStack(alignment: .top, spacing: FormGrid.gap) {
                 VStack(alignment: .leading, spacing: 0) {
                     Color.clear.frame(height: leftOffset)
                     left
                 }
-                .frame(maxWidth: Self.leftWidth, alignment: .leading)
+                .frame(maxWidth: FormGrid.leftWidth, alignment: .leading)
                 VStack(alignment: .leading, spacing: 0) { right }
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
