@@ -28,8 +28,8 @@ struct PhotoCapture: View {
         if env["START_ANALYSING"] == "1" { return Phase.analysing(nil, source: "Claude · claude-sonnet-5") }
         if env["START_CONFIRM"] == "1" {
             return Phase.ready(nil, [MealEstimate(
-                name: "Bowl mit Lachs, Avocado, Bambussprossen, Brunnenkresse und Pinienkerne",
-                kcal: 620, proteinG: 34, carbsG: 52, fatG: 21
+                name: "Coca-Cola Zero mittel",
+                kcal: 3, proteinG: 0, carbsG: 0, fatG: 0, caffeineMg: 36
             )], per100g: false)
         }
         return .idle
@@ -557,6 +557,12 @@ private struct Confirm: View {
         }
         .scrollIndicators(.hidden)
         .onChange(of: grams) { _, _ in if per100g { rescale() } }
+        .sheet(isPresented: $editingTime) {
+            QuarterHourSheet(date: $when)
+                .presentationDetents([.height(300)])
+                .presentationDragIndicator(.visible)
+                .presentationBackground(Palette.paper)
+        }
         .modifier(PlaygroundSheet(isPresented: $showPlayground, concept: concept) {
             generated = $0
         })
@@ -634,7 +640,7 @@ private struct Confirm: View {
     private var timeField: some View {
         VStack(alignment: .leading, spacing: 6) {
             Button {
-                withAnimation(.easeInOut(duration: 0.2)) { editingTime.toggle() }
+                editingTime = true
             } label: {
                 // Untereinander, nicht als Zeile mit Spacer: in der rechten
                 // Spalte ist fuer beides nebeneinander kein Platz.
@@ -643,18 +649,13 @@ private struct Confirm: View {
                         .scaledFont(11).tracking(0.8)
                         .foregroundStyle(Palette.ink2)
                     Text(when.formatted(.dateTime.day().month().year().hour().minute()))
-                        .scaledFont(17, weight: .light, condensed: true)
+                        .scaledFont(22, weight: .light, condensed: true)
                         .foregroundStyle(Palette.ink)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-
-            if editingTime {
-                QuarterHourPicker(date: $when)
-                    .frame(maxWidth: .infinity)
-            }
 
             Rectangle().fill(Palette.rule).frame(height: 1)
         }
@@ -668,16 +669,17 @@ private struct Confirm: View {
     @ViewBuilder private var numbers: some View {
         if let draft = $drafts.first {
             if per100g { number("menge · g", text: $grams) }
+            // Koffein **zuoberst**, wo es vorkommt: bei einem Getraenk ist es
+            // der Wert, um den es geht — die drei Kalorien einer Cola Zero
+            // sind daneben eine Fussnote. Bei einem Teller Nudeln steht das
+            // Feld gar nicht erst da.
+            if !draft.caffeine.wrappedValue.isEmpty {
+                number("koffein · mg", text: draft.caffeine, tint: roast.color)
+            }
             number("kcal", text: draft.kcal)
             number("protein · g", text: draft.protein)
             number("kohlenhydrate · g", text: draft.carbs)
             number("fett · g", text: draft.fat)
-            // Nur wo etwas drinsteht: bei einem Teller Nudeln waere das Feld
-            // eine Zeile Rauschen. Erkanntes Koffein soll man dagegen sehen —
-            // es landet im mg-Band des Tages und in Apple Health.
-            if !draft.caffeine.wrappedValue.isEmpty {
-                number("koffein · mg", text: draft.caffeine, tint: roast.color)
-            }
         }
     }
 
@@ -713,7 +715,7 @@ private struct Confirm: View {
         FormField(label: label) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
-                .scaledFont(24, design: .monospaced)
+                .scaledFont(22, design: .monospaced)
                 .foregroundStyle(tint)
         }
     }
@@ -804,7 +806,7 @@ private struct Confirm: View {
 /// Die Zeile, die Apples Bildgenerator oeffnet — nur sichtbar, wo das Geraet
 /// Apple Intelligence hat.
 @available(iOS 18.1, *)
-private struct GenerateImageRow: View {
+struct GenerateImageRow: View {
     @Environment(\.supportsImagePlayground) private var supported
     let disabled: Bool
     let action: () -> Void
@@ -834,7 +836,7 @@ private struct GenerateImageRow: View {
 /// ist abgekuendigt und hoert in iOS 27 auf zu arbeiten. Das Sheet kostet einen
 /// Tipp mehr, laeuft dafuer weiter — und sein Stil ist von Haus aus
 /// zeichnerisch, ein erzeugtes Bild kann also nie fuer ein Foto gehalten werden.
-private struct PlaygroundSheet: ViewModifier {
+struct PlaygroundSheet: ViewModifier {
     @Binding var isPresented: Bool
     let concept: String
     let onImage: (UIImage) -> Void
@@ -852,7 +854,6 @@ private struct PlaygroundSheet: ViewModifier {
     }
 }
 
-/// Fortschritt im Punktraster statt als Spinner — ein Balken, der durchläuft.
 /// Der Verlauf während der Schätzung — **im Raster des Zeitstrahls**.
 ///
 /// Vorher war es eine einzelne Reihe, die sich von links füllte: ein

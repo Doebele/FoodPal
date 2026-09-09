@@ -601,7 +601,13 @@ und pulsiert an Ort und Stelle.
 
 Bestätigen und Eintrag ändern stehen jetzt in **zwei Spalten**: links die Zahlen, rechts Bild, Zeitpunkt und Bezeichnung. **124 zu 213 mit 8 pt Steg**, aus dem Entwurf abgemessen (124,4 / 8 / 212,6 auf 345). Die Aufteilung ist keine Laune — Zahlen sind kurz und brauchen wenig Breite, ein Gerichtsname ist lang und braucht viel; nebeneinander steht beides auf einem Blick, wo es untereinander zwei Bildschirme wären.
 
-**Die linke Spalte beginnt tiefer als die rechte.** Das ist die halbe Miete: oben links bleibt es leer, und was man anfassen und eintippen muss, rückt nach unten, wo der Daumen ist. Ohne Bild bleibt der Platz dafür trotzdem stehen — der Weissraum ist Teil des Satzes, nicht das Loch, das ein fehlendes Bild hinterlässt.
+**Beide Spalten beginnen auf derselben Höhe** — die erste Zahl links steht neben dem Zeitpunkt rechts. Dafür tragen alle Werte dieselbe Grösse (22), auch der Zeitpunkt, der im Entwurf kleiner gesetzt war: nur so stehen die ersten Zeilen beider Spalten im selben Raster. Beim Bestätigen beginnt die linke Spalte um die Höhe des Bildplatzes tiefer, denn dort steht das Bild in der rechten Spalte.
+
+**Koffein steht zuoberst, wo es vorkommt.** Bei einem Getränk ist es der Wert, um den es geht — die drei Kalorien einer Cola Zero sind daneben eine Fussnote. Bei einer Mahlzeit ohne Koffein steht das Feld gar nicht erst da.
+
+**Das Zeitrad kommt von unten.** Ein `UIDatePicker` braucht die volle Breite für seine drei Räder; in der 213 pt schmalen Spalte lief es rechts aus dem Bild und die Minuten waren nicht mehr zu sehen. Als Bottom Sheet mit fester Höhe bekommt es die ganze Breite — und passt zum Rest der App, in der alles, was eine Sache erledigt und wieder geht, von unten kommt.
+
+**Der Platz oben links bleibt leer.** Das ist die halbe Miete: oben links bleibt es leer, und was man anfassen und eintippen muss, rückt nach unten, wo der Daumen ist. Ohne Bild bleibt der Platz dafür trotzdem stehen — der Weissraum ist Teil des Satzes, nicht das Loch, das ein fehlendes Bild hinterlässt.
 
 Drei Dinge, an denen der erste Versuch scheiterte:
 

@@ -29,6 +29,7 @@ struct EntryDetailView: View {
     /// Nach dem Loeschen feuert `onDisappear` ebenfalls — ohne diese Marke
     /// schriebe das Sichern auf einen Eintrag, den es nicht mehr gibt.
     @State private var deleted = false
+    @State private var showPlayground = false
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
 
@@ -43,9 +44,11 @@ struct EntryDetailView: View {
                     // als beim Bestaetigen, wo es in seiner Spalte sitzt.
                     picture
 
-                    // 75 = der Zeitpunkt-Block. Die Zahlen beginnen damit
-                    // auf Höhe der Bezeichnung, wie im Entwurf.
-                    SplitForm(leftOffset: 75) {
+                    // Kein Versatz: die Zahlen beginnen auf **derselben
+                    // Höhe** wie der Zeitpunkt rechts. Mit gleich grossen
+                    // Werten auf beiden Seiten stehen damit die ersten
+                    // Zeilen beider Spalten im selben Raster.
+                    SplitForm {
                         numbers
                     } right: {
                         VStack(alignment: .leading, spacing: 0) {
@@ -87,6 +90,16 @@ struct EntryDetailView: View {
         // Screen bearbeitet an Ort und Stelle, und Loeschen hat seine eigene
         // Nachfrage.
         .onDisappear { persist() }
+        .sheet(isPresented: $editingTime) {
+            QuarterHourSheet(date: $date)
+                .presentationDetents([.height(300)])
+                .presentationDragIndicator(.visible)
+                .presentationBackground(Palette.paper)
+        }
+        .modifier(PlaygroundSheet(isPresented: $showPlayground, concept: name) { image in
+            entry.photo = VisionEstimator.downscaled(image, maxEdge: 900)
+            entry.generatedImage = true
+        })
         .confirmationDialog(
             "Eintrag löschen?",
             isPresented: $askDelete,
@@ -110,12 +123,14 @@ struct EntryDetailView: View {
 
     /// Die linke Spalte: nur Zahlen.
     @ViewBuilder private var numbers: some View {
-        numberField("kcal", text: $kcal, tint: Palette.ink)
-        // Koffein steht bei jedem Eintrag, der welches hat — nicht nur bei
-        // Kaffee. Eine Cola zaehlt genauso.
+        // Koffein **zuoberst**, wo es vorkommt: bei einem Getraenk ist es
+        // der Wert, um den es geht — die drei Kalorien einer Cola Zero sind
+        // daneben eine Fussnote. Und es steht bei jedem Eintrag, der welches
+        // hat, nicht nur bei Kaffee.
         if entry.kind == .coffee || (Double(caffeine) ?? 0) > 0 {
             numberField("koffein · mg", text: $caffeine, tint: roast.color)
         }
+        numberField("kcal", text: $kcal, tint: Palette.ink)
         numberField("protein · g", text: $protein, tint: Palette.ink)
         numberField("kohlenhydrate · g", text: $carbs, tint: Palette.ink)
         numberField("fett · g", text: $fat, tint: Palette.ink)
@@ -124,10 +139,22 @@ struct EntryDetailView: View {
     /// Die Bezeichnung steht rechts, wo sie Platz zum Umbrechen hat — bei
     /// „Bowl mit Lachs, Avocado, Bambussprossen …" sind das fuenf Zeilen.
     private var nameField: some View {
-        FormField(label: "bezeichnung") {
-            TextField("", text: $name, axis: .vertical)
-                .scaledFont(22, weight: .light, condensed: true)
-                .foregroundStyle(Palette.ink)
+        VStack(alignment: .leading, spacing: 0) {
+            FormField(label: "bezeichnung") {
+                TextField("", text: $name, axis: .vertical)
+                    .scaledFont(22, weight: .light, condensed: true)
+                    .foregroundStyle(Palette.ink)
+            }
+
+            // Auch nachtraeglich: ein Eintrag ohne Bild bekommt hier eins,
+            // aus seiner Bezeichnung. Die Zeile erscheint nur, wo das Geraet
+            // Image Playground kann — und nur, solange kein Bild da ist.
+            if entry.photo == nil, #available(iOS 18.1, *) {
+                HStack {
+                    Spacer(minLength: 0)
+                    GenerateImageRow(disabled: name.isEmpty) { showPlayground = true }
+                }
+            }
         }
     }
 
@@ -209,7 +236,7 @@ struct EntryDetailView: View {
     private var timeField: some View {
         VStack(alignment: .leading, spacing: 6) {
             Button {
-                withAnimation(.easeInOut(duration: 0.2)) { editingTime.toggle() }
+                editingTime = true
             } label: {
                 // Untereinander, nicht als Zeile mit Spacer: in der rechten
                 // Spalte ist fuer beides nebeneinander kein Platz.
@@ -219,18 +246,13 @@ struct EntryDetailView: View {
                         .tracking(0.8)
                         .foregroundStyle(Palette.ink2)
                     Text(stamp)
-                        .scaledFont(17, weight: .light, condensed: true)
+                        .scaledFont(22, weight: .light, condensed: true)
                         .foregroundStyle(Palette.ink)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-
-            if editingTime {
-                QuarterHourPicker(date: $date)
-                    .frame(maxWidth: .infinity)
-            }
 
             Rectangle().fill(Palette.rule).frame(height: 1)
         }
@@ -269,7 +291,7 @@ struct EntryDetailView: View {
         FormField(label: label) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
-                .scaledFont(24, design: .monospaced)
+                .scaledFont(22, design: .monospaced)
                 .foregroundStyle(tint)
         }
     }

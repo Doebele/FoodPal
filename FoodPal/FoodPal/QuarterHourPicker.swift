@@ -45,3 +45,27 @@ struct QuarterHourPicker: UIViewRepresentable {
         }
     }
 }
+
+/// Das Rad in einem Sheet von unten statt im Formular.
+///
+/// Ein `UIDatePicker` braucht die **volle Breite** — drei Räder nebeneinander,
+/// Tag, Stunde, Minute. Im Formular sitzt der Zeitpunkt seit dem zweispaltigen
+/// Satz in einer 213 pt schmalen Spalte, und dort lief das Rad rechts aus dem
+/// Bild: die Minuten waren nicht mehr zu sehen.
+///
+/// Von unten hereingefahren bekommt es die ganze Breite — und passt zum Rest
+/// der App, in der ohnehin alles, was eine Sache erledigt und wieder geht,
+/// ein Bottom Sheet ist.
+struct QuarterHourSheet: View {
+    @Binding var date: Date
+
+    var body: some View {
+        VStack(spacing: 0) {
+            SheetHeader(title: "Zeitpunkt", action: "Fertig")
+            QuarterHourPicker(date: $date)
+                .frame(maxWidth: .infinity)
+            Spacer(minLength: 0)
+        }
+        .background(Palette.paper)
+    }
+}
