@@ -39,17 +39,27 @@ struct SettingsView: View {
         ScrollView {
             // Sortiert nach Häufigkeit, nicht nach Bedeutung: oben, woran man
             // öfter dreht, unten, was einmal eingerichtet wird und dann steht.
-            VStack(alignment: .leading, spacing: 0) {
-                caption("akzent · röstung", trailing: roast.label, topPadding: 16)
-                roastPicker.padding(.top, 12)
+            //
+            // 32 pt zwischen den Gruppen: der Weissraum macht die Gruppierung
+            // sichtbar, ohne dass es dafür Rahmen oder Flächen bräuchte.
+            VStack(alignment: .leading, spacing: 32) {
+                group(spacing: 4) {
+                    caption("akzent · röstung", value: roast.label.lowercased())
+                    roastPicker
+                }
 
-                caption("erscheinungsbild", trailing: appearance.label, topPadding: 28)
-                appearancePicker.padding(.top, 12)
+                group(spacing: 4) {
+                    caption("erscheinungsbild", value: appearance.label.lowercased())
+                    appearancePicker
+                }
 
-                caption("anzeige · ziffern", trailing: style.label, topPadding: 28)
-                stylePicker.padding(.top, 12)
+                group(spacing: 12) {
+                    caption("anzeige · ziffern", value: style.label.lowercased())
+                    stylePicker
+                }
 
-                section("bedienung", topPadding: 28) {
+                group(spacing: 0) {
+                    caption("bedienung")
                     row("Haptik") {
                         Toggle("", isOn: $haptics)
                             .labelsHidden()
@@ -68,22 +78,20 @@ struct SettingsView: View {
                 // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
                 // nur beim Einrichten gebraucht werden. Sie stehen deshalb hinter
                 // einer Zeile statt dauerhaft zwischen den Schaltern.
-                section("bildanalyse", trailing: provider.label, topPadding: 28) {
+                group(spacing: 0) {
+                    caption("bildanalyse", value: provider.label)
                     actionRow("Anbieter und Modell") { showVision = true }
                 }
 
-                // Zuletzt: einmal verbunden, nie wieder angefasst.
-                section("apple health", topPadding: 28) {
-                    row("Verbindung") {
-                        HStack(spacing: 8) {
-                            Rectangle()
-                                .fill(health.status == .authorized ? Palette.ink : Palette.ink2)
-                                .frame(width: 9, height: 9)
-                            Text(health.status.label)
-                                .scaledFont(16)
-                                .foregroundStyle(Palette.ink)
-                        }
-                    }
+                // Zuletzt: einmal verbunden, nie wieder angefasst. Der Zustand
+                // steht im Gruppenkopf statt in einer eigenen Zeile — er wird
+                // gelesen, nicht bedient, und spart so eine ganze Reihe.
+                group(spacing: 0) {
+                    caption(
+                        "apple health",
+                        value: health.status.label,
+                        marker: health.status == .authorized
+                    )
                     if health.status != .authorized {
                         actionRow("Mit Health verbinden") {
                             Task {
@@ -99,8 +107,8 @@ struct SettingsView: View {
                     }
                     row("Schreibt") {
                         Text("Kalorien · Koffein · Makros")
-                            .scaledFont(16)
-                            .foregroundStyle(Palette.ink2)
+                            .scaledFont(16, condensed: true)
+                            .foregroundStyle(Palette.ink)
                     }
                 }
 
@@ -108,9 +116,9 @@ struct SettingsView: View {
                     Text(authError)
                         .scaledFont(12)
                         .foregroundStyle(Palette.ink2)
-                        .padding(.top, 8)
                 }
             }
+            .padding(.top, 16)
             .padding(.horizontal, Metric.margin)
             .padding(.bottom, 32)
         }
@@ -127,19 +135,31 @@ struct SettingsView: View {
 
     // MARK: - Erscheinungsbild
 
-    /// Auch hier gilt: man wählt, was man sieht. Die Felder zeigen die
-    /// Farben des jeweiligen Modus — Auto stellt beide nebeneinander.
+    /// Auch hier gilt: man wählt, was man sieht — nur zeigt das Feld jetzt
+    /// dasselbe Punktraster wie Diagramm und Anzeige statt zweier Farbkacheln.
+    /// Auf jedem Feld steht ein **A** in Punkten; der Grund darunter sagt den
+    /// Modus. Auto teilt beide Gründe senkrecht und dreht das A auf der
+    /// dunklen Hälfte um.
     private var appearancePicker: some View {
+        // Drei gleiche Drittel, nicht an die Raender gedrueckt: das Bild sitzt
+        // mittig in seinem Feld, und der schwarze Strich laeuft ueber die
+        // ganze Spaltenbreite. Damit liest sich die Auswahl als Reihe
+        // gleichwertiger Felder statt als drei einzeln gesetzte Objekte.
         HStack(spacing: 0) {
-            ForEach(Array(Appearance.allCases.enumerated()), id: \.element.id) { index, option in
-                if index > 0 {
-                    Rectangle().fill(Palette.rule).frame(width: 1, height: 44)
-                }
+            ForEach(Appearance.allCases) { option in
                 Button { appearanceRaw = option.rawValue } label: {
                     VStack(spacing: 10) {
-                        swatch(option)
+                        AppearanceBlock(option: option)
+                            .frame(height: 54)
+                            // Im Dunkelmodus liegt der dunkle Grund fast auf
+                            // dem Papier — ohne Haarlinie haette „dunkel" gar
+                            // keine sichtbaren Kanten und stuende als
+                            // schwebendes A neben zwei Bloecken.
+                            .overlay(Rectangle().strokeBorder(Palette.rule, lineWidth: 1))
                         Text(option.label)
-                            .scaledFont(11, weight: option == appearance ? .medium : .regular)
+                            .scaledFont(12)
+                            .tracking(0.4)
+                            .textCase(.lowercase)
                             .foregroundStyle(option == appearance ? Palette.ink : Palette.ink2)
                         Rectangle()
                             .fill(option == appearance ? Palette.ink : .clear)
@@ -149,30 +169,8 @@ struct SettingsView: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(option.label)
             }
-        }
-    }
-
-    /// Auto zeigt **beide** Modi, diagonal geteilt. Zwei nebeneinander
-    /// gelegte Papiertöne taugen dafür nicht: dunkles Papier ist genauso
-    /// schwarz wie helle Tinte, damit sähe Auto aus wie Hell.
-    private func swatch(_ option: Appearance) -> some View {
-        let size = CGSize(width: 54, height: 34)
-        return ZStack {
-            pair(light: option != .dark)
-            if option == .auto {
-                pair(light: false).clipShape(LowerLeft())
-            }
-        }
-        .frame(width: size.width, height: size.height)
-        .clipShape(RoundedRectangle(cornerRadius: 3))
-        .overlay(RoundedRectangle(cornerRadius: 3).stroke(Palette.rule, lineWidth: 1))
-    }
-
-    private func pair(light: Bool) -> some View {
-        HStack(spacing: 0) {
-            Palette.fixed(light ? Palette.lightPaper : Palette.darkPaper)
-            Palette.fixed(light ? Palette.lightInk : Palette.darkInk)
         }
     }
 
@@ -182,25 +180,18 @@ struct SettingsView: View {
     /// man wählt, was man sieht.
     private var stylePicker: some View {
         HStack(spacing: 0) {
-            // Optischer Ausgleich, zweimal: die massive Segment-Acht traegt
-            // schwerer als die kleine Ziffer auf der Karte, deshalb kleiner
-            // gesetzt — und die Ziffer sitzt in der Mitte ihrer Karte, waehrend
-            // die beiden anderen ihr Feld fuellen. Ausgemessen sass sie
-            // dadurch 18 pt tiefer als die Nachbarn. Der Versatz gilt nur der
-            // Vorschau; auf dem Startscreen steht die Anzeige allein.
-            styleCell(.flip) {
-                FlipCard(digit: 8)
-                    .frame(height: 64)
-                    .offset(y: -18)
-            }
-            Rectangle().fill(Palette.rule).frame(width: 1, height: 64)
-            styleCell(.sevenSegment) {
-                SevenSegmentDigit(digit: 8).frame(height: 50)
-            }
-            Rectangle().fill(Palette.rule).frame(width: 1, height: 64)
-            styleCell(.dotMatrix) {
-                DotMatrixDigit(digit: 8).frame(height: 64)
-            }
+            // Drei gleiche Drittel, die Vorschau mittig darin. Alle drei
+            // stehen zudem in **einem** 64 pt hohen Kasten: damit liegen
+            // Beschriftung und schwarzer Strich auf einer Linie, egal wie hoch
+            // die Vorschau selbst ist — die Segment-Acht ist 50, die
+            // Flipkarte 64.
+            //
+            // Der frühere Versatz von −18 pt ist raus: er hat einen Fehler in
+            // der Flipkarte ausgeglichen, die 28 pt unter ihrem eigenen Rahmen
+            // zeichnete. Seit der Rahmen sitzt, war der Ausgleich doppelt.
+            styleCell(.flip) { FlipCard(digit: 8).frame(height: 64) }
+            styleCell(.sevenSegment) { SevenSegmentDigit(digit: 8).frame(height: 50) }
+            styleCell(.dotMatrix) { DotMatrixDigit(digit: 8).frame(height: 64) }
         }
     }
 
@@ -211,11 +202,12 @@ struct SettingsView: View {
         let active = style == target
         return Button { styleRaw = target.rawValue } label: {
             VStack(spacing: 10) {
-                preview()
+                preview().frame(height: 64)
                 Text(target.label)
-                    .scaledFont(11, weight: active ? .medium : .regular)
+                    .scaledFont(12)
+                    .tracking(0.4)
                     .foregroundStyle(active ? Palette.ink : Palette.ink2)
-                    // Drei gleich breite Spalten geben „7-Segment" bei den
+                    // Drei Spalten geben „7-Segment" bei den
                     // Bedienhilfen-Groessen nicht genug Platz; ohne diese
                     // Reserve brach es zu „7-Segme / nt".
                     .multilineTextAlignment(.center)
@@ -234,24 +226,25 @@ struct SettingsView: View {
 
     /// Die Farbfelder sitzen im selben Punktraster wie Diagramm und Anzeige.
     private var roastPicker: some View {
-        VStack(spacing: 8) {
-            HStack(spacing: Grid.pitch) {
-                ForEach(Roast.allCases) { candidate in
-                    Button { roastRaw = candidate.rawValue } label: {
+        HStack(spacing: 0) {
+            ForEach(Array(Roast.allCases.enumerated()), id: \.element.id) { index, candidate in
+                if index > 0 { Spacer(minLength: 4) }
+                Button { roastRaw = candidate.rawValue } label: {
+                    // 34 hoch, das Seitenverhaeltnis macht daraus 49 breit —
+                    // zehn Spalten mal sieben Reihen desselben Rasters.
+                    VStack(spacing: 4) {
                         DotBlock(color: candidate.color)
-                            .overlay(alignment: .bottom) {
-                                Rectangle()
-                                    .fill(candidate == roast ? Palette.ink : .clear)
-                                    .frame(height: 3)
-                                    .offset(y: 11)
-                            }
-                            .contentShape(Rectangle())
+                            .frame(height: 34)
+                        Rectangle()
+                            .fill(candidate == roast ? Palette.ink : .clear)
+                            .frame(height: 3)
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(candidate.label)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel(candidate.label)
             }
-            .padding(.bottom, 11)
         }
     }
 
@@ -340,7 +333,8 @@ struct VisionSheet: View {
                 VStack(alignment: .leading, spacing: 0) {
                     // Der aktive Dienst zuerst: Schluessel einsetzen und testen
                     // ist das Haeufige, den Anbieter wechseln das Seltene.
-                    caption("aktiv", trailing: provider.label, topPadding: 8)
+                    caption("aktiv", value: provider.label)
+                        .padding(.top, 8)
                     providerFields
 
                     Text(hint)
@@ -351,7 +345,8 @@ struct VisionSheet: View {
                     // Drei Gruppen statt einer langen Reihe: was es kostet und
                     // wohin das Bild geht, ist die Frage beim Einrichten.
                     ForEach(Array(Provider.Group.allCases.enumerated()), id: \.element) { index, group in
-                        caption(Self.title(for: group), topPadding: index == 0 ? 32 : 28)
+                        caption(Self.title(for: group))
+                            .padding(.top, index == 0 ? 32 : 28)
                         list(Provider.allCases.filter { $0.group == group })
                     }
                 }
@@ -612,45 +607,79 @@ struct VisionSheet: View {
 
 // MARK: - Bausteine, dateiweit
 
-private func caption(_ title: LocalizedStringKey, trailing: String? = nil, topPadding: CGFloat = 0) -> some View {
-    HStack {
+/// Gruppenkopf: **Beschriftung — Haarlinie — Wert.** Die Linie füllt, was
+/// zwischen beiden übrig bleibt, und bindet sie damit zu einer Zeile
+/// zusammen; vorher stand der Wert frei rechts und las sich wie ein zweites
+/// Etikett. Der Wert spart die Zeile, die er sonst als eigene Reihe bräuchte
+/// — bei Apple Health war das genau eine Zeile zu viel.
+private func caption(
+    _ title: LocalizedStringKey,
+    value: String? = nil,
+    marker: Bool? = nil
+) -> some View {
+    HStack(spacing: 0) {
         Text(title)
-            .scaledFont(11)
-            .tracking(0.8)
+            .scaledFont(12)
+            .tracking(0.4)
             .foregroundStyle(Palette.ink2)
-        Spacer()
-        if let trailing {
-            Text(trailing)
-                .scaledFont(11)
-                .tracking(0.8)
-                .foregroundStyle(Palette.ink2)
+            .fixedSize()
+            .padding(.trailing, 8)
+
+        Rectangle()
+            .fill(Palette.ink2)
+            .frame(height: 1)
+
+        if value != nil || marker != nil {
+            HStack(spacing: 8) {
+                if let value {
+                    Text(value)
+                        .scaledFont(12)
+                        .tracking(0.4)
+                        .foregroundStyle(Palette.ink)
+                        .fixedSize()
+                }
+                if let marker { Marke(filled: marker) }
+            }
+            .padding(.leading, 8)
         }
     }
-    .padding(.top, topPadding)
-    .overlay(alignment: .bottom) {
-        Rectangle().fill(Palette.ink).frame(height: 1).offset(y: 12)
-    }
-    .padding(.bottom, 12)
+    // 4 oben, 4 unten um eine 14 pt hohe Zeile — die 22 pt aus dem Entwurf.
+    .padding(.vertical, 4)
 }
 
-private func section<Content: View>(
-    _ title: LocalizedStringKey,
-    trailing: String? = nil,
-    topPadding: CGFloat = 0,
+/// Das kleine Quadrat neben einem Wert: leer heisst nein, gefüllt heisst ja.
+/// Dieselbe Kodierung wie im Anbieterverzeichnis, wo eine eingerichtete
+/// Verbindung ein gefülltes Quadrat trägt.
+private struct Marke: View {
+    let filled: Bool
+
+    var body: some View {
+        Rectangle()
+            .fill(filled ? Palette.ink : .clear)
+            .frame(width: 8, height: 8)
+            .overlay(Rectangle().strokeBorder(Palette.ink, lineWidth: 1))
+    }
+}
+
+/// Eine Gruppe: Kopf, dann Inhalt. Der Abstand dazwischen ist je Gruppe
+/// verschieden — die Punktfelder rücken näher an ihren Kopf als die
+/// Zeilenlisten, weil sie sonst zu frei stünden.
+private func group<Content: View>(
+    spacing: CGFloat,
     @ViewBuilder content: () -> Content
 ) -> some View {
-    VStack(alignment: .leading, spacing: 0) {
-        caption(title, trailing: trailing, topPadding: topPadding)
-        content()
-    }
+    VStack(alignment: .leading, spacing: spacing, content: content)
 }
 
+/// Zeile mit Wert oder Schalter. **Fira Sans Condensed Light** — schmaler als
+/// der normale Schnitt, damit „Kalorien · Koffein · Makros" neben seiner
+/// Beschriftung Platz hat, ohne dass eine der beiden abbricht.
 private func row<Value: View>(_ label: LocalizedStringKey, @ViewBuilder value: () -> Value) -> some View {
     HStack {
         Text(label)
-            .scaledFont(16)
+            .scaledFont(16, condensed: true)
             .foregroundStyle(Palette.ink)
-        Spacer()
+        Spacer(minLength: 8)
         value()
     }
     .frame(minHeight: 48)
@@ -659,15 +688,17 @@ private func row<Value: View>(_ label: LocalizedStringKey, @ViewBuilder value: (
     }
 }
 
+/// Zeile, die etwas öffnet. Höher als eine Wertzeile (56 statt 48) und im
+/// normalen Schnitt gesetzt: sie ist eine Handlung, keine Angabe.
 private func actionRow(_ label: LocalizedStringKey, action: @escaping () -> Void) -> some View {
     Button(action: action) {
         HStack {
             Text(label)
-                .scaledFont(16, weight: .medium)
+                .scaledFont(16)
                 .foregroundStyle(Palette.ink)
             Spacer()
         }
-        .frame(minHeight: 48)
+        .frame(minHeight: 56)
         .contentShape(Rectangle())
     }
     .buttonStyle(.plain)
@@ -684,5 +715,73 @@ private struct LowerLeft: Shape {
         path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
         path.closeSubpath()
         return path
+    }
+}
+
+/// Das Erscheinungsbild als Punktfeld: **12 Spalten, 11 Reihen**, in der Mitte
+/// ein A aus Punkten.
+///
+/// Der Grund sagt den Modus — hell trägt ein dunkles A auf hellem Feld, dunkel
+/// das Gegenteil, und Auto teilt die zwölf Spalten in der Mitte und dreht die
+/// rechte Hälfte um. Damit ist die Auswahl im selben Raster gezeichnet wie
+/// alles andere; die alten Farbkacheln mit ihrer Diagonale waren das einzige
+/// Element der App, das aus dieser Systematik ausbrach.
+struct AppearanceBlock: View {
+    let option: Appearance
+
+    static let columns = 12
+    static let rows = 11
+
+    /// Das A, Spalte für Spalte. Direkt aus dem Entwurf abgelesen.
+    private static let glyph: [String] = [
+        "000000000000",
+        "000000000000",
+        "000011110000",
+        "000100001000",
+        "000100001000",
+        "000111111000",
+        "000100001000",
+        "000100001000",
+        "000100001000",
+        "000000000000",
+        "000000000000"
+    ]
+
+    /// Auf der linken Hälfte gilt Hell, auf der rechten Dunkel — ausser der
+    /// Modus schreibt beides vor.
+    private func lightGround(column: Int) -> Bool {
+        switch option {
+        case .light: true
+        case .dark: false
+        case .auto: column < Self.columns / 2
+        }
+    }
+
+    var body: some View {
+        Canvas { ctx, size in
+            let s = size.width / (Grid.x(Self.columns - 1) + Grid.dot)
+            for row in 0..<Self.rows {
+                let line = Array(Self.glyph[row])
+                for column in 0..<Self.columns {
+                    let light = lightGround(column: column)
+                    let onGlyph = line[column] == "1"
+                    // Auf dem Glyphen kippt die Farbe gegen den Grund.
+                    let color = onGlyph
+                        ? (light ? Palette.dotDark : Palette.dotLight)
+                        : (light ? Palette.dotLight : Palette.dotDark)
+                    let rect = CGRect(
+                        x: Grid.x(column) * s,
+                        y: CGFloat(row) * Grid.pitch * s,
+                        width: Grid.dot * s,
+                        height: Grid.dot * s
+                    )
+                    ctx.fill(Path(rect), with: .color(color))
+                }
+            }
+        }
+        .aspectRatio(
+            (Grid.x(Self.columns - 1) + Grid.dot) / (CGFloat(Self.rows - 1) * Grid.pitch + Grid.dot),
+            contentMode: .fit
+        )
     }
 }

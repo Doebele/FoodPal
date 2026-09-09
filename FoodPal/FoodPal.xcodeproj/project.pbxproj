@@ -406,6 +406,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "FoodPal nutzt die Kamera, um Mahlzeiten zu fotografieren.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "FoodPal liest bestehende Werte aus Health, um doppelte Eintragungen zu vermeiden.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "FoodPal schreibt Kalorien, Koffein und Makros in Apple Health.";
@@ -443,6 +444,7 @@
 				DEVELOPMENT_TEAM = 2EAG2V5S26;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "FoodPal nutzt die Kamera, um Mahlzeiten zu fotografieren.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "FoodPal liest bestehende Werte aus Health, um doppelte Eintragungen zu vermeiden.";

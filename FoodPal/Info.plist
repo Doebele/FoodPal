@@ -2,16 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!--
-	  LM Studio läuft im lokalen Netz über HTTP. NSAllowsLocalNetworking
-	  erlaubt genau das — und nur das. ATS bleibt für alles Übrige scharf;
-	  NSAllowsArbitraryLoads wäre der Holzhammer und würde auch die
-	  Verbindungen zu Anthropic und OpenAI ungeschützt lassen.
-	-->
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
-	</dict>
+	<!-- Alles Übrige erzeugt Xcode aus den INFOPLIST_KEY_-Buildeinstellungen
+	     und legt es über diese Datei. Hier steht nur, wofür es keinen
+	     solchen Schlüssel gibt: die mitgelieferten Schnitte.
+	     Die Dateien liegen flach im Bündel, nicht im Unterordner. -->
+	<key>UIAppFonts</key>
+	<array>
+		<string>FiraSans-Light.ttf</string>
+		<string>FiraSans-Regular.ttf</string>
+		<string>FiraSans-Medium.ttf</string>
+		<string>FiraSansCondensed-Light.ttf</string>
+		<string>FiraSansCondensed-Regular.ttf</string>
+		<string>FiraMono-Regular.ttf</string>
+		<string>FiraMono-Medium.ttf</string>
+	</array>
 </dict>
 </plist>

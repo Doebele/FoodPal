@@ -85,8 +85,8 @@ struct SheetHeader: View {
             }
         }
         .padding(.horizontal, Metric.margin)
-        .padding(.top, 20)
-        .padding(.bottom, 8)
+        // 16 oben wie unten um eine 14 pt hohe Zeile — die 46 aus dem Entwurf.
+        .padding(.vertical, 16)
         // Ein Sheet, das von unten hereinfaehrt, ist eine Bewegung — die darf
         // man spueren. Leicht, denn es rastet nichts ein, es kommt nur an.
         .haptic(.impact(weight: .light, intensity: 0.5), trigger: appeared)
@@ -95,15 +95,16 @@ struct SheetHeader: View {
 
     private var label: some View {
         Text(title)
-            .scaledFont(13, weight: .medium)
-            .tracking(0.9)
+            .scaledFont(12)
+            .tracking(0.4)
             .foregroundStyle(Palette.ink2)
     }
 
     private var button: some View {
         Button(action) { dismiss() }
             .buttonStyle(.plain)
-            .scaledFont(13, weight: .medium)
+            .scaledFont(12)
+            .tracking(0.4)
             .foregroundStyle(Palette.ink)
     }
 }

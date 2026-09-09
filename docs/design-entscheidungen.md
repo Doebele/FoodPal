@@ -483,6 +483,37 @@ Zwei Stolpersteine, die dabei auffielen und im Code stehen:
 
 Die Übersetzungen für FR, IT und ES stammen von mir und sollten vor einem App-Store-Start von Muttersprachlern gegengelesen werden.
 
+## Schrift: Fira
+
+**Fira Sans, Fira Sans Condensed und Fira Mono liegen im Bündel** (SIL OFL 1.1, aus dem Google-Fonts-Repository). SF Pro war nie eine Entscheidung, sondern die Vorgabe, solange nichts anderes da war — die Entwürfe stehen von Anfang an in Fira.
+
+| Rolle | Schnitt |
+|---|---|
+| Fließtext, Handlungszeilen, Überschriften | Fira Sans Light · Regular · Medium |
+| Zeilenbeschriftung und -wert in den Einstellungen | Fira Sans **Condensed** Light |
+| Uhrzeiten, kcal, mg, Gramm, Stundenmarken | Fira Mono Regular · Medium |
+
+Condensed nur dort, wo Beschriftung und Wert auf einer Zeile stehen: „Schreibt — Kalorien · Koffein · Makros" passt im normalen Schnitt nicht nebeneinander, im schmalen schon. Es ist kein Stilmittel, sondern eine Platzentscheidung.
+
+Zwei Fallstricke, die dabei auffielen:
+
+- **`Font.custom(_:size:)` skaliert von sich aus mit Dynamic Type.** Zusammen mit dem Faktor aus `scaledFont` wäre das doppelt gewesen. Deshalb `custom(_:fixedSize:)` — dann skaliert genau eine Stelle, und der Schalter in den Einstellungen greift weiterhin.
+- **Für `UIAppFonts` gibt es keine `INFOPLIST_KEY_`-Entsprechung.** Das Projekt erzeugt seine Info.plist aus Buildeinstellungen; der Schlüssel braucht eine echte Datei, die Xcode als Grundlage nimmt und die generierten Schlüssel darüberlegt. Sie liegt **neben** dem Projekt, nicht im synchronisierten Ordner — sonst kopiert Xcode sie zusätzlich als Ressource und der Build bricht mit „Multiple commands produce Info.plist" ab. Die Schriftdateien selbst landen flach im Bündel, der Unterordner `Fonts/` gehört nicht in den Schlüssel.
+
+## Einstellungen, zweite Fassung
+
+Aus dem überarbeiteten Figma-Entwurf, Werte 1 : 1 übernommen.
+
+**Der Gruppenkopf ist eine Zeile geworden: Beschriftung — Haarlinie — Wert.** Die Linie füllt, was zwischen beiden übrig bleibt, und bindet sie zusammen; vorher stand der Wert frei rechts und las sich wie ein zweites Etikett. Der Wert spart dabei die Zeile, die er sonst als eigene Reihe bräuchte — **bei Apple Health war das genau eine Zeile zu viel**: aus „Verbindung / nicht verbunden" wurde der Zustand im Kopf, mit einem 8 pt grossen Quadrat dahinter. Leer heisst nein, gefüllt heisst ja, dieselbe Kodierung wie im Anbieterverzeichnis.
+
+**Das Erscheinungsbild sitzt jetzt im Punktraster.** Auf jedem Feld steht ein **A aus Punkten**, 12 Spalten mal 11 Reihen; der Grund darunter sagt den Modus. Auto teilt die zwölf Spalten in der Mitte und dreht das A auf der dunklen Hälfte um. Die alten Farbkacheln mit ihrer Diagonale waren das einzige Element der App, das aus der Rastersystematik ausbrach.
+
+**Masse aus dem Entwurf:** Inhalt 16 oben / 24 seitlich / 32 unten, **32 pt zwischen den Gruppen**; Kopf 4 + 14 + 4 = 22; Röstungsfeld 49 × 34 (10 × 7 Punkte), Erscheinungsfeld 59 × 54 (12 × 11); Wertzeile 48 hoch, Handlungszeile 56; Beschriftungen 12 pt mit 0,4 Laufweite, Zeilen 16 pt.
+
+**Erscheinungsbild und Ziffernstil teilen sich die Breite zu gleichen Dritteln**, das Bild mittig darin und der schwarze Strich über die ganze Spalte. Der Entwurf setzt sie an die Ränder; als Reihe gleichwertiger Felder liest es sich ruhiger, und die Auswahl bleibt auch dann eine Reihe, wenn eine Vorschau schmaler ist als die andere.
+
+**Eine Abweichung, bewusst:** `ink2` steht im Entwurf auf `#8A8A82`, im Code auf `#72726A`. Der hellere Ton kommt auf 3,33 : 1 gegen Papier und fällt für 12-pt-Text durch (siehe [Barrierefreiheit](#barrierefreiheit)). Die Haarlinie im Gruppenkopf nimmt denselben Wert und liest sich dadurch eine Spur bestimmter als im Entwurf.
+
 ## Barrierefreiheit
 
 Drei Schritte, in dieser Reihenfolge — Trefferflächen und Kontrast zuerst, weil sie **jeden** betreffen und nichts am Entwurf kosten; Dynamic Type danach, weil es das Layout anfasst.

@@ -19,6 +19,12 @@ enum Palette {
     /// die zeigen sollen, wie der *andere* Modus aussieht.
     static func fixed(_ hex: UInt32) -> Color { Color(uiColor: UIColor(hex: hex)) }
 
+    /// Feste Punktfarben der Erscheinungsbild-Auswahl. Fest, nicht dynamisch:
+    /// sonst zeigte „dunkel" im Dunkelmodus ein helles Feld und die Auswahl
+    /// widerspräche sich selbst.
+    static let dotLight = fixed(0xE2E2DA)
+    static let dotDark = fixed(0x161614)
+
     static let lightPaper: UInt32 = 0xFAFAF8
     static let lightInk: UInt32 = 0x161614
     static let darkPaper: UInt32 = 0x121211
