@@ -14,6 +14,7 @@ struct EntryDetailView: View {
     @AppStorage(Preference.healthSync) private var healthSync = true
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
 
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var health = HealthKitSync()
     @State private var name = ""
     @State private var date = Date.now
@@ -35,34 +36,44 @@ struct EntryDetailView: View {
         VStack(spacing: 0) {
             header
 
-            ScrollView {
+            ScrollsWhenNeeded {
                 VStack(alignment: .leading, spacing: 0) {
+                    // Das Bild laeuft randlos ueber die ganze Breite und
+                    // steht deshalb **ausserhalb** des Satzspiegels — anders
+                    // als beim Bestaetigen, wo es in seiner Spalte sitzt.
                     picture
 
-                    field("bezeichnung") {
-                        TextField("", text: $name)
-                            .scaledFont(22, weight: .light)
-                            .foregroundStyle(Palette.ink)
+                    // 75 = der Zeitpunkt-Block. Die Zahlen beginnen damit
+                    // auf Höhe der Bezeichnung, wie im Entwurf.
+                    SplitForm(leftOffset: 75) {
+                        numbers
+                    } right: {
+                        VStack(alignment: .leading, spacing: 0) {
+                            timeField
+                            nameField
+                            // Löschen steht **unten** rechts, nicht direkt
+                            // unter der Bezeichnung: der Weissraum dazwischen
+                            // ist Teil des Satzes, und der seltenste Griff
+                            // gehört am weitesten weg vom häufigsten.
+                            //
+                            // Einspaltig faellt es dagegen ans Ende — sonst
+                            // stuende das Loeschen mitten im Formular,
+                            // zwischen Bezeichnung und Naehrwerten.
+                            if !typeSize.isAccessibilitySize {
+                                Spacer(minLength: 40)
+                                deleteSection
+                            }
+                        }
+                        .frame(maxHeight: .infinity, alignment: .top)
                     }
+                    .padding(.horizontal, Metric.margin)
 
-                    timeField
-
-                    numberField("kcal", text: $kcal, tint: Palette.ink)
-
-                    if entry.kind == .coffee {
-                        numberField("koffein · mg", text: $caffeine, tint: roast.color)
+                    if typeSize.isAccessibilitySize {
+                        deleteSection.padding(.horizontal, Metric.margin)
                     }
-
-                    numberField("protein · g", text: $protein, tint: Palette.ink)
-                    numberField("kohlenhydrate · g", text: $carbs, tint: Palette.ink)
-                    numberField("fett · g", text: $fat, tint: Palette.ink)
-
-                    deleteSection
                 }
-                .padding(.horizontal, Metric.margin)
                 .padding(.bottom, 32)
             }
-            .scrollIndicators(.hidden)
         }
         .background(Palette.paper)
         .task {
@@ -95,6 +106,29 @@ struct EntryDetailView: View {
     private var header: some View {
         SheetHeader(title: "Eintrag", action: "Fertig")
             .padding(.bottom, 16)
+    }
+
+    /// Die linke Spalte: nur Zahlen.
+    @ViewBuilder private var numbers: some View {
+        numberField("kcal", text: $kcal, tint: Palette.ink)
+        // Koffein steht bei jedem Eintrag, der welches hat — nicht nur bei
+        // Kaffee. Eine Cola zaehlt genauso.
+        if entry.kind == .coffee || (Double(caffeine) ?? 0) > 0 {
+            numberField("koffein · mg", text: $caffeine, tint: roast.color)
+        }
+        numberField("protein · g", text: $protein, tint: Palette.ink)
+        numberField("kohlenhydrate · g", text: $carbs, tint: Palette.ink)
+        numberField("fett · g", text: $fat, tint: Palette.ink)
+    }
+
+    /// Die Bezeichnung steht rechts, wo sie Platz zum Umbrechen hat — bei
+    /// „Bowl mit Lachs, Avocado, Bambussprossen …" sind das fuenf Zeilen.
+    private var nameField: some View {
+        FormField(label: "bezeichnung") {
+            TextField("", text: $name, axis: .vertical)
+                .scaledFont(22, weight: .light, condensed: true)
+                .foregroundStyle(Palette.ink)
+        }
     }
 
     private var deleteSection: some View {
@@ -152,6 +186,14 @@ struct EntryDetailView: View {
                 }
                 .padding(.top, 12)
                 .padding(.bottom, 24)
+        } else {
+            // Ohne Bild bleibt der Platz leer — derselbe Weissraum wie mit,
+            // damit die Felder dort stehen, wo man sie erreicht.
+            Color.clear
+                .frame(height: 220)
+                .frame(maxWidth: .infinity)
+                .padding(.top, 12)
+                .padding(.bottom, 24)
         }
     }
 
@@ -169,16 +211,18 @@ struct EntryDetailView: View {
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) { editingTime.toggle() }
             } label: {
-                HStack {
+                // Untereinander, nicht als Zeile mit Spacer: in der rechten
+                // Spalte ist fuer beides nebeneinander kein Platz.
+                VStack(alignment: .leading, spacing: 0) {
                     Text("zeitpunkt")
                         .scaledFont(11)
                         .tracking(0.8)
                         .foregroundStyle(Palette.ink2)
-                    Spacer()
                     Text(stamp)
-                        .scaledFont(22, weight: .light, design: .monospaced)
+                        .scaledFont(17, weight: .light, condensed: true)
                         .foregroundStyle(Palette.ink)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -222,10 +266,10 @@ struct EntryDetailView: View {
     }
 
     private func numberField(_ label: LocalizedStringKey, text: Binding<String>, tint: Color) -> some View {
-        field(label) {
+        FormField(label: label) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
-                .scaledFont(22, weight: .light, design: .monospaced)
+                .scaledFont(24, design: .monospaced)
                 .foregroundStyle(tint)
         }
     }

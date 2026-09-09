@@ -597,6 +597,22 @@ seine Spitze, und es liefen Keile durch das Bild statt Streifen. Mit 20 zu 44
 Bei „Bewegung reduzieren" wandert nichts: dann steht ein festes Punktmuster
 und pulsiert an Ort und Stelle.
 
+## Zweispaltige Formulare
+
+Bestätigen und Eintrag ändern stehen jetzt in **zwei Spalten**: links die Zahlen, rechts Bild, Zeitpunkt und Bezeichnung. **124 zu 213 mit 8 pt Steg**, aus dem Entwurf abgemessen (124,4 / 8 / 212,6 auf 345). Die Aufteilung ist keine Laune — Zahlen sind kurz und brauchen wenig Breite, ein Gerichtsname ist lang und braucht viel; nebeneinander steht beides auf einem Blick, wo es untereinander zwei Bildschirme wären.
+
+**Die linke Spalte beginnt tiefer als die rechte.** Das ist die halbe Miete: oben links bleibt es leer, und was man anfassen und eintippen muss, rückt nach unten, wo der Daumen ist. Ohne Bild bleibt der Platz dafür trotzdem stehen — der Weissraum ist Teil des Satzes, nicht das Loch, das ein fehlendes Bild hinterlässt.
+
+Drei Dinge, an denen der erste Versuch scheiterte:
+
+- **`GeometryReader` bringt diese Sheets zum Absturz.** Der Plan war, die Breite zu messen und 37 % davon zu nehmen. SwiftUI hält dann in `GeometryReaderLayout.placeSubviews` mit einer Zusicherung an — gleich ob der Reader im `background` der Spalten sitzt oder als eigene Zeile ohne Höhe darüber. Die Lösung braucht ihn gar nicht: die linke Spalte bekommt ein **Höchstmass** von 124 pt, die rechte `maxWidth: .infinity`. Ein `HStack` teilt unter dehnbaren Kindern auf und gibt zurück, was eines nicht braucht. Auf schmalen Geräten behalten die Zahlen ihre Breite und der Name bricht öfter um — die richtige Reihenfolge, denn eine Zahl kann nicht umbrechen.
+- **Ein `@ViewBuilder` mit mehreren Ansichten ist ein TupleView**, und der wird im `HStack` zu ebenso vielen Geschwistern: die fünf Zahlenfelder standen nebeneinander statt untereinander. Beide Seiten gehören in einen eigenen `VStack`.
+- **`Color` hat keine eigene Grösse.** Der reservierte Bildplatz mit `aspectRatio(1, .fit)` fiel im Scrollbereich auf die halbe Höhe zusammen; jetzt steht dort das Mass aus dem Entwurf.
+
+**Ab den Bedienhilfen-Grössen fallen die Spalten untereinander.** Bei 124 pt und „kohlenhydrate · g", das schon bei normaler Schrift 103 davon braucht, passt zwei Stufen höher kein Wert mehr daneben. Einspaltig steht erst die rechte Spalte (worum es geht), dann die linke (die Zahlen dazu) — und „Eintrag löschen" rutscht ans Ende, sonst stünde das Löschen mitten im Formular.
+
+Der Entwurf zeigt die Nährwerte in zwei verschiedenen Reihenfolgen; übernommen ist die des Eintrag-Screens (kcal, protein, kohlenhydrate, fett), weil sie der App entspricht. Bei mehreren Gerichten bleibt es bei den kompakten Zeilen: der Satzspiegel trägt **ein** Gericht, nicht drei nebeneinander.
+
 ## Barrierefreiheit
 
 Drei Schritte, in dieser Reihenfolge — Trefferflächen und Kontrast zuerst, weil sie **jeden** betreffen und nichts am Entwurf kosten; Dynamic Type danach, weil es das Layout anfasst.

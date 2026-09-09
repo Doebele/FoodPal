@@ -26,6 +26,12 @@ struct PhotoCapture: View {
         // Der Wartezustand ist sonst nur zu sehen, solange ein Modell
         // tatsaechlich rechnet — fuer einen Blick darauf zu kurz.
         if env["START_ANALYSING"] == "1" { return Phase.analysing(nil, source: "Claude · claude-sonnet-5") }
+        if env["START_CONFIRM"] == "1" {
+            return Phase.ready(nil, [MealEstimate(
+                name: "Bowl mit Lachs, Avocado, Bambussprossen, Brunnenkresse und Pinienkerne",
+                kcal: 620, proteinG: 34, carbsG: 52, fatG: 21
+            )], per100g: false)
+        }
         return .idle
         #else
         return Phase.idle
@@ -510,14 +516,32 @@ private struct Confirm: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                picture
-                timeField
-
                 if drafts.count == 1 {
-                    singleForm
+                    // Zwei Spalten: links die Zahlen, rechts Bild, Zeitpunkt
+                    // und Bezeichnung. Bei mehreren Gerichten bleibt es bei
+                    // den kompakten Zeilen — der Satzspiegel traegt **ein**
+                    // Gericht, nicht drei nebeneinander.
+                    // 244 = Bild 212 plus seine 32 pt Luft. Damit beginnen
+                    // die Zahlen auf Höhe des Zeitpunkts, und oben links
+                    // bleibt es leer.
+                    SplitForm(leftOffset: 244) {
+                        numbers
+                    } right: {
+                        VStack(alignment: .leading, spacing: 0) {
+                            picture
+                            timeField
+                            nameField
+                        }
+                    }
                 } else {
+                    picture
+                    timeField
                     ForEach($drafts) { $draft in compactRow($draft) }
                 }
+
+                // Der Knopf haengt unten, im Daumenbereich — dazwischen
+                // steht der Weissraum, der den Satz traegt.
+                Spacer(minLength: 24)
 
                 Button { commit() } label: {
                     Text(drafts.count > 1 ? "\(drafts.count) Einträge sichern" : "Sichern")
@@ -561,9 +585,13 @@ private struct Confirm: View {
     /// erzeugen zu lassen — aber nur, wo das Geraet es kann.
     @ViewBuilder private var picture: some View {
         if let shown = image ?? generated {
+            // Quadratisch und so breit wie seine Spalte — im Entwurf ist es
+            // genau das: 212,6 auf 212,8.
             Image(uiImage: shown)
-                .resizable().scaledToFill().frame(height: 150).clipped()
-                .padding(.top, 12)
+                .resizable().scaledToFill()
+                .aspectRatio(1, contentMode: .fill)
+                .frame(maxWidth: .infinity)
+                .clipped()
                 .overlay(alignment: .bottomLeading) {
                     if image == nil {
                         Text("erzeugt")
@@ -574,9 +602,19 @@ private struct Confirm: View {
                             .padding(8)
                     }
                 }
+                .padding(.top, 12)
                 .padding(.bottom, 20)
-        } else if #available(iOS 18.1, *) {
-            GenerateImageRow(disabled: concept.isEmpty) { showPlayground = true }
+        } else {
+            // Ohne Bild bleibt der Platz **leer stehen**. Der Weissraum ist
+            // Teil des Satzes, und er haelt die Felder unten rechts, wo der
+            // Daumen sie erreicht — ohne ihn ruecken sie nach oben und die
+            // Komposition kippt.
+            // Feste Hoehe statt Seitenverhaeltnis: `Color` hat keine eigene
+            // Groesse, und `aspectRatio` fiel im Scrollbereich auf die halbe
+            // zusammen. 212 ist die Kantenlaenge aus dem Entwurf.
+            Color.clear
+                .frame(height: 212)
+                .frame(maxWidth: .infinity)
                 .padding(.top, 12)
                 .padding(.bottom, 20)
         }
@@ -598,15 +636,17 @@ private struct Confirm: View {
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) { editingTime.toggle() }
             } label: {
-                HStack {
+                // Untereinander, nicht als Zeile mit Spacer: in der rechten
+                // Spalte ist fuer beides nebeneinander kein Platz.
+                VStack(alignment: .leading, spacing: 0) {
                     Text("zeitpunkt")
                         .scaledFont(11).tracking(0.8)
                         .foregroundStyle(Palette.ink2)
-                    Spacer()
                     Text(when.formatted(.dateTime.day().month().year().hour().minute()))
-                        .scaledFont(17, weight: .light, design: .monospaced)
+                        .scaledFont(17, weight: .light, condensed: true)
                         .foregroundStyle(Palette.ink)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -624,20 +664,57 @@ private struct Confirm: View {
 
     // MARK: - Felder
 
-    @ViewBuilder private var singleForm: some View {
+    /// Die linke Spalte: nur Zahlen, kurz und untereinander.
+    @ViewBuilder private var numbers: some View {
         if let draft = $drafts.first {
-            field("bezeichnung", text: draft.name, mono: false)
-            if per100g { field("menge · g", text: $grams, mono: true) }
-            field("kcal", text: draft.kcal, mono: true)
-            field("protein · g", text: draft.protein, mono: true)
-            field("kohlenhydrate · g", text: draft.carbs, mono: true)
-            field("fett · g", text: draft.fat, mono: true)
+            if per100g { number("menge · g", text: $grams) }
+            number("kcal", text: draft.kcal)
+            number("protein · g", text: draft.protein)
+            number("kohlenhydrate · g", text: draft.carbs)
+            number("fett · g", text: draft.fat)
             // Nur wo etwas drinsteht: bei einem Teller Nudeln waere das Feld
             // eine Zeile Rauschen. Erkanntes Koffein soll man dagegen sehen —
             // es landet im mg-Band des Tages und in Apple Health.
             if !draft.caffeine.wrappedValue.isEmpty {
-                field("koffein · mg", text: draft.caffeine, mono: true)
+                number("koffein · mg", text: draft.caffeine, tint: roast.color)
             }
+        }
+    }
+
+    /// Die Bezeichnung steht rechts, wo sie Platz zum Umbrechen hat — und
+    /// darunter, rechtsbuendig, der Weg zum erzeugten Bild.
+    @ViewBuilder private var nameField: some View {
+        if let draft = $drafts.first {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("bezeichnung")
+                    .scaledFont(11).tracking(0.8)
+                    .foregroundStyle(Palette.ink2)
+                TextField("", text: draft.name, axis: .vertical)
+                    .scaledFont(22, weight: .light, condensed: true)
+                    .foregroundStyle(Palette.ink)
+                Rectangle().fill(Palette.rule).frame(height: 1)
+
+                if image == nil, generated == nil, #available(iOS 18.1, *) {
+                    HStack {
+                        Spacer(minLength: 0)
+                        GenerateImageRow(disabled: concept.isEmpty) { showPlayground = true }
+                    }
+                }
+            }
+            .padding(.bottom, 18)
+        }
+    }
+
+    private func number(
+        _ label: LocalizedStringKey,
+        text: Binding<String>,
+        tint: Color = Palette.ink
+    ) -> some View {
+        FormField(label: label) {
+            TextField("", text: text)
+                .keyboardType(.decimalPad)
+                .scaledFont(24, design: .monospaced)
+                .foregroundStyle(tint)
         }
     }
 
