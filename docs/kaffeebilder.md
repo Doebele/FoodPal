@@ -164,6 +164,99 @@ einer Firma. Das ist nicht nur sauberer, es hält sie auch haltbar.
 
 ---
 
+## Werte
+
+Recherchiert am 9. September 2026. **Zwei Herkünfte, sauber getrennt** — was
+belegt ist, ist belegt, und was gerechnet ist, steht mit seiner Rechnung da.
+Erfunden ist nichts.
+
+### Kettenkaffee — Herstellerangabe
+
+Aus der offiziellen Tabelle *Starbucks Coffee Company · Beverage Nutrition
+Information*. **Bezugsgrösse: Grande, 473 ml, 2 % Milch, mit Sahne, wo sie zum
+Getränk gehört** (Mocha, White Chocolate Mocha, Pumpkin Spice Latte, Frappé).
+Tall ist rund zwei Drittel davon.
+
+| Sorte | kcal | mg |
+|---|---|---|
+| Caramel Macchiato | 250 | 150 |
+| Vanilla Latte | 250 | 150 |
+| Caffè Mocha | 360 | 175 |
+| White Chocolate Mocha | 470 | 150 |
+| Pumpkin Spice Latte | 390 | 150 |
+| Frappé (Caramel Frappuccino) | 410 | 100 |
+| Iced Latte | 130 | 150 |
+| Iced Americano | 15 | 225 |
+| Nitro Cold Brew | 5 | 280 |
+| Cold Brew mit Süssrahm | 110 | 185 |
+
+Zwei Dinge, die dabei auffielen: der Espresso einer Kette ist **kein**
+europäischer Espresso — Starbucks rechnet mit rund 75 mg je Shot statt 63, und
+eine Grande trägt zwei davon. Und der Unterschied zwischen *mit* und *ohne*
+Sahne ist beim Mocha 70 kcal, beim White Chocolate Mocha ebenfalls 70. Wer die
+Sorte ohne bestellt, korrigiert den Wert im Bestätigen-Schirm.
+
+### Bausteine — für alles Übrige
+
+| Baustein | Wert |
+|---|---|
+| Espresso, 25 ml | 2 kcal · 63 mg |
+| Vollmilch 3,5 % | 64 kcal/100 ml |
+| Kaffeerahm 15 %, Portion 12 g | 19 kcal |
+| Gezuckerte Kondensmilch | 321 kcal/100 g |
+| Schlagrahm, ungesüsst | 340 kcal/100 g |
+| Zucker | 4 kcal/g |
+| Whiskey 40 % vol, 40 ml | 90 kcal |
+| Vanilleeis | 200 kcal/100 g |
+| Tonic Water | 35 kcal/100 ml |
+| Türkischer Kaffee, 60 ml | 51–60 mg (Studie Ege-Universität, 858 mg/l) |
+| Phin-Kaffee, Robusta, 70 ml | 80–130 mg |
+
+### Schweiz und Exoten — gerechnet
+
+| Sorte | kcal | mg | Rechnung |
+|---|---|---|---|
+| Kaffee Crème | 20 | 80 | 110 ml Kaffee + eine Portion Kaffeerahm |
+| Schale | 80 | 80 | 120 ml Kaffee + 120 ml Vollmilch |
+| Türkischer Mokka | 20 | 55 | 60 ml, *orta* — mit einem Teelöffel Zucker |
+| Barraquito | 105 | 63 | Espresso + 20 g Kondensmilch + 60 ml Milch |
+| Café Bombón | 80 | 63 | Espresso + 25 g Kondensmilch |
+| Marocchino | 30 | 63 | Espresso + 2 g Kakao + 30 ml Milchschaum |
+| Einspänner | 105 | 126 | doppelter Espresso + 30 ml Schlagrahm |
+| Wiener Melange | 55 | 63 | Espresso + 60 ml Milch + Schaum |
+| Café au Lait | 100 | 95 | 150 ml Filterkaffee + 150 ml Vollmilch |
+| Carajillo | 50 | 63 | Espresso + 20 ml Brandy |
+| Irish Coffee | 225 | 80 | Kaffee + 40 ml Whiskey + Zucker + 30 ml Schlagrahm |
+| Affogato | 100 | 63 | Espresso + 50 g Vanilleeis |
+| Freddo Espresso | 5 | 126 | doppelter Espresso, geschüttelt, ungesüsst |
+| Freddo Cappuccino | 55 | 126 | dazu 80 ml kalter Milchschaum |
+| Cà phê sữa đá | 100 | 130 | Phin-Kaffee + 30 g Kondensmilch |
+| Espresso Tonic | 55 | 63 | Espresso + 150 ml Tonic |
+
+**Warum überhaupt rechnen.** Für einen Barraquito gibt es keine
+Herstellerangabe, und es wird auch nie eine geben — er entsteht in einer Bar auf
+Teneriffa, nicht in einer Fabrik. Die Alternative wäre, ein Modell zu fragen,
+und genau das ist die Sache, die diese App nicht tut: die Zahlen zu Cola und Red
+Bull stehen deshalb in `Caffeine.swift` und nicht im Prompt. Eine offengelegte
+Rechnung kann man nachrechnen und korrigieren; eine geratene Zahl sieht genauso
+aus und ist es nicht.
+
+**Was jede dieser Zahlen ist: eine Standardportion, kein Messwert.** Zucker,
+Sahne und Milchmenge schwanken von Haus zu Haus — der Bestätigen-Schirm steht
+genau deshalb vor jedem Speichern.
+
+### Quellen
+
+- Starbucks Coffee Company, *Beverage Nutrition Information* (offizielle Tabelle, Kalorien und Koffein je Grösse und Milchsorte)
+- [Caffeine Informer — Complete Guide to Starbucks Caffeine](https://www.caffeineinformer.com/the-complete-guide-to-starbucks-caffeine) (Koffein je Grösse; deckt sich mit der Herstellertabelle)
+- [Nitro Cold Brew, Grande: 5 kcal · 280 mg](https://www.caffeineinformer.com/caffeine-content/starbucks-nitro-cold-brew)
+- [Vanilla Latte, Grande, 2 % Milch: 250 kcal](https://www.nutritionix.com/i/starbucks/vanilla-latte-with-2-milk-grande/5266a0fa9f05a39eb30076fc)
+- [Pumpkin Spice Latte, Grande: 390 kcal](https://www.tasteofhome.com/article/nutrition-in-a-starbucks-pumpkin-spice-latte/)
+- [Türkischer Kaffee, Koffeingehalt](https://www.caffeineinformer.com/caffeine-content/turkish-coffee) und [Studie der Ege-Universität](https://sakiproducts.com/blogs/turkish-coffee/turkish-coffee-caffeine-more-than-you-think)
+- [Gezuckerte Kondensmilch, 321 kcal/100 g (USDA FoodData Central 171275)](https://tools.myfooddata.com/nutrition-facts/171275/wt1)
+- [Kaffeerahm-Portion, Emmi](https://fddb.info/db/de/lebensmittel/emmi_kaffeerahm_portion/index.html)
+- [Phin-Kaffee, Koffein](https://hanoidrip.coffee/blog/caffeine-in-vietnamese-coffee)
+
 ## Auf die App
 
 **Die Warenkunde steht schon.** Jede der 14 Sorten im Bestand trägt Zutaten und
@@ -184,11 +277,8 @@ Eintragsschirm zeigt es dort, wo bei einer Mahlzeit das Foto steht. Damit trägt
 **jeder** Eintrag oben rechts ein Bild — fotografiert oder mitgeliefert — und
 der Weissraum links bleibt, wie er ist.
 
-Zwei Dinge, die dafür noch zu klären sind:
-
-- **Werte.** Die neuen Sorten brauchen kcal und mg, und die kommen aus Quellen,
-  nicht aus dem Modell — dieselbe Disziplin wie in `Caffeine.swift`. Bis dahin
-  steht hier keine Zahl.
-- **Umfang.** Vierzig Sorten in einem Raster, das heute vierzehn trägt und nach
-  Häufigkeit sortiert, wird eine lange Liste. Wahrscheinlich braucht es dann
-  eine Trennung zwischen den paar Sorten, die man täglich tippt, und dem Rest.
+**Offen bleibt der Umfang.** Vierzig Sorten in einem Raster, das heute vierzehn
+trägt und nach Häufigkeit sortiert, wird eine lange Liste. Bevor die neuen
+Sorten Presets werden, braucht es eine Trennung zwischen den paar, die man
+täglich tippt, und dem Rest — sonst kostet der Espresso am Morgen plötzlich
+Scrollen.
