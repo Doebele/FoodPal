@@ -481,6 +481,11 @@ Zwei Stolpersteine, die dabei auffielen und im Code stehen:
 - **`Text(einString)` übersetzt nicht.** Nur `Text(einLiteral)` wird als `LocalizedStringKey` gelesen. Die Bausteine `row`, `caption`, `actionRow`, `field` und `SheetHeader` nahmen `String` — dadurch war die halbe Oberfläche nicht extrahierbar, ohne dass es irgendwo aufgefallen wäre. Erst nach der Umstellung auf `LocalizedStringKey` stieg die Zahl der Schlüssel von 89 auf 130.
 - **Anzeigetexte gehören nicht in `rawValue`.** `HealthKitSync.Status` trug seine deutschen Wörter als Rohwert; damit hing die Übersetzung an der Datenhaltung. Jetzt ist der Rohwert ein Bezeichner und `label` die Anzeige.
 
+**Auch die Berechtigungstexte sind übersetzt.** Die sechs Sätze, die iOS beim ersten Zugriff auf Kamera, Mikrofon, Spracherkennung, Health und das lokale Netz zeigt, standen nur deutsch da — in allen fünf Sprachen. Sie liegen jetzt in einem zweiten String-Katalog, `InfoPlist.xcstrings`; die `INFOPLIST_KEY_`-Bauteinstellungen bleiben die deutsche Grundfassung, der Katalog übersetzt sie. Zwei Dinge dazu:
+
+- **Die Sprache dieser Dialoge ist die des Geräts, nicht die der App.** Sie werden nicht von der App gezeichnet, sondern vom System; ein `-AppleLanguages`-Start ändert daran nichts. Zum Prüfen muss die Systemsprache des Simulators umgestellt werden.
+- **Die Tabelle zum Gegenlesen führt beide Kataloge.** In der Oberfläche ist der Schlüssel der deutsche Satz, bei den Berechtigungen heisst er `NSCameraUsageDescription` und sagt dem Gegenleser nichts — deshalb steht in der ersten Spalte immer der **deutsche Satz**, und der Import findet darüber zurück in den richtigen Katalog.
+
 Die Übersetzungen für FR, IT und ES stammen von mir und sollten vor einem App-Store-Start von Muttersprachlern gegengelesen werden.
 
 ## Schrift: Fira

@@ -20,13 +20,15 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CATALOG = ROOT / "FoodPal" / "FoodPal" / "Localizable.xcstrings"
+# Zwei Kataloge: die Oberfläche und die sechs Berechtigungstexte, die iOS
+# selbst zeigt. Beide gehören in dieselbe Tabelle — wer gegenliest, soll
+# nicht die Hälfte der sichtbaren Sätze übersehen.
+CATALOGS = [
+    ROOT / "FoodPal" / "FoodPal" / "Localizable.xcstrings",
+    ROOT / "FoodPal" / "FoodPal" / "InfoPlist.xcstrings",
+]
 LANGS = ["de", "en", "fr", "it", "es"]
 HEADER = ["Schlüssel (deutsch)"] + LANGS[1:] + ["Anmerkung"]
-
-
-def load():
-    return json.loads(CATALOG.read_text())
 
 
 def value(entry, lang):
@@ -34,13 +36,25 @@ def value(entry, lang):
     return unit.get("value", "")
 
 
+def entries():
+    """Alle übersetzten Einträge beider Kataloge, deutsch zuerst.
+
+    Vorn steht immer der **deutsche Satz**, nicht der Schlüssel: in der
+    Oberfläche ist beides dasselbe, bei den Berechtigungstexten heisst der
+    Schlüssel `NSCameraUsageDescription` und sagt dem Gegenleser nichts.
+    """
+    catalogs = [(path, json.loads(path.read_text())) for path in CATALOGS]
+    for path, catalog in catalogs:
+        for key, entry in sorted(catalog["strings"].items()):
+            if not entry.get("localizations"):
+                continue  # unübersetzt gelassen: Einheiten, Eigennamen
+            yield value(entry, "de") or key, entry
+
+
 def export(target: Path):
-    catalog = load()
     rows = []
-    for key, entry in sorted(catalog["strings"].items()):
-        if not entry.get("localizations"):
-            continue  # unübersetzt gelassen: Einheiten, Eigennamen
-        rows.append([key] + [value(entry, l) for l in LANGS[1:]] + [""])
+    for label, entry in entries():
+        rows.append([label] + [value(entry, l) for l in LANGS[1:]] + [""])
 
     with target.open("w", encoding="utf-8-sig", newline="") as f:
         writer = csv.writer(f)
@@ -50,7 +64,13 @@ def export(target: Path):
 
 
 def import_(source: Path):
-    catalog = load()
+    catalogs = [(path, json.loads(path.read_text())) for path in CATALOGS]
+    known = {}
+    for _, catalog in catalogs:
+        for key, entry in catalog["strings"].items():
+            if entry.get("localizations"):
+                known[value(entry, "de") or key] = entry
+
     changed, unknown = 0, []
 
     with source.open(encoding="utf-8-sig", newline="") as f:
@@ -59,7 +79,7 @@ def import_(source: Path):
         f.seek(0)
         for row in csv.DictReader(f, delimiter=";" if head.count(";") > head.count(",") else ","):
             key = (row.get(HEADER[0]) or "").strip()
-            entry = catalog["strings"].get(key)
+            entry = known.get(key)
             if not entry:
                 if key:
                     unknown.append(key)
@@ -72,7 +92,8 @@ def import_(source: Path):
                     }
                     changed += 1
 
-    CATALOG.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n")
+    for path, catalog in catalogs:
+        path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n")
     print(f"{changed} Werte übernommen")
     for key in unknown:
         print(f"  unbekannter Schlüssel, übersprungen: {key!r}")

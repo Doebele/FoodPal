@@ -81,9 +81,10 @@ Zum Ansehen ohne Xcode gibt es Startvarianten über Umgebungsvariablen —
 ## Übersetzungen gegenlesen
 
 Deutsch ist die Quellsprache; übersetzt sind Englisch, Französisch,
-Italienisch und Spanisch. Der String-Katalog
-`FoodPal/FoodPal/Localizable.xcstrings` ist das Original, zum Gegenlesen gibt
-es eine Tabelle:
+Italienisch und Spanisch — die Oberfläche in
+`FoodPal/FoodPal/Localizable.xcstrings`, die sechs Berechtigungstexte, die
+iOS selbst zeigt, in `FoodPal/FoodPal/InfoPlist.xcstrings`. Die Kataloge sind
+das Original, zum Gegenlesen gibt es eine Tabelle über beide:
 
 ```bash
 python3 tools/uebersetzungen.py export          # -> docs/uebersetzungen.csv
