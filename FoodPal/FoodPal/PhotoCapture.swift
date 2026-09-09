@@ -441,6 +441,7 @@ struct PhotoCapture: View {
                 name: item.name.isEmpty ? String(localized: "Mahlzeit") : item.name,
                 kind: .meal,
                 kcal: item.kcal,
+                caffeineMg: item.caffeineMg ?? 0,
                 proteinG: item.proteinG,
                 carbsG: item.carbsG,
                 fatG: item.fatG,
@@ -478,6 +479,9 @@ private struct Confirm: View {
     let per100g: Bool
     let onSave: (UIImage?, Bool, [MealEstimate], Date) -> Void
 
+    @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
+    private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
+
     @State private var drafts: [Draft] = []
     @State private var when = Date.now
     @State private var timeTouched = false
@@ -494,6 +498,7 @@ private struct Confirm: View {
         var protein = ""
         var carbs = ""
         var fat = ""
+        var caffeine = ""
         var date: Date?
     }
 
@@ -535,6 +540,7 @@ private struct Confirm: View {
                     protein: estimate.proteinG.map { String(Int($0)) } ?? "",
                     carbs: estimate.carbsG.map { String(Int($0)) } ?? "",
                     fat: estimate.fatG.map { String(Int($0)) } ?? "",
+                    caffeine: estimate.caffeineMg.flatMap { $0 > 0 ? String(Int($0)) : nil } ?? "",
                     date: estimate.date
                 )
             }
@@ -621,6 +627,12 @@ private struct Confirm: View {
             field("protein · g", text: draft.protein, mono: true)
             field("kohlenhydrate · g", text: draft.carbs, mono: true)
             field("fett · g", text: draft.fat, mono: true)
+            // Nur wo etwas drinsteht: bei einem Teller Nudeln waere das Feld
+            // eine Zeile Rauschen. Erkanntes Koffein soll man dagegen sehen —
+            // es landet im mg-Band des Tages und in Apple Health.
+            if !draft.caffeine.wrappedValue.isEmpty {
+                field("koffein · mg", text: draft.caffeine, mono: true)
+            }
         }
     }
 
@@ -640,6 +652,14 @@ private struct Confirm: View {
             Text("kcal")
                 .scaledFont(11)
                 .foregroundStyle(Palette.ink2)
+            // Erkanntes Koffein steht mit dabei — sonst sieht man bei drei
+            // Gerichten nicht, dass die Cola im mg-Band landet. Korrigieren
+            // laesst es sich danach am Eintrag.
+            if let mg = Double(draft.caffeine.wrappedValue), mg > 0 {
+                Text("\(Int(mg)) mg")
+                    .scaledFont(11, design: .monospaced)
+                    .foregroundStyle(roast.color)
+            }
         }
         .frame(minHeight: 52)
         .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
@@ -674,6 +694,7 @@ private struct Confirm: View {
         drafts[0].protein = scaled(estimate.proteinG)
         drafts[0].carbs = scaled(estimate.carbsG)
         drafts[0].fat = scaled(estimate.fatG)
+        drafts[0].caffeine = scaled(estimate.caffeineMg)
     }
 
     private func commit() {
@@ -687,6 +708,7 @@ private struct Confirm: View {
                 proteinG: number(draft.protein),
                 carbsG: number(draft.carbs),
                 fatG: number(draft.fat),
+                caffeineMg: number(draft.caffeine),
                 // Am Rad gedreht heisst: dieser Zeitpunkt gilt fuer alle.
                 // Sonst behaelt jedes Gericht seinen eigenen, falls das Modell
                 // mehrere genannt hat.

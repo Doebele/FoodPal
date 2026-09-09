@@ -16,6 +16,8 @@ enum FoodDatabase {
     /// sieht und korrigieren kann.
     static func lookup(_ barcode: String) async throws -> MealEstimate? {
         let fields = "product_name,product_name_de,brands,nutriments"
+        // `nutriments` traegt bei Energydrinks und Cola oft ein `caffeine_100g`;
+        // wo nicht, springt die belegte Tabelle ein.
         guard let url = URL(string:
             "https://world.openfoodfacts.org/api/v2/product/\(barcode)?fields=\(fields)")
         else { return nil }
@@ -53,8 +55,13 @@ enum FoodDatabase {
             kcal: kcal,
             proteinG: number(nutriments["proteins_100g"]),
             carbsG: number(nutriments["carbohydrates_100g"]),
-            fatG: number(nutriments["fat_100g"])
-        )
+            fatG: number(nutriments["fat_100g"]),
+            // Open Food Facts fuehrt Koffein mal in Gramm, mal in Milligramm
+            // je 100 g. Ueber einem Gramm je 100 g ist es keine Kaffeinangabe
+            // mehr, sondern schon Milligramm — daran laesst sich beides
+            // auseinanderhalten.
+            caffeineMg: number(nutriments["caffeine_100g"]).map { $0 > 1 ? $0 : $0 * 1000 }
+        ).withKnownCaffeine()
     }
 
     private static func number(_ value: Any?) -> Double? {

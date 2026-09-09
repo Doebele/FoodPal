@@ -31,6 +31,8 @@ enum AppleEstimator {
         var carbsG: Int
         @Guide(description: "Fett in Gramm")
         var fatG: Int
+        @Guide(description: "Koffein in Milligramm, 0 wenn koffeinfrei. Je 100 ml: Red Bull und Monster 32, Cola 11, Club-Mate 20, Filterkaffee 45, Espresso 134, Schwarztee 22, Grüntee 15")
+        var caffeineMg: Int
         @Guide(description: "Genannter Zeitpunkt in Ortszeit, Schreibweise 2026-01-31T21:00; leer lassen, wenn gar keine Zeit genannt wurde")
         var date: String
     }
@@ -77,8 +79,9 @@ enum AppleEstimator {
                 proteinG: Double(meal.proteinG),
                 carbsG: Double(meal.carbsG),
                 fatG: Double(meal.fatG),
+                caffeineMg: Double(meal.caffeineMg),
                 date: VisionEstimator.localDate(meal.date)
-            )
+            ).withKnownCaffeine()
         }
     }
 }

@@ -534,6 +534,37 @@ Diktiert wird über `SFSpeechRecognizer` mit `requiresOnDeviceRecognition`, wo d
 
 **`TextField` mit `@FocusState` nahm den Fokus in diesem Sheet nicht an.** Zugewiesen wurde er, zurückgelesen als `false`, die Tastatur blieb unten — auch nach zwölf Versuchen über anderthalb Sekunden und auch ohne den `GeometryReader` von `ScrollsWhenNeeded`. Das Feld ist deshalb ein `UITextView` hinter `UIViewRepresentable` (`SpokenField`); `becomeFirstResponder()` kennt diese Zweifel nicht. Zwei Dinge gehören dort dazu: `sizeThatFits` — ohne die Angabe nimmt sich der Textview die ganze Höhe und die Haarlinie rutscht ans Seitenende —, und der Platzhalter bleibt in SwiftUI hinter dem Feld statt als `UILabel` darin, damit er derselben Schrift- und Farbregelung folgt und von selbst umbricht.
 
+## Koffein in Mahlzeiten
+
+Bis hierher trug nur die Kaffeeauswahl Milligramm. Eine Cola zum Burger oder ein Red Bull am Nachmittag landete als Mahlzeit im kcal-Band und im mg-Band gar nicht — dabei ist genau das der Wert, für den die App ihr zweites Band hat.
+
+**Jetzt fragt jede Schätzung auch nach Koffein**, aus dem Foto wie aus der Beschreibung. `MealEstimate` trägt ein `caffeineMg`, das Bestätigungsformular zeigt es (nur wo etwas drinsteht — bei einem Teller Nudeln wäre das Feld Rauschen), und es geht in den Eintrag und nach Apple Health.
+
+**Die Werte kommen aus Quellen, nicht aus dem Modell.** Gefragt wird das Modell trotzdem, aber mit den belegten Zahlen im Prompt; ohne die rät es, und bei genau den Getränken daneben, deren Wert öffentlich und exakt bekannt ist.
+
+| Getränk | mg/100 ml | übliche Portion | Quelle |
+|---|---|---|---|
+| Red Bull | 32 | 250 ml → 80 mg | Hersteller |
+| Monster | 32 | 500 ml → 160 mg | Hersteller |
+| Energydrink allgemein | 32 | 250 ml | EFSA/EUFIC |
+| Club-Mate | 20 | 500 ml → 100 mg | Etikett |
+| Cola | 11 | 330 ml → 36 mg | EFSA/EUFIC |
+| Filterkaffee | 45 | 200 ml → 90 mg | EFSA/EUFIC |
+| Espresso | 134 | 60 ml → 80 mg | EFSA/EUFIC |
+| Schwarztee | 22 | 250 ml → 55 mg | EFSA/EUFIC |
+| Grüntee | 15 | 250 ml → 38 mg | EFSA/EUFIC |
+| Kakao | 17 | 200 ml | EFSA/EUFIC |
+| entkoffeiniert | 2 | 200 ml | EFSA/EUFIC |
+
+Dass Red Bull und Monster denselben Wert je 100 ml tragen, ist kein Zufall: 32 mg/100 ml ist in der EU faktisch die Obergrenze für Energydrinks.
+
+**Die Tabelle ist Rückfall, nicht Vorrang.** Liefert das Modell einen Wert, bleibt er stehen — „zwei Dosen Red Bull" wären mit der Standardportion sonst wieder 80 statt 160 mg. Fehlt der Wert oder ist er null, springt die übliche Portion ein. Dazu liest die Produktsuche jetzt `caffeine_100g` aus Open Food Facts mit, wo das Feld gefüllt ist.
+
+Zwei Fallen beim Abgleich der Bezeichnung, beide durch Tests festgehalten:
+
+- **`folding(.diacriticInsensitive)` macht aus „ü" ein „u", nicht „ue".** „Gruentee" hätte „Grüntee" damit nie gefunden. Die Umlaute werden vorher deutsch aufgelöst.
+- **Deutsche Komposita zwingen zur Teilzeichenkette** — „Milchkaffee" und „Energydrink" wären mit Wortgrenzen nicht zu finden. Die holt sich dann aber **Rucola** als Cola und **Tomate** als Mate. Deshalb je Eintrag eine kurze Ausschlussliste, und „mate" allein ist kein Schlüssel mehr.
+
 ## Barrierefreiheit
 
 Drei Schritte, in dieser Reihenfolge — Trefferflächen und Kontrast zuerst, weil sie **jeden** betreffen und nichts am Entwurf kosten; Dynamic Type danach, weil es das Layout anfasst.

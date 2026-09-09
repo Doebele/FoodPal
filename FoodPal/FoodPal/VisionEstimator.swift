@@ -163,9 +163,24 @@ struct MealEstimate: Codable, Equatable, Sendable {
     var proteinG: Double?
     var carbsG: Double?
     var fatG: Double?
+    /// Milligramm Koffein der Portion. Auch eine Mahlzeit kann welche haben —
+    /// eine Cola zum Burger, ein Espresso danach —, und die soll im mg-Band
+    /// des Tages auftauchen wie ein Kaffee auch.
+    var caffeineMg: Double?
     /// Nur bei gesprochenen Einträgen belegt: „gestern Abend um neun" löst das
     /// Modell auf, weil es die Ortszeit im Prompt mitbekommt.
     var date: Date?
+
+    /// Füllt das Koffein aus der belegten Tabelle, wenn das Modell keins
+    /// genannt hat. Nur dann: steht eine Menge im Text („eine grosse Dose"),
+    /// ist die Rechnung des Modells näher dran als eine Standardportion.
+    func withKnownCaffeine() -> MealEstimate {
+        guard caffeineMg == nil || caffeineMg == 0,
+              let known = Caffeine.typicalMg(for: name) else { return self }
+        var copy = self
+        copy.caffeineMg = known
+        return copy
+    }
 }
 
 enum VisionEstimator {
@@ -205,8 +220,11 @@ enum VisionEstimator {
         """
         Schätze die Nährwerte dieser Mahlzeit anhand des Fotos.
         Antworte ausschließlich mit JSON, ohne Erklärung und ohne Codeblock:
-        {"name":"kurze Bezeichnung auf \(answerLanguage)","kcal":0,"proteinG":0,"carbsG":0,"fatG":0}
+        {"name":"kurze Bezeichnung auf \(answerLanguage)","kcal":0,"proteinG":0,"carbsG":0,"fatG":0,"caffeineMg":0}
         Portionsgröße aus dem Bild abschätzen. Zahlen ohne Einheiten.
+        "caffeineMg" nur bei koffeinhaltigem Getränk, sonst 0. Rechne mit
+        diesen Werten je 100 ml, mal der abgeschätzten Menge:
+        \(Caffeine.hint).
         """
     }
 
@@ -219,9 +237,13 @@ enum VisionEstimator {
         return """
         Jetzt ist \(stamp) (Ortszeit). Schätze die Nährwerte der beschriebenen Mahlzeit.
         Antworte ausschließlich mit einem JSON-Array, ohne Erklärung und ohne Codeblock:
-        [{"name":"kurze Bezeichnung auf \(answerLanguage)","kcal":0,"proteinG":0,"carbsG":0,"fatG":0,"date":"2026-01-31T21:00"}]
+        [{"name":"kurze Bezeichnung auf \(answerLanguage)","kcal":0,"proteinG":0,"carbsG":0,"fatG":0,"caffeineMg":0,"date":"2026-01-31T21:00"}]
         Ein Objekt je Gericht — nenne Beilagen und Getränke einzeln, fasse sie nicht zusammen.
         Mengenangaben wie "klein", "drei Scheiben" oder "dünn bestrichen" berücksichtigen.
+        "caffeineMg" nur bei koffeinhaltigem Getränk, sonst 0. Rechne mit
+        diesen Werten je 100 ml, mal der genannten Menge:
+        \(Caffeine.hint). Ohne Mengenangabe die übliche Portion annehmen —
+        Red Bull 250 ml, Monster 500 ml, Cola 330 ml, Tee 250 ml.
         "date" ist der genannte Zeitpunkt, gerechnet ab dem Jetzt oben, in Ortszeit
         und in der Schreibweise des Beispiels. "gestern Abend um neun" ist ein
         Zeitpunkt, "zum Frühstück" auch — dann 08:00 annehmen. Nur wenn gar nichts
@@ -322,7 +344,7 @@ enum VisionEstimator {
 
         let decoder = JSONDecoder()
         if let estimate = try? decoder.decode(MealEstimate.self, from: data) {
-            return estimate
+            return estimate.withKnownCaffeine()
         }
         // Zahlen kommen mitunter als Text zurück ("kcal": "620").
         guard let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
@@ -342,8 +364,9 @@ enum VisionEstimator {
             kcal: kcal,
             proteinG: number("proteinG"),
             carbsG: number("carbsG"),
-            fatG: number("fatG")
-        )
+            fatG: number("fatG"),
+            caffeineMg: number("caffeineMg")
+        ).withKnownCaffeine()
     }
 
     /// Mehrere Gerichte aus einer gesprochenen Beschreibung.
@@ -383,8 +406,9 @@ enum VisionEstimator {
                 proteinG: number("proteinG"),
                 carbsG: number("carbsG"),
                 fatG: number("fatG"),
+                caffeineMg: number("caffeineMg"),
                 date: (object["date"] as? String).flatMap(localDate)
-            )
+            ).withKnownCaffeine()
         }
     }
 
