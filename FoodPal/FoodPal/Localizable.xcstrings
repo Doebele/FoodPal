@@ -2778,6 +2778,41 @@
         }
       }
     },
+    "Sprache der App": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprache der App"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App language"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langue de l’app"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lingua dell’app"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idioma de la app"
+          }
+        }
+      }
+    },
     "Spracherkennung ist hier nicht verfügbar.": {
       "extractionState": "manual",
       "localizations": {
@@ -3089,6 +3124,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comprobar disponibilidad"
+          }
+        }
+      }
+    },
+    "Vergrössert das Bild und verkleinert es wieder": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vergrössert das Bild und verkleinert es wieder"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enlarges the picture and shrinks it again"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agrandit la photo et la réduit à nouveau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingrandisce l’immagine e la rimpicciolisce"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amplía la imagen y la reduce de nuevo"
           }
         }
       }
@@ -3792,6 +3862,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "los más usados abajo"
+          }
+        }
+      }
+    },
+    "iOS führt die Sprachwahl je App: Einstellungen → Apps → FoodPal.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS führt die Sprachwahl je App: Einstellungen → Apps → FoodPal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS keeps the per-app language: Settings → Apps → FoodPal."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS gère la langue par app : Réglages → Apps → FoodPal."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS gestisce la lingua per app: Impostazioni → App → FoodPal."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS gestiona el idioma por app: Ajustes → Apps → FoodPal."
           }
         }
       }

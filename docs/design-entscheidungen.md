@@ -472,6 +472,8 @@ Phase D braucht kein Xcode — die Installation kann nebenher laufen.
 
 **Deutsch ist die Quellsprache**, übersetzt sind **Englisch, Französisch, Italienisch, Spanisch**. Die Schlüssel im String-Katalog *sind* der deutsche Text; das hält die Vorlage im Quelltext lesbar.
 
+**Eine Zeile in den Einstellungen zeigt den Weg dorthin.** „sprache der app" steht in der Gruppe *bedienung*, rechts daneben die Sprache, in der die App gerade läuft; ein Tap öffnet die Systemeinstellungen. Unter iOS 26 landet `openSettingsURLString` allerdings auch mal auf deren Wurzel statt auf der Seite der App — deshalb steht der Weg zusätzlich als Zeile darunter: *Einstellungen → Apps → FoodPal*. Der Schlüssel heisst `Sprache der App` und nicht `Sprache`: den gab es schon, als Aufschrift der Diktat-Taste, und auf Englisch hätte dort „voice" gestanden.
+
 **Kein eigener Sprachschalter in der App.** Sobald mehrere Sprachen im Bundle liegen, zeigt iOS unter *Einstellungen → FoodPal → Sprache* eine Auswahl je App — genau der Fall „deutsche App auf englischem Gerät". Ein eigener Schalter wäre schlechter: er könnte `Locale.current` nicht mitdrehen, und Datum, Uhrzeit und Monatsnamen liefen weiter der Gerätesprache nach. Genau diese Mischung gab es vorher zu sehen — deutsche Beschriftungen neben „8 Sep 2026 at 12:30".
 
 **Die Modelle antworten in der App-Sprache**, nicht in der Sprache der Eingabe: `VisionEstimator.answerLanguage` steht im Prompt. Wer die App auf Italienisch stellt, will keine deutschen Gerichtsnamen in seiner Liste — beschreiben darf er trotzdem auf Deutsch, das verstehen die Modelle ohnehin.
@@ -612,7 +614,11 @@ Bestätigen und Eintrag ändern stehen jetzt in **zwei Spalten**: links die Zahl
 
 **Koffein steht zuoberst, wo es vorkommt.** Bei einem Getränk ist es der Wert, um den es geht — die drei Kalorien einer Cola Zero sind daneben eine Fussnote. Bei einer Mahlzeit ohne Koffein steht das Feld gar nicht erst da.
 
-**Das Bild ist so breit wie seine Spalte, und ein langer Druck spreizt es auf.** Ruhend steht es über dem Zeitpunkt, 213 pt breit — kein Aufmacher, sondern ein Feld unter Feldern. Ein langer Druck skaliert es auf die volle Breite von Kante zu Kante, proportional, und schiebt den Rest der Seite nach unten; noch einer holt es zurück. Beides mit `spring(duration: 0.4, bounce: 0.35)` — der Nachschwinger sagt, dass es dasselbe Bild ist und kein neues.
+**Das Bild ist so breit wie seine Spalte, und ein Tap spreizt es auf.** Ruhend steht es über dem Zeitpunkt, 213 pt breit — kein Aufmacher, sondern ein Feld unter Feldern. Ein Tap skaliert es auf die volle Breite von Kante zu Kante, proportional, und schiebt den Rest der Seite nach unten; noch einer holt es zurück. `spring(duration: 0.4, bounce: 0.35)` — der Nachschwinger sagt, dass es dasselbe Bild ist und kein neues. Gemessen läuft er über die Ruhelage hinaus und wieder zurück: beim Zuklappen bis 211 pt und dann auf 222.
+
+Ein langer Druck war der erste Versuch und ist wieder weg. Vergrössern ist die einzige Handlung an dieser Stelle, und für die einzige Handlung genügt der einfachste Griff — ein langer Druck versteckt sie nur.
+
+**Es sind nicht zwei Ansichten, sondern eine.** Zwei Zustände als eigene `Image`-Zweige hätten sich überblendet statt zu wachsen. Stattdessen animiert der Rahmen — Höhe und die beiden Polster —, und das Bild darin füllt ihn in jedem Zwischenschritt neu. Dazu gehört `contentTransition(.identity)`: ohne sie blendet SwiftUI den Bildinhalt beim Grössenwechsel über, und das Bild wird mitten in der Bewegung für rund sechs Bilder blass. Im Video Bild für Bild nachgemessen — vorher fiel die Farbe weg, nachher steht sie durch.
 
 **Die Marke „erzeugt" sitzt oben rechts im Bild**, in beiden Zuständen. Sie gehört auf das Bild, nicht neben es: an der Gruppe ausgerichtet hing sie an deren Kante, und die lag 156 pt weiter rechts, ausserhalb des Bildschirms.
 

@@ -197,50 +197,39 @@ struct EntryDetailView: View {
     /// sein und nicht nur erkennbar.
     @ViewBuilder private var picture: some View {
         if let data = entry.photo, let image = UIImage(data: data) {
-            Group {
-                if imageExpanded {
-                    // Aufgespreizt: volle Breite von Kante zu Kante, Hoehe
-                    // nach dem eigenen Seitenverhaeltnis — der Rest der Seite
-                    // rutscht nach unten.
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(image.size, contentMode: .fit)
-                        .frame(maxWidth: .infinity)
-                        .overlay(alignment: .topTrailing) { badge }
-                } else {
-                    // Ruhend: genau die Breite der rechten Spalte — es steht
-                    // ueber dem Zeitpunkt, nicht ueber der ganzen Seite.
-                    //
-                    // Das Polster kommt **nach** dem Overlay. Andersherum
-                    // haengt die Marke an der Kante des gepolsterten Rahmens,
-                    // also 156 pt weiter rechts — ausserhalb des Bildes.
-                    // `Color.clear` gibt den Rahmen vor, das Bild haengt als
-                    // Overlay darin. Umgekehrt — Bild mit `scaledToFill` als
-                    // Rahmen — meldet die Ansicht die **ueberstehende** Groesse
-                    // zurueck: der Rahmen wurde breiter als die Seite, schob
-                    // die ganze rechte Spalte ueber den Rand und trug die
-                    // Marke gleich mit hinaus.
-                    Color.clear
-                        .frame(height: 220)
-                        .frame(maxWidth: .infinity)
-                        .overlay {
-                            Image(uiImage: image).resizable().scaledToFill()
-                        }
-                        .clipped()
-                        .overlay(alignment: .topTrailing) { badge }
-                        .padding(.leading, Metric.margin + FormGrid.rightInset)
-                        .padding(.trailing, Metric.margin)
+            // **Ein** Bild, kein Wechsel zwischen zweien: gespreizt wird der
+            // Rahmen, und das Bild darin fuellt ihn in jedem Zwischenschritt
+            // neu. Zwei Ansichten haetten sich ueberblendet statt zu wachsen.
+            let aspect = max(image.size.width, 1) / max(image.size.height, 1)
+            Color.clear
+                .frame(height: imageExpanded ? Self.pageWidth / aspect : 220)
+                .frame(maxWidth: .infinity)
+                .overlay {
+                    // `contentTransition(.identity)`: sonst blendet SwiftUI
+                    // den Bildinhalt beim Groessenwechsel ueber, und das Bild
+                    // wird mitten in der Bewegung fuer ein paar Bilder blass.
+                    // Es soll wachsen, nicht flackern.
+                    Image(uiImage: image).resizable().scaledToFill()
+                        .contentTransition(.identity)
                 }
-            }
-            .padding(.top, 12)
-            .padding(.bottom, 24)
-            // Langer Druck spreizt es auf und wieder zusammen. Der Bounce
-            // macht deutlich, dass es dasselbe Bild ist und kein neues.
-            .onLongPressGesture(minimumDuration: 0.4) {
-                withAnimation(.spring(duration: 0.4, bounce: 0.35)) {
-                    imageExpanded.toggle()
+                .clipped()
+                .overlay(alignment: .topTrailing) { badge }
+                // Ruhend so breit wie die rechte Spalte, gespreizt von Kante
+                // zu Kante. Das Polster kommt **nach** dem Overlay: davor
+                // haengt die Marke an der Kante des gepolsterten Rahmens,
+                // also 156 pt weiter rechts — ausserhalb des Bildes.
+                .padding(.leading, imageExpanded ? 0 : Metric.margin + FormGrid.rightInset)
+                .padding(.trailing, imageExpanded ? 0 : Metric.margin)
+                .padding(.top, 12)
+                .padding(.bottom, 24)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    withAnimation(.spring(duration: 0.4, bounce: 0.35)) {
+                        imageExpanded.toggle()
+                    }
                 }
-            }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityHint("Vergrössert das Bild und verkleinert es wieder")
         } else {
             // Ohne Bild bleibt der Platz leer — derselbe Weissraum wie mit,
             // damit die Felder dort stehen, wo man sie erreicht.
@@ -250,6 +239,15 @@ struct EntryDetailView: View {
                 .padding(.top, 12)
                 .padding(.bottom, 24)
         }
+    }
+
+    /// Die Breite, auf die das Bild aufgespreizt wird. Die App steht nur im
+    /// Hochformat und das Sheet nimmt die volle Breite — deshalb genuegt der
+    /// Bildschirm, und ein `GeometryReader` bleibt draussen: der bringt genau
+    /// diese Sheets zum Absturz.
+    private static var pageWidth: CGFloat {
+        (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
+            .screen.bounds.width ?? 393
     }
 
     /// Die Marke sitzt **im** Bild, oben rechts — die einzige Ecke, in der

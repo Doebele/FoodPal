@@ -30,6 +30,16 @@ struct SettingsView: View {
         #endif
     }()
 
+    /// Die Sprache, in der die App gerade laeuft — nicht die des Geraets:
+    /// `preferredLocalizations` ist die Schnittmenge aus beidem, also das,
+    /// was tatsaechlich auf dem Schirm steht. Der Name kommt in seiner
+    /// eigenen Sprache und behaelt deren Schreibung („Deutsch", aber
+    /// „francais" klein).
+    private static var language: String {
+        let code = Bundle.main.preferredLocalizations.first ?? "de"
+        return Locale(identifier: code).localizedString(forLanguageCode: code) ?? code
+    }
+
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
     private var appearance: Appearance { Appearance(rawValue: appearanceRaw) ?? .auto }
@@ -73,6 +83,23 @@ struct SettingsView: View {
                             .labelsHidden()
                             .tint(Palette.ink)
                     }
+                    // Die Sprachwahl gehoert iOS, nicht der App: ein eigener
+                    // Schalter koennte `Locale.current` nicht mitdrehen, und
+                    // Datum und Monatsnamen liefen weiter der Geraetesprache
+                    // nach. Die Zeile steht trotzdem hier — sonst sucht man
+                    // sie in den Systemeinstellungen unter „Apps".
+                    actionRow("Sprache der App", value: Self.language) {
+                        guard let url = URL(string: UIApplication.openSettingsURLString)
+                        else { return }
+                        UIApplication.shared.open(url)
+                    }
+                    // Der Weg steht daneben, weil der Sprung ihn nicht immer
+                    // ganz geht: unter iOS 26 landet `openSettingsURLString`
+                    // auch mal auf der Wurzel statt auf der Seite der App.
+                    Text("iOS führt die Sprachwahl je App: Einstellungen → Apps → FoodPal.")
+                        .scaledFont(11)
+                        .foregroundStyle(Palette.ink2)
+                        .padding(.top, 8)
                 }
 
                 // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
@@ -692,14 +719,25 @@ private func row<Value: View>(_ label: LocalizedStringKey, @ViewBuilder value: (
 
 /// Zeile, die etwas öffnet. Höher als eine Wertzeile (56 statt 48) und im
 /// normalen Schnitt gesetzt: sie ist eine Handlung, keine Angabe.
-private func actionRow(_ label: LocalizedStringKey, action: @escaping () -> Void) -> some View {
+private func actionRow(
+    _ label: LocalizedStringKey,
+    value: String? = nil,
+    action: @escaping () -> Void
+) -> some View {
     Button(action: action) {
         HStack {
             Text(label)
                 .scaledFont(16)
                 .textCase(.lowercase)
                 .foregroundStyle(Palette.ink)
-            Spacer()
+            Spacer(minLength: 8)
+            // Der Wert wird gelesen, nicht gestellt — er steht deshalb im
+            // ruhigeren Ton, wie die Angaben in den Gruppenkoepfen.
+            if let value {
+                Text(value)
+                    .scaledFont(16, condensed: true)
+                    .foregroundStyle(Palette.ink2)
+            }
         }
         .frame(minHeight: 56)
         .contentShape(Rectangle())
