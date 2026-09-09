@@ -66,7 +66,7 @@ enum CoffeeInfo: String, CaseIterable {
         case .macchiato:
             String(localized: "Espresso, „befleckt\u{201C} mit einem Löffel Milchschaum. Der Name ist die Zubereitung.")
         case .cortado:
-            String(localized: "Espresso und gleich viel warme Milch — spanisch cortar, „schneiden\u{201C}: die Milch nimmt Säure und Bitterkeit, ohne den Kaffee zu verwässern. Nur leicht aufgeschäumt, feinporig statt luftig.")
+            String(localized: "Ein doppelter Espresso und gleich viel warme Milch — spanisch cortar, „schneiden\u{201C}: die Milch nimmt Säure und Bitterkeit, ohne den Kaffee zu verwässern. Nur leicht aufgeschäumt, feinporig statt luftig.")
         case .cappuccino:
             String(localized: "Je ein Drittel Espresso, warme Milch und Schaum.")
         case .latte:

@@ -103,7 +103,11 @@ struct CoffeePreset: Identifiable, Hashable {
         .init(name: "Americano", kcal: 3, caffeineMg: 77),
         .init(name: "Caffè Latte", kcal: 135, caffeineMg: 63),
         .init(name: "Latte Macchiato", kcal: 120, caffeineMg: 63),
-        .init(name: "Cortado", kcal: 45, caffeineMg: 63),
+        // Doppio, nicht einfacher Shot: die Quellen nennen 30–40 ml Espresso
+        // auf gleich viel Milch im 60–70-ml-Glas. Damit 126 mg statt 63, und
+        // die Kalorien folgen derselben Rechnung — 4 fuer den Doppio, 26 fuer
+        // 40 ml Vollmilch.
+        .init(name: "Cortado", kcal: 30, caffeineMg: 126),
         .init(name: "Flat White", kcal: 155, caffeineMg: 130),
         .init(name: "Ristretto", kcal: 1, caffeineMg: 53),
         .init(name: "Doppio", kcal: 4, caffeineMg: 126),

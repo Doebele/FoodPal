@@ -1413,6 +1413,41 @@
         }
       }
     },
+    "Ein doppelter Espresso und gleich viel warme Milch — spanisch cortar, „schneiden“: die Milch nimmt Säure und Bitterkeit, ohne den Kaffee zu verwässern. Nur leicht aufgeschäumt, feinporig statt luftig.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein doppelter Espresso und gleich viel warme Milch — spanisch cortar, „schneiden“: die Milch nimmt Säure und Bitterkeit, ohne den Kaffee zu verwässern. Nur leicht aufgeschäumt, feinporig statt luftig."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A double espresso and the same amount of warm milk — Spanish cortar, “to cut”: the milk takes the acidity and bitterness without watering the coffee down. Only lightly steamed, fine rather than airy."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un double expresso et autant de lait chaud — de l’espagnol cortar, « couper » : le lait ôte l’acidité et l’amertume sans diluer le café. À peine émulsionné, fin plutôt qu’aérien."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un doppio espresso e altrettanto latte caldo — dallo spagnolo cortar, «tagliare»: il latte toglie acidità e amaro senza annacquare il caffè. Montato appena, fine e non arioso."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un espresso doble y la misma cantidad de leche caliente — del español cortar: la leche quita acidez y amargor sin aguar el café. Apenas espumada, fina y no aireada."
+          }
+        }
+      }
+    },
     "Einstellungen": {
       "extractionState": "manual",
       "localizations": {
@@ -1724,41 +1759,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Espresso en abundante leche caliente, con una fina capa de espuma."
-          }
-        }
-      }
-    },
-    "Espresso und gleich viel warme Milch — spanisch cortar, „schneiden“: die Milch nimmt Säure und Bitterkeit, ohne den Kaffee zu verwässern. Nur leicht aufgeschäumt, feinporig statt luftig.": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Espresso und gleich viel warme Milch — spanisch cortar, „schneiden“: die Milch nimmt Säure und Bitterkeit, ohne den Kaffee zu verwässern. Nur leicht aufgeschäumt, feinporig statt luftig."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Espresso and the same amount of warm milk — Spanish cortar, “to cut”: the milk takes the acidity and bitterness without watering the coffee down. Only lightly steamed, fine rather than airy."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un expresso et autant de lait chaud — de l’espagnol cortar, « couper » : le lait ôte l’acidité et l’amertume sans diluer le café. À peine émulsionné, fin plutôt qu’aérien."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Espresso e altrettanto latte caldo — dallo spagnolo cortar, «tagliare»: il latte toglie acidità e amaro senza annacquare il caffè. Montato appena, fine e non arioso."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Espresso y la misma cantidad de leche caliente — del español cortar: la leche quita acidez y amargor sin aguar el café. Apenas espumada, fina y no aireada."
           }
         }
       }

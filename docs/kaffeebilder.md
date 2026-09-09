@@ -245,6 +245,14 @@ aus und ist es nicht.
 Sahne und Milchmenge schwanken von Haus zu Haus — der Bestätigen-Schirm steht
 genau deshalb vor jedem Speichern.
 
+### Nachtrag zum Bestand
+
+**Der Cortado steht jetzt auf einem Doppio: 126 mg statt 63, 30 kcal statt 45.**
+Die Quellen sind einig — 30 bis 40 ml Espresso auf gleich viel Milch, im Glas
+von 60 bis 70 ml —, und diese Menge kommt aus einem doppelten Sieb. Die
+Kalorien folgen derselben Rechnung: 4 für den Doppio, 26 für 40 ml Vollmilch.
+Bestehende Einträge behalten ihre Werte; das Preset gilt für neue.
+
 ### Quellen
 
 - Starbucks Coffee Company, *Beverage Nutrition Information* (offizielle Tabelle, Kalorien und Koffein je Grösse und Milchsorte)
