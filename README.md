@@ -37,6 +37,8 @@ Koffein, wählbar als Röstung von Zimt bis Italienisch.
 
 Die Begründungen zu jeder dieser Entscheidungen — samt der Fehler, die dabei
 auffielen — stehen in **[docs/design-entscheidungen.md](docs/design-entscheidungen.md)**.
+Die Bildregie für die Kaffeesorten steht in
+**[docs/kaffeebilder.md](docs/kaffeebilder.md)**.
 
 ## Was sie kann
 
