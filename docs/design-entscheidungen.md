@@ -514,6 +514,26 @@ Aus dem überarbeiteten Figma-Entwurf, Werte 1 : 1 übernommen.
 
 **Eine Abweichung, bewusst:** `ink2` steht im Entwurf auf `#8A8A82`, im Code auf `#72726A`. Der hellere Ton kommt auf 3,33 : 1 gegen Papier und fällt für 12-pt-Text durch (siehe [Barrierefreiheit](#barrierefreiheit)). Die Haarlinie im Gruppenkopf nimmt denselben Wert und liest sich dadurch eine Spur bestimmter als im Entwurf.
 
+## Erfassung und Beschreiben, zweite Fassung
+
+**Über beiden Schirmen steht jetzt ein Punktbild.** Auf der Erfassung ein **Kreuz** (13 × 13 Raster, Teilung 15, Mittelreihe und Mittelspalte) — hinzufügen, im Punktvokabular der App. Auf dem Beschreiben-Schirm eine **Rosette**, die Lochung eines Braun-Lautsprechers: sie steht für Sprache und ist zugleich der Auslöser dafür.
+
+Die Punkte sind **rund**, nicht quadratisch. Das ist Absicht: sie sind kein Datenraster, sondern eine Marke — das eckige Raster bleibt dem Tagesdiagramm und der Anzeige vorbehalten.
+
+Beim Auslesen der Rosette lief ich in eine Falle: der Figma-Knotenbaum liefert **665** Ellipsen, weil die Grafik rekursiv aus sieben Ebenen besteht und die meisten davon übereinanderliegen. Wer die alle zeichnet, bekommt ein Ringmuster statt eines gleichmässigen Feldes. Sichtbar sind **135** Punkte auf einem gedrehten Raster; gezählt wurde deshalb, was im gerenderten Bild steht, nicht was im Baum liegt.
+
+**„Manuell eingeben" ist raus.** Im Entwurf steht die Reihe nicht mehr, nur noch ihre Trennlinie. Die drei verbliebenen Wege — Foto, Fotos, Beschreiben — decken den Fall ab: eine leere Beschreibung mit von Hand gesetzten Werten war ohnehin fast dasselbe.
+
+**Der Umschalter zeigt beide Seiten als Pille.** Die ruhende liegt in Papier auf der Kapsel und trägt ihre Beschriftung in der Farbe, um die es dort geht — mg im Akzent des Koffeins. Vorher war sie blosser Text auf grauem Grund und las sich wie ausgegraut, obwohl sie der Weg zur anderen Erfassung ist.
+
+### Sprache
+
+Der Beschreiben-Schirm hat beim Öffnen den Cursor im Feld, und ein Tippen auf die Rosette diktiert direkt hinein. Zweiter Weg dorthin: eine Leiste über der Tastatur, denn mit aufgeklappter Tastatur ist die Rosette nach oben aus dem Bild geschoben.
+
+Diktiert wird über `SFSpeechRecognizer` mit `requiresOnDeviceRecognition`, wo das Gerät es kann — die Beschreibung einer Mahlzeit muss Apples Server nicht sehen. **Abgeschickt wird nicht automatisch:** Diktat verhört sich bei Essensnamen zuverlässig, und ein Weg, der aufnimmt und sofort schätzt, würde den Fehler unsichtbar weiterreichen.
+
+**`TextField` mit `@FocusState` nahm den Fokus in diesem Sheet nicht an.** Zugewiesen wurde er, zurückgelesen als `false`, die Tastatur blieb unten — auch nach zwölf Versuchen über anderthalb Sekunden und auch ohne den `GeometryReader` von `ScrollsWhenNeeded`. Das Feld ist deshalb ein `UITextView` hinter `UIViewRepresentable` (`SpokenField`); `becomeFirstResponder()` kennt diese Zweifel nicht. Zwei Dinge gehören dort dazu: `sizeThatFits` — ohne die Angabe nimmt sich der Textview die ganze Höhe und die Haarlinie rutscht ans Seitenende —, und der Platzhalter bleibt in SwiftUI hinter dem Feld statt als `UILabel` darin, damit er derselben Schrift- und Farbregelung folgt und von selbst umbricht.
+
 ## Barrierefreiheit
 
 Drei Schritte, in dieser Reihenfolge — Trefferflächen und Kontrast zuerst, weil sie **jeden** betreffen und nichts am Entwurf kosten; Dynamic Type danach, weil es das Layout anfasst.

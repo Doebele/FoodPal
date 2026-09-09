@@ -14,6 +14,7 @@ struct PhotoCapture: View {
     @Environment(\.modelContext) private var context
     @AppStorage(Preference.healthSync) private var healthSync = true
     @AppStorage(Preference.provider) private var providerRaw = Provider.claude.rawValue
+    @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
     @AppStorage(Preference.models) private var modelsJSON = "{}"
     @AppStorage(Preference.addresses) private var addressesJSON = "{}"
 
@@ -29,6 +30,11 @@ struct PhotoCapture: View {
     @State private var showCamera = false
     @State private var saves = 0
     @State private var spoken = ""
+    @State private var dictation = Dictation()
+    /// Was vor dem Diktat schon im Feld stand. Die Erkennung liefert immer den
+    /// ganzen erkannten Satz, nicht das Neue daran — ohne diesen Anker würde
+    /// ein zweites Diktat das erste überschreiben.
+    @State private var beforeDictation = ""
     /// Merkt sich, dass der Abgang ein Erfolg war und nicht ein Abbruch.
     @State private var saved = false
 
@@ -55,6 +61,7 @@ struct PhotoCapture: View {
     }
 
     private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
+    private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
     private var effectiveModel: String { provider.model(from: modelsJSON) }
 
     var body: some View {
@@ -142,7 +149,15 @@ struct PhotoCapture: View {
 
     private var intake: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Spacer(minLength: 0)
+            // Das Kreuz steht oben und sagt, worum es hier geht: hinzufügen.
+            // Es ist keine Schaltfläche — der Weg wird unten gewählt, wo der
+            // Daumen liegt.
+            DotArt.plus
+                .frame(width: 186, height: 186)
+                .frame(maxWidth: .infinity)
+                .padding(.top, 24)
+
+            Spacer(minLength: 24)
 
             Rectangle().fill(Palette.rule).frame(height: 1)
             action("Foto aufnehmen") { showCamera = true }
@@ -152,53 +167,78 @@ struct PhotoCapture: View {
             .buttonStyle(.plain)
             .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
             action("Beschreiben") { phase = .describing }
-            action("Manuell eingeben") {
-                phase = .ready(nil, [MealEstimate(name: "", kcal: 0)], per100g: false)
-            }
 
             Text(provider.readsPhotos
                  ? "Geschätzt wird von \(provider.label)."
                  : "\(provider.label) schätzt nur aus Beschreibungen.")
                 .scaledFont(11)
                 .foregroundStyle(Palette.ink2)
-                .padding(.top, 12)
+                .padding(.top, 4)
         }
     }
 
     // MARK: - Beschreiben
 
-    /// Ein Textfeld, kein Mikrofonknopf. Diktieren kann die Systemtastatur
-    /// bereits — das spart die Spracherkennung samt zweier Berechtigungen und
-    /// hat den wichtigeren Vorteil: **du siehst den Text, bevor er weggeht.**
-    /// Diktat verhört sich bei Essensnamen zuverlässig, und ein Knopf, der
-    /// direkt aufnimmt und schickt, würde den Fehler unsichtbar weiterreichen.
+    /// Sprache ist hier der Hauptweg, nicht die Ausweichlösung: das Feld hat
+    /// beim Öffnen den Fokus, und ein Tippen auf die Rosette diktiert direkt
+    /// hinein. Getippt wird trotzdem in dasselbe Feld.
+    ///
+    /// Abgeschickt wird **nicht** automatisch. Diktat verhört sich bei
+    /// Essensnamen zuverlässig, und ein Weg, der aufnimmt und sofort schätzt,
+    /// würde den Fehler unsichtbar weiterreichen. Man sieht, was ankam.
     private var describe: some View {
         VStack(alignment: .leading, spacing: 0) {
+            Button {
+                if !dictation.isRunning { beforeDictation = spoken.isEmpty ? "" : spoken + " " }
+                dictation.toggle()
+            } label: {
+                DotArt.speaker(color: dictation.isRunning ? roast.color : Palette.rule)
+                    .frame(width: 187, height: 187)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 24)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(dictation.isRunning ? "Diktat beenden" : "Diktieren")
+
             Text("was und wann")
                 .scaledFont(11).tracking(0.8)
                 .foregroundStyle(Palette.ink2)
-                .padding(.top, 16)
+                .padding(.top, 24)
 
-            TextField(
-                "Gestern Abend um neun eine kleine Ramensuppe mit Frühlingszwiebel, dazu drei Scheiben Baguette dünn mit Butter",
-                text: $spoken,
-                axis: .vertical
-            )
-            .lineLimit(4...12)
-            .scaledFont(17)
-            .foregroundStyle(Palette.ink)
+            // Der Platzhalter liegt in SwiftUI hinter dem Feld statt als
+            // `UILabel` darin: so folgt er derselben Schrift- und
+            // Farbregelung wie alles andere und bricht von selbst um.
+            ZStack(alignment: .topLeading) {
+                if spoken.isEmpty {
+                    Text("Gestern Abend um neun eine kleine Ramensuppe mit Frühlingszwiebel, dazu drei Scheiben Baguette dünn mit Butter")
+                        .scaledFont(17)
+                        .foregroundStyle(Palette.ink2)
+                        .allowsHitTesting(false)
+                }
+                SpokenField(
+                    text: $spoken,
+                    font: UIFont(name: Fira.name(.regular, .default, condensed: false), size: 17)
+                        ?? .systemFont(ofSize: 17)
+                )
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, 10)
 
             Rectangle().fill(Palette.rule).frame(height: 1).padding(.top, 10)
 
-            Text("Diktieren über das Mikrofon der Tastatur. Zeitangaben wie \u{201E}gestern Abend um neun\u{201C} werden übernommen; mehrere Gerichte werden einzeln erfasst.")
+            Text(dictation.error
+                 ?? (dictation.isRunning
+                     ? String(localized: "Hört zu. Nochmal tippen beendet das Diktat.")
+                     : String(localized: "Auf die Rosette tippen, um zu diktieren. Zeitangaben wie \u{201E}gestern Abend um neun\u{201C} werden übernommen; mehrere Gerichte werden einzeln erfasst.")))
                 .scaledFont(11)
-                .foregroundStyle(Palette.ink2)
+                .foregroundStyle(dictation.error == nil ? Palette.ink2 : roast.color)
                 .padding(.top, 12)
 
             Spacer(minLength: 0)
 
             Button {
+                dictation.stop()
                 Task { await analyse(spoken) }
             } label: {
                 Text("Schätzen")
@@ -210,6 +250,28 @@ struct PhotoCapture: View {
             }
             .buttonStyle(.plain)
             .disabled(spoken.isEmpty)
+        }
+        .onChange(of: dictation.transcript) { _, heard in
+            guard dictation.isRunning else { return }
+            spoken = beforeDictation + heard
+        }
+        .onDisappear { dictation.stop() }
+        .toolbar {
+            // Zweiter Weg zum Diktat, dort wo die Tastatur ohnehin steht: mit
+            // aufgeklappter Tastatur ist die Rosette nach oben aus dem Bild
+            // geschoben.
+            ToolbarItemGroup(placement: .keyboard) {
+                Button(dictation.isRunning ? "Diktat beenden" : "Sprache") {
+                    if !dictation.isRunning { beforeDictation = spoken.isEmpty ? "" : spoken + " " }
+                    dictation.toggle()
+                }
+                .scaledFont(15, weight: .medium)
+                .foregroundStyle(dictation.isRunning ? roast.color : Palette.ink)
+                Spacer()
+                Button("Fertig") { UIApplication.shared.endEditing() }
+                    .scaledFont(15)
+                    .foregroundStyle(Palette.ink)
+            }
         }
     }
 

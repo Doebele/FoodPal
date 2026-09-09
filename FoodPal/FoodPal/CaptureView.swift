@@ -11,7 +11,15 @@ struct CaptureSheet: View {
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
-    private var mode: DisplayMode { captureMode == Entry.Kind.coffee.rawValue ? .mg : .kcal }
+
+    private var mode: DisplayMode {
+        #if DEBUG
+        // Erlaubt einen Screenshot der Mahlzeit-Erfassung, ohne den
+        // gespeicherten Modus des Geraets anzufassen.
+        if ProcessInfo.processInfo.environment["START_MEAL"] == "1" { return .kcal }
+        #endif
+        return captureMode == Entry.Kind.coffee.rawValue ? .mg : .kcal
+    }
 
     var body: some View {
         VStack(spacing: 0) {

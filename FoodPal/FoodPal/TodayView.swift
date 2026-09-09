@@ -388,7 +388,11 @@ struct ModeToggle: View {
     let onChange: (DisplayMode) -> Void
 
     var body: some View {
-        HStack(spacing: 0) {
+        // Beide Seiten sind Pillen, nicht nur die aktive: die ruhende liegt in
+        // Papier auf der Kapsel und traegt ihre Beschriftung in der Farbe, um
+        // die es dort geht — mg im Akzent des Koffeins. Vorher war sie blosser
+        // Text auf grauem Grund und las sich wie ausgegraut.
+        HStack(spacing: 4) {
             segment(.kcal, "kcal")
             segment(.mg, "mg")
         }
@@ -398,21 +402,18 @@ struct ModeToggle: View {
 
     private func segment(_ target: DisplayMode, _ label: String) -> some View {
         let active = mode == target
+        let accent = target == .mg ? roast.color : Palette.ink
         return Button { onChange(target) } label: {
             Text(label)
-                .scaledFont(13, weight: active ? .medium : .regular)
-                .foregroundStyle(active ? Palette.paper : Palette.ink2)
-                // Feste 58 x 32 schnitten „kcal" bei grosser Schrift ab.
+                .scaledFont(14, weight: .regular)
+                .foregroundStyle(active ? Palette.ink3 : accent)
+                // Feste 56 x 32 schnitten „kcal" bei grosser Schrift ab.
                 // Jetzt legt der Text die Groesse fest, das Polster haelt die
                 // Trefferflaeche.
-                .padding(.horizontal, 20)
+                .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .frame(minWidth: 58)
-                .background {
-                    if active {
-                        Capsule().fill(target == .kcal ? Palette.ink : roast.color)
-                    }
-                }
+                .frame(minWidth: 56)
+                .background(Capsule().fill(active ? accent : Palette.paper))
         }
         .buttonStyle(.plain)
     }
