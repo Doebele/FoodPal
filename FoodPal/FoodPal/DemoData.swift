@@ -53,6 +53,9 @@ enum DemoData {
         samples[1].photo = placeholder(0xC9793A)
         samples[3].photo = placeholder(0x7A3A1B)
         samples[3].generatedImage = true
+        // Steht fuer das mitgelieferte Sortenbild, solange es keins gibt —
+        // nur damit sich Aufspreizen und Warenkunde pruefen lassen.
+        samples[2].photo = placeholder(0x9A4A22)
     }
 
     /// Kein echtes Foto, nur eine Flaeche in Roestungsfarbe — es geht um das

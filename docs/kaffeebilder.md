@@ -166,6 +166,19 @@ einer Firma. Das ist nicht nur sauberer, es hält sie auch haltbar.
 
 ## Auf die App
 
+**Die Warenkunde steht schon.** Jede der 14 Sorten im Bestand trägt Zutaten und
+einen Satz zur Zubereitung, in fünf Sprachen (`CoffeeInfo.swift`); im
+aufgespreizten Bild erscheint unten rechts ein Info-Zeichen, und ein Tipper
+legt den Text als Glas darüber. Sichtbar wird das erst mit den Bildern — ohne
+Bild gibt es nichts aufzuspreizen.
+
+Die Bilder gehören als `coffee/<sorte>` in den Asset-Katalog; die Namen sind die
+`rawValue` aus `CoffeeInfo` — `espresso`, `ristretto`, `doppio`, `lungo`,
+`americano`, `filter`, `mokka`, `macchiato`, `cortado`, `cappuccino`, `latte`,
+`latteMacchiato`, `flatWhite`, `coldBrew`. Neue Sorten brauchen dort einen Fall
+mehr, samt Zutaten und Satz.
+
+
 Ein Bild je Sorte, benannt nach der Sorte, in den Asset-Katalog; der
 Eintragsschirm zeigt es dort, wo bei einer Mahlzeit das Foto steht. Damit trägt
 **jeder** Eintrag oben rechts ein Bild — fotografiert oder mitgeliefert — und

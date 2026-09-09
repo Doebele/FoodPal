@@ -153,6 +153,41 @@
     "1849 / 74": {
       "shouldTranslate": false
     },
+    "25 ml in 25 Sekunden unter neun bar durch fein gemahlenes Pulver. Die Crema kommt vom Druck, nicht von der Röstung.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "25 ml in 25 Sekunden unter neun bar durch fein gemahlenes Pulver. Die Crema kommt vom Druck, nicht von der Röstung."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "25 ml in 25 seconds at nine bar through finely ground coffee. The crema comes from the pressure, not from the roast."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "25 ml en 25 secondes à neuf bars à travers une mouture fine. La crema vient de la pression, pas de la torréfaction."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "25 ml in 25 secondi a nove bar attraverso una macinatura fine. La crema viene dalla pressione, non dalla tostatura."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "25 ml en 25 segundos a nueve bares a través de un molido fino. La crema viene de la presión, no del tueste."
+          }
+        }
+      }
+    },
     "API-Schlüssel": {
       "extractionState": "manual",
       "localizations": {
@@ -818,6 +853,41 @@
         }
       }
     },
+    "Dasselbe Pulver, halb so viel Wasser. Dichter im Geschmack und weniger Koffein als der Espresso — die Extraktion bricht früher ab.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dasselbe Pulver, halb so viel Wasser. Dichter im Geschmack und weniger Koffein als der Espresso — die Extraktion bricht früher ab."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The same grounds, half the water. Denser in taste and less caffeine than an espresso — extraction stops earlier."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La même mouture, deux fois moins d’eau. Plus dense en bouche et moins caféiné qu’un expresso — l’extraction s’arrête plus tôt."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La stessa dose, metà acqua. Più denso e con meno caffeina dell’espresso: l’estrazione si ferma prima."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mismo molido, la mitad de agua. Más denso y con menos cafeína que un espresso: la extracción se detiene antes."
+          }
+        }
+      }
+    },
     "Der Eintrag wird auch aus Apple Health entfernt.": {
       "extractionState": "manual",
       "localizations": {
@@ -1098,6 +1168,76 @@
         }
       }
     },
+    "Doppelt so viel Wasser durch dasselbe Pulver. Länger heisst mehr Koffein und mehr Bitterstoffe.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doppelt so viel Wasser durch dasselbe Pulver. Länger heisst mehr Koffein und mehr Bitterstoffe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twice the water through the same grounds. Longer means more caffeine and more bitterness."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux fois plus d’eau à travers la même mouture. Plus long veut dire plus de caféine et plus d’amertume."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il doppio dell’acqua attraverso la stessa dose. Più lungo significa più caffeina e più amaro."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El doble de agua a través del mismo molido. Más largo significa más cafeína y más amargor."
+          }
+        }
+      }
+    },
+    "Doppelter Ristretto mit feinporigem Mikroschaum, flach eingegossen. Stärker als der Cappuccino und ohne Schaumhaube.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doppelter Ristretto mit feinporigem Mikroschaum, flach eingegossen. Stärker als der Cappuccino und ohne Schaumhaube."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A double ristretto with fine microfoam, poured flat. Stronger than a cappuccino and without the foam dome."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un double ristretto avec une micromousse fine, versée à plat. Plus corsé qu’un cappuccino et sans dôme de mousse."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un doppio ristretto con microschiuma fine, versata piatta. Più forte del cappuccino e senza cupola di schiuma."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un ristretto doble con microespuma fina, vertida plana. Más fuerte que el capuchino y sin cúpula de espuma."
+          }
+        }
+      }
+    },
     "Dunkel": {
       "extractionState": "manual",
       "localizations": {
@@ -1308,6 +1448,41 @@
         }
       }
     },
+    "Eis": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eis"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ice"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glace"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghiaccio"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hielo"
+          }
+        }
+      }
+    },
     "Erfassen": {
       "extractionState": "manual",
       "localizations": {
@@ -1374,6 +1549,181 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reintentar"
+          }
+        }
+      }
+    },
+    "Espresso": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expresso"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso"
+          }
+        }
+      }
+    },
+    "Espresso in viel warmer Milch, obenauf ein dünner Schaum.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso in viel warmer Milch, obenauf ein dünner Schaum."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso in plenty of warm milk, a thin layer of foam on top."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un expresso dans beaucoup de lait chaud, une fine mousse par-dessus."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso in molto latte caldo, sopra un velo di schiuma."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso en abundante leche caliente, con una fina capa de espuma."
+          }
+        }
+      }
+    },
+    "Espresso, mit derselben Menge warmer Milch geschnitten — spanisch cortar. Milch, kein Schaum.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso, mit derselben Menge warmer Milch geschnitten — spanisch cortar. Milch, kein Schaum."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso cut with the same amount of warm milk — Spanish cortar. Milk, no foam."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un expresso coupé d’autant de lait chaud — de l’espagnol cortar. Du lait, pas de mousse."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso tagliato con altrettanto latte caldo — dallo spagnolo cortar. Latte, non schiuma."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso cortado con la misma cantidad de leche caliente. Leche, no espuma."
+          }
+        }
+      }
+    },
+    "Espresso, mit heissem Wasser auf Tassengrösse verlängert. Nicht dasselbe wie Filterkaffee — der lief nie unter Druck.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso, mit heissem Wasser auf Tassengrösse verlängert. Nicht dasselbe wie Filterkaffee — der lief nie unter Druck."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso lengthened with hot water to cup size. Not the same as filter coffee — that never ran under pressure."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un expresso allongé à l’eau chaude jusqu’à la taille d’une tasse. Ce n’est pas un café filtre : celui-ci n’est jamais passé sous pression."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso allungato con acqua calda fino a riempire la tazza. Non è un caffè filtro: quello non è mai passato sotto pressione."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso alargado con agua caliente hasta llenar la taza. No es lo mismo que el café de filtro: ese nunca pasó a presión."
+          }
+        }
+      }
+    },
+    "Espresso, „befleckt“ mit einem Löffel Milchschaum. Der Name ist die Zubereitung.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso, „befleckt“ mit einem Löffel Milchschaum. Der Name ist die Zubereitung."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso “stained” with a spoonful of milk foam. The name is the recipe."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un expresso « taché » d’une cuillère de mousse de lait. Le nom est la recette."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso «macchiato» con un cucchiaio di schiuma di latte. Il nome è la ricetta."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso «manchado» con una cucharada de espuma de leche. El nombre es la receta."
           }
         }
       }
@@ -1763,6 +2113,41 @@
         }
       }
     },
+    "Heisses Wasser läuft ohne Druck durch grob gemahlenes Pulver. Keine Crema, dafür klarer.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heisses Wasser läuft ohne Druck durch grob gemahlenes Pulver. Keine Crema, dafür klarer."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hot water runs through coarsely ground coffee without pressure. No crema, but a clearer cup."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’eau chaude traverse une mouture grossière sans pression. Pas de crema, mais une tasse plus nette."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’acqua calda attraversa una macinatura grossa senza pressione. Niente crema, ma più pulito nel gusto."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El agua caliente pasa sin presión por un molido grueso. Sin crema, pero más limpio en boca."
+          }
+        }
+      }
+    },
     "Hell": {
       "extractionState": "manual",
       "localizations": {
@@ -1868,6 +2253,41 @@
         }
       }
     },
+    "Im Herdkännchen presst Dampfdruck das Wasser von unten durch das Pulver.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Herdkännchen presst Dampfdruck das Wasser von unten durch das Pulver."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the stovetop pot, steam pressure pushes the water up through the grounds."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dans la cafetière italienne, la pression de la vapeur pousse l’eau à travers la mouture."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nella moka la pressione del vapore spinge l’acqua attraverso la polvere."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la cafetera italiana, la presión del vapor empuja el agua a través del molido."
+          }
+        }
+      }
+    },
     "Italienisch": {
       "extractionState": "manual",
       "localizations": {
@@ -1899,6 +2319,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Italiano"
+          }
+        }
+      }
+    },
+    "Je ein Drittel Espresso, warme Milch und Schaum.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je ein Drittel Espresso, warme Milch und Schaum."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One third each: espresso, warm milk, foam."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un tiers d’expresso, un tiers de lait chaud, un tiers de mousse."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un terzo di espresso, un terzo di latte caldo, un terzo di schiuma."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un tercio de espresso, un tercio de leche caliente y un tercio de espuma."
           }
         }
       }
@@ -2179,6 +2634,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "Introducir a mano"
+          }
+        }
+      }
+    },
+    "Milch": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Milch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Milk"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lait"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Latte"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leche"
+          }
+        }
+      }
+    },
+    "Milchschaum": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Milchschaum"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Milk foam"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mousse de lait"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schiuma di latte"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espuma de leche"
           }
         }
       }
@@ -2953,6 +3478,41 @@
         }
       }
     },
+    "Umgekehrte Reihenfolge: der Espresso kommt in die Milch, nicht die Milch in den Espresso. Daher die drei Schichten.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Umgekehrte Reihenfolge: der Espresso kommt in die Milch, nicht die Milch in den Espresso. Daher die drei Schichten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The order is reversed: the espresso goes into the milk, not the milk into the espresso. Hence the three layers."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’ordre est inversé : l’expresso va dans le lait, et non le lait dans l’expresso. D’où les trois couches."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ordine invertito: l’espresso va nel latte, non il latte nell’espresso. Da qui i tre strati."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El orden se invierte: el espresso va en la leche, no la leche en el espresso. De ahí las tres capas."
+          }
+        }
+      }
+    },
     "Verbindung": {
       "extractionState": "manual",
       "localizations": {
@@ -3198,6 +3758,76 @@
         }
       }
     },
+    "Warenkunde": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warenkunde"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About this drink"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À propos de la boisson"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scheda della bevanda"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ficha de la bebida"
+          }
+        }
+      }
+    },
+    "Wasser": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wasser"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Water"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acqua"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agua"
+          }
+        }
+      }
+    },
     "Wert ändern": {
       "extractionState": "manual",
       "localizations": {
@@ -3303,6 +3933,41 @@
         }
       }
     },
+    "Zubereitung": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zubereitung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparation"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Préparation"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparazione"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación"
+          }
+        }
+      }
+    },
     "Zugriff auf Mikrofon oder Spracherkennung fehlt.": {
       "extractionState": "manual",
       "localizations": {
@@ -3334,6 +3999,111 @@
           "stringUnit": {
             "state": "translated",
             "value": "Falta el acceso al micrófono o al reconocimiento de voz."
+          }
+        }
+      }
+    },
+    "Zutaten": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zutaten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingredients"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingrédients"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingredienti"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingredientes"
+          }
+        }
+      }
+    },
+    "Zwei Espressi aus einem Sieb, in einer Tasse: doppeltes Pulver, doppelte Menge.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwei Espressi aus einem Sieb, in einer Tasse: doppeltes Pulver, doppelte Menge."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two espressos from one basket, in one cup: double the grounds, double the volume."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux expressos dans un seul filtre, une seule tasse : double mouture, double volume."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Due espressi da un solo filtro, in una tazza: doppia dose, doppio volume."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dos espressos de un solo filtro, en una taza: doble molido, doble volumen."
+          }
+        }
+      }
+    },
+    "Zwölf bis zwanzig Stunden kalt gezogen statt heiss gebrüht. Wenig Säure, viel Koffein.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwölf bis zwanzig Stunden kalt gezogen statt heiss gebrüht. Wenig Säure, viel Koffein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steeped cold for twelve to twenty hours instead of brewed hot. Low acidity, high caffeine."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Infusé à froid pendant douze à vingt heures au lieu d’être passé à chaud. Peu d’acidité, beaucoup de caféine."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In infusione a freddo per dodici-venti ore invece che in estrazione calda. Poca acidità, molta caffeina."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En infusión fría de doce a veinte horas en lugar de extracción caliente. Poca acidez, mucha cafeína."
           }
         }
       }

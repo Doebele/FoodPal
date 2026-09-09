@@ -31,6 +31,7 @@ struct EntryDetailView: View {
     @State private var deleted = false
     @State private var showPlayground = false
     @State private var imageExpanded = false
+    @State private var showLore = false
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
 
@@ -192,8 +193,20 @@ struct EntryDetailView: View {
     /// Image Playground zeichnet und fotografiert nicht; aber in einem
     /// Tagebuch soll der Unterschied zwischen Beleg und Merkhilfe nachlesbar
     /// sein und nicht nur erkennbar.
+    /// Warenkunde zur Sorte — nur bei Kaffee, und nur wo es sie gibt.
+    private var lore: CoffeeInfo? {
+        entry.kind == .coffee ? CoffeeInfo.of(entry.name) : nil
+    }
+
+    /// Erst das Foto, dann das mitgelieferte Bild der Sorte. Ist keins von
+    /// beidem da, bleibt der Platz leer — der Weissraum ist Teil des Satzes.
+    private var artwork: UIImage? {
+        if let data = entry.photo, let image = UIImage(data: data) { return image }
+        return lore?.image
+    }
+
     @ViewBuilder private var picture: some View {
-        if let data = entry.photo, let image = UIImage(data: data) {
+        if let image = artwork {
             // **Ein** Bild, kein Wechsel zwischen zweien: gespreizt wird der
             // Rahmen, und das Bild darin fuellt ihn in jedem Zwischenschritt
             // neu. Zwei Ansichten haetten sich ueberblendet statt zu wachsen.
@@ -211,6 +224,12 @@ struct EntryDetailView: View {
                 }
                 .clipped()
                 .overlay(alignment: .topTrailing) { badge }
+                // Erst aufgespreizt: dort ist Platz für den Satz, und zugeklappt
+                // bleibt das Bild ein Bild.
+                .overlay(alignment: .bottomTrailing) {
+                    if imageExpanded, !showLore, lore != nil { loreButton }
+                }
+                .overlay { if showLore, let lore { loreCard(lore) } }
                 // Ruhend so breit wie die rechte Spalte, gespreizt von Kante
                 // zu Kante. Das Polster kommt **nach** dem Overlay: davor
                 // haengt die Marke an der Kante des gepolsterten Rahmens,
@@ -223,6 +242,7 @@ struct EntryDetailView: View {
                 .onTapGesture {
                     withAnimation(.spring(duration: 0.4, bounce: 0.35)) {
                         imageExpanded.toggle()
+                        if !imageExpanded { showLore = false }
                     }
                 }
                 .accessibilityAddTraits(.isButton)
@@ -245,6 +265,69 @@ struct EntryDetailView: View {
     private static var pageWidth: CGFloat {
         (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
             .screen.bounds.width ?? 393
+    }
+
+    /// Das Info-Zeichen unten rechts — gegenüber der Marke oben rechts, damit
+    /// sich die beiden nie ins Gehege kommen.
+    private var loreButton: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.25)) { showLore = true }
+        } label: {
+            DotArt.info(color: Palette.paper)
+                .frame(width: 22, height: 22)
+                .padding(5)
+                .background(Palette.ink)
+                .padding(8)
+                // 32 pt Marke in einer 44 pt hohen Trefferfläche.
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Warenkunde")
+    }
+
+    /// Die Karte liegt **im** Bild, nicht darunter: das Bild bleibt sichtbar,
+    /// nur unscharf. Ein Tippen darauf schliesst sie wieder.
+    private func loreCard(_ lore: CoffeeInfo) -> some View {
+        // **Nicht Ink und Ink2.** Auf Glas ist die Farbe unter dem Text
+        // unbekannt, sie kommt aus dem Bild: Ink2 kam ueber dem Braun einer
+        // Tasse auf 3,4 : 1, und `secondary` mit seiner Vibrancy sogar auf
+        // 3,1 — beide unter der Schwelle von 4,5 : 1 fuer 11 pt. `primary`
+        // haelt in beiden Modi, und das Etikett tritt ueber die Deckkraft
+        // zurueck statt ueber die Farbe.
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Zutaten")
+                .scaledFont(11).tracking(0.8).textCase(.lowercase)
+                .foregroundStyle(.primary.opacity(0.65))
+            Text(lore.ingredients.map(\.label).joined(separator: " · "))
+                .scaledFont(15)
+                .textCase(.lowercase)
+                .foregroundStyle(.primary)
+                .padding(.top, 6)
+
+            Text("Zubereitung")
+                .scaledFont(11).tracking(0.8).textCase(.lowercase)
+                .foregroundStyle(.primary.opacity(0.65))
+                .padding(.top, 20)
+            Text(lore.preparation)
+                .scaledFont(15)
+                .lineSpacing(3)
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 6)
+
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(Metric.margin)
+        // `regularMaterial`, nicht `ultraThin`: über einem Foto — und diese
+        // Bilder sind Fotos — bleibt vom dünnsten Glas zu wenig Kontrast für
+        // 11-pt-Etiketten übrig. Glas bleibt es, nur eines, durch das man den
+        // Satz noch lesen kann.
+        .background(.regularMaterial)
+        .contentShape(Rectangle())
+        .onTapGesture { withAnimation(.easeInOut(duration: 0.25)) { showLore = false } }
+        .transition(.opacity)
     }
 
     /// Die Marke sitzt **im** Bild, oben rechts — die einzige Ecke, in der

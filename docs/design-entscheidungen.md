@@ -685,6 +685,39 @@ Fest bleiben zwei Stellen, an denen Schrift Geometrie ist und keine Sprache: die
 
 **Bewegung.** `accessibilityReduceMotion` schaltet das Zählwerk der Flipkarten ab: der Wert wird gesetzt, mit **einem** Impuls statt einer Kaskade. Die Rückmeldung bleibt, die Bewegung geht. Die Dot-Matrix läuft dann ohne Diagonale auf.
 
+## Warenkunde im Bild
+
+Eine Mahlzeit trägt ihr Foto, eine Kaffeesorte kann ihr **mitgeliefertes** Bild
+tragen — dieselbe Stelle, oben rechts. Woher die Bilder kommen, steht in
+**[kaffeebilder.md](kaffeebilder.md)**; hier steht, was daran hängt.
+
+**Erst aufgespreizt erscheint das Info-Zeichen**, unten rechts, gegenüber der
+Marke „erzeugt" oben rechts — so kommen die beiden sich nie ins Gehege.
+Zugeklappt bleibt das Bild ein Bild. Zwei Tipper bis zur Warenkunde, null
+Rauschen davor: erst wächst das Bild, dann bietet es etwas an.
+
+Das Zeichen ist ein **„i" aus Punkten**, im Vokabular von Kreuz und Rosette.
+Die erste Fassung setzte vier gleich weit entfernte Punkte untereinander und
+las sich als Menü. Jetzt sitzen die Stammpunkte **enger als ihr Durchmesser**
+und fliessen zu einem Strich zusammen; frei steht nur das Tüpfelchen.
+
+**Die Karte liegt im Bild, nicht darunter** — Glas, das Bild bleibt sichtbar,
+nur unscharf. Zwei Felder: was drin ist, und wie es entsteht. Wasser steht nur
+dort, wo es etwas unterscheidet; eine Liste, die bei jeder Sorte dasselbe sagt,
+sagt nichts.
+
+**Auf Glas gilt die Palette nicht.** Was unter dem Text liegt, kommt aus dem
+Bild und ist unbekannt. Gemessen über dem Braun einer Tasse: `ink2` kam auf
+**3,4 : 1**, `secondary` mit seiner Vibrancy sogar auf **3,1** — beide unter der
+Schwelle von 4,5 : 1 für 11 pt. Jetzt trägt `primary` beide Ebenen, und das
+Etikett tritt über die **Deckkraft** zurück statt über die Farbe: 5,6 : 1 für
+das Etikett, 13,9 : 1 für den Satz. Aus demselben Grund ist das Glas
+`regularMaterial` und nicht `ultraThin`.
+
+Die Warenkunde gehört der **Sorte**, nicht dem Eintrag, und steht deshalb in
+`CoffeeInfo` statt im Model. Nachgeschlagen wird über die Bezeichnung, Akzente
+und Schreibweise egal — „Caffè Latte" und „caffe latte" führen zur selben Karte.
+
 ## Der Schalter
 
 **Der eingebaute Schalter geht im Dunkelmodus nicht.** `tint` faerbt nur die **Bahn**; den Knopf setzt iOS immer weiss. Dunkel ist die Bahn aber Ink, also fast weiss — Knopf auf Bahn kam auf **1,1 : 1**, und „an" las sich als leere Kapsel.

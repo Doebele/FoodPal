@@ -45,6 +45,18 @@ extension DotArt {
         return DotArt(points: points, box: 186)
     }
 
+    /// Das Info-Zeichen: ein „i" im selben Vokabular wie Kreuz und Rosette.
+    ///
+    /// Der Stamm sitzt **enger als sein Durchmesser** — seine Punkte fliessen
+    /// zu einem Strich zusammen, und nur das Tüpfelchen steht frei. Bei
+    /// gleichmässigem Abstand las sich das Zeichen als drei Punkte
+    /// untereinander, also als Menü, nicht als Buchstabe.
+    static func info(color: Color) -> DotArt {
+        var points = [CGPoint(x: 30, y: 6)]
+        points += stride(from: 24, through: 54, by: 6).map { CGPoint(x: 30, y: $0) }
+        return DotArt(points: points, box: 60, diameter: 12, color: color)
+    }
+
     /// Die Rosette über der Beschreibung — Sprache. Aus dem Entwurf abgelesen,
     /// Koordinaten in halben Punkten, deshalb die Division durch zwei.
     static func speaker(color: Color = Palette.rule) -> DotArt {
