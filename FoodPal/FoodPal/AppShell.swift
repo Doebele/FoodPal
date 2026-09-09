@@ -8,7 +8,14 @@ import SwiftUI
 struct AppShell: View {
     @Environment(\.modelContext) private var context
     @AppStorage(Preference.healthSync) private var healthSync = true
+    @AppStorage(Preference.appearance) private var appearanceRaw = Appearance.auto.rawValue
     @State private var health = HealthKitSync()
+
+    /// Dieselbe Wahl wie am Wurzelschirm — die Sheets brauchen sie
+    /// **noch einmal**: `preferredColorScheme` an der Wurzel erreicht ein
+    /// bereits offenes Sheet nicht mehr. Wer in den Einstellungen von dunkel
+    /// auf hell stellte, sah den Wechsel erst nach dem Schliessen.
+    private var scheme: ColorScheme? { Appearance(rawValue: appearanceRaw)?.colorScheme }
 
     @State private var showCapture = {
         #if DEBUG
@@ -40,12 +47,14 @@ struct AppShell: View {
         }
         .sheet(isPresented: $showCapture) {
             CaptureSheet()
+                .preferredColorScheme(scheme)
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.large])
                 .presentationBackground(Palette.paper)
         }
         .sheet(isPresented: $showSettings) {
             SettingsSheet()
+                .preferredColorScheme(scheme)
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.large])
                 .presentationBackground(Palette.paper)

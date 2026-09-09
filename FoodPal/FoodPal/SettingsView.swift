@@ -72,16 +72,12 @@ struct SettingsView: View {
                     caption("bedienung")
                     row("Haptik") {
                         Toggle("", isOn: $haptics)
-                            .labelsHidden()
-                            .tint(Palette.ink)
                     }
                     // Aus nagelt die Schrift auf die Groesse fest, in der die
                     // Entwuerfe gesetzt sind. An ist Vorgabe: wer die Schrift
                     // groesser stellt, tut das aus einem Grund.
                     row("Schrift folgt dem System") {
                         Toggle("", isOn: $scaleText)
-                            .labelsHidden()
-                            .tint(Palette.ink)
                     }
                     // Die Sprachwahl gehoert iOS, nicht der App: ein eigener
                     // Schalter koennte `Locale.current` nicht mitdrehen, und
@@ -129,8 +125,6 @@ struct SettingsView: View {
                     }
                     row("Sync") {
                         Toggle("", isOn: $healthSync)
-                            .labelsHidden()
-                            .tint(Palette.ink)
                     }
                     row("Schreibt") {
                         Text("Kalorien · Koffein · Makros")
@@ -150,6 +144,7 @@ struct SettingsView: View {
             .padding(.bottom, 32)
         }
         .scrollIndicators(.hidden)
+        .toggleStyle(InkToggle())
         .background(Palette.paper)
         .haptic(.selection, trigger: roastRaw)
         .sheet(isPresented: $showVision) {
@@ -686,6 +681,45 @@ private struct Marke: View {
             .fill(filled ? Palette.ink : .clear)
             .frame(width: 8, height: 8)
             .overlay(Rectangle().strokeBorder(Palette.ink, lineWidth: 1))
+    }
+}
+
+/// Schalter im Satz der App.
+///
+/// Der eingebaute nimmt nur die Farbe der **Bahn** an und setzt darauf immer
+/// einen weissen Knopf. Im Dunkelmodus ist die Bahn dann Ink — also fast
+/// weiss — und der Knopf verschwindet darin: „an" las sich als leere Kapsel.
+///
+/// Hier ist der Knopf **immer Papier**, also stets das Gegenteil des Grundes,
+/// und die Bahn sagt den Zustand: Ink für an, Ink2 für aus. Das stimmt in
+/// beiden Modi, ohne dass eine Farbe eine Ausnahme braucht.
+struct InkToggle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Button {
+            withAnimation(.spring(duration: 0.25, bounce: 0.3)) {
+                configuration.isOn.toggle()
+            }
+        } label: {
+            ZStack {
+                Capsule()
+                    .fill(configuration.isOn ? Palette.ink : Palette.ink2)
+                    .frame(width: 51, height: 31)
+                Circle()
+                    .fill(Palette.paper)
+                    .frame(width: 27, height: 27)
+                    .offset(x: configuration.isOn ? 10 : -10)
+            }
+            // 31 pt hohe Kapsel in einer 44 pt hohen Trefferflaeche.
+            .frame(height: 44)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        // Ein Schalter rastet ein — genau dort gehoert Haptik hin.
+        .haptic(.selection, trigger: configuration.isOn)
+        // Sonst meldet VoiceOver einen Knopf statt eines Schalters.
+        .accessibilityRepresentation {
+            Toggle(isOn: configuration.$isOn) { configuration.label }
+        }
     }
 }
 

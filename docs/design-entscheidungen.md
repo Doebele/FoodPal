@@ -685,6 +685,25 @@ Fest bleiben zwei Stellen, an denen Schrift Geometrie ist und keine Sprache: die
 
 **Bewegung.** `accessibilityReduceMotion` schaltet das Zählwerk der Flipkarten ab: der Wert wird gesetzt, mit **einem** Impuls statt einer Kaskade. Die Rückmeldung bleibt, die Bewegung geht. Die Dot-Matrix läuft dann ohne Diagonale auf.
 
+## Der Schalter
+
+**Der eingebaute Schalter geht im Dunkelmodus nicht.** `tint` faerbt nur die **Bahn**; den Knopf setzt iOS immer weiss. Dunkel ist die Bahn aber Ink, also fast weiss — Knopf auf Bahn kam auf **1,1 : 1**, und „an" las sich als leere Kapsel.
+
+Der Schalter ist deshalb ein eigener `ToggleStyle`. Eine Regel traegt ihn: **der Knopf ist immer Papier**, also stets das Gegenteil des Grundes, und die **Bahn sagt den Zustand** — Ink für an, Ink2 für aus. Das stimmt in beiden Modi, ohne dass eine Farbe eine Ausnahme braucht:
+
+| | Bahn | Knopf | Kontrast |
+|---|---|---|---|
+| hell · an | Ink | Papier | 17,3 : 1 |
+| hell · aus | Ink2 | Papier | 4,6 : 1 |
+| dunkel · an | Ink | Papier | 16,4 : 1 |
+| dunkel · aus | Ink2 | Papier | 5,0 : 1 |
+
+**Keine Akzentfarbe im eingeschalteten Zustand.** Der Akzent gehoert dem Koffein, und sonst nichts — mit einem roestbraunen Schalter traege der Einstellungsschirm ein Koffeinsignal fuer Haptik und Schriftgroesse. Zustand hat hier zwei Zeiger, die beide ohne Farbe auskommen: die Lage des Knopfes und das Gewicht der Bahn. Ein dritter waere Redundanz, die den einen Akzent entwertet.
+
+Die Kapsel ist 51 × 31 wie die eingebaute, ihre Trefferflaeche 44 hoch. Der Knopf laeuft mit `spring(duration: 0.25, bounce: 0.3)`, und beim Umlegen gibt es einen Impuls — ein Schalter rastet ein, genau dort gehoert Haptik hin. `accessibilityRepresentation` haelt ihn fuer VoiceOver einen **Schalter** und keinen Knopf.
+
+**`preferredColorScheme` erreicht ein offenes Sheet nicht.** Dabei fiel auf: die Wahl steht an der Wurzel, und wer in den Einstellungen von dunkel zurueck auf hell stellte, sah den Wechsel erst nach dem Schliessen — der Schirm dahinter war laengst hell, das Sheet blieb dunkel. Die beiden Sheets aus der Wurzel tragen die Wahl jetzt selbst.
+
 ## Nur Hochformat
 
 `UISupportedInterfaceOrientations` steht auf `UIInterfaceOrientationPortrait`, iPhone wie iPad. Der ganze Entwurf haengt an einer Spalte: der Zeitstrahl ist ein Tag von 24 Stunden in 96 Rasterspalten, die Anzeige benutzt dasselbe Raster, und die Erfassung kommt als Bottom Sheet von unten. Quer waere das Raster entweder gedehnt oder verloren — und ein Layout, das niemand entworfen hat, ist schlechter als eines, das gar nicht erst erscheint.
