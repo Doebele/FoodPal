@@ -40,3 +40,37 @@ struct CoffeeInfoTests {
         #expect(CoffeeInfo.of("Bratwurst") == nil)
     }
 }
+
+/// Kalorien und Makros stehen in derselben Zeile und muessen zueinander
+/// passen: Protein und Kohlenhydrate tragen 4 kcal je Gramm, Fett 9. Wer eine
+/// der Zahlen aendert, ohne die anderen nachzuziehen, faellt hier auf.
+struct CoffeeMacroTests {
+
+    /// Alkohol traegt 7 kcal je Gramm und ist weder Eiweiss noch Kohlenhydrat
+    /// noch Fett — bei einem Irish Coffee bleiben zwei Drittel der Kalorien
+    /// deshalb ausserhalb der Makros. Welche Sorten das betrifft, weiss die
+    /// Warenkunde; genau dafuer steht sie da.
+    private static let geistig: Set<CoffeeInfo.Ingredient> =
+        [.obstbrand, .whiskey, .weinbrand, .irishCream, .likoer]
+
+    private func ausMakros(_ p: CoffeePreset) -> Double {
+        (p.proteinG ?? 0) * 4 + (p.carbsG ?? 0) * 4 + (p.fatG ?? 0) * 9
+    }
+
+    @Test func keineSorteTraegtMehrMakrosAlsKalorien() {
+        for preset in CoffeePreset.all {
+            #expect(ausMakros(preset) <= preset.kcal + 12,
+                    "\(preset.name): \(Int(ausMakros(preset))) aus Makros, \(Int(preset.kcal)) kcal")
+        }
+    }
+
+    @Test func wasKeinenAlkoholHatIstDurchMakrosErklaert() {
+        for preset in CoffeePreset.all where preset.kcal > 40 {
+            let geistreich = CoffeeInfo.of(preset.name)?.ingredients
+                .contains { Self.geistig.contains($0) } ?? false
+            guard !geistreich else { continue }
+            #expect(ausMakros(preset) >= preset.kcal * 0.85,
+                    "\(preset.name): nur \(Int(ausMakros(preset))) von \(Int(preset.kcal)) kcal erklärt")
+        }
+    }
+}
