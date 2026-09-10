@@ -45,16 +45,71 @@ extension DotArt {
         return DotArt(points: points, box: 186)
     }
 
-    /// Das Info-Zeichen: ein „i" im selben Vokabular wie Kreuz und Rosette.
+    /// Info und Schliessen, aus dem Entwurf abgelesen (Node `153:327896`).
     ///
-    /// Der Stamm sitzt **enger als sein Durchmesser** — seine Punkte fliessen
-    /// zu einem Strich zusammen, und nur das Tüpfelchen steht frei. Bei
-    /// gleichmässigem Abstand las sich das Zeichen als drei Punkte
-    /// untereinander, also als Menü, nicht als Buchstabe.
+    /// **12 Spalten, 13 Reihen, Teilung 4, Punkt 3** — dasselbe Raster wie der
+    /// Zeitstrahl, nur mit runden Punkten: hier ist es eine Marke, kein
+    /// Datenfeld.
+    ///
+    /// Das i ist ein gesetztes i mit Fahne und Fuss, nicht ein Strich mit
+    /// Tuepfelchen. Die erste eigene Fassung setzte den Stamm enger als seinen
+    /// Durchmesser, damit er zu einer Linie zusammenfloss; der Entwurf loest
+    /// dasselbe anders und besser, naemlich mit einer Serife.
     static func info(color: Color) -> DotArt {
-        var points = [CGPoint(x: 30, y: 6)]
-        points += stride(from: 24, through: 54, by: 6).map { CGPoint(x: 30, y: $0) }
-        return DotArt(points: points, box: 60, diameter: 12, color: color)
+        grid([
+            "............",
+            ".....##.....",
+            ".....##.....",
+            "............",
+            "...####.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            "...######...",
+            "............",
+        ], color: color)
+    }
+
+    static func close(color: Color) -> DotArt {
+        grid([
+            "............",
+            ".#........#.",
+            ".##......##.",
+            "..##....##..",
+            "...##..##...",
+            "....####....",
+            ".....##.....",
+            "....####....",
+            "...##..##...",
+            "..##....##..",
+            ".##......##.",
+            ".#........#.",
+            "............",
+        ], color: color)
+    }
+
+    /// Die Zeichnung steht als Raster da und nicht als Koordinatenliste: so
+    /// sieht man die Form im Quelltext und kann sie mit dem Entwurf
+    /// vergleichen, ohne etwas zu rechnen.
+    ///
+    /// `DotArt` zeichnet in ein Quadrat; die zwoelf Spalten sind eine
+    /// schmaler als die dreizehn Reihen und werden darin mittig gesetzt.
+    private static func grid(_ rows: [String], color: Color) -> DotArt {
+        let pitch: CGFloat = 4, dot: CGFloat = 3
+        let box = CGFloat(rows.count) * pitch - (pitch - dot)
+        let breite = CGFloat(rows[0].count) * pitch - (pitch - dot)
+        let links = (box - breite) / 2
+        var points: [CGPoint] = []
+        for (row, zeile) in rows.enumerated() {
+            for (column, zeichen) in zeile.enumerated() where zeichen == "#" {
+                points.append(CGPoint(x: links + CGFloat(column) * pitch + dot / 2,
+                                      y: CGFloat(row) * pitch + dot / 2))
+            }
+        }
+        return DotArt(points: points, box: box, diameter: dot, color: color)
     }
 
     /// Die Rosette über der Beschreibung — Sprache. Aus dem Entwurf abgelesen,

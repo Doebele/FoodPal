@@ -255,10 +255,21 @@ struct EntryDetailView: View {
                 .overlay(alignment: .topTrailing) { badge }
                 // Erst aufgespreizt: dort ist Platz für den Satz, und zugeklappt
                 // bleibt das Bild ein Bild.
-                .overlay(alignment: .bottomTrailing) {
-                    if imageExpanded, !showLore, lore != nil { loreButton }
-                }
+                // Die Karte zuerst, der Knopf darueber: sonst legt sich das
+                // Glas ueber ihn und man kaeme nicht mehr heran.
                 .overlay { if showLore, let lore { loreCard(lore) } }
+                // Am selben Ort, offen wie zu — ein Umschalter, der nicht
+                // wandert. Erst aufgespreizt: dort ist Platz fuer den Satz,
+                // zugeklappt bleibt das Bild ein Bild.
+                .overlay(alignment: .bottomTrailing) {
+                    if imageExpanded, lore != nil {
+                        if showLore {
+                            markButton(.close, "Warenkunde schließen") { showLore = false }
+                        } else {
+                            markButton(.info, "Warenkunde") { showLore = true }
+                        }
+                    }
+                }
                 // Ruhend so breit wie die rechte Spalte, gespreizt von Kante
                 // zu Kante. Das Polster kommt **nach** dem Overlay: davor
                 // haengt die Marke an der Kante des gepolsterten Rahmens,
@@ -298,25 +309,36 @@ struct EntryDetailView: View {
 
     /// Das Info-Zeichen unten rechts — gegenüber der Marke oben rechts, damit
     /// sich die beiden nie ins Gehege kommen.
-    private var loreButton: some View {
+    private enum Mark { case info, close }
+
+    /// Info und Schliessen sind dieselbe Marke an derselben Stelle, nur mit
+    /// anderer Zeichnung — deshalb **ein** Bauplan und nicht zwei.
+    private func markButton(
+        _ mark: Mark,
+        _ label: LocalizedStringKey,
+        action: @escaping () -> Void
+    ) -> some View {
         Button {
-            withAnimation(.easeInOut(duration: 0.25)) { showLore = true }
+            withAnimation(.easeInOut(duration: 0.25)) { action() }
         } label: {
-            DotArt.info(color: Palette.paper)
-                .frame(width: 22, height: 22)
-                .padding(5)
-                .background(Palette.ink)
-                .padding(8)
-                // 32 pt Marke in einer 44 pt hohen Trefferfläche.
-                .frame(width: 44, height: 44)
-                .contentShape(Rectangle())
+            Group {
+                switch mark {
+                case .info: DotArt.info(color: Palette.paper)
+                case .close: DotArt.close(color: Palette.paper)
+                }
+            }
+            .frame(width: 22, height: 22)
+            .padding(5)
+            .background(Palette.ink)
+            .padding(8)
+            // 32 pt Marke in einer 44 pt hohen Trefferflaeche.
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Warenkunde")
+        .accessibilityLabel(label)
     }
 
-    /// Die Karte liegt **im** Bild, nicht darunter: das Bild bleibt sichtbar,
-    /// nur unscharf. Ein Tippen darauf schliesst sie wieder.
     private func loreCard(_ lore: CoffeeInfo) -> some View {
         // **Nicht Ink und Ink2.** Auf Glas ist die Farbe unter dem Text
         // unbekannt, sie kommt aus dem Bild: Ink2 kam ueber dem Braun einer

@@ -817,10 +817,23 @@ Marke „erzeugt" oben rechts — so kommen die beiden sich nie ins Gehege.
 Zugeklappt bleibt das Bild ein Bild. Zwei Tipper bis zur Warenkunde, null
 Rauschen davor: erst wächst das Bild, dann bietet es etwas an.
 
-Das Zeichen ist ein **„i" aus Punkten**, im Vokabular von Kreuz und Rosette.
-Die erste Fassung setzte vier gleich weit entfernte Punkte untereinander und
-las sich als Menü. Jetzt sitzen die Stammpunkte **enger als ihr Durchmesser**
-und fliessen zu einem Strich zusammen; frei steht nur das Tüpfelchen.
+**Dieselbe Stelle trägt beides.** Ist die Karte offen, steht dort ein Kreuz
+statt des i — ein Umschalter, der nicht wandert, und die Karte lässt sich
+schliessen, ohne sie erst nach einer Fläche zum Antippen abzusuchen. Im Code
+ist es **ein** Bauplan mit zwei Zeichnungen, nicht zwei Knöpfe.
+
+Beide Zeichen stehen im Entwurf (Node `153:327896`): **12 Spalten, 13 Reihen,
+Teilung 4, Punkt 3** — dasselbe Raster wie der Zeitstrahl, nur mit runden
+Punkten, denn hier ist es eine Marke und kein Datenfeld. Sie stehen im
+Quelltext als Raster aus `.` und `#` und nicht als Koordinatenliste: so sieht
+man die Form beim Lesen und kann sie mit dem Entwurf vergleichen, ohne etwas
+zu rechnen.
+
+Das i ist ein **gesetztes i mit Fahne und Fuss**. Meine eigene erste Fassung
+war ein Strich mit Tüpfelchen, dessen Stammpunkte enger standen als ihr
+Durchmesser, damit sie zu einer Linie zusammenflossen — sie löste dasselbe
+Problem (bei gleichmässigem Abstand liest sich ein Punktstrich als Menü) mit
+einem Trick, wo der Entwurf eine Serife setzt.
 
 **Die Karte liegt im Bild, nicht darunter** — Glas, das Bild bleibt sichtbar,
 nur unscharf. Drei Felder: was drin ist, wie es entsteht, und woher es kommt.
