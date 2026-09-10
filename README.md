@@ -110,10 +110,15 @@ python3 tools/screenshots.py          # alle fünf Sprachen
 python3 tools/screenshots.py de en    # nur diese
 ```
 
-Fünf Schirme in fünf Sprachen, 25 Bilder zu **1320 × 2868** — die 6,9 Zoll, die
-App Store Connect verlangt; alles Kleinere rechnet Apple selbst daraus.
+Sieben Schirme in fünf Sprachen, 35 Bilder zu **1320 × 2868** — die 6,9 Zoll,
+die App Store Connect verlangt; alles Kleinere rechnet Apple selbst daraus.
 Ausgabe nach `bilder/store/<sprache>/`, nicht ins Repository: sie sind aus dem
 Skript reproduzierbar.
+
+**Je Sprache eine andere Kaffeesorte** im Detailschirm — ein Barraquito auf
+Spanisch, ein Espresso auf Italienisch, ein Schümli Pflümli auf Deutsch. Die
+Werte dazu kommen aus dem Bestand und nicht aus dem Skript, sonst stünden im
+Bild Zahlen, die die App so nie erzeugt.
 
 Angesteuert werden die Schirme über die Startvarianten, **kein einziger Tipp
 auf den Bildschirm** — was man antippen muss, geht beim nächsten Lauf anders

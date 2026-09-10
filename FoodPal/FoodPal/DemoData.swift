@@ -19,6 +19,17 @@ enum DemoData {
         return teile.count == vorgabe.count ? teile : vorgabe
     }()
 
+    /// Der Kaffee am Nachmittag, wahlweise. Fuer die Bilder im App Store soll
+    /// je Sprache eine andere Sorte im Eintragsschirm stehen — ein Barraquito
+    /// im spanischen, ein Espresso im italienischen. Werte kommen aus dem
+    /// Bestand, nicht aus dem Skript: sonst stuenden im Bild Zahlen, die die
+    /// App so nie erzeugt.
+    private static var afternoonCoffee: CoffeePreset {
+        let name = ProcessInfo.processInfo.environment["DEMO_COFFEE"] ?? "Espresso"
+        return CoffeePreset.all.first { $0.name == name }
+            ?? CoffeePreset.all.first { $0.name == "Espresso" }!
+    }
+
     static func seedIfEmpty(_ context: ModelContext) {
         let existing = (try? context.fetchCount(FetchDescriptor<Entry>())) ?? 0
         guard existing == 0 else { return }
@@ -55,7 +66,7 @@ enum DemoData {
             Entry(date: at(10, 30), name: "Cappuccino", kind: .coffee, kcal: 74, caffeineMg: 63),
             Entry(date: at(12, 40), name: meals[4], kind: .meal, kcal: 620,
                   proteinG: 34, carbsG: 52, fatG: 21),
-            Entry(date: at(15, 5), name: "Espresso", kind: .coffee, kcal: 2, caffeineMg: 63),
+            afternoonCoffee.entry(at: at(15, 5)),
             Entry(date: at(19, 15), name: meals[5], kind: .meal, kcal: 741,
                   proteinG: 18, carbsG: 74, fatG: 33)
         ]

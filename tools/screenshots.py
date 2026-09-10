@@ -29,17 +29,27 @@ BUNDLE = "com.clausmedvesek.kk26"
 # rechnet Apple selbst daraus.
 GERAET = "iPhone 17 Pro Max"
 
+# Je Sprache: Gebietsschema, die sechs Beispielmahlzeiten, und **die
+# Kaffeesorte fuer den Detailschirm**. Die Warenkunde ist das Herzstueck der
+# App, und sie zeigt sich am besten an einer Sorte, die der jeweilige Markt
+# kennt: ein Barraquito auf Spanisch, ein Espresso auf Italienisch, ein
+# Schuemli Pfluemli auf Deutsch.
 SPRACHEN = {
-    "de": ("de_CH", ["Porridge", "Linsensuppe", "Pasta",
-                     "Porridge mit Beeren", "Bowl mit Lachs", "Ofengemüse"]),
-    "en": ("en_US", ["Porridge", "Lentil soup", "Pasta",
-                     "Porridge with berries", "Salmon bowl", "Roast vegetables"]),
-    "fr": ("fr_FR", ["Porridge", "Soupe de lentilles", "Pâtes",
-                     "Porridge aux fruits rouges", "Bowl au saumon", "Légumes rôtis"]),
-    "it": ("it_IT", ["Porridge", "Zuppa di lenticchie", "Pasta",
-                     "Porridge ai frutti di bosco", "Bowl al salmone", "Verdure al forno"]),
-    "es": ("es_ES", ["Porridge", "Sopa de lentejas", "Pasta",
-                     "Porridge con frutos rojos", "Bowl de salmón", "Verduras al horno"]),
+    "de": ("de_CH", "Schümli Pflümli",
+           ["Porridge", "Linsensuppe", "Pasta",
+            "Porridge mit Beeren", "Bowl mit Lachs", "Ofengemüse"]),
+    "en": ("en_US", "Flat White",
+           ["Porridge", "Lentil soup", "Pasta",
+            "Porridge with berries", "Salmon bowl", "Roast vegetables"]),
+    "fr": ("fr_FR", "Café au Lait",
+           ["Porridge", "Soupe de lentilles", "Pâtes",
+            "Porridge aux fruits rouges", "Bowl au saumon", "Légumes rôtis"]),
+    "it": ("it_IT", "Espresso",
+           ["Porridge", "Zuppa di lenticchie", "Pasta",
+            "Porridge ai frutti di bosco", "Bowl al salmone", "Verdure al forno"]),
+    "es": ("es_ES", "Barraquito",
+           ["Porridge", "Sopa de lentejas", "Pasta",
+            "Porridge con frutos rojos", "Bowl de salmón", "Verduras al horno"]),
 }
 
 # Je Schirm: Dateiname, Umgebung, und was in den Einstellungen stehen soll.
@@ -49,7 +59,9 @@ SCHIRME = [
     ("02-koffein",       {}, {"numberStyle": "dotMatrix", "captureMode": "coffee"}),
     ("03-kaffee",        {"START_SHEET": "1"}, {"captureMode": "coffee"}),
     ("04-eintrag",       {"START_ENTRY": "coffee"}, {}),
-    ("05-einstellungen", {"START_SETTINGS": "1"}, {"numberStyle": "sevenSegment"}),
+    ("05-sorte",         {"START_ENTRY": "coffee", "START_LORE": "bild"}, {}),
+    ("06-warenkunde",    {"START_ENTRY": "coffee", "START_LORE": "1"}, {}),
+    ("07-einstellungen", {"START_SETTINGS": "1"}, {"numberStyle": "sevenSegment"}),
 ]
 
 
@@ -104,7 +116,7 @@ def main():
 
     gemacht = 0
     for sprache in gewuenscht:
-        locale, mahlzeiten = SPRACHEN[sprache]
+        locale, kaffee, mahlzeiten = SPRACHEN[sprache]
         ordner = ZIEL / sprache
         ordner.mkdir(parents=True, exist_ok=True)
 
@@ -125,6 +137,7 @@ def main():
 
             umwelt = {"SIMCTL_CHILD_SEED_DEMO": "1",
                       "SIMCTL_CHILD_DEMO_MEALS": "|".join(mahlzeiten),
+                      "SIMCTL_CHILD_DEMO_COFFEE": kaffee,
                       **{f"SIMCTL_CHILD_{k}": v for k, v in umgebung.items()}}
             subprocess.run(
                 ["xcrun", "simctl", "launch", udid, BUNDLE,

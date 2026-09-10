@@ -31,8 +31,24 @@ struct EntryDetailView: View {
     @State private var deleted = false
     @State private var showPlayground = false
     @State private var showCamera = false
-    @State private var imageExpanded = false
-    @State private var showLore = false
+    /// Zwei Zustaende, die man sonst nur mit Tippen erreicht — und genau die
+    /// beiden, um die es in den Bildern fuer den App Store geht.
+    /// `START_LORE=bild` spreizt nur auf, `START_LORE=1` legt die Warenkunde
+    /// darueber.
+    @State private var imageExpanded = {
+        #if DEBUG
+        return ProcessInfo.processInfo.environment["START_LORE"] != nil
+        #else
+        return false
+        #endif
+    }()
+    @State private var showLore = {
+        #if DEBUG
+        return ProcessInfo.processInfo.environment["START_LORE"] == "1"
+        #else
+        return false
+        #endif
+    }()
     @Environment(\.colorScheme) private var scheme
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
