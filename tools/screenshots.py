@@ -33,9 +33,9 @@ GERAET = "iPhone 17 Pro Max"
 # Kaffeesorte fuer den Detailschirm**. Die Warenkunde ist das Herzstueck der
 # App, und sie zeigt sich am besten an einer Sorte, die der jeweilige Markt
 # kennt: ein Barraquito auf Spanisch, ein Espresso auf Italienisch, ein
-# Schuemli Pfluemli auf Deutsch.
+# Filterkaffee auf Deutsch.
 SPRACHEN = {
-    "de": ("de_CH", "Schümli Pflümli",
+    "de": ("de_CH", "Filterkaffee",
            ["Porridge", "Linsensuppe", "Pasta",
             "Porridge mit Beeren", "Bowl mit Lachs", "Ofengemüse"]),
     "en": ("en_US", "Flat White",

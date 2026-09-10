@@ -116,7 +116,7 @@ Ausgabe nach `bilder/store/<sprache>/`, nicht ins Repository: sie sind aus dem
 Skript reproduzierbar.
 
 **Je Sprache eine andere Kaffeesorte** im Detailschirm — ein Barraquito auf
-Spanisch, ein Espresso auf Italienisch, ein Schümli Pflümli auf Deutsch. Die
+Spanisch, ein Espresso auf Italienisch, ein Filterkaffee auf Deutsch. Die
 Werte dazu kommen aus dem Bestand und nicht aus dem Skript, sonst stünden im
 Bild Zahlen, die die App so nie erzeugt.
 
