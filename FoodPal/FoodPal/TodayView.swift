@@ -422,8 +422,10 @@ struct DayView: View {
                 // den Teil nicht, um den es geht.
                 selected = sorted.last { $0.photo != nil } ?? sorted.last
             case "coffee":
+                // Ohne Foto: dann steht das mitgelieferte Bild der Sorte da,
+                // und genau darum geht es bei diesem Schalter.
                 selected = entries.sorted { $0.date < $1.date }
-                    .last { $0.kind == .coffee && $0.photo != nil }
+                    .last { $0.kind == .coffee && $0.photo == nil }
             default:
                 break
             }
