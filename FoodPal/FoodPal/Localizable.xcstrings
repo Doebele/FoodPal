@@ -1798,6 +1798,41 @@
         }
       }
     },
+    "Ein Blauwal schafft das. Der frisst allerdings Krill, und zwar den ganzen Tag.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Blauwal schafft das. Der frisst allerdings Krill, und zwar den ganzen Tag."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A blue whale manages that. Though it eats krill, and all day long."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una ballena azul llega a eso. Eso sí, come kril, y todo el día."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une baleine bleue y arrive. Elle mange du krill, remarquez, et toute la journée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una balenottera azzurra ci arriva. Mangia però krill, e tutto il giorno."
+          }
+        }
+      }
+    },
     "Ein doppelter Espresso und gleich viel warme Milch — spanisch cortar, „schneiden“: die Milch nimmt Säure und Bitterkeit, ohne den Kaffee zu verwässern. Nur leicht aufgeschäumt, feinporig statt luftig.": {
       "extractionState": "manual",
       "localizations": {
@@ -5368,6 +5403,76 @@
         }
       }
     },
+    "So viel Koffein steckt in rund zwanzig Espressi.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So viel Koffein steckt in rund zwanzig Espressi."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That much caffeine sits in about twenty espressos."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanta cafeína hay en unos veinte espressos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autant de caféine, c’est environ vingt expressos."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanta caffeina sta in una ventina di espressi."
+          }
+        }
+      }
+    },
+    "So viel passt in eine Mahlzeit nur, wenn beim Tippen eine Stelle verrutscht ist.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So viel passt in eine Mahlzeit nur, wenn beim Tippen eine Stelle verrutscht ist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That much fits into one meal only if a digit slipped while typing."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanto cabe en una comida sólo si al teclear se ha corrido un dígito."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autant ne tient dans un repas que si un chiffre a glissé à la saisie."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanto sta in un pasto solo se digitando è scivolata una cifra."
+          }
+        }
+      }
+    },
     "Spanien, oft dem Baskenland oder Katalonien zugeschrieben; auch in Portugal und Lateinamerika zu Hause. Serviert im kleinen Glas, 60 bis 70 ml.": {
       "extractionState": "manual",
       "localizations": {
@@ -7083,6 +7188,41 @@
         }
       }
     },
+    "Zwei Tagesbedarfe auf einem Teller — ist da eine Null zu viel?": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwei Tagesbedarfe auf einem Teller — ist da eine Null zu viel?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two daily requirements on one plate — is there a zero too many?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dos necesidades diarias en un plato — ¿sobra un cero?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux besoins journaliers dans une seule assiette — un zéro de trop ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Due fabbisogni giornalieri in un piatto — c’è uno zero di troppo?"
+          }
+        }
+      }
+    },
     "Zwölf bis zwanzig Stunden kalt gezogen statt heiss gebrüht. Wenig Säure, viel Koffein.": {
       "extractionState": "manual",
       "localizations": {
@@ -8275,6 +8415,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "orario"
+          }
+        }
+      }
+    },
+    "Über tausend Milligramm wären eine Kanne, keine Tasse.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über tausend Milligramm wären eine Kanne, keine Tasse."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Over a thousand milligrams would be a pot, not a cup."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más de mil miligramos serían una cafetera, no una taza."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus de mille milligrammes, ce serait une cafetière, pas une tasse."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oltre mille milligrammi sarebbero una caffettiera, non una tazza."
           }
         }
       }

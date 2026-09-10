@@ -918,6 +918,49 @@ stehen die alten Werte für immer neben den neuen in der Tagessumme.
 Die alte App bleibt auf dem Gerät liegen, bis sie gelöscht wird — zwei
 verschiedene IDs sind zwei verschiedene Apps.
 
+## Wenn eine Zahl nicht stimmen kann
+
+Die Idee war, Eingaben über 9999 abzulehnen und sich darüber lustig zu machen.
+Beides wurde verworfen, und beides aus demselben Grund: **das hier ist ein
+Tagebuch.**
+
+**Abgelehnt wird nichts.** Was nicht gespeichert wird, fehlt auch in Apple
+Health, und dort füllt es niemand mehr nach. Vor allem aber: wer 9999 kcal an
+einem Tag erreicht, ist nicht zwingend ein Witzbold. Essanfälle in dieser
+Grössenordnung sind dokumentiert. Eine App, die genau diesem Menschen einen
+Walfischwitz zeigt und die Eingabe verweigert, tut das Gegenteil von dem,
+wofür sie da ist — und Apple prüft Gesundheits-Apps ausdrücklich darauf
+(Richtlinie 1.4.1). Beim Koffein wiegt es schwerer: 9999 mg liegen jenseits
+einer tödlichen Dosis, und wer das eintippt, protokolliert womöglich einen
+Notfall.
+
+**Der Satz kommt nicht vom Modell.** Frei erzeugter Text über das Essverhalten
+eines Menschen lässt sich nicht testen — man kann keinen Witz ausliefern, den
+man nicht gelesen hat. Dazu käme ein Netzaufruf im ungünstigsten Moment und
+Stummheit für alle ohne Anbieterschlüssel. Die Sätze stehen deshalb fest in
+`Plausibility.swift`, in fünf Sprachen.
+
+**Geprüft wird der einzelne Eintrag, nicht die Tagessumme.** Eine *Mahlzeit*
+über 4000 kcal oder ein *Getränk* über 1000 mg ist fast immer eine verrutschte
+Stelle beim Tippen oder eine Halluzination des Modells — dort verdient sich
+eine Rückfrage ihr Geld. Eine hohe Tagessumme dagegen ist eine Tatsache und
+bekommt keinen Kommentar.
+
+**Der Witz zielt auf die Zahl, nie auf den Menschen.** „Ein Blauwal schafft
+das" lacht über eine Menge; „du isst wie ein Wal" lacht über einen Menschen.
+Der Unterschied ist der ganze Punkt.
+
+Der Satz wird **aus der Zahl gewählt und nicht gewürfelt**: beim Tippen ändert
+sich der Wert bei jedem Anschlag, und ein zufälliger Satz spränge mit und wäre
+nicht zu lesen. So gehört zu jeder Zahl derselbe Satz, und verschiedene Zahlen
+bekommen verschiedene.
+
+Er steht in der **rechten Spalte**, unter der Bezeichnung. In der Zahlenspalte
+hatte er ein Drittel Breite und brach auf vier Zeilen um; unter beiden Spalten
+stünde er hinter dem Löschen-Knopf, und ein Hinweis zu Zahlen gehört nicht
+hinter die gefährlichste Taste. Gesetzt in `ink2`, nicht in Rot: es ist eine
+Bemerkung, kein Fehler. Der Sichern-Knopf bleibt unberührt.
+
 ## Bewusst weggelassen
 
 - **Ein eigener Scanner-Screen.** Der Barcode-Weg ist gebaut (`VNDetectBarcodesRequest` + Open Food Facts), aber ohne zweite Tür: das Foto, das du ohnehin machst, wird vorher geprüft. Ein Live-Scanner (`DataScannerViewController`) wäre die Nachrüstung, falls sich EANs aus normalem Abstand zu selten lesen lassen — siehe [Nährwertdatenbank](anbieter.md#nährwertdatenbank).

@@ -539,6 +539,14 @@ private struct Confirm: View {
                     ForEach($drafts) { $draft in compactRow($draft) }
                 }
 
+                // Ein Wert, der nicht stimmen kann, bekommt hier seinen Satz —
+                // und zwar bevor gesichert wird, nicht danach. Der Knopf
+                // darunter bleibt unberuehrt: es ist ein Hinweis, kein Riegel.
+                PlausibilityNote(
+                    kcal: drafts.map(\.kcal).max(by: { (Double($0) ?? 0) < (Double($1) ?? 0) }) ?? "",
+                    caffeine: drafts.map(\.caffeine).max(by: { (Double($0) ?? 0) < (Double($1) ?? 0) }) ?? ""
+                )
+
                 // Der Knopf haengt unten, im Daumenbereich — dazwischen
                 // steht der Weissraum, der den Satz traegt.
                 Spacer(minLength: 24)

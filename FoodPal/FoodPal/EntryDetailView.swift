@@ -57,6 +57,15 @@ struct EntryDetailView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             timeField
                             nameField
+                            // Auch beim Nachbearbeiten faellt eine verrutschte
+                            // Stelle hier auf, nicht erst in der Tagessumme.
+                            //
+                            // **Rechts, nicht in der Zahlenspalte.** Dort ist
+                            // ein Drittel Breite, und der Satz brach auf vier
+                            // Zeilen um. Unter beiden Spalten stuende er nach
+                            // dem Loeschen-Knopf — ein Hinweis zu Zahlen
+                            // gehoert nicht hinter die gefaehrlichste Taste.
+                            PlausibilityNote(kcal: kcal, caffeine: caffeine)
                             // Löschen steht **unten** rechts, nicht direkt
                             // unter der Bezeichnung: der Weissraum dazwischen
                             // ist Teil des Satzes, und der seltenste Griff
