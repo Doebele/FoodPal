@@ -1,17 +1,17 @@
-# FoodPal
+# Cafcalog
 
-Kalorien und Koffein für ein einziges iPhone. Mahlzeiten werden fotografiert
-oder diktiert und von einem Modell geschätzt, Kaffee kostet zwei Taps, alles
-landet in Apple Health. Kein Backend, keine Konten, kein Server — die
+**Caf**feine, **Ca**lories, Log**buch**. Kalorien und Koffein für ein einziges
+iPhone. Mahlzeiten werden fotografiert oder diktiert und von einem Modell
+geschätzt, Kaffee kostet zwei Taps, alles landet in Apple Health. Kein Backend, keine Konten, kein Server — die
 Schlüssel liegen in der Keychain und verlassen das Gerät nur als Kopfzeile
 der Anfrage an den gewählten Anbieter.
 
 SwiftUI · SwiftData · HealthKit · iOS 17 · rund 6 000 Zeilen · 75 Tests
 
-> **Der Name ist vergeben.** „FoodPal" gibt es im App Store bereits dreimal,
-> einmal davon als deutschsprachige Ernährungs-App in derselben Kategorie.
-> Vor einer Veröffentlichung braucht die App einen anderen — 75 geprüfte
-> Kandidaten stehen in der Namensakte.
+> Das Xcode-Ziel, der Swift-Modulname und der Projektordner heissen weiter
+> `FoodPal` — sie sind unsichtbar, und ein Umbenennen wäre Arbeit ohne Ertrag.
+> Die Bundle-ID ist `com.clausmedvesek.kk26` und trägt bewusst gar keinen
+> Namen, damit der nächste ihn nicht wieder kostet.
 
 ---
 
@@ -104,7 +104,6 @@ sollten vor einer Veröffentlichung gegengelesen werden.
 
 ## Vor einem App Store
 
-- anderer Name (siehe oben)
 - Muttersprachler für FR, IT, ES
 - Datenschutzerklärung und App-Privacy-Angaben
 - bezahltes Developer-Programm statt Personal Team

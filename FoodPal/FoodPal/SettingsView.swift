@@ -92,7 +92,7 @@ struct SettingsView: View {
                     // Der Weg steht daneben, weil der Sprung ihn nicht immer
                     // ganz geht: unter iOS 26 landet `openSettingsURLString`
                     // auch mal auf der Wurzel statt auf der Seite der App.
-                    Text("iOS führt die Sprachwahl je App: Einstellungen → Apps → FoodPal.")
+                    Text("iOS führt die Sprachwahl je App: Einstellungen → Apps → Cafcalog.")
                         .scaledFont(11)
                         .foregroundStyle(Palette.ink2)
                         .padding(.top, 8)

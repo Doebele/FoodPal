@@ -781,6 +781,33 @@ Die Kapsel ist 51 × 31 wie die eingebaute, ihre Trefferflaeche 44 hoch. Der Kno
 
 `UISupportedInterfaceOrientations` steht auf `UIInterfaceOrientationPortrait`, iPhone wie iPad. Der ganze Entwurf haengt an einer Spalte: der Zeitstrahl ist ein Tag von 24 Stunden in 96 Rasterspalten, die Anzeige benutzt dasselbe Raster, und die Erfassung kommt als Bottom Sheet von unten. Quer waere das Raster entweder gedehnt oder verloren — und ein Layout, das niemand entworfen hat, ist schlechter als eines, das gar nicht erst erscheint.
 
+## Der Name: Cafcalog
+
+**Caf**feine + **Ca**lories + **-log**, das Logbuch. Drei Silben, beide Werte
+im Wort, und die Endung sagt, was die App tut: sie führt Buch. Geprüft und frei
+waren `cafcalog.ch`, `.com` und `.de`, dazu kein Treffer in Marken, App Stores
+oder im Web.
+
+Gefallen ist die Wahl gegen **Cafcamat**, das klanglich besser läuft — caf-ca-mat
+hat die Betonung vorne —, aber „Cafca" ist im Klang Kafka, und das ist für eine
+App, die Ordnung verkörpern soll, die falsche Assoziation. **Cafcameter** hatte
+vier Silben und ein sichtbares „cam" in der Mitte. Verworfen wurden vorher
+**CoCa** (Coca-Cola), **Cofcal** (Pharmamarke), **MiKi** und **Kimi** (beide
+vergeben), **Kalomat** (Siemens) und alles auf **-Pal** (MyFitnessPal).
+
+Umgestellt wird **nur, was ein Mensch sieht**: `CFBundleDisplayName`, die sechs
+Berechtigungstexte in fünf Sprachen, der Sprachhinweis in den Einstellungen und
+der User-Agent gegenüber Open Food Facts. Das Xcode-Ziel, der Swift-Modulname
+und der Projektordner heissen weiter `FoodPal` — sie stehen in
+`@testable import`, in `TEST_HOST` und im Pfad jeder Datei, und niemand ausser
+dem Compiler liest sie.
+
+`CFBundleName` bleibt aus demselben Grund `FoodPal`. Es kommt aus `PRODUCT_NAME`,
+und die erzeugte Info.plist schlägt jeden Eintrag in der eigenen — nachgemessen,
+beide Wege blieben wirkungslos. Solange `CFBundleDisplayName` gesetzt ist, zeigt
+iOS ohnehin diesen: Home-Bildschirm, Einstellungen, Health-Quelle und jeder
+Berechtigungsdialog.
+
 ## Die Bundle-ID trägt keinen Namen
 
 `com.clausmedvesek.kk26` — KK für Kaffee und Kalorien, 26 für das Jahr. Sie
