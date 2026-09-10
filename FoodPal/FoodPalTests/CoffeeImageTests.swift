@@ -4,16 +4,14 @@ import UIKit
 
 /// Der Bildname entsteht zweimal: in `tools/kaffeebilder_auswahl.py`, das den
 /// Asset-Katalog fuellt, und in `CoffeeInfo.fold`, das ihn zur Laufzeit sucht.
-/// Beide muessen dasselbe ergeben. Geprueft werden die vier Namen, an denen
-/// die Faltungen auseinanderlaufen koennten — Akzent, eigener Buchstabe,
-/// Umlaut, scharfes s.
+/// Laufen die beiden Faltungen auseinander, findet die App nichts — und sagt
+/// nichts, sie zeigt einfach kein Bild. Deshalb dieser Test.
 struct CoffeeImageTests {
 
-    @Test func gefalteteNamenFindenIhrBild() {
-        #expect(CoffeeInfo.image(for: "Caffè Latte") != nil)          // è
-        #expect(CoffeeInfo.image(for: "Café Bombón") != nil)          // é, ó
-        #expect(CoffeeInfo.image(for: "Cold Brew Süssrahm") != nil)   // ü, ss
-        #expect(CoffeeInfo.image(for: "Cà phê sữa đá") != nil)        // đ
+    @Test func jedeSorteHatIhrBild() {
+        for preset in CoffeePreset.all {
+            #expect(CoffeeInfo.image(for: preset.name) != nil, "kein Bild: \(preset.name)")
+        }
     }
 
     @Test func schreibweiseIstEgal() {
