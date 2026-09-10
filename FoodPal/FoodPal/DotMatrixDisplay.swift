@@ -31,14 +31,18 @@ struct DotMatrixDisplay: View {
     /// Wechselt der Schlüssel, ist es ein Moduswechsel und kein Zählschritt.
     let resetKey: String
 
-    /// Der diagonale Durchlauf ist Bewegung; bei „Bewegung reduzieren" wird
-    /// stattdessen ueberblendet.
+    /// Der zeilenweise Aufbau ist Bewegung; bei „Bewegung reduzieren" wird
+    /// stattdessen ohne Welle ueberblendet.
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var shown: [Int] = []
     @State private var shownKey = ""
     @State private var sweep: Double = 1
     @State private var settled = 0
+    /// Beim Moduswechsel faengt die Anzeige dunkel an und schreibt sich neu;
+    /// beim Zaehlschritt blendet sie von der alten Zahl auf die neue. Die
+    /// Unterscheidung kostet nichts — `resetKey` sagt ohnehin, was vorliegt.
+    @State private var fromDark = false
 
     private static let places = 4
     /// Breite aller Ziffern samt Trennspalten.
@@ -57,39 +61,84 @@ struct DotMatrixDisplay: View {
     static let naturalHeight = CGFloat(rows) * Grid.pitch - Grid.gap
 
     var body: some View {
-        Canvas { ctx, size in
-            let s = Grid.scale(forWidth: size.width)
-            let d = Grid.dot * s
-            let target = Self.digits(of: value)
+        Matrix(sweep: sweep, target: Self.digits(of: value), shown: shown,
+               fromDark: fromDark, tint: tint)
+            .aspectRatio(Grid.naturalWidth / Self.naturalHeight, contentMode: .fit)
+            .haptic(trigger: settled)
+            .accessibilityLabel("\(value)")
+            .task(id: "\(value)|\(resetKey)") {
+                await update(to: Self.digits(of: value), key: resetKey)
+            }
+    }
 
-            for row in 0..<Self.rows {
-                for column in 0..<Grid.columns {
-                    let rect = CGRect(
-                        x: Grid.x(column) * s,
-                        y: CGFloat(row) * Grid.pitch * s,
-                        width: d, height: d
-                    )
-                    let lit = Self.isLit(row: row, column: column,
-                                         digits: reached(row: row, column: column) ? target : shown)
-                    ctx.fill(Path(rect), with: .color(lit ? tint : Palette.rule))
+    /// **`Animatable`, und das ist der ganze Punkt.** Ein `Canvas` zeichnet
+    /// einmal je Auswertung des Rumpfs; eine animierte Zahl, die nur im
+    /// Zeichenblock gelesen wird, kommt dort fertig an und nie dazwischen.
+    /// SwiftUI interpoliert `animatableData` und wertet den Rumpf je Bild neu
+    /// aus — erst damit laeuft die Welle wirklich ueber die Flaeche.
+    ///
+    /// Vorher stand `sweep` als `@State` direkt im `Canvas`. Der diagonale
+    /// Durchlauf, den das ergeben sollte, hat nie stattgefunden: die Anzeige
+    /// sprang. Aufgefallen ist es erst, als eine Bildschirmaufnahme Bild fuer
+    /// Bild danebenlag.
+    private struct Matrix: View, Animatable {
+        var sweep: Double
+        let target: [Int]
+        let shown: [Int]
+        let fromDark: Bool
+        let tint: Color
+
+        var animatableData: Double {
+            get { sweep }
+            set { sweep = newValue }
+        }
+
+        var body: some View {
+            Canvas { ctx, size in
+                let s = Grid.scale(forWidth: size.width)
+                let d = Grid.dot * s
+
+                for row in 0..<DotMatrixDisplay.rows {
+                    // Eine Zeile, ein Wert: die Welle laeuft waagrecht, also
+                    // aendert sich innerhalb der Zeile nichts mehr.
+                    let p = progress(row: row)
+                    for column in 0..<Grid.columns {
+                        let rect = CGRect(
+                            x: Grid.x(column) * s,
+                            y: CGFloat(row) * Grid.pitch * s,
+                            width: d, height: d
+                        )
+                        let neu = DotMatrixDisplay.isLit(row: row, column: column,
+                                                        digits: target) ? tint : Palette.rule
+                        guard p < 1 else {
+                            ctx.fill(Path(rect), with: .color(neu))
+                            continue
+                        }
+                        // Erst der alte Zustand, dann der neue mit steigender
+                        // Deckkraft darueber: das ergibt die Ueberblendung,
+                        // ohne zwei Farben von Hand zu mischen.
+                        let hell = !fromDark && DotMatrixDisplay.isLit(
+                            row: row, column: column, digits: shown)
+                        ctx.fill(Path(rect), with: .color(hell ? tint : Palette.rule))
+                        if p > 0 { ctx.fill(Path(rect), with: .color(neu.opacity(p))) }
+                    }
                 }
             }
         }
-        .aspectRatio(Grid.naturalWidth / Self.naturalHeight, contentMode: .fit)
-        .haptic(trigger: settled)
-        .accessibilityLabel("\(value)")
-        .task(id: "\(value)|\(resetKey)") {
-            await update(to: Self.digits(of: value), key: resetKey)
-        }
-    }
 
-    /// Der diagonale Durchlauf: eine Zelle nimmt den neuen Zustand an, sobald
-    /// die Welle sie erreicht hat. Eine einzige animierte Zahl statt 3168
-    /// einzelner Animationen — im `Canvas` gäbe es die auch gar nicht.
-    private func reached(row: Int, column: Int) -> Bool {
-        guard sweep < 1 else { return true }
-        let front = Double(row + column) / Double(Self.rows + Grid.columns)
-        return front <= sweep
+        /// Der zeilenweise Aufbau: eine Welle laeuft von oben nach unten, und
+        /// jede Zeile blendet um, waehrend die Front ueber sie hinweggeht.
+        ///
+        /// Das **Fenster** ist der Punkt. Ohne es schaltet jede Zeile hart um,
+        /// und bei 27 Zeilen in einer halben Sekunde sieht das nach Bildfehler
+        /// aus statt nach Aufbau. Mit gut einem Viertel wandert ein weiches
+        /// Band nach unten.
+        private func progress(row: Int) -> Double {
+            guard sweep < 1 else { return 1 }
+            let window = 0.28
+            let start = Double(row) / Double(DotMatrixDisplay.rows) * (1 - window)
+            return min(1, max(0, (sweep - start) / window))
+        }
     }
 
     private func update(to target: [Int], key: String) async {
@@ -101,11 +150,17 @@ struct DotMatrixDisplay: View {
             sweep = 1
             return
         }
-        guard shown != target else { return }
+        // Ein Moduswechsel baut auch dann neu auf, wenn zufaellig dieselben
+        // Ziffern stehen: gewechselt hat die Einheit, und das soll man sehen.
+        let wechsel = previous != key
+        guard shown != target || wechsel else { return }
 
-        let duration = reduceMotion ? 0.2 : 0.45
+        // Der Aufbau aus dem Dunkeln darf laenger dauern als ein Zaehlschritt —
+        // er schreibt die ganze Zahl, nicht nur eine Stelle.
+        fromDark = wechsel
+        let duration = reduceMotion ? 0.2 : (wechsel ? 0.55 : 0.45)
         sweep = reduceMotion ? 1 : 0
-        withAnimation(.easeInOut(duration: duration)) { sweep = 1 }
+        withAnimation(.linear(duration: duration)) { sweep = 1 }
         try? await Task.sleep(for: .seconds(duration))
         shown = target
 
@@ -134,7 +189,7 @@ struct DotMatrixDisplay: View {
         return (place, inner)
     }
 
-    private static func isLit(row: Int, column: Int, digits: [Int]) -> Bool {
+    fileprivate static func isLit(row: Int, column: Int, digits: [Int]) -> Bool {
         let glyphRow = row - padding + DotMatrixFont.inkRows.lowerBound
         guard DotMatrixFont.inkRows.contains(glyphRow),
               let slot = slot(for: column),

@@ -304,11 +304,38 @@ Je Segment die Farbe animieren, mit kleinem Versatz je Segmentindex, damit die Z
 
 Ein Detail mit echter Wirkung: Segmente, die **ausgehen**, langsamer blenden (0,22 s) als solche, die **angehen** (0,12 s). Das ist das Nachleuchten echter LCDs.
 
-**Dot-Matrix — diagonaler Durchlauf.**
+**Dot-Matrix — zeilenweiser Aufbau.**
 
-Verzögerung je Punkt aus seiner Position: `delay = (row + col) * 0.015`. Angehende Punkte zusätzlich von `scale 0.85` auf `1.0`. Ergibt den Eindruck einer Anzeigetafel, die durchläuft.
+Eine Welle läuft von oben nach unten, und jede Zeile blendet um, während die
+Front über sie hinweggeht. Die Anzeige schreibt sich damit waagrecht auf, wie
+eine Tafel, die Zeile für Zeile gesetzt wird.
 
-Der Gewinn dieser Variante: das Tagesdiagramm darüber benutzt dasselbe Punktraster. Ein neuer Eintrag kann seine Diagrammpunkte mit **derselben** Bewegung aufleuchten lassen — eine Bewegungssprache für Anzeige und Diagramm. Haptik: ein einzelner leichter Impuls, wenn der Wert steht, nicht je Punkt.
+**Das Fenster ist der Punkt.** Ohne es schaltet jede Zeile hart um, und bei 27
+Reihen in einer halben Sekunde sieht das nach Bildfehler aus statt nach Aufbau.
+Mit einem Fenster von gut einem Viertel der Gesamtdauer wandert ein weiches
+Band nach unten.
+
+**Zwei Fälle, und die Anzeige kennt den Unterschied schon.** `resetKey` sagt,
+ob ein Moduswechsel vorliegt oder ein Zählschritt. Beim Wechsel von kcal auf mg
+fängt die Anzeige **dunkel** an und schreibt die neue Zahl auf; beim Zählen
+blendet sie von der alten Ziffer auf die neue. Der Aufbau aus dem Dunkeln darf
+länger dauern (0,55 s statt 0,45) — er schreibt die ganze Zahl, nicht eine
+Stelle. Haptik unverändert: ein Impuls, wenn der Wert steht, nicht je Punkt.
+
+**Der Fehler, der dabei auffiel: die Animation hat nie stattgefunden.** Der
+vorherige diagonale Durchlauf las seine animierte Zahl als `@State` direkt im
+`Canvas`. Ein `Canvas` zeichnet aber einmal je Auswertung des Rumpfs, und
+`withAnimation` kann in einen Zeichenblock nicht hineininterpolieren — der Wert
+kam fertig an und nie dazwischen. Die Anzeige sprang, von Anfang an.
+
+Aufgefallen ist es erst an einer Bildschirmaufnahme, Bild für Bild
+nebeneinandergelegt. Die Lösung ist ein View, das `Animatable` erfüllt:
+SwiftUI interpoliert dann `animatableData` und wertet den Rumpf je Bild neu aus.
+
+Die **Wartewelle** im Erfassungsschirm war davon nie betroffen — sie zählt in
+einer Schleife eine Phase hoch, 24 Schritte je Sekunde, und jeder Schritt löst
+eine neue Auswertung aus. Wer einen `Canvas` bewegen will, braucht einen von
+beiden Wegen; `withAnimation` allein ist keiner.
 
 **Piktogramme nach Otl Aicher.** Massive Flächen, runde Endkappen, nur 0° / 45° / 90°. Durchgehend **Strichstärke 2,4** und **Radius 1,2** auf 24er-Raster (Radius = halbe Strichstärke, also identisch mit dem Kappenradius). Fünf Glyphen: Start, Erfassen, Kaffee, Profil, Einstellungen. Die Tabbar führt vier davon — Profil hat in einer Ein-Personen-App keinen Inhalt.
 
@@ -622,9 +649,10 @@ Er schliesst sich von selbst: nach der Wahl und sobald jemand doch wischt.
 Während ein Modell rechnet, lief bisher eine einzelne Reihe von links voll —
 ein Segmentbalken, wie ihn jede App hat. Jetzt läuft eine **diagonale Welle
 durch ein Punktfeld**: dieselben 96 Spalten wie der Zeitstrahl auf dem
-Startscreen, sieben Reihen hoch, dieselbe Bewegung wie beim Wechsel der
-Dot-Matrix-Ziffern. Die App hat ein Vokabular; ein Wartezeichen ist kein
-Grund, daraus auszubrechen.
+Startscreen, sieben Reihen hoch, dasselbe Raster wie die Dot-Matrix-Ziffern.
+Die Richtung unterscheidet sich seit deren Umbau — die Ziffern bauen sich
+waagrecht auf, die Wartewelle läuft diagonal —, das Vokabular bleibt dasselbe.
+Ein Wartezeichen ist kein Grund, daraus auszubrechen.
 
 Ein Balken, der sich füllt, verspricht ausserdem etwas, das er nicht halten
 kann: wie lange ein Modell braucht, weiss hier niemand. Eine Welle sagt nur
