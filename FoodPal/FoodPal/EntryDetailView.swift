@@ -33,6 +33,7 @@ struct EntryDetailView: View {
     @State private var showCamera = false
     @State private var imageExpanded = false
     @State private var showLore = false
+    @Environment(\.colorScheme) private var scheme
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
 
@@ -323,13 +324,15 @@ struct EntryDetailView: View {
         } label: {
             Group {
                 switch mark {
-                case .info: DotArt.info(color: Palette.paper)
-                case .close: DotArt.close(color: Palette.paper)
+                case .info: DotArt.info(color: Palette.ink)
+                case .close: DotArt.close(color: Palette.ink)
                 }
             }
             .frame(width: 22, height: 22)
             .padding(5)
-            .background(Palette.ink)
+            // Heller Grund, dunkle Punkte — so steht es im Entwurf. Umgekehrt
+            // war es nur, weil der alte Knopf es so machte.
+            .background(Palette.paper)
             .padding(8)
             // 32 pt Marke in einer 44 pt hohen Trefferflaeche.
             .frame(width: 44, height: 44)
@@ -389,11 +392,20 @@ struct EntryDetailView: View {
         // Bei grosser Schrift wird aus drei Feldern mehr, als ins Bild passt.
         // `basedOnSize`: es scrollt nur dann, sonst steht es still.
         .modifier(ScrollIfTooTall())
-        // `regularMaterial`, nicht `ultraThin`: über einem Foto — und diese
-        // Bilder sind Fotos — bleibt vom dünnsten Glas zu wenig Kontrast für
-        // 11-pt-Etiketten übrig. Glas bleibt es, nur eines, durch das man den
-        // Satz noch lesen kann.
-        .background(.regularMaterial)
+        // `thinMaterial`: das Bild soll durchscheinen, nicht verschwinden.
+        // Hell gemessen: der Satz steht auf dem dunkelsten Zwanzigstel des
+        // Kartengrunds bei 10,5 : 1, also reichlich ueber der Schwelle.
+        //
+        // **Im Dunkeln braucht es einen Schleier.** Dort ist die Schrift hell,
+        // und hinter dem Glas liegt oft ein helles Bild — eine weisse Tasse
+        // etwa. Ohne Schleier kam das hellste Zwanzigstel des Grundes auf
+        // 4,16 : 1 und fiel damit fuer die 11-pt-Etiketten durch (verlangt
+        // sind 4,5). Ein Viertel Schwarz zieht den Grund zurueck, ohne das
+        // Bild zu verdecken.
+        .background {
+            Rectangle().fill(.thinMaterial)
+                .overlay(Color.black.opacity(scheme == .dark ? 0.25 : 0))
+        }
         .contentShape(Rectangle())
         .onTapGesture { withAnimation(.easeInOut(duration: 0.25)) { showLore = false } }
         .transition(.opacity)

@@ -851,22 +851,27 @@ auch gelesen. Wird der Satz damit höher als das Bild, scrollt die Karte in sich
 Bild und ist unbekannt. Gemessen über dem Braun einer Tasse: `ink2` kam auf
 **3,4 : 1**, `secondary` mit seiner Vibrancy sogar auf **3,1** — beide unter der
 Schwelle von 4,5 : 1 für 11 pt. Jetzt trägt `primary` beide Ebenen, und das
-Etikett tritt über die **Deckkraft** zurück statt über die Farbe: 5,6 : 1 für
-das Etikett, 13,9 : 1 für den Satz. Aus demselben Grund ist das Glas
-`regularMaterial` und nicht `ultraThin`.
+Etikett tritt über die **Deckkraft** zurück statt über die Farbe.
 
-**Kaffee erzeugt keine Bilder.** Unter der Bezeichnung steht bei einer
-Mahlzeit „Bild erzeugen" — bei einem Kaffee steht dort „Foto aufnehmen", und
-der Weg zu Image Playground ist zu. Jede der 43 Sorten bringt ihr Bild mit,
-aufgenommen in einer Regie, die für alle gilt: gleicher Winkel, gleicher
-Grund, gleiches Licht. Ein gezeichnetes daneben zu setzen hiesse, eine gute
-Aufnahme gegen eine beliebige zu tauschen — und der Zeitstrahl verlöre genau
-die Ruhe, für die die Bilder gemacht wurden.
+**Das Glas ist `thinMaterial`**, nicht `regularMaterial`: das Bild soll
+durchscheinen, nicht verschwinden. Gemessen an gerenderten Pixeln, jeweils im
+schlimmsten Zwanzigstel des Kartengrunds:
 
-Die eigene Tasse zu fotografieren ist etwas anderes. Das ist ein Beleg, kein
-Ersatzentwurf, und darf das Musterbild überschreiben. Danach verschwindet die
-Zeile: ein Foto ist endgültig, ein mitgeliefertes Bild und ein erzeugtes sind
-es nicht.
+| | hell | dunkel |
+|---|---|---|
+| `regularMaterial` | 14,1 : 1 | — |
+| `thinMaterial` | **10,5 : 1** | 4,16 : 1 ✗ |
+| `thinMaterial` + Schleier | — | **6,78 : 1** |
+
+**Im Dunkeln braucht es einen Schleier.** Dort ist die Schrift hell, und hinter
+dem Glas liegt oft ein *helles* Bild — eine weisse Tasse etwa. Der Fall dreht
+sich also um: nicht dunkler Grund unter dunkler Schrift, sondern heller unter
+heller. Ohne Schleier fiel das hellste Zwanzigstel des Grundes auf 4,16 : 1 und
+damit für die 11-pt-Etiketten durch. Ein Viertel Schwarz über dem Glas zieht
+den Grund zurück, ohne das Bild zu verdecken.
+
+Hell braucht es keinen: dort steht der Satz bei 10,5 : 1, und ein Schleier
+würde nur Kontrast verschenken, den niemand vermisst.
 
 Die Warenkunde gehört der **Sorte**, nicht dem Eintrag, und steht deshalb in
 `CoffeeInfo` statt im Model. Nachgeschlagen wird über die Bezeichnung, Akzente
