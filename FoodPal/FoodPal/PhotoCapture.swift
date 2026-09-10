@@ -808,8 +808,37 @@ private struct Confirm: View {
     }
 }
 
-/// Die Zeile, die Apples Bildgenerator oeffnet — nur sichtbar, wo das Geraet
-/// Apple Intelligence hat.
+/// Ein stiller Nebenweg unter einem Feld: rechtsbuendig, klein, mit Linie
+/// darunter. Dieselbe Groesse und derselbe Schnitt wie „schliessen" in der
+/// Kopfzeile — beides sind Nebenwege, keine Hauptsache.
+struct QuietRow: View {
+    let label: LocalizedStringKey
+    var disabled = false
+    let action: () -> Void
+
+    var body: some View {
+        // **Rechtsbuendig**, wie im Entwurf — und die Trefferflaeche trotzdem
+        // ueber die ganze Spalte. Der Spacer stand vorher links vom Text und
+        // schob ihn an den linken Rand.
+        Button(action: action) {
+            HStack {
+                Spacer(minLength: 0)
+                Text(label)
+                    .scaledFont(12)
+                    .textCase(.lowercase)
+                    .foregroundStyle(disabled ? Palette.ink2 : Palette.ink)
+            }
+            .frame(minHeight: 46)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(disabled)
+        .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
+    }
+}
+
+/// Dieselbe Zeile, aber nur wo Image Playground ueberhaupt laeuft — also wo
+/// das Geraet Apple Intelligence hat.
 @available(iOS 18.1, *)
 struct GenerateImageRow: View {
     @Environment(\.supportsImagePlayground) private var supported
@@ -821,26 +850,7 @@ struct GenerateImageRow: View {
 
     var body: some View {
         if supported {
-            // **Rechtsbuendig**, wie im Entwurf — und die Trefferflaeche
-            // trotzdem ueber die ganze Spalte. Der Spacer stand vorher links
-            // vom Text und schob ihn an den linken Rand.
-            Button(action: action) {
-                HStack {
-                    Spacer(minLength: 0)
-                    Text(label)
-                        // Dieselbe Groesse und derselbe Schnitt wie
-                        // „schliessen" in der Kopfzeile: beides sind stille
-                        // Nebenwege, keine Hauptsache.
-                        .scaledFont(12)
-                        .textCase(.lowercase)
-                        .foregroundStyle(disabled ? Palette.ink2 : Palette.ink)
-                }
-                .frame(minHeight: 46)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .disabled(disabled)
-            .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
+            QuietRow(label: label, disabled: disabled, action: action)
         }
     }
 }

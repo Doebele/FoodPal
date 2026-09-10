@@ -30,6 +30,7 @@ struct EntryDetailView: View {
     /// schriebe das Sichern auf einen Eintrag, den es nicht mehr gibt.
     @State private var deleted = false
     @State private var showPlayground = false
+    @State private var showCamera = false
     @State private var imageExpanded = false
     @State private var showLore = false
 
@@ -102,6 +103,15 @@ struct EntryDetailView: View {
             entry.photo = VisionEstimator.downscaled(image, maxEdge: 900)
             entry.generatedImage = true
         })
+        .fullScreenCover(isPresented: $showCamera) {
+            CameraPicker { image in
+                showCamera = false
+                guard let image else { return }
+                entry.photo = VisionEstimator.downscaled(image, maxEdge: 900)
+                entry.generatedImage = false
+            }
+            .ignoresSafeArea()
+        }
         .confirmationDialog(
             "Eintrag löschen?",
             isPresented: $askDelete,
@@ -148,16 +158,26 @@ struct EntryDetailView: View {
                     .foregroundStyle(Palette.ink)
             }
 
-            // Auch nachtraeglich: ein Eintrag ohne Bild bekommt hier eins,
-            // aus seiner Bezeichnung. Und ein **erzeugtes** Bild laesst sich
-            // ersetzen — ein Foto nicht. Ein Foto ist ein Beleg; was die App
-            // gezeichnet hat, ist eine Merkhilfe und darf neu gezeichnet
-            // werden, wenn der Wurf danebenging.
-            if entry.photo == nil || entry.generatedImage, #available(iOS 18.1, *) {
-                GenerateImageRow(
-                    label: entry.photo == nil ? "Bild erzeugen" : "Neues Bild erzeugen",
-                    disabled: name.isEmpty
-                ) { showPlayground = true }
+            // Auch nachtraeglich: ein Eintrag ohne Bild bekommt hier eins.
+            // Und ein **erzeugtes** Bild laesst sich ersetzen — ein Foto
+            // nicht. Ein Foto ist ein Beleg; was die App gezeichnet hat, ist
+            // eine Merkhilfe und darf neu gezeichnet werden, wenn der Wurf
+            // danebenging.
+            if entry.photo == nil || entry.generatedImage {
+                if entry.kind == .coffee {
+                    // **Kaffee erzeugt nichts.** Jede Sorte bringt ihr Bild
+                    // mit, aufgenommen in einer Regie, die fuer alle 43 gilt.
+                    // Ein gezeichnetes daneben zu setzen hiesse, eine gute
+                    // Aufnahme gegen eine beliebige zu tauschen. Die eigene
+                    // Tasse zu fotografieren ist etwas anderes: das ist ein
+                    // Beleg und darf das Musterbild ersetzen.
+                    QuietRow(label: "Foto aufnehmen") { showCamera = true }
+                } else if #available(iOS 18.1, *) {
+                    GenerateImageRow(
+                        label: entry.photo == nil ? "Bild erzeugen" : "Neues Bild erzeugen",
+                        disabled: name.isEmpty
+                    ) { showPlayground = true }
+                }
             }
         }
     }
