@@ -781,6 +781,32 @@ Die Kapsel ist 51 × 31 wie die eingebaute, ihre Trefferflaeche 44 hoch. Der Kno
 
 `UISupportedInterfaceOrientations` steht auf `UIInterfaceOrientationPortrait`, iPhone wie iPad. Der ganze Entwurf haengt an einer Spalte: der Zeitstrahl ist ein Tag von 24 Stunden in 96 Rasterspalten, die Anzeige benutzt dasselbe Raster, und die Erfassung kommt als Bottom Sheet von unten. Quer waere das Raster entweder gedehnt oder verloren — und ein Layout, das niemand entworfen hat, ist schlechter als eines, das gar nicht erst erscheint.
 
+## Die Bundle-ID trägt keinen Namen
+
+`com.clausmedvesek.kk26` — KK für Kaffee und Kalorien, 26 für das Jahr. Sie
+sagt nicht mehr, wie die App heisst, und das ist der ganze Zweck: die Bundle-ID
+ist die einzige Zeichenkette im Projekt, die sich nicht ohne Preis ändern lässt.
+Hängt sie am Anzeigenamen, kostet jede Namensentscheidung den Datenbestand.
+Hängt sie an nichts, ist der Name frei — er wechselt in `INFOPLIST_KEY_CFBundleDisplayName`
+und sonst nirgends.
+
+Bezahlt wurde der Preis einmal, am 10.9.2026 beim Wechsel von
+`com.clausmedvesek.FoodPal`. iOS sieht eine **andere App**, und mit ihr geht:
+
+| | |
+|---|---|
+| SwiftData | Einträge weg — die Fotos liegen noch vor, daraus lassen sie sich neu erzeugen |
+| UserDefaults | alle Einstellungen zurück auf Werk: Röstung, Ziffernstil, Anbieter, Haptik |
+| Keychain | API-Schlüssel weg. Der Zugriff hängt an `TeamID.bundleID`, nicht am Dienstnamen — eine Umbenennung sperrt sie aus, auch wenn der String mitwandert |
+| HealthKit | bleibt **liegen**. Die alten Samples gehören einer Quelle, die es nicht mehr gibt; die neue App darf sie nicht löschen |
+
+Der HealthKit-Fall ist der einzige, der von Hand aufgeräumt werden muss:
+*Health → Profil → Apps und Dienste → FoodPal → Alle Daten löschen*. Sonst
+stehen die alten Werte für immer neben den neuen in der Tagessumme.
+
+Die alte App bleibt auf dem Gerät liegen, bis sie gelöscht wird — zwei
+verschiedene IDs sind zwei verschiedene Apps.
+
 ## Bewusst weggelassen
 
 - **Ein eigener Scanner-Screen.** Der Barcode-Weg ist gebaut (`VNDetectBarcodesRequest` + Open Food Facts), aber ohne zweite Tür: das Foto, das du ohnehin machst, wird vorher geprüft. Ein Live-Scanner (`DataScannerViewController`) wäre die Nachrüstung, falls sich EANs aus normalem Abstand zu selten lesen lassen — siehe [Nährwertdatenbank](anbieter.md#nährwertdatenbank).
