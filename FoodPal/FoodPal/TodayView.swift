@@ -481,6 +481,13 @@ struct ModeToggle: View {
 
 /// Wählt die Ziffernanzeige nach der Einstellung. Ein `switch`, kein
 /// Protokoll — drei konkrete Views, kein Erweiterungspunkt.
+///
+/// **Und die Stelle, an der der Wert wartet.** Wer einen Kaffee erfasst, sieht
+/// den Wechsel sonst nicht: die Summe steht schon neu, während das Sheet noch
+/// nach unten fährt. Die Bewegung findet hinter einer Fläche statt, die sie
+/// verdeckt. Der Wert hinkt deshalb absichtlich hinterher, bis das Sheet weg
+/// ist — die halbe Sekunde ist kurz genug, dass nichts hängt, und lang genug,
+/// dass man hinschaut, bevor es losgeht.
 struct NumberDisplay: View {
     let value: Int
     let style: NumberStyle
@@ -488,14 +495,46 @@ struct NumberDisplay: View {
     /// Wechselt dieser Schlüssel, nullt die Anzeige, statt weiterzuzählen.
     var resetKey: String = ""
 
+    /// **0,3 s Sheet, 0,5 s Stille.** Nachgemessen an einer Bildschirmaufnahme:
+    /// vom Tippen auf die Kaffeekachel bis zum verschwundenen Sheet vergehen
+    /// rund drei Zehntel. Die halbe Sekunde danach ist der Moment, in dem der
+    /// Blick schon auf der Anzeige liegt und sich noch nichts rührt — und
+    /// genau dort setzt die Bewegung an. Mit 0,5 s insgesamt blieben nur zwei
+    /// Zehntel Stille übrig, und der Aufbau begann, während das Auge noch dem
+    /// Sheet nachsah.
+    private static let delay = Duration.milliseconds(800)
+
+    /// `nil`, solange nichts angezeigt wurde: der erste Wert geht ohne Warten
+    /// durch. Das ist auch der Tageswechsel — jede Seite bringt ihre eigene
+    /// Anzeige mit, und eine frisch erscheinende hat nichts zu verzögern.
+    @State private var held: Int?
+    @State private var heldKey = ""
+
     var body: some View {
-        switch style {
-        case .flip:
-            FlipDisplay(value: value, tint: tint, resetKey: resetKey)
-        case .sevenSegment:
-            SevenSegmentDisplay(value: value, tint: tint, resetKey: resetKey)
-        case .dotMatrix:
-            DotMatrixDisplay(value: value, tint: tint, resetKey: resetKey)
+        let shown = held ?? value
+        Group {
+            switch style {
+            case .flip:
+                FlipDisplay(value: shown, tint: tint, resetKey: resetKey)
+            case .sevenSegment:
+                SevenSegmentDisplay(value: shown, tint: tint, resetKey: resetKey)
+            case .dotMatrix:
+                DotMatrixDisplay(value: shown, tint: tint, resetKey: resetKey)
+            }
+        }
+        .task(id: "\(value)|\(resetKey)") {
+            // Der Moduswechsel geht sofort durch: man hat gerade auf den
+            // Umschalter getippt und schaut die Anzeige an. Warten wäre dort
+            // kein Auftritt, sondern eine Verzögerung.
+            guard held != nil, resetKey == heldKey else {
+                heldKey = resetKey
+                held = value
+                return
+            }
+            guard held != value else { return }
+            try? await Task.sleep(for: Self.delay)
+            guard !Task.isCancelled else { return }
+            held = value
         }
     }
 }

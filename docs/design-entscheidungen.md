@@ -337,6 +337,28 @@ einer Schleife eine Phase hoch, 24 Schritte je Sekunde, und jeder Schritt löst
 eine neue Auswertung aus. Wer einen `Canvas` bewegen will, braucht einen von
 beiden Wegen; `withAnimation` allein ist keiner.
 
+**Der Wert wartet, bis das Sheet weg ist.** Wer einen Kaffee erfasst, sah den
+Wechsel bisher nicht: die Summe stand schon neu, während das Sheet noch nach
+unten fuhr. Die Bewegung fand hinter einer Fläche statt, die sie verdeckt.
+
+`NumberDisplay` hält den Wert deshalb zurück — die Stelle, durch die alle drei
+Ziffernstile laufen, also gilt es für alle drei. Nachgemessen an einer
+Bildschirmaufnahme: vom Tippen auf die Kachel bis zum verschwundenen Sheet
+vergehen rund drei Zehntel. Mit einer halben Sekunde blieben nur zwei Zehntel
+Stille übrig, und der Aufbau begann, während das Auge noch dem Sheet nachsah.
+**0,8 s** ergeben 0,3 s Sheet und 0,5 s Stille davor.
+
+Zwei Ausnahmen, beide aus demselben Grund — gewartet wird nur, wo etwas zu
+verdecken war:
+
+- **Der Moduswechsel geht sofort durch.** Man hat gerade auf kcal oder mg
+  getippt und schaut die Anzeige an; Warten wäre dort kein Auftritt, sondern
+  eine Verzögerung.
+- **Der Tageswechsel auch.** Jede Seite bringt ihre eigene Anzeige mit, und
+  eine frisch erscheinende hat nichts zu verzögern — der erste Wert geht
+  ungebremst durch. Damit klappt beim Wischen nichts um, ohne dass es dafür
+  eine eigene Regel bräuchte.
+
 **Piktogramme nach Otl Aicher.** Massive Flächen, runde Endkappen, nur 0° / 45° / 90°. Durchgehend **Strichstärke 2,4** und **Radius 1,2** auf 24er-Raster (Radius = halbe Strichstärke, also identisch mit dem Kappenradius). Fünf Glyphen: Start, Erfassen, Kaffee, Profil, Einstellungen. Die Tabbar führt vier davon — Profil hat in einer Ein-Personen-App keinen Inhalt.
 
 **Akzent = Röstung.** Sechs wählbare Töne als Figma-Variablen `roast/*`, je mit Light-/Dark-Wert:
