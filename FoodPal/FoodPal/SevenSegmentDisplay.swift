@@ -44,7 +44,7 @@ struct SevenSegmentDigit: View {
     let digit: Int
     var slant: CGFloat = SevenSegmentDisplay.slant
     var lit: Color = Palette.ink
-    var unlit: Color = Palette.ink3
+    var unlit: Color = Palette.segment
 
     /// Reihenfolge a, b, c, d, e, f, g — Maße aus dem Entwurf.
     static let segments: [CGRect] = [

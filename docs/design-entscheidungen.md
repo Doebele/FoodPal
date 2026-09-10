@@ -201,7 +201,11 @@ genauso gut.
 **Kalorienanzeige — drei Darstellungen, in den Einstellungen wählbar.**
 
 1. **Flip** — vier Karten 80 × 112, geteilt bei y = 55 mit 2 pt Fuge, Achsnocken (2 × 10, Radius 2) bei x = 7 und x = 72. Helle Karte, dunkle Ziffer.
-2. **7-Segment** — abgeschrägte Segmentenden, unbeleuchtete Segmente in `Ink3` sichtbar.
+2. **7-Segment** — abgeschrägte Segmentenden, unbeleuchtete Segmente sichtbar, aber in einem **eigenen Ton**: `segment`, hell `#EBEBE2`, dunkel `#1F1F1C` (Figma-Variable `segment`, Node `1:8445`).
+
+   Sie haben ein anderes Problem als die Punkte im Diagramm. Ein Segment ist gross und flächig; in `ink3` stand die ganze Acht als Schatten hinter jeder Ziffer und nahm ihr die Kontur — bei 63 303 musste man hinsehen, um die Zahl von der Geisterreihe zu trennen. Gegen Papier fällt der Ton damit von **1,60 : 1 auf 1,15 : 1**: genug, um die Bauart der Anzeige zu zeigen, zu wenig, um mitgelesen zu werden.
+
+   Keine Frage der Zugänglichkeit — die erloschenen Segmente tragen keine Information. Die leuchtenden stehen unverändert bei 17 : 1.
 3. **Dot-Matrix** — die ganze Fläche ist ein durchgehendes Punktfeld im **Spaltenraster des Tagesdiagramms**: gleichmässige Teilung, also `x(c) = c · 4`, Punkt 3 pt, 96 Spalten × 33 Reihen.
 
    Jede Ziffer ist **20 Spalten breit**, alle gleich — die Anzeige rastert wie ein Zählwerk, nicht wie ein Schriftsatz. Zwischen den Ziffern steht je eine **Trennspalte**; ohne sie stossen zwei Ziffern mit ihren leeren Randspalten aneinander und eine 11 sähe aus wie ein breiter Balken. Die Ziffern stehen **rechtsbündig**, links wird mit leeren Rasterspalten aufgefüllt:

@@ -14,6 +14,18 @@ enum Palette {
     /// Erloschene Punkte im Diagramm — etwas kräftiger als `rule`.
     static let ink3  = dynamic(light: 0xC9C9BD, dark: 0x33332E)
     static let rule  = dynamic(light: 0xE2E2DA, dark: 0x2A2A27)
+    /// Erloschene **Segmente** — eigener Ton, weil sie ein anderes Problem
+    /// haben als die Punkte im Diagramm. Ein Segment ist gross und flaechig;
+    /// in `ink3` steht die ganze Acht als Schatten hinter jeder Ziffer und
+    /// nimmt ihr die Kontur. Gegen Papier faellt der Ton damit von 1,60 : 1
+    /// auf 1,15 : 1 — genug, um die Bauart der Anzeige zu zeigen, zu wenig,
+    /// um mitgelesen zu werden.
+    ///
+    /// Keine Frage der Zugaenglichkeit: die erloschenen Segmente tragen
+    /// keine Information. Die leuchtenden stehen unveraendert bei 17 : 1.
+    ///
+    /// Figma-Variable `segment` (Node `1:8445`).
+    static let segment = dynamic(light: 0xEBEBE2, dark: 0x1F1F1C)
     /// Die Kachel der Getränkeauswahl: Papier, eine Spur zurückgenommen.
     /// Im Entwurf ist es ein radialer Verlauf von Papier nach `rule` bei 20 %
     /// Deckkraft — sichtbar davon ist nur, dass die Kachel nicht ganz Papier
