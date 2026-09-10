@@ -82,3 +82,8 @@ apikeys.json
 
 ## Parallele Design-Erkundung (Figma ist die verbindliche Quelle)
 design/
+
+# Die vier Kandidaten je Kaffeesorte. Sie liegen zum Ansehen im
+# Projektordner, gehoeren aber nicht ins Repository: 35 MB Auswahlmaterial,
+# von dem am Ende ein Viertel in den Asset-Katalog wandert.
+bilder/
