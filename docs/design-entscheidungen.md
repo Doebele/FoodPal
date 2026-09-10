@@ -220,7 +220,28 @@ genauso gut.
 
    Die Glyphen stehen als Lauflängen in `DotMatrixFont.swift`, übertragen aus Figma (Node `101:253908`). Vier Tests prüfen die Unversehrtheit der Tabelle — bei übertragenen Daten fände sich ein Kopierfehler sonst erst am Bildschirm.
 
-   Vier Räder heissen vier Stellen: über 9999 zeigt das Zählwerk 9999.
+   **Vier Räder heissen vier Stellen — und darüber sagt sie es.** Ein fünftes
+   Rad gäbe es nicht: vier Ziffern zu 20 Spalten samt Trennspalten sind exakt
+   die 96 des Zeitstrahls, und dasselbe Raster ist der ganze Grund, warum
+   diese Anzeige so aussieht. Über 9999 steht deshalb ein **Grösser-als** vor
+   den vier Neunen. Über zehntausend hat die genaue Zahl ohnehin aufgehört zu
+   interessieren, und wer sie braucht, stellt auf Flipkarte oder 7-Segment um
+   — die sind Schrift auf einer Fläche und bekommen einfach eine Karte mehr.
+
+   Vorher deckelte sie still: über 9999 zeigte sie 9999 und sagte nicht dazu,
+   dass sie das tut. Nachgesehen an einem Tag mit 63 303 kcal — die beiden
+   anderen Stile zeigten die Zahl, die Dot-Matrix log.
+
+   Das Zeichen passt in die **elf Füllerspalten**, die links ohnehin leer
+   standen: neun für die Glyphe, eine als Trennspalte, eine als Luft. Es ist
+   kürzer als eine Ziffer — 13 Reihen gegen 26, mittig gesetzt; ein
+   Rechenzeichen steht neben Zahlen, nicht unter ihnen.
+
+   Seine Treppe geht **Reihe für Reihe**, nicht in 3×3-Stufen wie die
+   Diagonalen der Ziffern. Bei denen läuft die Schräge über zwölf Reihen und
+   liest sich als Linie; über sechs Reihen wird aus derselben Stufung ein
+   Zickzack, das nach Blitz aussieht statt nach Zeichen. Ausprobiert,
+   angesehen, verworfen.
 
 Ziffern sind **proportional**, nicht monospaced, und ihre Breiten sind Vielfache von 3 — also einer Stundengruppe: `1` = 12 Spalten, `4` = 18, alle übrigen 15. Ziffernabstand 3 Spalten. Höhe 21 Reihen, **Strich 2,7 pt** (feine Fassung).
 

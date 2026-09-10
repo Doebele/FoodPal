@@ -35,7 +35,7 @@ struct DotMatrixDisplay: View {
     /// stattdessen ohne Welle ueberblendet.
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    @State private var shown: [Int] = []
+    @State private var shown: Reading?
     @State private var shownKey = ""
     @State private var sweep: Double = 1
     @State private var settled = 0
@@ -54,20 +54,43 @@ struct DotMatrixDisplay: View {
     /// Rand ueber und unter den Ziffern, in Reihen. Gleich viel auf beiden
     /// Seiten; das ist der ganze Zweck.
     private static let padding = 3
-    /// Ein Zählwerk mit vier Rädern zeigt über 9999 eben 9999.
-    private static let ceiling = 9999
+    /// **Vier Räder, und ein fünftes gibt es nicht.** Vier Ziffern zu zwanzig
+    /// Spalten samt Trennspalten sind exakt die 96 des Zeitstrahls; eine
+    /// fünfte Stelle hiesse ein anderes Raster, und dasselbe Raster ist der
+    /// ganze Grund, warum diese Anzeige so aussieht.
+    ///
+    /// Darüber zeigt sie deshalb nicht die Zahl, sondern die **Aussage**:
+    /// mehr als das. Ein Grösser-als steht links vor den vier Neunen. Über
+    /// zehntausend hat die genaue Zahl ohnehin aufgehört zu interessieren —
+    /// und wer sie braucht, stellt auf Flipkarte oder Sieben-Segment um. Die
+    /// wachsen mit, weil sie Schrift auf einer Fläche sind und kein Raster.
+    ///
+    /// Vorher stand hier eine stille Deckelung: über 9999 zeigte die Anzeige
+    /// 9999 und sagte nicht dazu, dass sie das tut.
+    static let ceiling = 9999
+
+    /// Was auf den Rädern steht, und ob davor ein „mehr als" gehört.
+    struct Reading: Equatable {
+        var digits: [Int]
+        var overflow: Bool
+    }
+
+    static func reading(of value: Int) -> Reading {
+        Reading(digits: digits(of: value), overflow: value > ceiling)
+    }
 
     static let rows = 2 * padding + DotMatrixFont.inkRows.count
     static let naturalHeight = CGFloat(rows) * Grid.pitch - Grid.gap
 
     var body: some View {
-        Matrix(sweep: sweep, target: Self.digits(of: value), shown: shown,
+        Matrix(sweep: sweep, target: Self.reading(of: value),
+               shown: shown ?? Self.reading(of: value),
                fromDark: fromDark, tint: tint)
             .aspectRatio(Grid.naturalWidth / Self.naturalHeight, contentMode: .fit)
             .haptic(trigger: settled)
             .accessibilityLabel("\(value)")
             .task(id: "\(value)|\(resetKey)") {
-                await update(to: Self.digits(of: value), key: resetKey)
+                await update(to: Self.reading(of: value), key: resetKey)
             }
     }
 
@@ -83,8 +106,8 @@ struct DotMatrixDisplay: View {
     /// Bild danebenlag.
     private struct Matrix: View, Animatable {
         var sweep: Double
-        let target: [Int]
-        let shown: [Int]
+        let target: Reading
+        let shown: Reading
         let fromDark: Bool
         let tint: Color
 
@@ -109,7 +132,7 @@ struct DotMatrixDisplay: View {
                             width: d, height: d
                         )
                         let neu = DotMatrixDisplay.isLit(row: row, column: column,
-                                                        digits: target) ? tint : Palette.rule
+                                                        reading: target) ? tint : Palette.rule
                         guard p < 1 else {
                             ctx.fill(Path(rect), with: .color(neu))
                             continue
@@ -118,7 +141,7 @@ struct DotMatrixDisplay: View {
                         // Deckkraft darueber: das ergibt die Ueberblendung,
                         // ohne zwei Farben von Hand zu mischen.
                         let hell = !fromDark && DotMatrixDisplay.isLit(
-                            row: row, column: column, digits: shown)
+                            row: row, column: column, reading: shown)
                         ctx.fill(Path(rect), with: .color(hell ? tint : Palette.rule))
                         if p > 0 { ctx.fill(Path(rect), with: .color(neu.opacity(p))) }
                     }
@@ -141,11 +164,11 @@ struct DotMatrixDisplay: View {
         }
     }
 
-    private func update(to target: [Int], key: String) async {
+    private func update(to target: Reading, key: String) async {
         let previous = shownKey
         shownKey = key
 
-        guard !shown.isEmpty else {
+        guard shown != nil else {
             shown = target
             sweep = 1
             return
@@ -189,12 +212,19 @@ struct DotMatrixDisplay: View {
         return (place, inner)
     }
 
-    fileprivate static func isLit(row: Int, column: Int, digits: [Int]) -> Bool {
+    fileprivate static func isLit(row: Int, column: Int, reading: Reading) -> Bool {
         let glyphRow = row - padding + DotMatrixFont.inkRows.lowerBound
-        guard DotMatrixFont.inkRows.contains(glyphRow),
-              let slot = slot(for: column),
-              slot.place < digits.count else { return false }
-        return DotMatrixFont.glyphs[digits[slot.place]][glyphRow] & (1 << UInt32(slot.inner)) != 0
+        guard DotMatrixFont.inkRows.contains(glyphRow) else { return false }
+        // Links der ersten Ziffer steht im Überlauf das Grösser-als. Die
+        // Spaltennummer ist dort zugleich die Spalte in der Glyphe — sie
+        // beginnt ja am Rand des Feldes.
+        guard let slot = slot(for: column) else {
+            guard reading.overflow, column < leading else { return false }
+            return DotMatrixFont.greater[glyphRow] & (1 << UInt32(column)) != 0
+        }
+        guard slot.place < reading.digits.count else { return false }
+        return DotMatrixFont.glyphs[reading.digits[slot.place]][glyphRow]
+            & (1 << UInt32(slot.inner)) != 0
     }
 }
 
