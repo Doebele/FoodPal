@@ -392,20 +392,33 @@ aufgespreizten Bild erscheint unten rechts ein Info-Zeichen, und ein Tipper
 legt den Text als Glas darüber. Sichtbar wird das erst mit den Bildern — ohne
 Bild gibt es nichts aufzuspreizen.
 
-Die Bilder gehören als `coffee/<sorte>` in den Asset-Katalog; die Namen sind die
-`rawValue` aus `CoffeeInfo` — `espresso`, `ristretto`, `doppio`, `lungo`,
-`americano`, `filter`, `mokka`, `macchiato`, `cortado`, `cappuccino`, `latte`,
-`latteMacchiato`, `flatWhite`, `coldBrew`. Neue Sorten brauchen dort einen Fall
-mehr, samt Zutaten und Satz.
+## Vom Kandidaten zum Asset
 
+Vier Fassungen je Sorte liegen in `bilder/kaffee/` als `sorte-1` bis `sorte-4`.
+Sie sind nicht im Repository — 35 MB Auswahlmaterial, von dem ein Viertel
+bleibt. Gewählt wird von Hand, notiert wird in einer Zeile:
 
-Ein Bild je Sorte, benannt nach der Sorte, in den Asset-Katalog; der
-Eintragsschirm zeigt es dort, wo bei einer Mahlzeit das Foto steht. Damit trägt
-**jeder** Eintrag oben rechts ein Bild — fotografiert oder mitgeliefert — und
-der Weissraum links bleibt, wie er ist.
+```
+python3 tools/kaffeebilder_auswahl.py     # liest tools/kaffeeauswahl.txt
+```
 
-**Offen bleibt der Umfang.** Vierzig Sorten in einem Raster, das heute vierzehn
-trägt und nach Häufigkeit sortiert, wird eine lange Liste. Bevor die neuen
-Sorten Presets werden, braucht es eine Trennung zwischen den paar, die man
-täglich tippt, und dem Rest — sonst kostet der Espresso am Morgen plötzlich
-Scrollen.
+Das Skript legt jede gewählte Datei als `Assets.xcassets/coffee/<name>.imageset`
+ab. Der Name entsteht aus dem Sortennamen: Akzente weg, Leerzeichen weg, alles
+klein — „Caffè Latte" wird `caffelatte`. Die Sortennamen liest es aus
+`Entry.swift`, damit es keine zweite Liste gibt.
+
+**Derselbe Name entsteht zweimal**, einmal in Python beim Ablegen und einmal in
+`CoffeeInfo.fold` beim Suchen. Laufen die beiden Faltungen auseinander, findet
+die App nichts und zeigt es nicht an — ein Fehler, der sich nicht meldet.
+`CoffeeImageTests` prüft deshalb die vier Namen, an denen sie auseinanderlaufen
+könnten: `Caffè Latte`, `Café Bombón`, `Cold Brew Süssrahm` und `Cà phê sữa đá`.
+
+Das `đ` ist der interessante Fall. Es sieht aus wie ein d mit Strich, ist aber
+ein eigener Buchstabe — Foundations `diacriticInsensitive` lässt es deshalb
+stehen, wo es `è` und `ó` glattzieht. Es wird vorher ersetzt, sonst hiesse die
+Datei `caphesuađa`.
+
+**Das Bild hängt am Namen, nicht an der Warenkunde.** Bilder gibt es für alle
+43 Sorten, eine Warenkunde nur für siebzehn: `CoffeeInfo.image(for:)` ist
+deshalb statisch und nimmt einen String, statt an der Aufzählung zu hängen.
+Wer eine Sorte ohne Warenkunde öffnet, sieht das Bild und keine Karte.

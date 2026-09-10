@@ -133,7 +133,11 @@ enum CoffeeInfo: String, CaseIterable {
 
     /// Mitgeliefertes Bild der Sorte, falls es im Katalog liegt. Solange keins
     /// da ist, bleibt der Platz oben leer — wie bei einer Mahlzeit ohne Foto.
-    var image: UIImage? { UIImage(named: "coffee/" + rawValue) }
+    /// Das Bild haengt am **Namen**, nicht an dieser Aufzaehlung: Bilder gibt
+    /// es fuer alle Sorten, eine Warenkunde nur fuer siebzehn.
+    static func image(for name: String) -> UIImage? {
+        UIImage(named: "coffee/" + fold(name))
+    }
 
     /// Schreibweise egal, Akzente egal: „Caffè Latte" und „caffe latte" führen
     /// zur selben Karte.
@@ -142,9 +146,13 @@ enum CoffeeInfo: String, CaseIterable {
         return allCases.first { fold($0.preset) == wanted }
     }
 
+    /// Das `đ` aus „Cà phê sữa đá" ist ein eigener Buchstabe und kein d mit
+    /// Zeichen darauf — die Faltung laesst es stehen. Alles, was danach noch
+    /// nicht ASCII ist, faellt weg: das Ergebnis benennt auch die Bilddatei.
     private static func fold(_ text: String) -> String {
-        text.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
-            .replacingOccurrences(of: " ", with: "")
+        text.replacingOccurrences(of: "đ", with: "d")
+            .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
+            .filter { $0.isASCII && ($0.isLetter || $0.isNumber) }
     }
 
     enum Ingredient {

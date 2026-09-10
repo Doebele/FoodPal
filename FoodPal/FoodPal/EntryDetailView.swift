@@ -202,7 +202,7 @@ struct EntryDetailView: View {
     /// beidem da, bleibt der Platz leer — der Weissraum ist Teil des Satzes.
     private var artwork: UIImage? {
         if let data = entry.photo, let image = UIImage(data: data) { return image }
-        return lore?.image
+        return entry.kind == .coffee ? CoffeeInfo.image(for: entry.name) : nil
     }
 
     @ViewBuilder private var picture: some View {

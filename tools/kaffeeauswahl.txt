@@ -1,0 +1,17 @@
+# Die gewaehlte Fassung je Kaffeesorte. Vier Kandidaten liegen in
+# bilder/kaffee/, hier steht der Gewinner. `python3 tools/kaffeebilder_auswahl.py`
+# legt sie in den Asset-Katalog.
+affogato-1
+americano-4
+barraquito-1
+ca-phe-sua-da-1
+cafe-au-lait-4
+cafe-baileys-4
+cafe-bombon-3
+caffe-latte-4
+caffe-mocha-4
+cappuccino-4
+carajillo-2
+caramel-macchiato-1
+cold-brew-4
+cold-brew-suessrahm-2

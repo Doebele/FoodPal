@@ -47,7 +47,7 @@ Die Bildregie für die Kaffeesorten steht in
 | **Foto** | Kamera oder Fotomediathek, Schätzung durch ein Vision-Modell |
 | **Beschreiben** | Tippen oder Diktieren; „gestern Abend um neun" wird als Zeitpunkt gelesen, mehrere Gerichte werden einzeln erfasst |
 | **Barcode** | wird im Foto automatisch erkannt, Nährwerte von Open Food Facts |
-| **Kaffee** | 14 Sorten, ein Tap; die häufigsten stehen unten, im Daumenbereich |
+| **Kaffee** | 43 Sorten mit Bild, ein Tap; die häufigsten stehen unten, im Daumenbereich, und das Raster lernt sie |
 | **Koffein** | auch aus Mahlzeiten — Cola, Red Bull, Monster, Tee; Werte aus belegten Quellen, nicht vom Modell geraten |
 | **Health** | Kalorien, Koffein und Makros als `HKCorrelation`; Löschen räumt dort mit auf |
 | **Kalender** | Tage mit Einträgen sind markiert |
