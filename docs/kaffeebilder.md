@@ -418,7 +418,9 @@ ein eigener Buchstabe — Foundations `diacriticInsensitive` lässt es deshalb
 stehen, wo es `è` und `ó` glattzieht. Es wird vorher ersetzt, sonst hiesse die
 Datei `caphesuađa`.
 
-**Das Bild hängt am Namen, nicht an der Warenkunde.** Bilder gibt es für alle
-43 Sorten, eine Warenkunde nur für siebzehn: `CoffeeInfo.image(for:)` ist
-deshalb statisch und nimmt einen String, statt an der Aufzählung zu hängen.
-Wer eine Sorte ohne Warenkunde öffnet, sieht das Bild und keine Karte.
+**Das Bild hängt am Namen, nicht an der Warenkunde.** `CoffeeInfo.image(for:)`
+ist statisch und nimmt einen String, statt an der Aufzählung zu hängen — das
+war nötig, solange es Bilder für 43 Sorten gab und Warenkunde für siebzehn.
+Inzwischen decken beide alle 43 ab, aber die Trennung bleibt richtig: eine neue
+Sorte kann ihr Bild schon haben, bevor jemand ihren Text geschrieben hat. Wer
+sie dann öffnet, sieht das Bild und keine Karte.

@@ -328,6 +328,41 @@
         }
       }
     },
+    "Alessandria im Piemont. Der Name meint nicht Marokko, sondern eine Farbe: das hellbraune Ziegenleder, aus dem die Hutfabrik Borsalino am Ort ihre Bänder schnitt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alessandria im Piemont. Der Name meint nicht Marokko, sondern eine Farbe: das hellbraune Ziegenleder, aus dem die Hutfabrik Borsalino am Ort ihre Bänder schnitt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alessandria in Piedmont. The name means not Morocco but a colour: the pale-brown goatskin from which the Borsalino hat factory in town cut its bands."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alessandria, en el Piamonte. El nombre no alude a Marruecos sino a un color: el tafilete claro con que la sombrerería Borsalino, allí mismo, cortaba sus cintas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alessandria, dans le Piémont. Le nom ne désigne pas le Maroc mais une couleur : le maroquin clair dans lequel la chapellerie Borsalino, sur place, taillait ses rubans."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alessandria, in Piemonte. Il nome non indica il Marocco ma un colore: il marocchino chiaro con cui la cappelleria Borsalino, in città, tagliava i suoi nastri."
+          }
+        }
+      }
+    },
     "Analyse": {
       "extractionState": "manual",
       "localizations": {
@@ -853,6 +888,146 @@
         }
       }
     },
+    "Caffè Latte mit Kürbisgewürz — Zimt, Muskat, Ingwer, Nelke. Der Kürbis selbst ist optional und kam erst Jahre nach dem Getränk hinein.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caffè Latte mit Kürbisgewürz — Zimt, Muskat, Ingwer, Nelke. Der Kürbis selbst ist optional und kam erst Jahre nach dem Getränk hinein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A caffè latte with pumpkin spice — cinnamon, nutmeg, ginger, clove. The pumpkin itself is optional and only went in years after the drink."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un caffè latte con especias de calabaza — canela, nuez moscada, jengibre, clavo. La calabaza es opcional y entró años después que la bebida."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un caffè latte à l’épice à citrouille — cannelle, muscade, gingembre, clou de girofle. La citrouille elle-même est facultative et n’est arrivée que des années après la boisson."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un caffè latte con le spezie per la zucca — cannella, noce moscata, zenzero, chiodi di garofano. La zucca è facoltativa ed è entrata solo anni dopo la bevanda."
+          }
+        }
+      }
+    },
+    "Caffè Latte mit Vanillesirup, eingerührt statt aufgesetzt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caffè Latte mit Vanillesirup, eingerührt statt aufgesetzt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A caffè latte with vanilla syrup, stirred in rather than set on top."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un caffè latte con sirope de vainilla, removido en lugar de puesto encima."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un caffè latte au sirop de vanille, mélangé plutôt que posé dessus."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un caffè latte con sciroppo alla vaniglia, mescolato invece che appoggiato sopra."
+          }
+        }
+      }
+    },
+    "Cold Brew mit Stickstoff versetzt und über einen Zapfhahn gezogen. Die feinen Bläschen ergeben eine Schaumkrone und den Eindruck von Süsse, ohne dass Zucker drin wäre. Eis kommt keins dazu: es würde ihn verwässern und den Schaum töten.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold Brew mit Stickstoff versetzt und über einen Zapfhahn gezogen. Die feinen Bläschen ergeben eine Schaumkrone und den Eindruck von Süsse, ohne dass Zucker drin wäre. Eis kommt keins dazu: es würde ihn verwässern und den Schaum töten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold brew charged with nitrogen and pulled from a tap. The fine bubbles give it a crown of foam and an impression of sweetness without any sugar. No ice goes in: it would water it down and kill the foam."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold brew cargado con nitrógeno y tirado de grifo. Las burbujas finas dan una corona de espuma y una impresión de dulzor sin nada de azúcar. Hielo no lleva: lo aguaría y mataría la espuma."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un cold brew chargé d’azote et tiré à la pression. Les fines bulles donnent une couronne de mousse et une impression de douceur sans le moindre sucre. Pas de glace : elle le diluerait et tuerait la mousse."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold brew caricato con azoto e spillato alla spina. Le bollicine fini danno una corona di schiuma e un’impressione di dolcezza senza zucchero. Ghiaccio non ne va: annacquerebbe e ucciderebbe la schiuma."
+          }
+        }
+      }
+    },
+    "Cold Brew über Eis, darauf kalt geschlagener Süssrahm mit Vanille. Er sinkt langsam durch den Kaffee — das Muster gehört zum Getränk.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold Brew über Eis, darauf kalt geschlagener Süssrahm mit Vanille. Er sinkt langsam durch den Kaffee — das Muster gehört zum Getränk."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold brew over ice, topped with cold-whipped sweet cream and vanilla. It sinks slowly through the coffee — the pattern belongs to the drink."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold brew sobre hielo, coronado con nata dulce montada en frío y vainilla. Baja despacio por el café — el dibujo forma parte de la bebida."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un cold brew sur glace, coiffé de crème douce battue à froid et vanillée. Elle descend lentement dans le café — le motif fait partie de la boisson."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold brew sul ghiaccio, sopra panna dolce montata a freddo alla vaniglia. Scende lentamente nel caffè — il disegno fa parte della bevanda."
+          }
+        }
+      }
+    },
     "Das Bild ließ sich nicht aufbereiten.": {
       "extractionState": "manual",
       "localizations": {
@@ -1024,6 +1199,111 @@
           "stringUnit": {
             "state": "translated",
             "value": "La voce verrà eliminata."
+          }
+        }
+      }
+    },
+    "Der Name führt in die Irre: gemeint ist der jemenitische Hafen Mokka und der schokoladige Ton seines Kaffees — nicht die Schokolade, die heute drin ist.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Name führt in die Irre: gemeint ist der jemenitische Hafen Mokka und der schokoladige Ton seines Kaffees — nicht die Schokolade, die heute drin ist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The name misleads: it means the Yemeni port of Mocha and the chocolatey note of its coffee — not the chocolate that is in it today."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El nombre engaña: se refiere al puerto yemení de Moca y a la nota achocolatada de su café — no al chocolate que hoy lleva dentro."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le nom induit en erreur : il désigne le port yéménite de Moka et la note chocolatée de son café — pas le chocolat qu’on y met aujourd’hui."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il nome inganna: indica il porto yemenita di Moka e la nota di cioccolato del suo caffè — non il cioccolato che oggi ci sta dentro."
+          }
+        }
+      }
+    },
+    "Der Phin-Filter steht auf dem Glas und tropft langsam auf gezuckerte Kondensmilch. Umrühren, auf Eis giessen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Phin-Filter steht auf dem Glas und tropft langsam auf gezuckerte Kondensmilch. Umrühren, auf Eis giessen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The phin filter sits on the glass and drips slowly onto sweetened condensed milk. Stir, then pour over ice."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El filtro phin se apoya en el vaso y gotea despacio sobre leche condensada azucarada. Remover y verter sobre hielo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le filtre phin est posé sur le verre et goutte lentement sur du lait concentré sucré. Mélanger, puis verser sur de la glace."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il filtro phin sta sul bicchiere e gocciola lentamente sul latte condensato zuccherato. Mescolare, poi versare sul ghiaccio."
+          }
+        }
+      }
+    },
+    "Der Standardkaffee der Schweiz. „Schümli“ heisst er nach seiner Crema, und das Crème im Namen meint den Kaffeerahm, der danebensteht — nicht die Krone.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Standardkaffee der Schweiz. „Schümli“ heisst er nach seiner Crema, und das Crème im Namen meint den Kaffeerahm, der danebensteht — nicht die Krone."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switzerland’s standard coffee. It is called Schümli after its crema, and the Crème in the name refers to the pot of coffee cream served beside it — not to the crown."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El café estándar de Suiza. Lo llaman «Schümli» por su crema, y el «Crème» del nombre se refiere a la nata para café que se sirve al lado — no a la corona."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le café standard de la Suisse. On l’appelle « Schümli » d’après sa crema, et le « Crème » du nom désigne la crème à café servie à côté — pas la couronne."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il caffè standard della Svizzera. Lo chiamano «Schümli» per la sua crema, e il «Crème» del nome indica la panna da caffè servita accanto — non la corona."
           }
         }
       }
@@ -1308,6 +1588,41 @@
         }
       }
     },
+    "Doppelter Espresso, mit Eis im Shaker kalt geschüttelt und über frisches Eis abgegossen. Das Schütteln kühlt ihn und macht ihn cremig.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doppelter Espresso, mit Eis im Shaker kalt geschüttelt und über frisches Eis abgegossen. Das Schütteln kühlt ihn und macht ihn cremig."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A double espresso shaken cold with ice and poured over fresh ice. The shaking chills it and makes it creamy."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un espresso doble agitado en frío con hielo y vertido sobre hielo nuevo. El agitado lo enfría y lo vuelve cremoso."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un double expresso secoué à froid avec de la glace et versé sur de la glace fraîche. Le shaker le refroidit et le rend crémeux."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un doppio espresso agitato a freddo con ghiaccio e versato su ghiaccio fresco. Agitare lo raffredda e lo rende cremoso."
+          }
+        }
+      }
+    },
     "Doppelter Ristretto mit feinporigem Mikroschaum, flach eingegossen. Stärker als der Cappuccino und ohne Schaumhaube.": {
       "extractionState": "manual",
       "localizations": {
@@ -1518,6 +1833,146 @@
         }
       }
     },
+    "Ein kleiner Mokka im Henkelglas, darauf eine dicke Haube Schlagobers. Der Rahm hält den Kaffee warm und hält ihn beim Fahren im Glas.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein kleiner Mokka im Henkelglas, darauf eine dicke Haube Schlagobers. Der Rahm hält den Kaffee warm und hält ihn beim Fahren im Glas."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A small mokka in a handled glass under a thick cap of whipped cream. The cream keeps the coffee hot and keeps it in the glass while driving."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un moka pequeño en un vaso con asa bajo una gruesa capa de nata montada. La nata mantiene el café caliente y lo mantiene dentro del vaso durante el trayecto."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un petit moka dans un verre à anse sous une épaisse coiffe de crème fouettée. La crème garde le café chaud et le garde dans le verre pendant la course."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un piccolo moka in un bicchiere con manico sotto una spessa cupola di panna montata. La panna tiene caldo il caffè e lo tiene nel bicchiere durante la corsa."
+          }
+        }
+      }
+    },
+    "Ein verlängerter Espresso und gleich viel warme Milch, obenauf eine feine Schaumhaube. Der Unterschied zum Cappuccino ist das Verhältnis: dort mehr Schaum als Kaffee, hier eins zu eins.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein verlängerter Espresso und gleich viel warme Milch, obenauf eine feine Schaumhaube. Der Unterschied zum Cappuccino ist das Verhältnis: dort mehr Schaum als Kaffee, hier eins zu eins."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A lengthened espresso and the same amount of warm milk, with a fine cap of foam. The difference from a cappuccino is the ratio: there, more foam than coffee; here, one to one."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un espresso alargado y otro tanto de leche caliente, con una fina capa de espuma. La diferencia con el capuchino es la proporción: allí más espuma que café, aquí uno a uno."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un expresso allongé et autant de lait chaud, coiffé d’une fine mousse. La différence avec le cappuccino tient au rapport : là plus de mousse que de café, ici un pour un."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un espresso lungo e altrettanto latte caldo, con un fine cappello di schiuma. La differenza dal cappuccino è il rapporto: lì più schiuma che caffè, qui uno a uno."
+          }
+        }
+      }
+    },
+    "Eine Kugel Vanilleeis, ein heisser Espresso darüber. „Affogato“ heisst ertränkt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Kugel Vanilleeis, ein heisser Espresso darüber. „Affogato“ heisst ertränkt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A scoop of vanilla ice cream, a hot espresso poured over it. “Affogato” means drowned."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una bola de helado de vainilla, un espresso caliente por encima. «Affogato» significa ahogado."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une boule de glace vanille, un expresso brûlant versé dessus. « Affogato » veut dire noyé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una pallina di gelato alla vaniglia, un espresso bollente versato sopra. «Affogato» vuol dire annegato."
+          }
+        }
+      }
+    },
+    "Eine Starbucks-Erfindung von 2016, inzwischen überall auf der Karte.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Starbucks-Erfindung von 2016, inzwischen überall auf der Karte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A Starbucks invention from 2016, now on every menu."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una invención de Starbucks de 2016, hoy en todas las cartas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une invention de Starbucks de 2016, aujourd’hui sur toutes les cartes."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un’invenzione Starbucks del 2016, oggi su ogni carta."
+          }
+        }
+      }
+    },
     "Einstellungen": {
       "extractionState": "manual",
       "localizations": {
@@ -1693,6 +2148,41 @@
         }
       }
     },
+    "Eis ins Glas, Tonic darüber, zuletzt der Espresso über den Löffelrücken. Umgekehrt reisst die Kohlensäure die Schichten sofort auseinander.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eis ins Glas, Tonic darüber, zuletzt der Espresso über den Löffelrücken. Umgekehrt reisst die Kohlensäure die Schichten sofort auseinander."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ice in the glass, tonic over it, the espresso last over the back of a spoon. The other way round, the carbonation tears the layers apart at once."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hielo en el vaso, tónica encima, el espresso al final sobre el dorso de una cuchara. Al revés, el gas rompe las capas de inmediato."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De la glace dans le verre, le tonic par-dessus, l’expresso en dernier sur le dos d’une cuillère. Dans l’autre sens, le gaz déchire aussitôt les couches."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghiaccio nel bicchiere, tonica sopra, l’espresso per ultimo sul dorso del cucchiaio. Al contrario, l’anidride carbonica strappa subito gli strati."
+          }
+        }
+      }
+    },
     "Erfassen": {
       "extractionState": "manual",
       "localizations": {
@@ -1798,6 +2288,76 @@
         }
       }
     },
+    "Espresso auf Schokoladensauce, mit warmer Milch aufgefüllt, meist mit Schlagrahm obenauf.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso auf Schokoladensauce, mit warmer Milch aufgefüllt, meist mit Schlagrahm obenauf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso onto chocolate sauce, topped up with warm milk, usually with whipped cream on top."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso sobre salsa de chocolate, completado con leche caliente, casi siempre con nata montada encima."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’expresso sur une sauce au chocolat, complété de lait chaud, le plus souvent avec de la crème fouettée dessus."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso su salsa al cioccolato, completato con latte caldo, di solito con panna montata sopra."
+          }
+        }
+      }
+    },
+    "Espresso auf kalte Milch und Eis. Heiss auf kalt bleibt geschichtet, bis man rührt — das ist kein Fehler, sondern die Reihenfolge.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso auf kalte Milch und Eis. Heiss auf kalt bleibt geschichtet, bis man rührt — das ist kein Fehler, sondern die Reihenfolge."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso onto cold milk and ice. Hot on cold stays layered until you stir — that is not a fault, it is the order."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso sobre leche fría y hielo. Lo caliente sobre lo frío queda en capas hasta que se remueve — no es un fallo, es el orden."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’expresso sur du lait froid et de la glace. Le chaud sur le froid reste en couches jusqu’à ce qu’on remue — ce n’est pas un défaut, c’est l’ordre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso su latte freddo e ghiaccio. Il caldo sul freddo resta a strati finché non si mescola — non è un difetto, è l’ordine."
+          }
+        }
+      }
+    },
     "Espresso in viel warmer Milch, obenauf ein dünner Schaum.": {
       "extractionState": "manual",
       "localizations": {
@@ -1829,6 +2389,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "Espresso in molto latte caldo, sopra un velo di schiuma."
+          }
+        }
+      }
+    },
+    "Espresso mit einem Schuss Weinbrand. In Mexiko stattdessen Licor 43, kalt über Eis geschüttelt — dasselbe Wort, ein anderes Getränk.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso mit einem Schuss Weinbrand. In Mexiko stattdessen Licor 43, kalt über Eis geschüttelt — dasselbe Wort, ein anderes Getränk."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso with a shot of brandy. In Mexico it takes Licor 43 instead, shaken cold over ice — the same word, a different drink."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso con un chorro de brandy. En México, en cambio, Licor 43, agitado en frío sobre hielo — la misma palabra, otra bebida."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un expresso avec un trait d’eau-de-vie. Au Mexique, c’est du Licor 43, secoué froid sur glace — le même mot, une autre boisson."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso con un goccio di brandy. In Messico invece Licor 43, agitato freddo sul ghiaccio — la stessa parola, un’altra bevanda."
+          }
+        }
+      }
+    },
+    "Espresso, kaltes Wasser, Eis. Ohne Milch steht die Säure vorn, deshalb schmeckt er kalt schärfer als heiss.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso, kaltes Wasser, Eis. Ohne Milch steht die Säure vorn, deshalb schmeckt er kalt schärfer als heiss."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso, cold water, ice. Without milk the acidity comes forward, which is why it tastes sharper cold than hot."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso, agua fría, hielo. Sin leche la acidez pasa al frente, por eso frío sabe más afilado que caliente."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expresso, eau froide, glace. Sans lait l’acidité passe devant, c’est pourquoi il est plus vif froid que chaud."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso, acqua fredda, ghiaccio. Senza latte l’acidità viene avanti, per questo freddo è più tagliente che caldo."
           }
         }
       }
@@ -1973,6 +2603,41 @@
         }
       }
     },
+    "Filterkaffee und heisse Milch zu gleichen Teilen, beides zugleich in die Schale gegossen. Kein Schaum, keine Haube.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filterkaffee und heisse Milch zu gleichen Teilen, beides zugleich in die Schale gegossen. Kein Schaum, keine Haube."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filter coffee and hot milk in equal parts, both poured into the bowl at once. No foam, no cap."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Café de filtro y leche caliente a partes iguales, vertidos a la vez en el tazón. Sin espuma, sin capa."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Café filtre et lait chaud à parts égales, versés ensemble dans le bol. Pas de mousse, pas de chapeau."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caffè filtro e latte caldo in parti uguali, versati insieme nella scodella. Niente schiuma, niente cappello."
+          }
+        }
+      }
+    },
     "Foto aufnehmen": {
       "extractionState": "manual",
       "localizations": {
@@ -2008,6 +2673,76 @@
         }
       }
     },
+    "Foynes, Irland, 1943. Der Küchenchef Joe Sheridan wärmte damit gestrandete Flugpassagiere auf; auf die Frage, ob das brasilianischer Kaffee sei, soll er geantwortet haben, es sei irischer.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foynes, Irland, 1943. Der Küchenchef Joe Sheridan wärmte damit gestrandete Flugpassagiere auf; auf die Frage, ob das brasilianischer Kaffee sei, soll er geantwortet haben, es sei irischer."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foynes, Ireland, 1943. The chef Joe Sheridan warmed up stranded air passengers with it; asked whether it was Brazilian coffee, he is said to have replied that it was Irish."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foynes, Irlanda, 1943. El cocinero Joe Sheridan calentaba con él a los pasajeros varados; a quien preguntó si era café brasileño, se dice que respondió que era irlandés."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foynes, Irlande, 1943. Le chef Joe Sheridan en réchauffait des passagers aériens bloqués ; à qui lui demandait si c’était du café brésilien, il aurait répondu que c’était de l’irlandais."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foynes, Irlanda, 1943. Lo chef Joe Sheridan ci scaldava i passeggeri rimasti a terra; a chi chiedeva se fosse caffè brasiliano, avrebbe risposto che era irlandese."
+          }
+        }
+      }
+    },
+    "Frankreich, zum Frühstück, in der Schale ohne Henkel — gross genug, um das Croissant hineinzutauchen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frankreich, zum Frühstück, in der Schale ohne Henkel — gross genug, um das Croissant hineinzutauchen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "France, at breakfast, in a bowl without a handle — big enough to dip the croissant in."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Francia, en el desayuno, en un tazón sin asa — lo bastante grande para mojar el cruasán."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "France, au petit-déjeuner, dans un bol sans anse — assez grand pour y tremper le croissant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Francia, a colazione, nella scodella senza manico — abbastanza grande da inzuppare il croissant."
+          }
+        }
+      }
+    },
     "Französisch": {
       "extractionState": "manual",
       "localizations": {
@@ -2039,6 +2774,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Francese"
+          }
+        }
+      }
+    },
+    "Freddo Espresso, darauf kalt geschäumte Milch — auf Griechisch afrogala. Sie darf nicht warm werden, sonst fällt sie zusammen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Freddo Espresso, darauf kalt geschäumte Milch — auf Griechisch afrogala. Sie darf nicht warm werden, sonst fällt sie zusammen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A freddo espresso topped with cold-frothed milk — afrogala in Greek. It must not warm up, or it collapses."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un freddo espresso coronado con leche espumada en frío — afrogala en griego. No debe calentarse, o se desmorona."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un freddo espresso coiffé de lait moussé à froid — afrogala en grec. Il ne doit pas se réchauffer, sinon il retombe."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un freddo espresso con sopra latte montato a freddo — in greco afrogala. Non deve scaldarsi, altrimenti si affloscia."
           }
         }
       }
@@ -2148,6 +2918,41 @@
         }
       }
     },
+    "Geschmolzene Schokolade im kleinen Glas verstrichen, Espresso darauf, Milchschaum darüber, Kakao obenauf.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geschmolzene Schokolade im kleinen Glas verstrichen, Espresso darauf, Milchschaum darüber, Kakao obenauf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melted chocolate smeared inside a small glass, espresso onto it, milk foam over that, cocoa on top."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chocolate fundido untado en el vaso pequeño, el espresso encima, la espuma de leche después, el cacao al final."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du chocolat fondu étalé dans un petit verre, l’expresso par-dessus, la mousse de lait ensuite, le cacao pour finir."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cioccolato fuso spalmato nel bicchierino, l’espresso sopra, la schiuma di latte ancora sopra, il cacao a finire."
+          }
+        }
+      }
+    },
     "Geschätzt wird von %@.": {
       "extractionState": "manual",
       "localizations": {
@@ -2249,6 +3054,111 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ieri alle nove una piccola zuppa di ramen con cipollotto e tre fette sottili di baguette con burro"
+          }
+        }
+      }
+    },
+    "Gezuckerte Kondensmilch ins Glas, Espresso vorsichtig darüber. Gleiche Teile, zwei Schichten — man sieht die Grenze.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gezuckerte Kondensmilch ins Glas, Espresso vorsichtig darüber. Gleiche Teile, zwei Schichten — man sieht die Grenze."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sweetened condensed milk into the glass, espresso carefully over it. Equal parts, two layers — you can see the line."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leche condensada azucarada en el vaso, el espresso con cuidado encima. A partes iguales, dos capas — la línea se ve."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du lait concentré sucré dans le verre, l’expresso versé doucement dessus. À parts égales, deux couches — la limite se voit."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Latte condensato zuccherato nel bicchiere, espresso versato con cura sopra. Parti uguali, due strati — il confine si vede."
+          }
+        }
+      }
+    },
+    "Griechenland, frühe 1990er. Anders als der Frappé aus echtem Espresso — das ist der ganze Unterschied und der ganze Streit.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Griechenland, frühe 1990er. Anders als der Frappé aus echtem Espresso — das ist der ganze Unterschied und der ganze Streit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Greece, early 1990s. Unlike the frappé, made from real espresso — that is the whole difference and the whole argument."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grecia, principios de los noventa. A diferencia del frappé, con espresso de verdad — ahí está toda la diferencia y toda la discusión."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grèce, début des années 1990. Contrairement au frappé, à base de vrai expresso — c’est toute la différence et toute la querelle."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grecia, primi anni Novanta. A differenza del frappé, con vero espresso — è tutta la differenza e tutta la disputa."
+          }
+        }
+      }
+    },
+    "Griechenland, und heute das meistgetrunkene kalte Kaffeegetränk des Landes.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Griechenland, und heute das meistgetrunkene kalte Kaffeegetränk des Landes."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Greece, and today the country’s most-drunk cold coffee."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grecia, y hoy el café frío más bebido del país."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grèce, et aujourd’hui le café froid le plus bu du pays."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grecia, e oggi il caffè freddo più bevuto del paese."
           }
         }
       }
@@ -2533,6 +3443,76 @@
         }
       }
     },
+    "Instantkaffee": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instantkaffee"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instant coffee"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Café instantáneo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Café instantané"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caffè istantaneo"
+          }
+        }
+      }
+    },
+    "Instantkaffee, wenig Wasser und Zucker im Shaker schaumig schütteln, dann Eis und kaltes Wasser dazu. Der Schaum hält, weil Instantpulver anders schäumt als gebrühter Kaffee.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instantkaffee, wenig Wasser und Zucker im Shaker schaumig schütteln, dann Eis und kaltes Wasser dazu. Der Schaum hält, weil Instantpulver anders schäumt als gebrühter Kaffee."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shake instant coffee, a little water and sugar in a shaker until foamy, then add ice and cold water. The foam holds because instant powder foams differently from brewed coffee."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agitar café instantáneo, poca agua y azúcar en la coctelera hasta que espume, luego añadir hielo y agua fría. La espuma aguanta porque el polvo instantáneo espuma distinto al café de infusión."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secouer du café instantané, un peu d’eau et du sucre au shaker jusqu’à la mousse, puis ajouter glace et eau froide. La mousse tient parce que la poudre instantanée ne mousse pas comme le café infusé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agitare caffè istantaneo, poca acqua e zucchero nello shaker fino a farlo schiumare, poi aggiungere ghiaccio e acqua fredda. La schiuma regge perché la polvere istantanea schiuma diversamente dal caffè in infusione."
+          }
+        }
+      }
+    },
     "Irish Cream": {
       "extractionState": "manual",
       "localizations": {
@@ -2564,6 +3544,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Crema irlandese"
+          }
+        }
+      }
+    },
+    "Italien — und dort kein Kaffee, sondern ein Dessert. Er steht bei den Süssspeisen auf der Karte.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italien — und dort kein Kaffee, sondern ein Dessert. Er steht bei den Süssspeisen auf der Karte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italy — and there it is not a coffee but a dessert. It sits among the sweets on the menu."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia — y allí no es un café sino un postre. Figura entre los dulces de la carta."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italie — et là-bas ce n’est pas un café mais un dessert. Il figure parmi les douceurs sur la carte."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia — e lì non è un caffè ma un dolce. Sta tra i dessert in carta."
           }
         }
       }
@@ -2848,6 +3863,41 @@
         }
       }
     },
+    "Kaffee und heisse Milch zu gleichen Teilen. Wer sie heller mag, bestellt eine Schale Gold — benannt nach der Farbe, nicht nach der Menge.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaffee und heisse Milch zu gleichen Teilen. Wer sie heller mag, bestellt eine Schale Gold — benannt nach der Farbe, nicht nach der Menge."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coffee and hot milk in equal parts. If you like it paler, you order a Schale Gold — named after the colour, not the quantity."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Café y leche caliente a partes iguales. Quien la prefiere más clara pide una «Schale Gold» — por el color, no por la cantidad."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Café et lait chaud à parts égales. Qui la préfère plus claire commande une « Schale Gold » — nommée d’après la couleur, pas la quantité."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caffè e latte caldo in parti uguali. Chi la preferisce più chiara ordina una «Schale Gold» — dal colore, non dalla quantità."
+          }
+        }
+      }
+    },
     "Kalorien · Koffein · Makros": {
       "extractionState": "manual",
       "localizations": {
@@ -2883,6 +3933,41 @@
         }
       }
     },
+    "Karamell": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karamell"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caramel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caramelo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caramel"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caramello"
+          }
+        }
+      }
+    },
     "Kein API-Schlüssel hinterlegt.": {
       "extractionState": "manual",
       "localizations": {
@@ -2914,6 +3999,111 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuna chiave API impostata."
+          }
+        }
+      }
+    },
+    "Kuba unter spanischer Herrschaft: die Truppe mischte Rum in den Kaffee, für den Mut — spanisch coraje. Aus corajillo wurde carajillo.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kuba unter spanischer Herrschaft: die Truppe mischte Rum in den Kaffee, für den Mut — spanisch coraje. Aus corajillo wurde carajillo."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuba under Spanish rule: the troops mixed rum into their coffee for courage — coraje in Spanish. Corajillo became carajillo."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuba bajo dominio español: la tropa mezclaba ron en el café para darse coraje. De corajillo salió carajillo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuba sous domination espagnole : la troupe mêlait du rhum au café pour le courage — coraje en espagnol. De corajillo est venu carajillo."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuba sotto dominio spagnolo: la truppa mescolava rum nel caffè per il coraggio — coraje in spagnolo. Da corajillo è venuto carajillo."
+          }
+        }
+      }
+    },
+    "Kürbisgewürz": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kürbisgewürz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pumpkin spice"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Especias de calabaza"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Épice à citrouille"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spezie per la zucca"
+          }
+        }
+      }
+    },
+    "Likör": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Likör"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liqueur"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licor"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liqueur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liquore"
           }
         }
       }
@@ -3583,6 +4773,41 @@
         }
       }
     },
+    "Osmanisch, seit dem 16. Jahrhundert. Die Zubereitung steht seit 2013 auf der Unesco-Liste des immateriellen Kulturerbes.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Osmanisch, seit dem 16. Jahrhundert. Die Zubereitung steht seit 2013 auf der Unesco-Liste des immateriellen Kulturerbes."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ottoman, since the 16th century. The preparation has been on the Unesco list of intangible cultural heritage since 2013."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otomano, desde el siglo XVI. La preparación está desde 2013 en la lista de la Unesco del patrimonio cultural inmaterial."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ottoman, depuis le XVIe siècle. La préparation figure depuis 2013 sur la liste du patrimoine culturel immatériel de l’Unesco."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ottomano, dal Cinquecento. La preparazione è dal 2013 nella lista Unesco del patrimonio culturale immateriale."
+          }
+        }
+      }
+    },
     "Prüfe …": {
       "extractionState": "manual",
       "localizations": {
@@ -3614,6 +4839,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verifica …"
+          }
+        }
+      }
+    },
+    "Rund 120 ml in 25 bis 30 Sekunden durch 17 g gröber gemahlenes Pulver — ein einziger Durchlauf und kein verlängerter Espresso. Rahm und Zucker kommen daneben, nicht hinein.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rund 120 ml in 25 bis 30 Sekunden durch 17 g gröber gemahlenes Pulver — ein einziger Durchlauf und kein verlängerter Espresso. Rahm und Zucker kommen daneben, nicht hinein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Around 120 ml in 25 to 30 seconds through 17 g of coarser grounds — one single pull, not a lengthened espresso. Cream and sugar come alongside, not in it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unos 120 ml en 25 a 30 segundos a través de 17 g de molienda más gruesa — una sola extracción, no un espresso alargado. La nata y el azúcar se sirven al lado, no dentro."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Environ 120 ml en 25 à 30 secondes à travers 17 g de mouture plus grossière — un seul passage, pas un expresso allongé. La crème et le sucre arrivent à côté, pas dedans."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Circa 120 ml in 25-30 secondi attraverso 17 g di macinato più grosso — una sola estrazione, non un espresso allungato. Panna e zucchero arrivano a parte, non dentro."
           }
         }
       }
@@ -3688,6 +4948,41 @@
         }
       }
     },
+    "Schokolade": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schokolade"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chocolate"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chocolate"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chocolat"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cioccolato"
+          }
+        }
+      }
+    },
     "Schreibt": {
       "extractionState": "manual",
       "localizations": {
@@ -3719,6 +5014,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scrive"
+          }
+        }
+      }
+    },
+    "Schweiz, benannt nach dem Gefäss: früher stand er in einer Schale auf dem Tisch, heute in der Tasse mit Henkel. Die Steigerung lautet Espresso, Café Crème, Doppel-Crème, Schale.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schweiz, benannt nach dem Gefäss: früher stand er in einer Schale auf dem Tisch, heute in der Tasse mit Henkel. Die Steigerung lautet Espresso, Café Crème, Doppel-Crème, Schale."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switzerland, named after the vessel: it used to come to the table in a bowl, today in a cup with a handle. The scale runs espresso, café crème, double crème, Schale."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suiza, por el recipiente: antes llegaba a la mesa en un cuenco, hoy en una taza con asa. La escala va del espresso al café crème, al doble crème y a la Schale."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suisse, nommée d’après le récipient : autrefois servie dans un bol, aujourd’hui dans une tasse à anse. L’échelle va de l’expresso au café crème, au double crème, puis à la Schale."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svizzera, dal recipiente: un tempo arrivava in tavola in una scodella, oggi in una tazza con manico. La scala è espresso, café crème, doppio crème, Schale."
           }
         }
       }
@@ -3828,6 +5158,41 @@
         }
       }
     },
+    "Sechs Schichten von unten: gezuckerte Kondensmilch, Licor 43, Espresso über den Löffelrücken, Milchschaum, Zimt, Zitronenschale. Gerührt wird erst am Tisch.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sechs Schichten von unten: gezuckerte Kondensmilch, Licor 43, Espresso über den Löffelrücken, Milchschaum, Zimt, Zitronenschale. Gerührt wird erst am Tisch."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Six layers from the bottom: sweetened condensed milk, Licor 43, espresso over the back of a spoon, milk foam, cinnamon, lemon zest. It is stirred only at the table."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seis capas desde abajo: leche condensada azucarada, Licor 43, espresso sobre el dorso de una cuchara, espuma de leche, canela, piel de limón. Se remueve sólo en la mesa."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Six couches en partant du bas : lait concentré sucré, Licor 43, expresso sur le dos d’une cuillère, mousse de lait, cannelle, zeste de citron. On ne mélange qu’à table."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sei strati dal basso: latte condensato zuccherato, Licor 43, espresso sul dorso del cucchiaio, schiuma di latte, cannella, scorza di limone. Si mescola solo a tavola."
+          }
+        }
+      }
+    },
     "Sichern": {
       "extractionState": "manual",
       "localizations": {
@@ -3859,6 +5224,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Salva"
+          }
+        }
+      }
+    },
+    "Skandinavien, 2000er-Jahre, dem schwedischen Röster Koppi zugeschrieben. Die Bitterkeit des Chinins und die Säure des Kaffees ziehen in dieselbe Richtung.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skandinavien, 2000er-Jahre, dem schwedischen Röster Koppi zugeschrieben. Die Bitterkeit des Chinins und die Säure des Kaffees ziehen in dieselbe Richtung."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scandinavia, the 2000s, credited to the Swedish roaster Koppi. The bitterness of the quinine and the acidity of the coffee pull in the same direction."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escandinavia, años dos mil, atribuido al tostador sueco Koppi. El amargor de la quinina y la acidez del café tiran en la misma dirección."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scandinavie, années 2000, attribué au torréfacteur suédois Koppi. L’amertume de la quinine et l’acidité du café tirent dans le même sens."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scandinavia, anni Duemila, attribuito al torrefattore svedese Koppi. L’amaro del chinino e l’acidità del caffè tirano nella stessa direzione."
           }
         }
       }
@@ -4003,6 +5403,146 @@
         }
       }
     },
+    "Starbucks, 1996. Mit dem Macchiato aus der italienischen Bar teilt er nur den Namen: dort wird die Milch in den Espresso gegeben, hier der Espresso auf die Milch.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starbucks, 1996. Mit dem Macchiato aus der italienischen Bar teilt er nur den Namen: dort wird die Milch in den Espresso gegeben, hier der Espresso auf die Milch."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starbucks, 1996. It shares only the name with the macchiato of the Italian bar: there the milk goes into the espresso, here the espresso goes onto the milk."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starbucks, 1996. Del macchiato del bar italiano sólo comparte el nombre: allí la leche va al espresso, aquí el espresso va sobre la leche."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starbucks, 1996. Il ne partage que le nom avec le macchiato du bar italien : là-bas le lait va dans l’expresso, ici l’expresso va sur le lait."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starbucks, 1996. Del macchiato del bar italiano ha solo il nome: lì il latte va nell’espresso, qui l’espresso va sul latte."
+          }
+        }
+      }
+    },
+    "Starbucks, 2003. In den USA läutet er den Herbst ein, ungefähr so verlässlich wie der Kalender.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starbucks, 2003. In den USA läutet er den Herbst ein, ungefähr so verlässlich wie der Kalender."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starbucks, 2003. In the USA it announces autumn about as reliably as the calendar."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starbucks, 2003. En Estados Unidos anuncia el otoño con la fiabilidad del calendario."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starbucks, 2003. Aux États-Unis, il annonce l’automne à peu près aussi sûrement que le calendrier."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starbucks, 2003. Negli Stati Uniti annuncia l’autunno con l’affidabilità del calendario."
+          }
+        }
+      }
+    },
+    "Staubfein gemahlen, mit Wasser und Zucker im Cezve langsam aufgeschäumt und nicht gekocht. Ungefiltert eingeschenkt: der Satz bleibt in der Tasse stehen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Staubfein gemahlen, mit Wasser und Zucker im Cezve langsam aufgeschäumt und nicht gekocht. Ungefiltert eingeschenkt: der Satz bleibt in der Tasse stehen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ground to dust, foamed slowly with water and sugar in a cezve and never boiled. Poured unfiltered: the grounds stay behind in the cup."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Molido a polvo, espumado despacio con agua y azúcar en un cezve, sin llegar a hervir. Servido sin filtrar: el poso se queda en la taza."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moulu en poussière, monté lentement en mousse avec eau et sucre dans un cezve, sans jamais bouillir. Versé non filtré : le marc reste au fond de la tasse."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Macinato finissimo, fatto schiumare lentamente con acqua e zucchero nel cezve, senza mai bollire. Versato non filtrato: la posa resta nella tazza."
+          }
+        }
+      }
+    },
+    "Stickstoff": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stickstoff"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nitrogen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nitrógeno"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azote"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azoto"
+          }
+        }
+      }
+    },
     "Sync": {
       "extractionState": "manual",
       "localizations": {
@@ -4034,6 +5574,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sincronizza"
+          }
+        }
+      }
+    },
+    "Süssrahm": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Süssrahm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sweet cream"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nata dulce"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crème douce"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Panna dolce"
           }
         }
       }
@@ -4108,6 +5683,146 @@
         }
       }
     },
+    "Teneriffa, benannt nach einem Stammgast: Sebastián, genannt „el Barraco“, bestellte ihn immer genau so.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teneriffa, benannt nach einem Stammgast: Sebastián, genannt „el Barraco“, bestellte ihn immer genau so."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tenerife, named after a regular: Sebastián, called “el Barraco”, always ordered it exactly like this."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tenerife, por el nombre de un cliente habitual: Sebastián, «el Barraco», lo pedía siempre exactamente así."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tenerife, du nom d’un habitué : Sebastián, dit « el Barraco », le commandait toujours exactement ainsi."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tenerife, dal nome di un cliente abituale: Sebastián, detto «el Barraco», lo ordinava sempre proprio così."
+          }
+        }
+      }
+    },
+    "Thessaloniki, Messe 1957: ein Nestlé-Mitarbeiter fand kein heisses Wasser, griff zum Shaker vom Nachbarstand und schüttelte seinen Nescafé kalt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thessaloniki, Messe 1957: ein Nestlé-Mitarbeiter fand kein heisses Wasser, griff zum Shaker vom Nachbarstand und schüttelte seinen Nescafé kalt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thessaloniki, trade fair 1957: a Nestlé employee found no hot water, grabbed the shaker from the neighbouring stand and shook his Nescafé cold."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salónica, feria de 1957: un empleado de Nestlé no encontró agua caliente, cogió la coctelera del estand vecino y agitó su Nescafé en frío."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thessalonique, foire de 1957 : un employé de Nestlé, faute d’eau chaude, a pris le shaker du stand voisin et secoué son Nescafé à froid."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salonicco, fiera del 1957: un dipendente Nestlé non trovò acqua calda, prese lo shaker dello stand accanto e agitò il suo Nescafé a freddo."
+          }
+        }
+      }
+    },
+    "Tonic Water": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tonic Water"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tonic water"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agua tónica"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tonic"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acqua tonica"
+          }
+        }
+      }
+    },
+    "USA, um 2013. Die Idee kommt vom Stout: Zapfhahn, Stickstoff und der Schaum, der nach dem Einschenken langsam absinkt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "USA, um 2013. Die Idee kommt vom Stout: Zapfhahn, Stickstoff und der Schaum, der nach dem Einschenken langsam absinkt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "USA, around 2013. The idea comes from stout: the tap, the nitrogen, and the foam that settles slowly after pouring."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estados Unidos, hacia 2013. La idea viene de la stout: el grifo, el nitrógeno y la espuma que baja despacio tras servir."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "États-Unis, vers 2013. L’idée vient de la stout : le fût, l’azote et la mousse qui redescend lentement après le service."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stati Uniti, intorno al 2013. L’idea viene dalla stout: la spina, l’azoto e la schiuma che scende lentamente dopo la mescita."
+          }
+        }
+      }
+    },
     "Umgekehrte Reihenfolge: der Espresso kommt in die Milch, nicht die Milch in den Espresso. Daher die drei Schichten.": {
       "extractionState": "manual",
       "localizations": {
@@ -4139,6 +5854,146 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ordine invertito: l’espresso va nel latte, non il latte nell’espresso. Da qui i tre strati."
+          }
+        }
+      }
+    },
+    "Valencia, von dort über ganz Spanien. Die Verwandtschaft mit dem vietnamesischen Eiskaffee liegt auf der Hand, die Verwandtschaftslinie nicht.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valencia, von dort über ganz Spanien. Die Verwandtschaft mit dem vietnamesischen Eiskaffee liegt auf der Hand, die Verwandtschaftslinie nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valencia, and from there across Spain. The kinship with Vietnamese iced coffee is obvious; the line of descent is not."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valencia, y de ahí a toda España. El parentesco con el café helado vietnamita salta a la vista; la línea de descendencia, no."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valence, et de là toute l’Espagne. La parenté avec le café glacé vietnamien saute aux yeux, la filiation non."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valencia, e da lì tutta la Spagna. La parentela con il caffè freddo vietnamita salta agli occhi, la discendenza no."
+          }
+        }
+      }
+    },
+    "Vanilleeis": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vanilleeis"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vanilla ice cream"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Helado de vainilla"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glace vanille"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelato alla vaniglia"
+          }
+        }
+      }
+    },
+    "Vanillesirup": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vanillesirup"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vanilla syrup"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sirope de vainilla"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sirop de vanille"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sciroppo alla vaniglia"
+          }
+        }
+      }
+    },
+    "Vanillesirup, warme Milch, Schaum — und der Espresso zuletzt obendrauf statt zuerst hinein. Darüber ein Gitter aus Karamell.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vanillesirup, warme Milch, Schaum — und der Espresso zuletzt obendrauf statt zuerst hinein. Darüber ein Gitter aus Karamell."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vanilla syrup, warm milk, foam — and the espresso on top at the end instead of into it at the start. A lattice of caramel over that."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sirope de vainilla, leche caliente, espuma — y el espresso encima al final en lugar de dentro al principio. Encima, una rejilla de caramelo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sirop de vanille, lait chaud, mousse — et l’expresso posé dessus à la fin au lieu d’être versé dedans au début. Par-dessus, un quadrillage de caramel."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sciroppo alla vaniglia, latte caldo, schiuma — e l’espresso sopra alla fine invece che dentro all’inizio. Sopra, una griglia di caramello."
           }
         }
       }
@@ -4388,6 +6243,41 @@
         }
       }
     },
+    "Vietnam. Robusta statt Arabica, Kondensmilch statt frischer: beides kam aus der Not und ist geblieben, weil es zusammenpasst.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vietnam. Robusta statt Arabica, Kondensmilch statt frischer: beides kam aus der Not und ist geblieben, weil es zusammenpasst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vietnam. Robusta instead of arabica, condensed milk instead of fresh: both came out of necessity and stayed because they fit together."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vietnam. Robusta en vez de arábica, leche condensada en vez de fresca: ambos nacieron de la necesidad y se quedaron porque encajan."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vietnam. Du robusta plutôt que de l’arabica, du lait concentré plutôt que du frais : les deux sont nés de la nécessité et sont restés parce qu’ils s’accordent."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vietnam. Robusta invece di arabica, latte condensato invece di fresco: entrambi nati dalla necessità e rimasti perché stanno bene insieme."
+          }
+        }
+      }
+    },
     "Vorheriger Tag": {
       "extractionState": "manual",
       "localizations": {
@@ -4493,6 +6383,41 @@
         }
       }
     },
+    "Weinbrand": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weinbrand"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brandy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brandy"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eau-de-vie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brandy"
+          }
+        }
+      }
+    },
     "Wert ändern": {
       "extractionState": "manual",
       "localizations": {
@@ -4524,6 +6449,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cambia valore"
+          }
+        }
+      }
+    },
+    "Whiskey": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whiskey"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whiskey"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whiskey"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whiskey"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whiskey"
+          }
+        }
+      }
+    },
+    "Wie der Mocha, aber mit weisser Schokolade: die enthält keine Kakaomasse, sondern Kakaobutter, Zucker und Milch. Deshalb süsser und ohne jede Bitterkeit.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie der Mocha, aber mit weisser Schokolade: die enthält keine Kakaomasse, sondern Kakaobutter, Zucker und Milch. Deshalb süsser und ohne jede Bitterkeit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Like the mocha, but with white chocolate: it contains no cocoa solids, only cocoa butter, sugar and milk. Sweeter for it, and without any bitterness."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Como el mocha, pero con chocolate blanco: no lleva pasta de cacao, sino manteca de cacao, azúcar y leche. Por eso más dulce y sin amargor alguno."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comme le mocha, mais au chocolat blanc : il ne contient pas de pâte de cacao, seulement du beurre de cacao, du sucre et du lait. Plus sucré, donc, et sans la moindre amertume."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Come il mocha, ma con cioccolato bianco: non contiene pasta di cacao, solo burro di cacao, zucchero e latte. Perciò più dolce e senza alcuna amarezza."
           }
         }
       }
@@ -4563,6 +6558,76 @@
         }
       }
     },
+    "Wien, benannt nach dem einspännigen Fuhrwerk. Der Kutscher hielt die Zügel in der einen Hand und das Henkelglas in der anderen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wien, benannt nach dem einspännigen Fuhrwerk. Der Kutscher hielt die Zügel in der einen Hand und das Henkelglas in der anderen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vienna, named after the one-horse carriage. The driver held the reins in one hand and the handled glass in the other."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viena, por el coche de un solo caballo. El cochero sostenía las riendas con una mano y el vaso con asa con la otra."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vienne, du nom de la voiture à un cheval. Le cocher tenait les rênes d’une main et le verre à anse de l’autre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vienna, dal nome della carrozza a un cavallo. Il cocchiere teneva le redini in una mano e il bicchiere con manico nell’altra."
+          }
+        }
+      }
+    },
+    "Wien. Im klassischen Kaffeehaus steht kein Cappuccino auf der Karte — wer einen will, bestellt eine Melange. Die Basis ist heller geröstet als der italienische Espresso.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wien. Im klassischen Kaffeehaus steht kein Cappuccino auf der Karte — wer einen will, bestellt eine Melange. Die Basis ist heller geröstet als der italienische Espresso."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vienna. A classic coffee house has no cappuccino on the menu — if you want one, you order a melange. The base is roasted lighter than the Italian espresso."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viena. En el café clásico no hay capuchino en la carta — quien lo quiere pide una melange. La base está tostada más clara que el espresso italiano."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vienne. Le café classique n’a pas de cappuccino à la carte — qui en veut un commande une melange. La base est torréfiée plus clair que l’expresso italien."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vienna. Nel caffè classico il cappuccino non è in carta — chi lo vuole ordina una melange. La base è tostata più chiara dell’espresso italiano."
+          }
+        }
+      }
+    },
     "Zimt": {
       "extractionState": "manual",
       "localizations": {
@@ -4594,6 +6659,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cannella"
+          }
+        }
+      }
+    },
+    "Zitronenschale": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zitronenschale"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lemon zest"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piel de limón"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeste de citron"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scorza di limone"
           }
         }
       }
@@ -4664,6 +6764,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zucchero"
+          }
+        }
+      }
+    },
+    "Zucker im heissen Kaffee auflösen, Whiskey dazu, halbsteifen Rahm über den Löffelrücken aufschwimmen lassen. Getrunken wird durch den Rahm hindurch, nicht gerührt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zucker im heissen Kaffee auflösen, Whiskey dazu, halbsteifen Rahm über den Löffelrücken aufschwimmen lassen. Getrunken wird durch den Rahm hindurch, nicht gerührt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dissolve sugar in the hot coffee, add whiskey, float half-whipped cream over the back of a spoon. You drink through the cream; you do not stir."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disolver el azúcar en el café caliente, añadir el whiskey, hacer flotar nata semimontada sobre el dorso de una cuchara. Se bebe a través de la nata; no se remueve."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dissoudre le sucre dans le café chaud, ajouter le whiskey, faire flotter une crème à demi fouettée sur le dos d’une cuillère. On boit à travers la crème, on ne remue pas."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sciogliere lo zucchero nel caffè caldo, aggiungere il whiskey, far galleggiare panna semimontata sul dorso del cucchiaio. Si beve attraverso la panna, non si mescola."
           }
         }
       }
@@ -5336,6 +7471,41 @@
         }
       }
     },
+    "gezuckerte Kondensmilch": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gezuckerte Kondensmilch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sweetened condensed milk"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leche condensada azucarada"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lait concentré sucré"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Latte condensato zuccherato"
+          }
+        }
+      }
+    },
     "häufigste unten": {
       "extractionState": "manual",
       "localizations": {
@@ -5402,6 +7572,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "iOS gestisce la lingua per app: Impostazioni → App → Cafcalog."
+          }
+        }
+      }
+    },
+    "kalter Milchschaum": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kalter Milchschaum"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold milk foam"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espuma de leche fría"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mousse de lait froide"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schiuma di latte fredda"
           }
         }
       }
@@ -5860,6 +8065,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "cosa e quando"
+          }
+        }
+      }
+    },
+    "weisse Schokolade": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "weisse Schokolade"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "White chocolate"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chocolate blanco"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chocolat blanc"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cioccolato bianco"
           }
         }
       }
