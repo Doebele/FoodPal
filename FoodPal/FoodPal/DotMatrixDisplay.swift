@@ -132,7 +132,7 @@ struct DotMatrixDisplay: View {
                             width: d, height: d
                         )
                         let neu = DotMatrixDisplay.isLit(row: row, column: column,
-                                                        reading: target) ? tint : Palette.rule
+                                                        reading: target) ? tint : Palette.matrix
                         guard p < 1 else {
                             ctx.fill(Path(rect), with: .color(neu))
                             continue
@@ -142,7 +142,7 @@ struct DotMatrixDisplay: View {
                         // ohne zwei Farben von Hand zu mischen.
                         let hell = !fromDark && DotMatrixDisplay.isLit(
                             row: row, column: column, reading: shown)
-                        ctx.fill(Path(rect), with: .color(hell ? tint : Palette.rule))
+                        ctx.fill(Path(rect), with: .color(hell ? tint : Palette.matrix))
                         if p > 0 { ctx.fill(Path(rect), with: .color(neu.opacity(p))) }
                     }
                 }
@@ -245,7 +245,7 @@ struct DotMatrixDigit: View {
                                       y: CGFloat(index) * Grid.pitch * s,
                                       width: d, height: d)
                     let lit = glyph[row] & (1 << UInt32(column)) != 0
-                    ctx.fill(Path(rect), with: .color(lit ? tint : Palette.rule))
+                    ctx.fill(Path(rect), with: .color(lit ? tint : Palette.matrix))
                 }
             }
         }

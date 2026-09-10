@@ -14,6 +14,17 @@ enum Palette {
     /// Erloschene Punkte im Diagramm — etwas kräftiger als `rule`.
     static let ink3  = dynamic(light: 0xC9C9BD, dark: 0x33332E)
     static let rule  = dynamic(light: 0xE2E2DA, dark: 0x2A2A27)
+    /// Erloschene **Punkte** im Raster: Zeitstrahl, Ziffernfeld und
+    /// Wartewelle. Es ist dasselbe Feld, also derselbe Ton.
+    ///
+    /// Getrennt von `rule`, obwohl beide fast gleich aussehen: `rule` zieht
+    /// Haarlinien zwischen Formularzeilen, und die sollen sichtbar bleiben.
+    /// Erloschene Punkte sollen es gerade nicht — 1632 davon summieren sich
+    /// zu einer Flaeche, und je leiser sie ist, desto klarer stehen die
+    /// beleuchteten darin.
+    ///
+    /// Figma-Variable `matrix` (Node `1:8445`).
+    static let matrix = dynamic(light: 0xE8E7E3, dark: 0x222220)
     /// Erloschene **Segmente** — eigener Ton, weil sie ein anderes Problem
     /// haben als die Punkte im Diagramm. Ein Segment ist gross und flaechig;
     /// in `ink3` steht die ganze Acht als Schatten hinter jeder Ziffer und

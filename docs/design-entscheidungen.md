@@ -180,8 +180,21 @@ Zwischen den Bändern eine Reihe Fuge (4 pt), natürliche Gesamthöhe 70 pt.
 früheren 100 mg je Reihe waren es kaum zwei — die Skala sagte nichts, was man
 im Kopf nachrechnen konnte.
 
-Unbeleuchtete Punkte in `rule`, nicht mehr in `ink3`: bei 1632 Punkten ist der
-hellere Ton der Unterschied zwischen Raster und Rauschen.
+Unbeleuchtete Punkte in **`matrix`** — hell `#E8E7E3`, dunkel `#222220`
+(Figma-Variable `matrix`). Zuvor `ink3`, dann `rule`, und beide Male war der
+Weg derselbe: bei 1632 Punkten ist der leisere Ton der Unterschied zwischen
+Raster und Rauschen. Gegen Papier fällt er von 1,25 : 1 auf 1,18 : 1, im
+Dunkeln von 1,30 : 1 auf 1,18 : 1.
+
+**Getrennt von `rule`, obwohl beide fast gleich aussehen.** `rule` zieht die
+Haarlinien zwischen Formularzeilen, und die sollen sichtbar bleiben; erloschene
+Punkte sollen es gerade nicht. Zwei Aufgaben, zwei Namen — sonst zieht die
+nächste Justierung an einer Schraube, die auch woanders sitzt.
+
+Derselbe Ton trägt **alle drei Punktfelder**: Zeitstrahl, Ziffernanzeige und
+die Wartewelle beim Schätzen. Es ist dasselbe Feld, also derselbe Ton. Nicht
+betroffen sind die Flipkarte (deren Blatt ist `rule`) und die Piktogramme —
+dort ist der Ton die Zeichnung, nicht ihr Grund.
 
 **Der Zeitstrahl läuft aus dem Seitenrand heraus** bis 5 pt an den
 Bildschirmrand. Das ist keine Kosmetik: beim Wischen von Tag zu Tag geht die

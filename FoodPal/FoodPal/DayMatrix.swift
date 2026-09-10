@@ -49,7 +49,7 @@ struct DayMatrix: View {
                     let col = hour * perDot + i % perDot
                     dot(column: col,
                         y: CGFloat(row) * Grid.pitch,
-                        color: i < calDots ? Palette.ink : Palette.rule)
+                        color: i < calDots ? Palette.ink : Palette.matrix)
                 }
 
                 // Koffein: von der obersten Reihe nach unten
@@ -58,7 +58,7 @@ struct DayMatrix: View {
                     let col = hour * perDot + i % perDot
                     dot(column: col,
                         y: Self.coffeeTop + CGFloat(row) * Grid.pitch,
-                        color: i < cofDots ? roast.color : Palette.rule)
+                        color: i < cofDots ? roast.color : Palette.matrix)
                 }
             }
 

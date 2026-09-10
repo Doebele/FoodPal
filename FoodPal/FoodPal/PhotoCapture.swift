@@ -926,7 +926,7 @@ private struct ProgressMatrix: View {
                         width: Grid.dot * s,
                         height: Grid.dot * s
                     )
-                    ctx.fill(Path(rect), with: .color(lit(row: row, column: column) ? Palette.ink : Palette.rule))
+                    ctx.fill(Path(rect), with: .color(lit(row: row, column: column) ? Palette.ink : Palette.matrix))
                 }
             }
         }
