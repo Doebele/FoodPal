@@ -254,6 +254,22 @@ iPhone 17 Pro Max sind das 440 pt, also **1320 px** auf @3x. 1600 gibt gut ein
 Fünftel Reserve und wiegt rund 285 kB — vierzig Sorten also **etwa 10 MB** im
 Bündel.
 
+## Stand der Produktion
+
+**Alle 43 Sorten erzeugt, je vier Varianten — 172 Bilder.** Flux 2 pro, 25°,
+Grund auf `#FAFAF8` gezogen, 1600 px, rund 285 kB je Bild.
+
+Die Trefferquote lag mit dem endgültigen Prompt bei nahezu vier von vier: der
+Satz hält Gefäss, Winkel, Licht und Schatten über alle Sorten durch. Was jetzt
+noch fehlt, ist die **Auswahl** — eine Variante je Sorte — und die Ablage als
+`coffee/<sorte>` im Asset-Katalog.
+
+Ausgewählt wird nach drei Dingen, in dieser Reihenfolge: **kurzer weicher
+Schatten** (ein paar Varianten werfen einen langen harten), **blankes Gefäss**
+ohne Dekor, und **das Getränk muss lesbar sein** — beim Ristretto die Tiefe,
+beim Kafi Fertig die durchscheinenden Zuckerwürfel, beim Barraquito die vier
+Bänder.
+
 ## Werte
 
 Recherchiert am 9. September 2026. **Zwei Herkünfte, sauber getrennt** — was
