@@ -5158,6 +5158,41 @@
         }
       }
     },
+    "Schrift folgt dem System": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schrift folgt dem System"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text follows the system"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El texto sigue al sistema"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La police suit le système"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il testo segue il sistema"
+          }
+        }
+      }
+    },
     "Schweiz, benannt nach dem Gefäss: früher stand er in einer Schale auf dem Tisch, heute in der Tasse mit Henkel. Die Steigerung lautet Espresso, Café Crème, Doppel-Crème, Schale.": {
       "extractionState": "manual",
       "localizations": {
@@ -6869,6 +6904,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vienna. Nel caffè classico il cappuccino non è in carta — chi lo vuole ordina una melange. La base è tostata più chiara dell’espresso italiano."
+          }
+        }
+      }
+    },
+    "Zeitpunkt": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeitpunkt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Momento"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moment"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orario"
           }
         }
       }

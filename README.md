@@ -103,6 +103,25 @@ Katalog fehlt, ist ein Tippfehler, keine neue Zeile.
 Die Übersetzungen für FR, IT und ES stammen nicht von Muttersprachlern und
 sollten vor einer Veröffentlichung gegengelesen werden.
 
+## Bilder für den App Store
+
+```bash
+python3 tools/screenshots.py          # alle fünf Sprachen
+python3 tools/screenshots.py de en    # nur diese
+```
+
+Fünf Schirme in fünf Sprachen, 25 Bilder zu **1320 × 2868** — die 6,9 Zoll, die
+App Store Connect verlangt; alles Kleinere rechnet Apple selbst daraus.
+Ausgabe nach `bilder/store/<sprache>/`, nicht ins Repository: sie sind aus dem
+Skript reproduzierbar.
+
+Angesteuert werden die Schirme über die Startvarianten, **kein einziger Tipp
+auf den Bildschirm** — was man antippen muss, geht beim nächsten Lauf anders
+aus. Die Uhr steht auf 9:41 wie in Apples eigenen Bildern, und die
+Bezeichnungen der Beispielmahlzeiten reicht das Skript als `DEMO_MEALS` in
+fünf Sprachen herein; im Sprachkatalog haben sie nichts zu suchen, sie sind
+Nutzerdaten.
+
 ## Vor einem App Store
 
 Erledigt: **iPhone-only** (`TARGETED_DEVICE_FAMILY = 1` — der Entwurf hängt an
