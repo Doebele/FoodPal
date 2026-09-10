@@ -40,6 +40,11 @@ struct SettingsView: View {
         return Locale(identifier: code).localizedString(forLanguageCode: code) ?? code
     }
 
+    private func open(_ address: String) {
+        guard let url = URL(string: address) else { return }
+        UIApplication.shared.open(url)
+    }
+
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
     private var appearance: Appearance { Appearance(rawValue: appearanceRaw) ?? .auto }
@@ -85,9 +90,7 @@ struct SettingsView: View {
                     // nach. Die Zeile steht trotzdem hier — sonst sucht man
                     // sie in den Systemeinstellungen unter „Apps".
                     actionRow("Sprache der App", value: Self.language) {
-                        guard let url = URL(string: UIApplication.openSettingsURLString)
-                        else { return }
-                        UIApplication.shared.open(url)
+                        open(UIApplication.openSettingsURLString)
                     }
                     // Der Weg steht daneben, weil der Sprung ihn nicht immer
                     // ganz geht: unter iOS 26 landet `openSettingsURLString`
@@ -131,6 +134,27 @@ struct SettingsView: View {
                             .scaledFont(16, condensed: true)
                             .foregroundStyle(Palette.ink)
                     }
+                }
+
+                // Zwei Bestandteile verlangen eine Nennung, und ein README
+                // liegt dem Buendel nicht bei: Fira steht unter der SIL Open
+                // Font License, die Naehrwerte von Open Food Facts unter der
+                // ODbL. Beide Lizenzen wollen genannt sein, keine will einen
+                // Fliesstext — deshalb zwei Zeilen, die den Text oeffnen.
+                group(spacing: 0) {
+                    caption("lizenzen")
+                    actionRow("Fira Sans · Fira Mono", value: "SIL OFL 1.1") {
+                        open("https://openfontlicense.org")
+                    }
+                    actionRow("Nährwerte", value: "Open Food Facts") {
+                        open("https://opendatacommons.org/licenses/odbl/")
+                    }
+                    // Die OFL verlangt den Rechtevermerk, nicht nur den Namen
+                    // der Lizenz.
+                    Text("Fira © 2012–2015 The Mozilla Foundation und Telefonica S.A.")
+                        .scaledFont(11)
+                        .foregroundStyle(Palette.ink2)
+                        .padding(.top, 8)
                 }
 
                 if let authError {

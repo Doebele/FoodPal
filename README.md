@@ -105,9 +105,20 @@ sollten vor einer Veröffentlichung gegengelesen werden.
 
 ## Vor einem App Store
 
+Erledigt: **iPhone-only** (`TARGETED_DEVICE_FAMILY = 1` — der Entwurf hängt an
+einer Spalte, auf dem iPad dehnt sich der Zeitstrahl zum Strich und die
+Flipkarten skalieren nicht mit), **Datenschutzmanifest** (ohne den Grund
+`CA92.1` für `UserDefaults` weist App Store Connect das Paket ab),
+**Export-Erklärung** und die **Lizenznennungen** in den Einstellungen.
+
+Offen:
+
 - Muttersprachler für FR, IT, ES
-- Datenschutzerklärung und App-Privacy-Angaben
+- Datenschutzerklärung im Netz — eine URL ist Pflicht
 - bezahltes Developer-Programm statt Personal Team
+- Nutzungsrechte an den erzeugten Kaffeebildern klären
+- ein Anbieterschlüssel in den App Review Notes: ohne ihn schätzt nichts,
+  und der Prüfer muss jede Funktion erreichen können
 
 ## Lizenzen
 

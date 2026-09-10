@@ -6,6 +6,12 @@
 	     und legt es über diese Datei. Hier steht nur, wofür es keinen
 	     solchen Schlüssel gibt: die mitgelieferten Schnitte.
 	     Die Dateien liegen flach im Bündel, nicht im Unterordner. -->
+	<!-- Die App verschluesselt nichts selbst; sie spricht HTTPS und legt
+	     Schluessel in die Keychain. Beides ist von der Ausfuhrregelung
+	     ausgenommen. Ohne diesen Eintrag fragt App Store Connect bei jedem
+	     Build danach. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>FiraSans-Light.ttf</string>
