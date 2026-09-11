@@ -16,8 +16,11 @@
   --spalte: 640px;
 }
 
+/* Dunkel zweimal: einmal fuer die Systemwahl, einmal fuer eine ausdrueckliche
+   Wahl am Wurzelelement. Sonst gewaenne das Betriebssystem gegen den Schalter
+   einer Umgebung, die ihn setzt. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --paper: #121211;
     --ink: #f0f0ea;
     --ink-2: #85857d;
@@ -25,6 +28,15 @@
     --matrix: #222220;
     --roast: #e08a4e;
   }
+}
+
+:root[data-theme="dark"] {
+    --paper: #121211;
+    --ink: #f0f0ea;
+    --ink-2: #85857d;
+    --rule: #2a2a27;
+    --matrix: #222220;
+    --roast: #e08a4e;
 }
 
 * { box-sizing: border-box; }
