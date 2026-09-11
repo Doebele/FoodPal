@@ -26,7 +26,7 @@ Koffein, wählbar als Röstung von Zimt bis Italienisch.
 - **Ein Screen.** Erfassen und Einstellungen kommen als Bottom Sheet von
   unten, erledigen eine Sache und verschwinden. Keine Tabbar.
 - **Der Tag ist eine Zeile.** 24 Stunden in 96 Rasterspalten, eine
-  Viertelstunde je Spalte, oben Kalorien, unten Koffein, eine Kerbe für jetzt.
+  Viertelstunde je Spalte, oben Kalorien, unten Koffein, eine Linie für jetzt.
 - **Drei Ziffernstile**, in den Einstellungen wählbar: Flipkarte nach der
   Braun-Klappuhr, Sieben-Segment, Dot-Matrix im Raster des Zeitstrahls.
   Das Zählwerk dreht alle Räder gleichzeitig und immer aufwärts.

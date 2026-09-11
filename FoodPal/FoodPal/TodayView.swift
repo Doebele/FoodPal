@@ -268,7 +268,11 @@ struct DayView: View {
                             now: isToday ? tick.date : nil
                         )
                     }
-                    .padding(.top, 2)
+                    // Zwei Punkt Abstand wie bisher, minus die drei Einheiten,
+                    // um die das Rasterfeld fuer den Ueberstand der Jetzt-Linie
+                    // nach oben gewachsen ist. Die Punkte stehen damit, wo sie
+                    // standen, und nur die Linie ragt in den Zwischenraum.
+                    .padding(.top, -1)
                 }
                 .padding(.horizontal, -(Metric.margin - Self.timelineInset))
 

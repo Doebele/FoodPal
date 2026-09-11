@@ -236,7 +236,7 @@ struct PhotoCapture: View {
                     // aus dem Bild geschoben.
                     dictateTitle: dictation.isRunning
                         ? String(localized: "Diktat beenden")
-                        : String(localized: "Sprache"),
+                        : String(localized: "Diktat"),
                     dictateColor: dictation.isRunning ? roast.color : Palette.ink,
                     onDictate: {
                         if !dictation.isRunning {

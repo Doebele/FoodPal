@@ -196,6 +196,30 @@ die Wartewelle beim Schätzen. Es ist dasselbe Feld, also derselbe Ton. Nicht
 betroffen sind die Flipkarte (deren Blatt ist `rule`) und die Piktogramme —
 dort ist der Ton die Zeichnung, nicht ihr Grund.
 
+**Jetzt ist eine Linie, keine Kerbe.** Sie steht in der **Lücke links** der
+laufenden Viertelstunde, eine Einheit breit, in `ink2`, und läuft durch beide
+Bänder — oben um einen Punkt über die erste Rasterreihe hinaus, zu den
+Stundenzahlen hin.
+
+In der Lücke und nicht über einer Spalte: so schiebt sie keinen Punkt weg, das
+Raster bleibt vollständig, und sie liegt nicht darin, sondern dazwischen. Und
+sie trifft den Zeitpunkt genauer als eine Marke in der Spalte — sie steht
+**vor** der Viertelstunde, also an ihrem Anfang.
+
+Vorher waren es zwei Papierpunkte, einer in der obersten Kalorien- und einer in
+der untersten Koffeinreihe, die die Spalte einklammerten. Das Argument dafür
+war gut — eine Lücke kann man mit nichts verwechseln, ein schwarzer Punkt in
+der obersten Reihe hiesse dort sonst 1800 kcal. Nur sagte die Klammer den
+Zeitpunkt zweimal und an keiner Stelle ganz; eine Linie sagt ihn in einem Zug.
+
+Der Überstand kostete Fläche: ein `Canvas` schneidet an seinen Rändern ab, also
+ist das Rasterfeld um drei Einheiten nach oben gewachsen und der Abstand zu den
+Stundenzahlen um dieselben drei zurückgenommen. Die Punkte stehen, wo sie
+standen, und nur die Linie ragt in den Zwischenraum.
+
+Zwischen Mitternacht und Viertel nach zwölf gibt es links nichts mehr — dort
+rückt die Linie an die Kante, statt zu fehlen.
+
 **Der Zeitstrahl läuft aus dem Seitenrand heraus** bis 5 pt an den
 Bildschirmrand. Das ist keine Kosmetik: beim Wischen von Tag zu Tag geht die
 Rasterfläche dadurch nahezu fliessend ineinander über, statt an einer Kante

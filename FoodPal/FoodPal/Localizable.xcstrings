@@ -1448,6 +1448,41 @@
         }
       }
     },
+    "Diktat": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diktat"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dictation"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dictado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dictée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dettatura"
+          }
+        }
+      }
+    },
     "Diktat beenden": {
       "extractionState": "manual",
       "localizations": {
@@ -5539,41 +5574,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Spagna, spesso attribuito ai Paesi Baschi o alla Catalogna; di casa anche in Portogallo e in America Latina. Servito nel bicchierino, 60-70 ml."
-          }
-        }
-      }
-    },
-    "Sprache": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sprache"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voice"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voz"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voix"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voce"
           }
         }
       }
