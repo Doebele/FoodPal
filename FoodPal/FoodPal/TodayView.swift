@@ -236,7 +236,12 @@ struct TodayView: View {
         // war. `ignoresSafeArea` zieht das Glas bis unter den Griff — was
         // dahinter durchwandert, ist durchgehend verwischt.
         .background {
-            Glass().ignoresSafeArea(edges: .bottom)
+            Glass()
+                // Die Scheibe verwischt, das Papier darueber nimmt ihr das
+                // Gewicht: sonst laege am Fuss ein Band, das dunkler wirkt
+                // als die Kacheln der Getraenkeauswahl.
+                .overlay(Palette.paper.opacity(0.45))
+                .ignoresSafeArea(edges: .bottom)
         }
     }
 

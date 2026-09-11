@@ -929,7 +929,10 @@ struct CaptureTile: View {
                 .padding(8)
             }
         .background {
-            if glass { Glass() } else { Palette.tile }
+            // Auf der Leiste liegt die Scheibe schon; hier genuegt der Ton der
+            // Getraenkeauswahl, durchscheinend gesetzt — zwei Scheiben
+            // uebereinander geraten dunkler als jede Kachel sonst in der App.
+            if glass { Palette.tile.opacity(0.7) } else { Palette.tile }
         }
         .contentShape(Rectangle())
     }

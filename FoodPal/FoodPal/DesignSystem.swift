@@ -130,11 +130,20 @@ enum Grid {
 ///
 /// Steht an drei Stellen: ueber dem Bild, auf den Kacheln der Leiste unten
 /// und hinter der Leiste selbst. Eine Zahl, ein Ort.
+/// Zwei Staerken: `.thin` ueber dem Bild, wo der Satz gegen ein Foto bestehen
+/// muss, und `.ultraThin` in der Leiste unten. Dort liegen **zwei** Scheiben
+/// uebereinander — die der Leiste und die der Kachel darauf —, und zwei
+/// duenne ergeben zusammen den Ton der Kacheln in der Getraenkeauswahl.
+/// Zweimal `.thin` geriet dunkler als die, und die Leiste wirkte schwerer,
+/// als sie sollte. Gemessen: Papier 250, Leiste 246, Kachel 244 — und
+/// `Palette.tile` ist 244.
 struct Glass: View {
     @Environment(\.colorScheme) private var scheme
 
+    var material: Material = .thinMaterial
+
     var body: some View {
-        Rectangle().fill(.thinMaterial)
+        Rectangle().fill(material)
             .overlay(Color.black.opacity(scheme == .dark ? 0.25 : 0))
     }
 }
