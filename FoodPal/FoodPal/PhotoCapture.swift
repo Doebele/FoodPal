@@ -165,7 +165,7 @@ struct PhotoCapture: View {
             // Das Kreuz steht oben und sagt, worum es hier geht: hinzufügen.
             // Es ist keine Schaltfläche — der Weg wird unten gewählt, wo der
             // Daumen liegt.
-            DotArt.plus
+            DotArt.cross
                 .frame(width: 186, height: 186)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 24)
@@ -203,6 +203,9 @@ struct PhotoCapture: View {
                  ? "Geschätzt wird von \(provider.label)."
                  : "\(provider.label) schätzt nur aus Beschreibungen.")
                 .scaledFont(11)
+                // Klein wie alles andere an der Oberflaeche — und das nimmt
+                // den Namen des Anbieters mit: „geschaetzt wird von claude".
+                .textCase(.lowercase)
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 10)
         }
@@ -876,38 +879,62 @@ private struct Confirm: View {
 /// Kacheln nebeneinander, deren Zeilen auf einer Hoehe liegen, sind ruhiger
 /// als solche, die es fast tun.
 struct CaptureTile: View {
+    @Environment(\.colorScheme) private var scheme
+
     let label: LocalizedStringKey
-    /// Meist eines. „Beschreiben" traegt zwei — Stift und Mikrofon.
-    let marks: [DotArt]
+    /// Meist eines. „Beschreiben" traegt zwei — Stift und Mikrofon, und die
+    /// Einstellungen tragen gar keines: dort ist die Kachel selbst der
+    /// Hinweis, und ein Zeichen waere Zierat an der unwichtigeren Stelle.
+    var marks: [DotArt] = []
+    /// Aus dem Entwurf: 160 in der Erfassung, 120 und 60 in der Leiste unten.
+    var height: CGFloat = 160
+    /// **Glas statt Flaeche.** Unten liegt die Leiste ueber der Liste, und
+    /// was dahinter durchlaeuft, soll man ahnen — dasselbe Rezept wie die
+    /// Marken ueber dem Bild. In der Erfassung steht nichts dahinter, dort
+    /// bleibt es die ruhige Flaeche.
+    var glass = false
 
     static let gap: CGFloat = 4
-    /// Hoehe der Kachel und Kantenlaenge des Zeichens, beides aus dem Entwurf.
-    private static let height: CGFloat = 160
-    private static let mark: CGFloat = 51
+    /// Kantenlaenge des Zeichens, ebenfalls aus dem Entwurf.
+    private static let mark: CGFloat = 47
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Abstand null: `DotArt` zeichnet in ein Quadrat und laesst links
-            // und rechts je zwei Einheiten Luft. Zwei Zeichen stossen damit
-            // von selbst im Rastermass aneinander.
-            HStack(spacing: 0) {
-                ForEach(Array(marks.enumerated()), id: \.offset) { _, zeichen in
-                    zeichen.frame(width: Self.mark, height: Self.mark)
+        // **Die Beschriftung traegt die Hoehe, das Zeichen liegt darueber.**
+        // Vorher spannte ein `maxHeight: .infinity` die Kachel von innen auf,
+        // damit ein Abstandhalter die Zeile nach unten schob — und weil das
+        // nach jeder angebotenen Hoehe griff, wurde die halbhohe Kachel der
+        // Einstellungen genauso hoch wie die daneben. Jetzt setzt `minHeight`
+        // die Hoehe, und nur eine umbrechende Zeile laesst sie wachsen.
+        Text(label)
+            .scaledFont(24, weight: .light, condensed: true)
+            .textCase(.lowercase)
+            .foregroundStyle(Palette.ink)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(8)
+            .frame(minHeight: height, alignment: .bottom)
+            .overlay(alignment: .topLeading) {
+                // Abstand null: `DotArt` zeichnet in ein Quadrat und laesst
+                // links und rechts je zwei Einheiten Luft. Zwei Zeichen
+                // stossen damit von selbst im Rastermass aneinander.
+                HStack(spacing: 0) {
+                    ForEach(Array(marks.enumerated()), id: \.offset) { _, zeichen in
+                        zeichen.frame(width: Self.mark, height: Self.mark)
+                    }
                 }
+                .padding(8)
             }
-            Spacer(minLength: 8)
-            Text(label)
-                .scaledFont(24, weight: .light, condensed: true)
-                .textCase(.lowercase)
-                .foregroundStyle(Palette.ink)
-                .fixedSize(horizontal: false, vertical: true)
+        // Im Dunkeln braucht das Glas einen Schleier, sonst traegt ein helles
+        // Bild dahinter die helle Schrift nicht mehr — gemessen an der
+        // Bildansicht, dort fiel es ohne auf 4,16 : 1.
+        .background {
+            if glass {
+                Rectangle().fill(.thinMaterial)
+                    .overlay(Color.black.opacity(scheme == .dark ? 0.25 : 0))
+            } else {
+                Palette.tile
+            }
         }
-        // Erst aufspannen, dann raendern: der Rand liegt damit aussen um die
-        // volle Kachel, und die Beschriftung sitzt wirklich an ihrem Fuss.
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .padding(8)
-        .frame(minHeight: Self.height)
-        .background(Palette.tile)
         .contentShape(Rectangle())
     }
 }

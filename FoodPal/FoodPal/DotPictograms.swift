@@ -37,9 +37,11 @@ struct DotArt: View {
 }
 
 extension DotArt {
-    /// Das Kreuz über der Erfassung: 13 x 13 Raster, Teilung 15, Mittelreihe
-    /// und Mittelspalte gesetzt. Hinzufügen, im selben Punktvokabular.
-    static var plus: DotArt {
+    /// Das grosse Kreuz über der Erfassung: 13 x 13 Raster, Teilung 15,
+    /// Mittelreihe und Mittelspalte gesetzt. Runde Punkte, weil es eine Marke
+    /// ist und kein Zeichen — das kleine `plus` im Zwölferraster ist das
+    /// Zeichen auf der Kachel.
+    static var cross: DotArt {
         let pitch: CGFloat = 15
         let centre = 6
         var points: [CGPoint] = []
@@ -51,15 +53,22 @@ extension DotArt {
         return DotArt(points: points, box: 186)
     }
 
-    /// Info und Schliessen, aus dem Entwurf abgelesen (Node `153:327896`).
-    ///
-    /// **12 Spalten, 13 Reihen, Teilung 4, Punkt 3** — dasselbe Raster und
-    /// dasselbe Quadrat wie der Zeitstrahl.
+    /// Die Zeichen im Zwoelferraster, aus dem Entwurf abgelesen (Node
+    /// `160:106669`). **Zwoelf mal zwoelf**, Teilung 4, Punkt 3 — quadratisch,
+    /// seit der Entwurf die dreizehnte Reihe abgelegt hat. Damit steht jedes
+    /// Zeichen in demselben Quadrat, und keines sitzt in seinem Feld tiefer
+    /// als das andere.
     ///
     /// Das i ist ein gesetztes i mit Fahne und Fuss, nicht ein Strich mit
     /// Tuepfelchen. Die erste eigene Fassung setzte den Stamm enger als seinen
     /// Durchmesser, damit er zu einer Linie zusammenfloss; der Entwurf loest
     /// dasselbe anders und besser, naemlich mit einer Serife.
+    ///
+    /// **Beschreiben traegt zwei**: den Stift und das Mikrofon. Der Schirm
+    /// dahinter kann beides, und die Kachel sagt das, bevor man sie oeffnet.
+    ///
+    /// `plus` ist das Zeichen auf der Erfassen-Kachel — nicht zu verwechseln
+    /// mit `cross`, dem grossen Kreuz aus runden Punkten ueber der Erfassung.
     static func info(color: Color) -> DotArt {
         grid([
             "............",
@@ -74,36 +83,28 @@ extension DotArt {
             ".....##.....",
             ".....##.....",
             "...######...",
-            "............",
         ], color: color)
     }
 
     static func close(color: Color) -> DotArt {
         grid([
-            "............",
             ".#........#.",
-            ".##......##.",
-            "..##....##..",
-            "...##..##...",
+            "###......###",
+            ".###....###.",
+            "..###..###..",
+            "...######...",
             "....####....",
-            ".....##.....",
             "....####....",
-            "...##..##...",
-            "..##....##..",
-            ".##......##.",
+            "...######...",
+            "..###..###..",
+            ".###....###.",
+            "###......###",
             ".#........#.",
-            "............",
         ], color: color)
     }
 
-    /// Die vier Zeichen der Erfassung, aus dem Entwurf abgelesen (Node
-    /// `160:111885`), in demselben Raster wie Info und Schliessen.
-    ///
-    /// **Beschreiben trägt zwei**: den Stift und das Mikrofon. Der Schirm
-    /// dahinter kann beides, und die Kachel sagt das, bevor man sie öffnet.
     static func camera(color: Color) -> DotArt {
         grid([
-            "............",
             "............",
             "....####....",
             ".###....###.",
@@ -133,7 +134,6 @@ extension DotArt {
             "#......#...#",
             "#..........#",
             "############",
-            "............",
         ], color: color)
     }
 
@@ -151,13 +151,11 @@ extension DotArt {
             "##..#.......",
             "####........",
             "###..#######",
-            "............",
         ], color: color)
     }
 
     static func microphone(color: Color) -> DotArt {
         grid([
-            "............",
             ".....##.....",
             "....#..#....",
             "....#..#....",
@@ -173,12 +171,30 @@ extension DotArt {
         ], color: color)
     }
 
+    static func plus(color: Color) -> DotArt {
+        grid([
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            "############",
+            "############",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+        ], color: color)
+    }
+
     /// Die Zeichnung steht als Raster da und nicht als Koordinatenliste: so
     /// sieht man die Form im Quelltext und kann sie mit dem Entwurf
     /// vergleichen, ohne etwas zu rechnen.
     ///
-    /// `DotArt` zeichnet in ein Quadrat; die zwoelf Spalten sind eine
-    /// schmaler als die dreizehn Reihen und werden darin mittig gesetzt.
+    /// `DotArt` zeichnet in ein Quadrat. Seit die Zeichen zwoelf mal zwoelf
+    /// sind, geht das glatt auf; die Mittigkeit bleibt trotzdem stehen, damit
+    /// ein schmaleres Zeichen nicht am linken Rand klebte.
     private static func grid(_ rows: [String], color: Color) -> DotArt {
         let pitch: CGFloat = 4, dot: CGFloat = 3
         let box = CGFloat(rows.count) * pitch - (pitch - dot)

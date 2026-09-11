@@ -58,6 +58,7 @@ struct CaptureSheet: View {
                  ? "Für Mahlzeiten auf kcal wechseln"
                  : "Für Kaffee auf mg wechseln")
                 .scaledFont(11)
+                .textCase(.lowercase)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, Metric.margin)

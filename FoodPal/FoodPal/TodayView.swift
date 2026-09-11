@@ -120,8 +120,11 @@ struct TodayView: View {
             // Zeitstrahl und die Anzeige zusammengeschoben, und man saehe von
             // dem Tag, den man gerade waehlt, nur noch einen Streifen.
             .overlay(alignment: .top) { calendar_ }
-
-            captureAction
+            // **Ueber** den Tag gelegt, nicht darunter gestellt: so laeuft die
+            // Liste beim Scrollen hinter den Kacheln durch und scheint durchs
+            // Glas hindurch. Ein `safeAreaInset` haelt den ruhenden Inhalt
+            // trotzdem frei — nichts steht dauerhaft dahinter.
+            .safeAreaInset(edge: .bottom, spacing: 0) { bottomBar }
         }
         .background(Palette.paper)
     }
@@ -153,19 +156,6 @@ struct TodayView: View {
             }
 
             HStack {
-                // Einstellungen sind selten gebraucht — die Ecke genuegt.
-                Button(action: onSettings) {
-                    // Das Piktogramm bleibt 22 pt; die Trefferflaeche
-                    // dahinter ist 44 — Apples Mindestmass, und der Grund,
-                    // warum sich kleine Symbole trotzdem treffen lassen.
-                    Pictogram(kind: .settings, color: Palette.ink2)
-                        .frame(width: 22, height: 22)
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Einstellungen")
-
                 Spacer()
 
                 // Der Sprung nach vorn erscheint nur, wenn er etwas tut —
@@ -215,23 +205,31 @@ struct TodayView: View {
         withAnimation { scrolled = days[index + delta] }
     }
 
-    /// Die primaere Handlung liegt unten, im Daumenbereich — nicht in einer
-    /// Ecke. Eine Aktion, kein Ziel: deshalb eine Zeile, kein Tab.
-    private var captureAction: some View {
-        VStack(spacing: 0) {
-            Rectangle().fill(Palette.rule).frame(height: 1)
+    /// **Alles Bedienbare liegt unten rechts.** Erfassen ist die Handlung des
+    /// Schirms und bekommt die ganze Hoehe und das Zeichen; die Einstellungen
+    /// stehen daneben, halb so hoch und ohne Zeichen — sie sind seltener
+    /// gebraucht, und das soll man sehen, bevor man liest.
+    ///
+    /// Beide auf derselben Grundlinie, damit die Leiste eine Kante hat und
+    /// nicht zwei. Aus dem Entwurf (Node `174:134657`).
+    private var bottomBar: some View {
+        HStack(alignment: .bottom, spacing: CaptureTile.gap) {
+            Button(action: onSettings) {
+                CaptureTile(label: "Einstellungen", height: 60, glass: true)
+            }
+            .buttonStyle(.plain)
+
             Button(action: onCapture) {
-                Text("Erfassen")
-                    .scaledFont(17, weight: .medium)
-                    .textCase(.lowercase)
-                    .foregroundStyle(Palette.ink)
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 56)
-                    .contentShape(Rectangle())
+                CaptureTile(label: "Erfassen",
+                            marks: [.plus(color: Palette.ink)],
+                            height: 120,
+                            glass: true)
             }
             .buttonStyle(.plain)
         }
-        .background(Palette.paper)
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.horizontal, Metric.margin)
+        .padding(.bottom, CaptureTile.gap)
     }
 
     private func title(for day: Date) -> String {
