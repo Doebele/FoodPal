@@ -3093,37 +3093,37 @@
         }
       }
     },
-    "Geschätzt wird von %@.": {
+    "geschätzt wird von %@.": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Geschätzt wird von %@."
+            "value": "geschätzt wird von %@."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Estimated by %@."
+            "value": "estimated by %@."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Estimado por %@."
+            "value": "estimado por %@."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Estimation par %@."
+            "value": "estimation par %@."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Stima a cura di %@."
+            "value": "stima a cura di %@."
           }
         }
       }
@@ -4044,31 +4044,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kalorien · Koffein · Makros"
+            "value": "kalorien · koffein · makros"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Calories · caffeine · macros"
+            "value": "calories · caffeine · macros"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Calorías · cafeína · macros"
+            "value": "calorías · cafeína · macros"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Calories · caféine · macros"
+            "value": "calories · caféine · macros"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Calorie · caffeina · macro"
+            "value": "calorie · caffeina · macro"
           }
         }
       }
@@ -4493,37 +4493,37 @@
         }
       }
     },
-    "Mit Health verbinden": {
+    "mit Health verbinden": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mit Health verbinden"
+            "value": "mit Health verbinden"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Connect to Health"
+            "value": "connect to Health"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Conectar con Salud"
+            "value": "conectar con Salud"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se connecter à Santé"
+            "value": "se connecter à Santé"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Connetti a Salute"
+            "value": "connetti a Salute"
           }
         }
       }
@@ -7503,37 +7503,37 @@
         }
       }
     },
-    "apple health": {
+    "Apple Health": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "apple health"
+            "value": "Apple Health"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "apple health"
+            "value": "Apple Health"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "apple salud"
+            "value": "Apple Salud"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "apple santé"
+            "value": "Apple Santé"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "apple salute"
+            "value": "Apple Salute"
           }
         }
       }

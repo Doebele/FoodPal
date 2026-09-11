@@ -199,13 +199,13 @@ struct PhotoCapture: View {
             // Steht nicht im Entwurf, bleibt trotzdem: wer als Schaetzer
             // Apple gewaehlt hat, bekommt aus einem Foto nichts — und muss
             // das sehen, bevor er eins macht.
+            // Klein steht der Satz schon im Katalog; der Name kommt gross aus
+            // `provider.label`. Ein `textCase(.lowercase)` waere hier falsch:
+            // es machte aus Claude ein claude.
             Text(provider.readsPhotos
-                 ? "Geschätzt wird von \(provider.label)."
+                 ? "geschätzt wird von \(provider.label)."
                  : "\(provider.label) schätzt nur aus Beschreibungen.")
                 .scaledFont(11)
-                // Klein wie alles andere an der Oberflaeche — und das nimmt
-                // den Namen des Anbieters mit: „geschaetzt wird von claude".
-                .textCase(.lowercase)
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 10)
         }

@@ -114,12 +114,12 @@ struct SettingsView: View {
                 // gelesen, nicht bedient, und spart so eine ganze Reihe.
                 group(spacing: 0) {
                     caption(
-                        "apple health",
+                        "Apple Health",
                         value: health.status.label,
                         marker: health.status == .authorized
                     )
                     if health.status != .authorized {
-                        actionRow("Mit Health verbinden") {
+                        actionRow("mit Health verbinden", keepsCase: true) {
                             Task {
                                 do { try await health.requestAuthorization() }
                                 catch { authError = error.localizedDescription }
@@ -143,7 +143,8 @@ struct SettingsView: View {
                 // Fliesstext — deshalb zwei Zeilen, die den Text oeffnen.
                 group(spacing: 0) {
                     caption("lizenzen")
-                    actionRow("Fira Sans · Fira Mono", value: "SIL OFL 1.1") {
+                    actionRow("Fira Sans · Fira Mono", value: "SIL OFL 1.1",
+                              keepsCase: true) {
                         open("https://openfontlicense.org")
                     }
                     actionRow("Nährwerte", value: "Open Food Facts") {
@@ -777,16 +778,20 @@ private func row<Value: View>(_ label: LocalizedStringKey, @ViewBuilder value: (
 
 /// Zeile, die etwas öffnet. Höher als eine Wertzeile (56 statt 48) und im
 /// normalen Schnitt gesetzt: sie ist eine Handlung, keine Angabe.
+/// `keepsCase` fuer Zeilen, in denen ein **Eigenname** steht: Health, Fira.
+/// Sonst schreibt die Oberflaeche alles klein — aus einem Namen wuerde dabei
+/// ein Wort. Die Beschriftung steht dann so im Katalog, wie sie erscheint.
 private func actionRow(
     _ label: LocalizedStringKey,
     value: String? = nil,
+    keepsCase: Bool = false,
     action: @escaping () -> Void
 ) -> some View {
     Button(action: action) {
         HStack {
             Text(label)
                 .scaledFont(16)
-                .textCase(.lowercase)
+                .textCase(keepsCase ? nil : .lowercase)
                 .foregroundStyle(Palette.ink)
             Spacer(minLength: 8)
             // Der Wert wird gelesen, nicht gestellt — er steht deshalb im
