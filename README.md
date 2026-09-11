@@ -150,12 +150,21 @@ Flipkarten skalieren nicht mit), **Datenschutzmanifest** (ohne den Grund
 `CA92.1` für `UserDefaults` weist App Store Connect das Paket ab),
 **Export-Erklärung** und die **Lizenznennungen** in den Einstellungen.
 
+**Die Kaffeebilder sind geklärt** (Stand 11.9.2026): Higgsfield beansprucht
+kein Eigentum an den erzeugten Bildern, die kommerzielle Nutzung ist
+ausdrücklich erlaubt, eine gesonderte Lizenz gibt es nicht, und eine Nennung
+verlangen die Bedingungen nicht — in den Einstellungen steht deshalb keine
+Zeile dafür. Zwei Dinge stehen trotzdem im Protokoll: Higgsfield darf mit
+Ein- und Ausgaben seine Modelle trainieren, und „Eigentum" ist hier eine
+Zusage des Anbieters, kein Urheberrecht — rein maschinell Erzeugtes hat in
+vielen Rechtsordnungen keinen Urheber. Für die Veröffentlichung ist beides
+ohne Folgen; erst wenn jemand die Bilder kopierte, wäre der Unterschied einer.
+
 Offen:
 
 - Muttersprachler für FR, IT, ES
 - Datenschutzerklärung im Netz — eine URL ist Pflicht
 - bezahltes Developer-Programm statt Personal Team
-- Nutzungsrechte an den erzeugten Kaffeebildern klären
 - ein Anbieterschlüssel in den App Review Notes: ohne ihn schätzt nichts,
   und der Prüfer muss jede Funktion erreichen können
 
@@ -163,4 +172,6 @@ Offen:
 
 Der Code gehört mir. Mitgeliefert sind **Fira Sans**, **Fira Sans Condensed**
 und **Fira Mono** unter der SIL Open Font License 1.1. Nährwerte für
-Fertigprodukte kommen von **Open Food Facts** (ODbL).
+Fertigprodukte kommen von **Open Food Facts** (ODbL). Die 43 Sortenbilder sind
+mit **Higgsfield** erzeugt; deren Bedingungen lassen die kommerzielle Nutzung
+zu und verlangen keine Nennung.
