@@ -28,6 +28,24 @@ BUNDLE = "com.clausmedvesek.kk26"
 # 1320 × 2868 — die 6,9 Zoll, die App Store Connect verlangt. Alles Kleinere
 # rechnet Apple selbst daraus.
 GERAET = "iPhone 17 Pro Max"
+# **Ein vergangener Tag, und die Uhr darf stehen, wo sie will.**
+#
+# Die Statusleiste laesst sich setzen, die Jetzt-Linie folgt aber `Date.now` —
+# die eine zeigte neun Uhr, die andere den echten Nachmittag. Die Linie auf
+# dieselbe Zeit zu nageln half nur halb: dann duerfte kein Eintrag nach dieser
+# Zeit im Tag stehen, und `simctl --time` nimmt ohnehin nur Zwoelfstundenzeiten
+# — `9:41` geht, `20:00` wird abgewiesen. Ein Tag mit vollem Zeitstrahl und
+# frueher Uhrzeit ist also gar nicht zu haben.
+#
+# Ein **vergangener** Tag loest beides: er ist fertig gelaufen und traegt alle
+# Eintraege, und er hat kein Jetzt — also keine Linie, die widersprechen
+# koennte. Die Uhr steht auf 9:41 wie in Apples eigenen Bildern.
+#
+# Zwei Tage zurueck und nicht einer: dort steht im Kopf ein Datum statt des
+# Wortes „gestern". Im ersten Bild, das jemand von der App sieht, ist ein
+# Datum eine Angabe und „gestern" eine Frage.
+UHRZEIT = "9:41"
+VERSATZ = "-2"
 
 # Je Sprache: Gebietsschema, die sechs Beispielmahlzeiten, und **die
 # Kaffeesorte fuer den Detailschirm**. Die Warenkunde ist das Herzstueck der
@@ -55,7 +73,7 @@ SPRACHEN = {
 # Je Schirm: Dateiname, Umgebung, und was in den Einstellungen stehen soll.
 # Die Ziffernstile wechseln bewusst durch — sie sind das Eigenste an der App.
 SCHIRME = [
-    ("01-heute",         {}, {"numberStyle": "flip", "captureMode": "meal"}),
+    ("01-tagesverlauf",         {}, {"numberStyle": "flip", "captureMode": "meal"}),
     ("02-koffein",       {}, {"numberStyle": "dotMatrix", "captureMode": "coffee"}),
     ("03-kaffee",        {"START_SHEET": "1"}, {"captureMode": "coffee"}),
     ("04-eintrag",       {"START_ENTRY": "coffee"}, {}),
@@ -109,7 +127,7 @@ def main():
     # Neun Uhr einundvierzig, volle Balken, kein Ladesymbol: so macht es Apple
     # in jedem eigenen Bild, und ohne das steht auf jedem Schirm eine andere
     # Uhrzeit — im fertigen Satz faellt das sofort auf.
-    sim("status_bar", udid, "override", "--time", "9:41",
+    sim("status_bar", udid, "override", "--time", UHRZEIT,
         "--cellularMode", "active", "--cellularBars", "4",
         "--wifiMode", "active", "--wifiBars", "3",
         "--batteryState", "discharging", "--batteryLevel", "100", pruefen=False)
@@ -136,6 +154,7 @@ def main():
                 sim("spawn", udid, "defaults", "write", BUNDLE, schluessel, "-string", wert)
 
             umwelt = {"SIMCTL_CHILD_SEED_DEMO": "1",
+                      "SIMCTL_CHILD_START_DAY": VERSATZ,
                       "SIMCTL_CHILD_DEMO_MEALS": "|".join(mahlzeiten),
                       "SIMCTL_CHILD_DEMO_COFFEE": kaffee,
                       **{f"SIMCTL_CHILD_{k}": v for k, v in umgebung.items()}}

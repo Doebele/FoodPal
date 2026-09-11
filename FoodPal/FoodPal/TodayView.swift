@@ -22,7 +22,23 @@ struct TodayView: View {
 
     // Gleich auf heute gesetzt, nicht erst in onAppear — sonst feuert
     // beim Start ein Haptik-Impuls ohne Anlass.
-    @State private var scrolled: Date? = Calendar.current.startOfDay(for: .now)
+    //
+    // `START_DAY=-1` beginnt einen Tag frueher. Fuer die Bilder im App Store:
+    // ein vergangener Tag ist **fertig gelaufen**, traegt also alle sechs
+    // Eintraege — und er hat kein Jetzt, also auch keine Linie, die der
+    // gesetzten Uhrzeit in der Statusleiste widersprechen koennte. Heute mit
+    // fester Uhrzeit ginge auch, aber dann duerfte nichts nach dieser Uhrzeit
+    // im Tag stehen, und uebrig bliebe ein fast leerer Zeitstrahl.
+    @State private var scrolled: Date? = {
+        let heute = Calendar.current.startOfDay(for: .now)
+        #if DEBUG
+        guard let roh = ProcessInfo.processInfo.environment["START_DAY"],
+              let versatz = Int(roh) else { return heute }
+        return Calendar.current.date(byAdding: .day, value: versatz, to: heute) ?? heute
+        #else
+        return heute
+        #endif
+    }()
     @State private var pickingDay = false
 
     private var calendar: Calendar { .current }
@@ -246,6 +262,7 @@ struct DayView: View {
     /// nach Beschnitt aus statt nach Absicht.
     private static let timelineInset: CGFloat = 5
 
+
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
     private var kcal: Int { Int(entries.reduce(0) { $0 + $1.kcal }.rounded()) }
     private var mg: Int { Int(entries.reduce(0) { $0 + $1.caffeineMg }.rounded()) }
@@ -259,7 +276,7 @@ struct DayView: View {
                 // einer Kante abzubrechen.
                 VStack(alignment: .leading, spacing: 0) {
                     hourLabels
-                    // Die Kerbe soll wandern, ohne dass man die App neu
+                    // Die Linie soll wandern, ohne dass man die App neu
                     // oeffnet — einmal je Minute genuegt bei Viertelstunden.
                     TimelineView(.periodic(from: .now, by: 60)) { tick in
                         DayMatrix(

@@ -127,6 +127,14 @@ Bezeichnungen der Beispielmahlzeiten reicht das Skript als `DEMO_MEALS` in
 fünf Sprachen herein; im Sprachkatalog haben sie nichts zu suchen, sie sind
 Nutzerdaten.
 
+Gezeigt wird ein **vergangener Tag** (`START_DAY=-2`). Er ist fertig gelaufen
+und trägt alle Einträge, und er hat kein Jetzt — also keine Linie, die der
+Uhrzeit in der Statusleiste widersprechen könnte. Ein heutiger Tag ginge auch,
+aber dann dürfte kein Eintrag nach 9:41 im Zeitstrahl stehen, und übrig bliebe
+ein fast leerer Tag. Zwei Tage zurück und nicht einer, weil im Kopf dann ein
+Datum steht statt des Wortes „gestern" — ein Datum ist eine Angabe, „gestern"
+eine Frage.
+
 ## Vor einem App Store
 
 Erledigt: **iPhone-only** (`TARGETED_DEVICE_FAMILY = 1` — der Entwurf hängt an
