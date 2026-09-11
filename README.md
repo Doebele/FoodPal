@@ -163,10 +163,38 @@ ohne Folgen; erst wenn jemand die Bilder kopierte, wäre der Unterschied einer.
 Offen:
 
 - Muttersprachler für FR, IT, ES
-- Datenschutzerklärung im Netz — eine URL ist Pflicht
+- die Seiten aus `web/` hochladen — erst dann steht die Datenschutz-URL
 - bezahltes Developer-Programm statt Personal Team
 - ein Anbieterschlüssel in den App Review Notes: ohne ihn schätzt nichts,
   und der Prüfer muss jede Funktion erreichen können
+
+## Die Seiten im Netz
+
+In `web/` liegen drei Dateien und ein Stylesheet: die **Datenschutzerklärung**
+auf Deutsch (`datenschutz.html`) und Englisch (`privacy.html`) und der
+**Onepager** (`index.html`), der die App vorstellt. Alles statisch, alle Pfade
+relativ — die Dateien laufen unter jeder Adresse, ohne dass eine Zeile sich
+ändert.
+
+Vorgeschlagen ist **`cafcalog.medvesek.com`**, eine Subdomain wie die fünf
+anderen des Hubs; die Datenschutz-URL für App Store Connect wäre dann
+`https://cafcalog.medvesek.com/datenschutz.html`. Genauso gut geht
+`medvesek.com/cafcalog/`.
+
+Angeschaut wird lokal mit
+
+```bash
+python3 -m http.server 8765 --directory web
+```
+
+Die Bilder in `web/bilder/` sind aus dem Simulator, auf 540 Punkt Breite
+gerechnet. Sie zeigen einen vergangenen Tag, aus demselben Grund wie die
+Bilder für den Store: die Uhr in der Statusleiste und die Jetzt-Linie sollen
+sich nicht widersprechen.
+
+Was noch fehlt, steht in den Dateien in eckigen Klammern: Anschrift und
+Kontakt im Fuss der Datenschutzseite — beides verlangt das Gesetz, und beides
+kann ich nicht erfinden. Und die Adresse im App Store, sobald es sie gibt.
 
 ## Lizenzen
 

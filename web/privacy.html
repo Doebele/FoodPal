@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy — Cafcalog</title>
+<meta name="description" content="What Cafcalog stores, what leaves your device, and what never happens.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Mono&family=Fira+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="cafcalog.css">
+</head>
+<body>
+<main>
+
+<header>
+  <p class="marke">cafcalog</p>
+  <h1>Privacy</h1>
+  <p class="stand">11 September 2026</p>
+</header>
+
+<div class="raster"></div>
+
+<h2>The short version</h2>
+<p>
+  Cafcalog has <strong>no account, no server and no measurement tools</strong>.
+  What you log stays on your device. Three things leave it — and each one only
+  because you asked for it.
+</p>
+
+<h2>What stays on the device</h2>
+<p>
+  Your entries — name, time, calories, caffeine, nutrients — and the photos you
+  take or choose. Your settings too. All of it is stored in the app itself.
+  Nothing is sent to me, nothing syncs through iCloud, and there is no backup
+  beyond the one your device makes anyway. Delete the app and this data is gone.
+</p>
+
+<h2>Apple Health</h2>
+<p>
+  With the switch in settings turned on, Cafcalog writes calories, caffeine,
+  protein, carbohydrates and fat to Apple Health. That happens on the device;
+  I see none of it. <strong>Nothing is read</strong> — the app never asks Health
+  for data, it only files it. Delete an entry in Cafcalog and the matching
+  Health entry goes with it.
+</p>
+
+<h2>What leaves the device</h2>
+
+<h3>1. The estimate from a photo or a description</h3>
+<p>
+  To estimate, the image or your text goes to the service you picked in
+  settings — Anthropic, OpenAI, Google, Mistral or one of the others. From that
+  moment their privacy terms govern that transfer; which service it is, is your
+  choice.
+</p>
+<ul>
+  <li>
+    Pick <strong>Apple</strong> and your device does the work itself. Then
+    nothing leaves it.
+  </li>
+  <li>
+    Pick <strong>a model on your own network</strong> (LM Studio on your Mac)
+    and the request goes there only — across your Wi-Fi, not the internet.
+  </li>
+</ul>
+
+<h3>2. Packaged food</h3>
+<p>
+  Looking up a packaged product asks
+  <a href="https://world.openfoodfacts.org">Open Food Facts</a>. What travels is
+  the barcode or the search term. The request identifies itself with the app's
+  project address — no mail address, no device identifier.
+</p>
+
+<h3>3. Dictation</h3>
+<p>
+  Dictation uses Apple's speech recognition. Where your device can do it, it
+  recognises <strong>on device</strong>; where it cannot, Apple's servers take
+  over. Cafcalog stores no recordings — only the text left in the field.
+</p>
+
+<h2>API keys</h2>
+<p>
+  Keys for the services live in your device's <strong>keychain</strong>, not in
+  the app's settings file. They leave the device only as a header on the request
+  to the very service they belong to.
+</p>
+
+<h2>What never happens</h2>
+<ul>
+  <li>no analytics, no statistics, no measurement of how you use the app</li>
+  <li>no advertising, no tracking, no identifier shared across apps</li>
+  <li>no sharing with third parties, no selling, no profile</li>
+  <li>no third-party components that phone home</li>
+</ul>
+
+<h2>Permissions</h2>
+<ul>
+  <li><strong>Camera</strong> — only when you take a photo.</li>
+  <li><strong>Photos</strong> — only for the image you choose.</li>
+  <li><strong>Microphone and speech recognition</strong> — only for dictation.</li>
+  <li><strong>Apple Health</strong> — write only, and only with your yes.</li>
+</ul>
+<p class="leise">
+  You can withdraw any of these in system settings at any time. The app keeps
+  working; only that one path closes.
+</p>
+
+<h2>Your rights</h2>
+<p>
+  Access, correction, deletion: the data is yours and it is with you. Edit and
+  delete entries in the app; remove everything else by deleting the app. I hold
+  no copy that I could hand over or erase.
+</p>
+
+<h2>Changes</h2>
+<p>
+  If the app changes something written here, this page changes with it. The date
+  at the top says when it last did.
+</p>
+
+<footer>
+  <p>
+    Responsible: Claus Medvesek · [address] · [contact]<br>
+    <a href="https://medvesek.com">medvesek.com</a>
+  </p>
+</footer>
+
+</main>
+</body>
+</html>
