@@ -230,6 +230,14 @@ struct TodayView: View {
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal, Metric.margin)
         .padding(.bottom, CaptureTile.gap)
+        // **Die Scheibe reicht bis an den Rand.** Ohne sie blieb unter den
+        // Kacheln ein Streifen Papier, durch den eine Zeile der Liste scharf
+        // hindurchlief, waehrend sie eine Kachel weiter oben schon verwischt
+        // war. `ignoresSafeArea` zieht das Glas bis unter den Griff — was
+        // dahinter durchwandert, ist durchgehend verwischt.
+        .background {
+            Glass().ignoresSafeArea(edges: .bottom)
+        }
     }
 
     private func title(for day: Date) -> String {

@@ -408,20 +408,8 @@ struct EntryDetailView: View {
         // Bei grosser Schrift wird aus drei Feldern mehr, als ins Bild passt.
         // `basedOnSize`: es scrollt nur dann, sonst steht es still.
         .modifier(ScrollIfTooTall())
-        // `thinMaterial`: das Bild soll durchscheinen, nicht verschwinden.
-        // Hell gemessen: der Satz steht auf dem dunkelsten Zwanzigstel des
-        // Kartengrunds bei 10,5 : 1, also reichlich ueber der Schwelle.
-        //
-        // **Im Dunkeln braucht es einen Schleier.** Dort ist die Schrift hell,
-        // und hinter dem Glas liegt oft ein helles Bild — eine weisse Tasse
-        // etwa. Ohne Schleier kam das hellste Zwanzigstel des Grundes auf
-        // 4,16 : 1 und fiel damit fuer die 11-pt-Etiketten durch (verlangt
-        // sind 4,5). Ein Viertel Schwarz zieht den Grund zurueck, ohne das
-        // Bild zu verdecken.
-        .background {
-            Rectangle().fill(.thinMaterial)
-                .overlay(Color.black.opacity(scheme == .dark ? 0.25 : 0))
-        }
+        // Glas, damit das Bild durchscheint statt zu verschwinden.
+        .background { Glass() }
         .contentShape(Rectangle())
         .onTapGesture { withAnimation(.easeInOut(duration: 0.25)) { showLore = false } }
         .transition(.opacity)

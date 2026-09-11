@@ -879,8 +879,6 @@ private struct Confirm: View {
 /// Kacheln nebeneinander, deren Zeilen auf einer Hoehe liegen, sind ruhiger
 /// als solche, die es fast tun.
 struct CaptureTile: View {
-    @Environment(\.colorScheme) private var scheme
-
     let label: LocalizedStringKey
     /// Meist eines. „Beschreiben" traegt zwei — Stift und Mikrofon, und die
     /// Einstellungen tragen gar keines: dort ist die Kachel selbst der
@@ -909,6 +907,12 @@ struct CaptureTile: View {
             .scaledFont(24, weight: .light, condensed: true)
             .textCase(.lowercase)
             .foregroundStyle(Palette.ink)
+            // „einstellungen" ist ein langes Wort. Bei grosser Schrift passt
+            // es in keine halbe Spalte mehr, und SwiftUI bricht es dann
+            // mitten durch: „einstellung / en". Lieber etwas kleiner setzen
+            // als ein Wort zerschneiden.
+            .lineLimit(2)
+            .minimumScaleFactor(0.7)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(8)
@@ -924,16 +928,8 @@ struct CaptureTile: View {
                 }
                 .padding(8)
             }
-        // Im Dunkeln braucht das Glas einen Schleier, sonst traegt ein helles
-        // Bild dahinter die helle Schrift nicht mehr — gemessen an der
-        // Bildansicht, dort fiel es ohne auf 4,16 : 1.
         .background {
-            if glass {
-                Rectangle().fill(.thinMaterial)
-                    .overlay(Color.black.opacity(scheme == .dark ? 0.25 : 0))
-            } else {
-                Palette.tile
-            }
+            if glass { Glass() } else { Palette.tile }
         }
         .contentShape(Rectangle())
     }

@@ -121,6 +121,24 @@ enum Grid {
     }
 }
 
+/// **Das Glas der App.** Durchscheinend, damit man ahnt, was dahinterliegt —
+/// und im Dunkeln mit einem Schleier, sonst traegt ein helles Bild oder eine
+/// helle Zeile dahinter die helle Schrift nicht mehr. Gemessen an der
+/// Bildansicht: ohne Schleier fiel das hellste Zwanzigstel des Grundes auf
+/// 4,16 : 1 und damit unter die 4,5, die 11-pt-Etiketten verlangen. Ein
+/// Viertel Schwarz zieht den Grund zurueck, ohne das Dahinter zu verdecken.
+///
+/// Steht an drei Stellen: ueber dem Bild, auf den Kacheln der Leiste unten
+/// und hinter der Leiste selbst. Eine Zahl, ein Ort.
+struct Glass: View {
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        Rectangle().fill(.thinMaterial)
+            .overlay(Color.black.opacity(scheme == .dark ? 0.25 : 0))
+    }
+}
+
 enum Metric {
     static let margin: CGFloat = 24
     static let rowHeight: CGFloat = 56
