@@ -18,6 +18,8 @@ struct PhotoCapture: View {
     @AppStorage(Preference.models) private var modelsJSON = "{}"
     @AppStorage(Preference.addresses) private var addressesJSON = "{}"
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     @State private var health = HealthKitSync()
     @State private var phase = {
         #if DEBUG
@@ -170,22 +172,72 @@ struct PhotoCapture: View {
 
             Spacer(minLength: 24)
 
-            Rectangle().fill(Palette.rule).frame(height: 1)
-            action("Foto aufnehmen") { showCamera = true }
-            PhotosPicker(selection: $photoItem, matching: .images) {
-                rowLabel("Aus Fotos wählen")
+            // Zwei mal zwei, und das Feld oben links bleibt leer: der Blick
+            // faellt vom Kreuz nach unten, und dort liegt auch der Daumen.
+            // Aus dem Entwurf (Node `160:111885`) — vorher standen hier drei
+            // Zeilen untereinander.
+            VStack(spacing: CaptureTile.gap) {
+                if typeSize.isAccessibilitySize {
+                    // Bei den Bedienhilfengroessen steht jede Kachel fuer sich:
+                    // in einer halben Spalte bricht „aus fotos waehlen" sonst
+                    // mitten im Wort.
+                    fromPhotos
+                    describing
+                    fromCamera
+                } else {
+                    row {
+                        Color.clear.frame(maxWidth: .infinity)
+                        fromPhotos
+                    }
+                    row {
+                        describing
+                        fromCamera
+                    }
+                }
             }
-            .buttonStyle(.plain)
-            .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
-            action("Beschreiben") { phase = .describing }
 
+            // Steht nicht im Entwurf, bleibt trotzdem: wer als Schaetzer
+            // Apple gewaehlt hat, bekommt aus einem Foto nichts — und muss
+            // das sehen, bevor er eins macht.
             Text(provider.readsPhotos
                  ? "Geschätzt wird von \(provider.label)."
                  : "\(provider.label) schätzt nur aus Beschreibungen.")
                 .scaledFont(11)
                 .foregroundStyle(Palette.ink2)
-                .padding(.top, 4)
+                .padding(.top, 10)
         }
+    }
+
+    private var fromPhotos: some View {
+        PhotosPicker(selection: $photoItem, matching: .images) {
+            CaptureTile(label: "Aus Fotos wählen", marks: [.photos(color: Palette.ink)])
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var fromCamera: some View {
+        Button { showCamera = true } label: {
+            CaptureTile(label: "Foto aufnehmen", marks: [.camera(color: Palette.ink)])
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var describing: some View {
+        Button { phase = .describing } label: {
+            CaptureTile(label: "Beschreiben",
+                        marks: [.pencil(color: Palette.ink), .microphone(color: Palette.ink)])
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Eine Kachelzeile. Beide Kacheln bekommen dieselbe Hoehe — die der
+    /// hoeheren: bei grosser Schrift waechst eine Beschriftung auf zwei
+    /// Zeilen, und ohne das stuende die andere Kachel kuerzer daneben.
+    private func row<Inhalt: View>(@ViewBuilder _ inhalt: () -> Inhalt) -> some View {
+        HStack(spacing: CaptureTile.gap) {
+            inhalt().frame(maxHeight: .infinity)
+        }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     // MARK: - Beschreiben
@@ -813,6 +865,50 @@ private struct Confirm: View {
             )
         }
         onSave(image ?? generated, image == nil && generated != nil, items, when)
+    }
+}
+
+/// Eine Kachel der Erfassung: das Zeichen oben links, die Beschriftung unten
+/// links, dieselbe Flaeche wie bei der Getraenkeauswahl.
+///
+/// Der Entwurf setzt die Beschriftung in zwei von drei Kacheln an den Fuss und
+/// in der dritten direkt unter das Zeichen. Hier steht sie ueberall unten:
+/// Kacheln nebeneinander, deren Zeilen auf einer Hoehe liegen, sind ruhiger
+/// als solche, die es fast tun.
+struct CaptureTile: View {
+    let label: LocalizedStringKey
+    /// Meist eines. „Beschreiben" traegt zwei — Stift und Mikrofon.
+    let marks: [DotArt]
+
+    static let gap: CGFloat = 4
+    /// Hoehe der Kachel und Kantenlaenge des Zeichens, beides aus dem Entwurf.
+    private static let height: CGFloat = 160
+    private static let mark: CGFloat = 51
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Abstand null: `DotArt` zeichnet in ein Quadrat und laesst links
+            // und rechts je zwei Einheiten Luft. Zwei Zeichen stossen damit
+            // von selbst im Rastermass aneinander.
+            HStack(spacing: 0) {
+                ForEach(Array(marks.enumerated()), id: \.offset) { _, zeichen in
+                    zeichen.frame(width: Self.mark, height: Self.mark)
+                }
+            }
+            Spacer(minLength: 8)
+            Text(label)
+                .scaledFont(24, weight: .light, condensed: true)
+                .textCase(.lowercase)
+                .foregroundStyle(Palette.ink)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        // Erst aufspannen, dann raendern: der Rand liegt damit aussen um die
+        // volle Kachel, und die Beschriftung sitzt wirklich an ihrem Fuss.
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .padding(8)
+        .frame(minHeight: Self.height)
+        .background(Palette.tile)
+        .contentShape(Rectangle())
     }
 }
 

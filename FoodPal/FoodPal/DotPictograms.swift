@@ -1,8 +1,12 @@
 import SwiftUI
 
-/// Punktgrafiken über den Erfassungsschirmen. Runde Punkte, nicht quadratische:
-/// sie sind kein Datenraster, sondern eine Marke — die Lochung eines
-/// Braun-Lautsprechers, nicht das Tagesdiagramm.
+/// Punktgrafiken über den Erfassungsschirmen.
+///
+/// **Zwei Familien.** Die grossen Marken — Kreuz und Rosette — haben runde
+/// Punkte: sie sind kein Datenraster, sondern eine Lochung, die eines
+/// Braun-Lautsprechers. Die kleinen Zeichen im Zwölferraster sind **eckig**,
+/// wie im Entwurf: dort sind es dieselben 3-pt-Quadrate wie im Zeitstrahl,
+/// also dasselbe Korn und nicht ein zweites.
 ///
 /// Beide Zeichnungen stammen aus dem Entwurf; die Punktmitten sind von dort
 /// abgelesen und liegen als Tabelle bereit, statt zur Laufzeit konstruiert zu
@@ -15,6 +19,8 @@ struct DotArt: View {
     /// Punktdurchmesser in denselben Einheiten.
     var diameter: CGFloat = 6
     var color: Color = Palette.rule
+    /// Eckige Punkte statt runder — siehe die zwei Familien oben.
+    var square = false
 
     var body: some View {
         Canvas { ctx, size in
@@ -22,7 +28,7 @@ struct DotArt: View {
             let r = diameter * s
             for p in points {
                 let rect = CGRect(x: p.x * s - r / 2, y: p.y * s - r / 2, width: r, height: r)
-                ctx.fill(Path(ellipseIn: rect), with: .color(color))
+                ctx.fill(square ? Path(rect) : Path(ellipseIn: rect), with: .color(color))
             }
         }
         .aspectRatio(1, contentMode: .fit)
@@ -47,9 +53,8 @@ extension DotArt {
 
     /// Info und Schliessen, aus dem Entwurf abgelesen (Node `153:327896`).
     ///
-    /// **12 Spalten, 13 Reihen, Teilung 4, Punkt 3** — dasselbe Raster wie der
-    /// Zeitstrahl, nur mit runden Punkten: hier ist es eine Marke, kein
-    /// Datenfeld.
+    /// **12 Spalten, 13 Reihen, Teilung 4, Punkt 3** — dasselbe Raster und
+    /// dasselbe Quadrat wie der Zeitstrahl.
     ///
     /// Das i ist ein gesetztes i mit Fahne und Fuss, nicht ein Strich mit
     /// Tuepfelchen. Die erste eigene Fassung setzte den Stamm enger als seinen
@@ -91,6 +96,83 @@ extension DotArt {
         ], color: color)
     }
 
+    /// Die vier Zeichen der Erfassung, aus dem Entwurf abgelesen (Node
+    /// `160:111885`), in demselben Raster wie Info und Schliessen.
+    ///
+    /// **Beschreiben trägt zwei**: den Stift und das Mikrofon. Der Schirm
+    /// dahinter kann beides, und die Kachel sagt das, bevor man sie öffnet.
+    static func camera(color: Color) -> DotArt {
+        grid([
+            "............",
+            "............",
+            "....####....",
+            ".###....###.",
+            "#..........#",
+            "#.#..###...#",
+            "#...#...#..#",
+            "#...#...#..#",
+            "#...#...#..#",
+            "#....###...#",
+            "#..........#",
+            ".##########.",
+            "............",
+        ], color: color)
+    }
+
+    static func photos(color: Color) -> DotArt {
+        grid([
+            "............",
+            "############",
+            "#..........#",
+            "#......##..#",
+            "#.....#..#.#",
+            "#..#..#..#.#",
+            "#.#.#..##..#",
+            "##...#.....#",
+            "#.....#.####",
+            "#......#...#",
+            "#..........#",
+            "############",
+            "............",
+        ], color: color)
+    }
+
+    static func pencil(color: Color) -> DotArt {
+        grid([
+            "............",
+            "........#...",
+            ".......#.#..",
+            "......#...#.",
+            ".....#...#..",
+            "....#...#...",
+            "...#...#....",
+            "..#...#.....",
+            ".#...#......",
+            "##..#.......",
+            "####........",
+            "###..#######",
+            "............",
+        ], color: color)
+    }
+
+    static func microphone(color: Color) -> DotArt {
+        grid([
+            "............",
+            ".....##.....",
+            "....#..#....",
+            "....#..#....",
+            "....#..#....",
+            "..#.#..#.#..",
+            "..#.#..#.#..",
+            "..#..##..#..",
+            "...#....#...",
+            "....####....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+        ], color: color)
+    }
+
     /// Die Zeichnung steht als Raster da und nicht als Koordinatenliste: so
     /// sieht man die Form im Quelltext und kann sie mit dem Entwurf
     /// vergleichen, ohne etwas zu rechnen.
@@ -109,7 +191,7 @@ extension DotArt {
                                       y: CGFloat(row) * pitch + dot / 2))
             }
         }
-        return DotArt(points: points, box: box, diameter: dot, color: color)
+        return DotArt(points: points, box: box, diameter: dot, color: color, square: true)
     }
 
     /// Die Rosette über der Beschreibung — Sprache. Aus dem Entwurf abgelesen,
