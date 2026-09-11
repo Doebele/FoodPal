@@ -30,6 +30,18 @@ enum DemoData {
             ?? CoffeePreset.all.first { $0.name == "Espresso" }!
     }
 
+    /// Die angehaltene Uhr. `DEMO_NOW=9:41` haelt fest, wie spaet es im Bild
+    /// ist: dort steht die Jetzt-Linie, und von heute wird nur gesaet, was
+    /// davor liegt. Die Statusleiste laesst sich stellen, `Date.now` nicht —
+    /// ohne das zeigte die eine neun Uhr und die andere den echten
+    /// Nachmittag. Ein Eintrag rechts der Linie waere aus der Zukunft.
+    static func pinnedNow(on day: Date) -> Date? {
+        guard let roh = ProcessInfo.processInfo.environment["DEMO_NOW"] else { return nil }
+        let teile = roh.split(separator: ":").compactMap { Int($0) }
+        guard teile.count == 2 else { return nil }
+        return day.addingTimeInterval(TimeInterval(teile[0] * 3600 + teile[1] * 60))
+    }
+
     static func seedIfEmpty(_ context: ModelContext) {
         let existing = (try? context.fetchCount(FetchDescriptor<Entry>())) ?? 0
         guard existing == 0 else { return }
@@ -49,7 +61,7 @@ enum DemoData {
                                  proteinG: 11, carbsG: 58, fatG: 8))
             context.insert(Entry(date: past(13, 10), name: meals[1], kind: .meal, kcal: 540 - offset,
                                  proteinG: 22, carbsG: 61, fatG: 14))
-            context.insert(Entry(date: past(16, 0), name: "Cappuccino", kind: .coffee, kcal: 74, caffeineMg: 63))
+            context.insert(afternoonCoffee.entry(at: past(16, 0)))
             context.insert(Entry(date: past(19, 30), name: meals[2], kind: .meal, kcal: 700 + offset,
                                  proteinG: 24, carbsG: 96, fatG: 19))
         }
@@ -70,7 +82,10 @@ enum DemoData {
             Entry(date: at(19, 15), name: meals[5], kind: .meal, kcal: 741,
                   proteinG: 18, carbsG: 74, fatG: 33)
         ]
-        for entry in samples { context.insert(entry) }
+        let grenze = pinnedNow(on: day)
+        for entry in samples where grenze.map({ entry.date < $0 }) ?? true {
+            context.insert(entry)
+        }
 
         // Je ein Eintrag mit Bild, damit sich die Detailansicht mit Foto und
         // mit erzeugtem Bild pruefen laesst.

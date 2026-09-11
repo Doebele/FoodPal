@@ -262,6 +262,20 @@ struct DayView: View {
     /// nach Beschnitt aus statt nach Absicht.
     private static let timelineInset: CGFloat = 5
 
+    /// Wo die Jetzt-Linie steht. Nur heute traegt sie eine.
+    ///
+    /// Im Debug-Build darf die Uhr stillstehen (`DEMO_NOW`): fuer das Bild im
+    /// App Store, das heute zeigt. Die Statusleiste laesst sich stellen,
+    /// `Date.now` nicht — sonst zeigte die eine neun Uhr und die andere den
+    /// echten Nachmittag.
+    private func now(_ tick: Date) -> Date? {
+        guard isToday else { return nil }
+        #if DEBUG
+        return DemoData.pinnedNow(on: Calendar.current.startOfDay(for: tick)) ?? tick
+        #else
+        return tick
+        #endif
+    }
 
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
     private var kcal: Int { Int(entries.reduce(0) { $0 + $1.kcal }.rounded()) }
@@ -282,7 +296,7 @@ struct DayView: View {
                         DayMatrix(
                             entries: entries,
                             roast: roast,
-                            now: isToday ? tick.date : nil
+                            now: now(tick.date)
                         )
                     }
                     // Zwei Punkt Abstand wie bisher, minus die drei Einheiten,

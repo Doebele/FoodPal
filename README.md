@@ -110,7 +110,7 @@ python3 tools/screenshots.py          # alle fünf Sprachen
 python3 tools/screenshots.py de en    # nur diese
 ```
 
-Sieben Schirme in fünf Sprachen, 35 Bilder zu **1320 × 2868** — die 6,9 Zoll,
+Acht Schirme in fünf Sprachen, 40 Bilder zu **1320 × 2868** — die 6,9 Zoll,
 die App Store Connect verlangt; alles Kleinere rechnet Apple selbst daraus.
 Ausgabe nach `bilder/store/<sprache>/`, nicht ins Repository: sie sind aus dem
 Skript reproduzierbar.
@@ -134,6 +134,13 @@ aber dann dürfte kein Eintrag nach 9:41 im Zeitstrahl stehen, und übrig bliebe
 ein fast leerer Tag. Zwei Tage zurück und nicht einer, weil im Kopf dann ein
 Datum steht statt des Wortes „gestern" — ein Datum ist eine Angabe, „gestern"
 eine Frage.
+
+**Ein Schirm macht die Ausnahme:** `08-jetzt` zeigt heute, sonst käme die
+Jetzt-Linie in keinem einzigen Bild vor. Dort steht `DEMO_NOW=9:41` — die
+Linie hält bei der Uhrzeit der Statusleiste, und gesät wird von heute nur, was
+davor liegt. Übrig bleibt ein halber Vormittag: zwei Einträge, die Linie, und
+rechts davon der Tag, der noch kommt. Weil sich damit die Saat ändert, setzt
+das Skript die App vor diesem Schirm neu auf.
 
 ## Vor einem App Store
 

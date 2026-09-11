@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bilder für den App Store, aus dem Simulator.
 
-Fünf Schirme in fünf Sprachen, ein Lauf. Angesteuert werden sie über die
+Acht Schirme in fünf Sprachen, ein Lauf. Angesteuert werden sie über die
 Startvarianten, die ohnehin im Debug-Build stecken — **kein einziger Tipp auf
 den Bildschirm**. Was man antippen muss, geht beim nächsten Lauf anders aus;
 was über eine Umgebungsvariable kommt, sieht jedes Mal gleich aus.
@@ -10,8 +10,8 @@ was über eine Umgebungsvariable kommt, sieht jedes Mal gleich aus.
     python3 tools/screenshots.py de en      # nur diese
 
 Ausgabe nach `bilder/store/<sprache>/`. Die Bilder liegen **nicht** im
-Repository: sie sind aus diesem Skript reproduzierbar, und 25 Stück zu
-1320 × 2868 wären fünfzig Megabyte Ausguss.
+Repository: sie sind aus diesem Skript reproduzierbar, und 40 Stück zu
+1320 × 2868 wären achtzig Megabyte Ausguss.
 
 Voraussetzung ist ein Build für den Simulator. Das Skript baut selbst, wenn es
 keinen findet.
@@ -28,6 +28,7 @@ BUNDLE = "com.clausmedvesek.kk26"
 # 1320 × 2868 — die 6,9 Zoll, die App Store Connect verlangt. Alles Kleinere
 # rechnet Apple selbst daraus.
 GERAET = "iPhone 17 Pro Max"
+UNGESAET = object()
 # **Ein vergangener Tag, und die Uhr darf stehen, wo sie will.**
 #
 # Die Statusleiste laesst sich setzen, die Jetzt-Linie folgt aber `Date.now` —
@@ -44,6 +45,11 @@ GERAET = "iPhone 17 Pro Max"
 # Zwei Tage zurueck und nicht einer: dort steht im Kopf ein Datum statt des
 # Wortes „gestern". Im ersten Bild, das jemand von der App sieht, ist ein
 # Datum eine Angabe und „gestern" eine Frage.
+# Ein Schirm bleibt aussen vor: `08-jetzt` zeigt **heute**, weil die
+# Jetzt-Linie sonst in keinem einzigen Bild vorkaeme. Dort steht dieselbe
+# Uhrzeit als `DEMO_NOW` — die Linie haelt dann bei 9:41, und gesaet wird von
+# heute nur, was davor liegt. Uebrig bleibt ein halber Vormittag: zwei
+# Eintraege, die Linie, und rechts davon der Tag, der noch kommt.
 UHRZEIT = "9:41"
 VERSATZ = "-2"
 
@@ -73,13 +79,15 @@ SPRACHEN = {
 # Je Schirm: Dateiname, Umgebung, und was in den Einstellungen stehen soll.
 # Die Ziffernstile wechseln bewusst durch — sie sind das Eigenste an der App.
 SCHIRME = [
-    ("01-tagesverlauf",         {}, {"numberStyle": "flip", "captureMode": "meal"}),
+    ("01-tagesverlauf",  {}, {"numberStyle": "flip", "captureMode": "meal"}),
     ("02-koffein",       {}, {"numberStyle": "dotMatrix", "captureMode": "coffee"}),
     ("03-kaffee",        {"START_SHEET": "1"}, {"captureMode": "coffee"}),
     ("04-eintrag",       {"START_ENTRY": "coffee"}, {}),
     ("05-sorte",         {"START_ENTRY": "coffee", "START_LORE": "bild"}, {}),
     ("06-warenkunde",    {"START_ENTRY": "coffee", "START_LORE": "1"}, {}),
     ("07-einstellungen", {"START_SETTINGS": "1"}, {"numberStyle": "sevenSegment"}),
+    ("08-jetzt",         {"START_DAY": "0", "DEMO_NOW": UHRZEIT},
+     {"numberStyle": "sevenSegment", "captureMode": "meal"}),
 ]
 
 
@@ -123,7 +131,6 @@ def main():
     if "Booted" not in sim("list", "devices", GERAET):
         sim("boot", udid, pruefen=False)
         time.sleep(20)
-    sim("install", udid, str(app))
     # Neun Uhr einundvierzig, volle Balken, kein Ladesymbol: so macht es Apple
     # in jedem eigenen Bild, und ohne das steht auf jedem Schirm eine andere
     # Uhrzeit — im fertigen Satz faellt das sofort auf.
@@ -137,17 +144,24 @@ def main():
         locale, kaffee, mahlzeiten = SPRACHEN[sprache]
         ordner = ZIEL / sprache
         ordner.mkdir(parents=True, exist_ok=True)
-
-        # **Frisch installieren je Sprache.** `seedIfEmpty` saet nur in einen
-        # leeren Speicher; ohne das Loeschen behielte Englisch die deutschen
-        # Bezeichnungen aus dem Lauf davor. Gekostet hat mich das einen
-        # Durchgang mit „Ofengemuese" in der englischen Fassung.
-        sim("uninstall", udid, BUNDLE, pruefen=False)
-        sim("install", udid, str(app))
+        # Noch nichts installiert. Kein Sentinel aus dem Wertebereich: `None`
+        # ist selbst eine gueltige Saat (der volle Tag), und der erste Schirm
+        # jeder Sprache muss frisch aufsetzen.
+        gesaet = UNGESAET
 
         for name, umgebung, einstellungen in SCHIRME:
             sim("terminate", udid, BUNDLE, pruefen=False)
             time.sleep(0.5)
+            # **Frisch installieren, sobald sich die Saat aendert.**
+            # `seedIfEmpty` saet nur in einen leeren Speicher; ohne das
+            # Loeschen behielte Englisch die deutschen Bezeichnungen aus dem
+            # Lauf davor, und der angehaltene Vormittag die Eintraege des
+            # vollen Tages. Gekostet hat mich das einen Durchgang mit
+            # „Ofengemuese" in der englischen Fassung.
+            if umgebung.get("DEMO_NOW") != gesaet:
+                sim("uninstall", udid, BUNDLE, pruefen=False)
+                sim("install", udid, str(app))
+                gesaet = umgebung.get("DEMO_NOW")
             # **Vor** dem Start schreiben, nicht danach: die App legt ihre
             # eigenen Werte beim Beenden ab und ueberschriebe sonst diese hier.
             for schluessel, wert in einstellungen.items():
@@ -174,7 +188,7 @@ def main():
     sim("status_bar", udid, "clear", pruefen=False)
     print(f"\n{gemacht} Bilder in {ZIEL.relative_to(WURZEL)}/")
     print("Format prüfen:  sips -g pixelWidth -g pixelHeight "
-          f"{ZIEL.relative_to(WURZEL)}/de/01-heute.png")
+          f"{ZIEL.relative_to(WURZEL)}/de/01-tagesverlauf.png")
 
 
 if __name__ == "__main__":
