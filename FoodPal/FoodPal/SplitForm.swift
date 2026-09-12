@@ -119,7 +119,21 @@ struct FormField<Value: View>: View {
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: box)
-            value
+            // **Eine Zeilenhöhe für beide Spalten.** Links stehen die Zahlen
+            // in Fira Mono, rechts der Name in Fira Sans Condensed — gleiche
+            // Grösse, aber verschiedene Zeilenhöhe, und damit sassen die
+            // Haarlinien der beiden Spalten 2,7 Punkte versetzt. Das Mass
+            // nimmt die höhere der beiden Schriften, gemessen an der Schrift
+            // selbst; beide Spalten liegen danach auf derselben Linie.
+            // Als **Mindesthöhe**, nicht als feste: die Bezeichnung rechts
+            // wächst über mehrere Zeilen, und eine feste Höhe schnitte sie ab.
+            //
+            // Die zwei Punkte über der Zeilenhöhe sind der Unterschied
+            // zwischen einem gesetzten Text und einem Eingabefeld: das Feld
+            // trägt seinen eigenen Rand. Gemessen, nicht geraten — ohne sie
+            // bliebe die Zahlenspalte über der Mindesthöhe und der Versatz
+            // wäre wieder da.
+            value.frame(minHeight: Fira.lineHeight(24, typeSize, design: .monospaced) + 2)
             Rectangle().fill(Palette.rule).frame(height: 1)
         }
         // Ueber die Umgebung, nicht am Feld: so folgt auch der Text **in**

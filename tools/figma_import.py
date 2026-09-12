@@ -88,7 +88,9 @@ def main():
     auftrag = json.load(sys.stdin)
     sitzung = None
     diagnostik = []
-    for zugang in token():
+    kandidaten = list(token())
+    print(f'{len(kandidaten)} Token-Kandidaten gefunden')
+    for zugang in kandidaten:
         status, sitzung, botschaft = post(
             {'jsonrpc': '2.0', 'id': 1, 'method': 'initialize', 'params': {
                 'protocolVersion': '2025-06-18', 'capabilities': {},
@@ -100,7 +102,7 @@ def main():
             break
     else:
         for zeile in diagnostik:
-            print(zeile, file=sys.stderr)
+            print(zeile)
         raise SystemExit('kein gültiger Token')
     post({'jsonrpc': '2.0', 'method': 'notifications/initialized'}, zugang, sitzung)
 
