@@ -19,15 +19,33 @@ struct TodayView: View {
     @Query(sort: \Entry.date) private var all: [Entry]
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
 
     // Gleich auf heute gesetzt, nicht erst in onAppear — sonst feuert
     // beim Start ein Haptik-Impuls ohne Anlass.
-    @State private var scrolled: Date? = Calendar.current.startOfDay(for: .now)
+    //
+    // `START_DAY=-1` beginnt einen Tag frueher. Fuer die Bilder im App Store:
+    // ein vergangener Tag ist **fertig gelaufen**, traegt also alle sechs
+    // Eintraege — und er hat kein Jetzt, also auch keine Linie, die der
+    // gesetzten Uhrzeit in der Statusleiste widersprechen koennte. Heute mit
+    // fester Uhrzeit ginge auch, aber dann duerfte nichts nach dieser Uhrzeit
+    // im Tag stehen, und uebrig bliebe ein fast leerer Zeitstrahl.
+    @State private var scrolled: Date? = {
+        let heute = Calendar.current.startOfDay(for: .now)
+        #if DEBUG
+        guard let roh = ProcessInfo.processInfo.environment["START_DAY"],
+              let versatz = Int(roh) else { return heute }
+        return Calendar.current.date(byAdding: .day, value: versatz, to: heute) ?? heute
+        #else
+        return heute
+        #endif
+    }()
     @State private var pickingDay = false
 
     private var calendar: Calendar { .current }
     private var today: Date { calendar.startOfDay(for: .now) }
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
     private var mode: DisplayMode { captureMode == Entry.Kind.coffee.rawValue ? .mg : .kcal }
 
     /// Vom ersten Eintrag bis heute. Nach vorn ist bei heute Schluss —
@@ -105,7 +123,7 @@ struct TodayView: View {
             // dem Tag, den man gerade waehlt, nur noch einen Streifen.
             .overlay(alignment: .top) { calendar_ }
 
-            captureAction
+            bottomBar
         }
         .background(Palette.paper)
     }
@@ -137,19 +155,6 @@ struct TodayView: View {
             }
 
             HStack {
-                // Einstellungen sind selten gebraucht — die Ecke genuegt.
-                Button(action: onSettings) {
-                    // Das Piktogramm bleibt 22 pt; die Trefferflaeche
-                    // dahinter ist 44 — Apples Mindestmass, und der Grund,
-                    // warum sich kleine Symbole trotzdem treffen lassen.
-                    Pictogram(kind: .settings, color: Palette.ink2)
-                        .frame(width: 22, height: 22)
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Einstellungen")
-
                 Spacer()
 
                 // Der Sprung nach vorn erscheint nur, wenn er etwas tut —
@@ -199,23 +204,43 @@ struct TodayView: View {
         withAnimation { scrolled = days[index + delta] }
     }
 
-    /// Die primaere Handlung liegt unten, im Daumenbereich — nicht in einer
-    /// Ecke. Eine Aktion, kein Ziel: deshalb eine Zeile, kein Tab.
-    private var captureAction: some View {
-        VStack(spacing: 0) {
-            Rectangle().fill(Palette.rule).frame(height: 1)
-            Button(action: onCapture) {
-                Text("Erfassen")
-                    .scaledFont(17, weight: .medium)
-                    .textCase(.lowercase)
-                    .foregroundStyle(Palette.ink)
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 56)
-                    .contentShape(Rectangle())
+    /// **Alles Bedienbare liegt unten rechts.** Erfassen ist die Handlung des
+    /// Schirms und bekommt die ganze Hoehe und das Zeichen; die Einstellungen
+    /// stehen daneben, halb so hoch und ohne Zeichen — sie sind seltener
+    /// gebraucht, und das soll man sehen, bevor man liest.
+    ///
+    /// Beide auf derselben Grundlinie, damit die Leiste eine Kante hat und
+    /// nicht zwei. Aus dem Entwurf (Node `174:134657`).
+    ///
+    /// **Sie steht unter dem Tag, nicht darueber** — derselbe Aufbau wie der
+    /// Umschalter in der Getraenkeauswahl: der Scrollbereich endet hier, nichts
+    /// laeuft dahinter, und der Grund ist dasselbe Papier wie ueberall. Eine
+    /// Fassung mit Glas darueber gab es; sie brachte eine Kante quer ueber den
+    /// Schirm und ein graues Band an leeren Tagen. Zwei Schirme, zwei Aufbauten
+    /// waren es nicht wert.
+    private var bottomBar: some View {
+        HStack(alignment: .bottom, spacing: CaptureTile.gap) {
+            // Erfassen aussen an der Bedienhand, einstellungen innen.
+            ForEach(hand.order(Griff.erfassen, Griff.einstellungen)) { griff in
+                switch griff {
+                case .einstellungen:
+                    Button(action: onSettings) {
+                        CaptureTile(label: "Einstellungen", height: 60)
+                    }
+                    .buttonStyle(.plain)
+                case .erfassen:
+                    Button(action: onCapture) {
+                        CaptureTile(label: "Erfassen",
+                                    marks: [.plus(color: Palette.ink)],
+                                    height: 120)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
-            .buttonStyle(.plain)
         }
-        .background(Palette.paper)
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.horizontal, Metric.margin)
+        .padding(.bottom, CaptureTile.gap)
     }
 
     private func title(for day: Date) -> String {
@@ -229,6 +254,13 @@ struct TodayView: View {
     }
 }
 
+/// Die zwei Griffe der Leiste unten, damit sie sich nach der Hand ordnen
+/// lassen, ohne den Aufbau zweimal hinzuschreiben.
+private enum Griff: String, Identifiable, CaseIterable {
+    case einstellungen, erfassen
+    var id: String { rawValue }
+}
+
 /// Ein Tag: Diagramm, Trennlinie, Anzeige, Umschalter, Chronologie.
 struct DayView: View {
     let entries: [Entry]
@@ -239,6 +271,7 @@ struct DayView: View {
 
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var selected: Entry?
 
@@ -246,63 +279,136 @@ struct DayView: View {
     /// nach Beschnitt aus statt nach Absicht.
     private static let timelineInset: CGFloat = 5
 
+    /// Wo die Jetzt-Linie steht. Nur heute traegt sie eine.
+    ///
+    /// Im Debug-Build darf die Uhr stillstehen (`DEMO_NOW`): fuer das Bild im
+    /// App Store, das heute zeigt. Die Statusleiste laesst sich stellen,
+    /// `Date.now` nicht — sonst zeigte die eine neun Uhr und die andere den
+    /// echten Nachmittag.
+    private func now(_ tick: Date) -> Date? {
+        guard isToday else { return nil }
+        #if DEBUG
+        return DemoData.pinnedNow(on: Calendar.current.startOfDay(for: tick)) ?? tick
+        #else
+        return tick
+        #endif
+    }
+
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
     private var kcal: Int { Int(entries.reduce(0) { $0 + $1.kcal }.rounded()) }
     private var mg: Int { Int(entries.reduce(0) { $0 + $1.caffeineMg }.rounded()) }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                // Der Zeitstrahl laeuft aus dem Seitenrand heraus bis fast an
-                // den Bildschirmrand. Beim Wischen von Tag zu Tag geht die
-                // Rasterflaeche dadurch fliessend ineinander ueber, statt an
-                // einer Kante abzubrechen.
+        // **Nur die Liste scrollt.** Der Kopf steht: Zeitstrahl, Anzeige und
+        // Umschalter sind das Bild des Tages und sollen nicht wegwandern,
+        // waehrend man die Eintraege durchsieht. Vorher lag alles in einem
+        // Scrollbereich, und beim Blaettern nach unten verschwand zuerst das,
+        // worum es geht.
+        //
+        // Bei den Bedienhilfengroessen scrollt wieder alles: dort fuellt der
+        // Kopf allein den Schirm, und ein festgenagelter Kopf liesse der
+        // Liste einen Streifen von zwei Zeilen. Wer so gross liest, kommt
+        // lieber scrollend an seine Eintraege als gar nicht.
+        if typeSize.isAccessibilitySize {
+            ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    hourLabels
-                    // Die Kerbe soll wandern, ohne dass man die App neu
-                    // oeffnet — einmal je Minute genuegt bei Viertelstunden.
-                    TimelineView(.periodic(from: .now, by: 60)) { tick in
-                        DayMatrix(
-                            entries: entries,
-                            roast: roast,
-                            now: isToday ? tick.date : nil
-                        )
-                    }
-                    .padding(.top, 2)
-                }
-                .padding(.horizontal, -(Metric.margin - Self.timelineInset))
-
-                // Die gepunktete Trennlinie ist weg: sie sass im alten Raster
-                // mit einem Punkt je Stundengruppe und haette im neuen nur noch
-                // eine zweite, groeber gerasterte Reihe unter dem Zeitstrahl
-                // ergeben. Der Weissraum trennt genauso gut.
-                numberDisplay
-
-                // Keine Einheit neben der Zahl: der Umschalter direkt darunter
-                // sagt bereits, ob kcal oder mg gemeint sind. Zweimal dasselbe
-                // in zwei Zeilen ist eine Zeile zu viel.
-                ModeToggle(mode: mode, roast: roast) { new in
-                    captureMode = new == .kcal ? Entry.Kind.meal.rawValue : Entry.Kind.coffee.rawValue
-                }
-                .frame(maxWidth: .infinity)
-                // Der Abstand nach oben steht bei jedem Stil in seinem eigenen
-                // Zweig: die Dot-Matrix braucht mehr Luft als die Karten, und
-                // ein gemeinsamer Wert hier haette den Umschalter bei einem der
-                // beiden verrueckt.
-
-                if entries.isEmpty {
-                    Text("Noch nichts erfasst.")
-                        .scaledFont(22, weight: .light)
-                        .foregroundStyle(Palette.ink)
-                        .padding(.top, 40)
-                } else {
-                    entryList.padding(.top, 32)
+                    kopf
+                    liste
                 }
             }
-            .padding(.horizontal, Metric.margin)
-            .padding(.bottom, 24)
+            .scrollIndicators(.hidden)
+        } else {
+            VStack(alignment: .leading, spacing: 0) {
+                kopf
+                eintraege
+            }
         }
-        .scrollIndicators(.hidden)
+    }
+
+    /// Der feste Teil: Zeitstrahl, Anzeige, Umschalter.
+    private var kopf: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Der Zeitstrahl laeuft aus dem Seitenrand heraus bis fast an
+            // den Bildschirmrand. Beim Wischen von Tag zu Tag geht die
+            // Rasterflaeche dadurch fliessend ineinander ueber, statt an
+            // einer Kante abzubrechen.
+            VStack(alignment: .leading, spacing: 0) {
+                hourLabels
+                // Die Linie soll wandern, ohne dass man die App neu
+                // oeffnet — einmal je Minute genuegt bei Viertelstunden.
+                TimelineView(.periodic(from: .now, by: 60)) { tick in
+                    DayMatrix(
+                        entries: entries,
+                        roast: roast,
+                        now: now(tick.date)
+                    )
+                }
+                // Zwei Punkt Abstand wie bisher, minus die drei Einheiten,
+                // um die das Rasterfeld fuer den Ueberstand der Jetzt-Linie
+                // nach oben gewachsen ist. Die Punkte stehen damit, wo sie
+                // standen, und nur die Linie ragt in den Zwischenraum.
+                .padding(.top, -1)
+            }
+            .padding(.horizontal, -(Metric.margin - Self.timelineInset))
+
+            // Die gepunktete Trennlinie ist weg: sie sass im alten Raster
+            // mit einem Punkt je Stundengruppe und haette im neuen nur noch
+            // eine zweite, groeber gerasterte Reihe unter dem Zeitstrahl
+            // ergeben. Der Weissraum trennt genauso gut.
+            numberDisplay
+
+            // Keine Einheit neben der Zahl: der Umschalter direkt darunter
+            // sagt bereits, ob kcal oder mg gemeint sind. Zweimal dasselbe
+            // in zwei Zeilen ist eine Zeile zu viel.
+            ModeToggle(mode: mode, roast: roast) { new in
+                captureMode = new == .kcal ? Entry.Kind.meal.rawValue : Entry.Kind.coffee.rawValue
+            }
+            .frame(maxWidth: .infinity)
+            // Der Abstand nach oben steht bei jedem Stil in seinem eigenen
+            // Zweig: die Dot-Matrix braucht mehr Luft als die Karten, und
+            // ein gemeinsamer Wert hier haette den Umschalter bei einem der
+            // beiden verrueckt.
+        }
+        .padding(.horizontal, Metric.margin)
+        // **Luft unter dem Umschalter.** Die Liste beginnt hier, und beim
+        // Scrollen laeuft sie an dieser Kante aus. Ohne den Abstand stiege
+        // die erste Zeile dem Umschalter direkt auf die Kappe.
+        .padding(.bottom, 12)
+        // **Der Kopf nimmt sich seine Hoehe zuerst.** Der Zeitstrahl haengt
+        // an einem Seitenverhaeltnis und schrumpft mit, wenn ihm weniger
+        // Hoehe angeboten wird — in einem Stapel neben einem Scrollbereich
+        // teilt SwiftUI sonst beiden zu, und das Raster stand auf halber
+        // Breite da. Mit Vorrang bekommt der Kopf sein Mass, der Rest geht
+        // an die Liste, die ohnehin scrollt.
+        .layoutPriority(1)
+    }
+
+    /// Der bewegliche Teil.
+    private var eintraege: some View {
+        ScrollView { liste }
+            .scrollIndicators(.hidden)
+    }
+
+    private var liste: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if entries.isEmpty {
+                // Klein und still: der leere Tag ist eine Auskunft, keine
+                // Ansage. In 22 pt stand der Satz da wie eine Ueberschrift
+                // ueber nichts.
+                Text("noch nichts erfasst")
+                    .scaledFont(11)
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.top, 24)
+            } else {
+                // 20 statt 32: zwoelf davon stehen jetzt unter dem
+                // Umschalter und bleiben auch beim Scrollen dort.
+                entryList.padding(.top, 20)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Metric.margin)
+        .padding(.bottom, 24)
     }
 
     /// Nur noch vier Marken statt sechs — 02, 08, 14, 20. Ein Tag hat vier
@@ -358,23 +464,39 @@ struct DayView: View {
             .scaledFont(17, weight: .medium, design: .monospaced)
             .foregroundStyle(Palette.ink)
 
+        // **Die Zeile folgt der Bedienhand.** Der Wert steht an der Kante,
+        // an der der Daumen liegt, die Uhrzeit gegenueber. Bei rechts bleibt
+        // alles, wie es war.
         Group {
             if typeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: hand == .right ? .leading : .trailing, spacing: 6) {
                     HStack(spacing: 8) {
-                        time
-                        Spacer(minLength: 8)
-                        value
+                        if hand == .right {
+                            time
+                            Spacer(minLength: 8)
+                            value
+                        } else {
+                            value
+                            Spacer(minLength: 8)
+                            time
+                        }
                     }
-                    name.frame(maxWidth: .infinity, alignment: .leading)
+                    name.frame(maxWidth: .infinity,
+                               alignment: hand == .right ? .leading : .trailing)
                 }
             } else {
                 HStack(spacing: 8) {
                     // Die 52 pt der Uhrzeitspalte waren schon bei xxLarge zu
                     // eng — „19:15" wurde zu „1…".
-                    time.fixedSize().frame(minWidth: 44, alignment: .leading)
-                    name.lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
-                    value.fixedSize()
+                    if hand == .right {
+                        time.fixedSize().frame(minWidth: 44, alignment: .leading)
+                        name.lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
+                        value.fixedSize()
+                    } else {
+                        value.fixedSize()
+                        name.lineLimit(2).frame(maxWidth: .infinity, alignment: .trailing)
+                        time.fixedSize().frame(minWidth: 44, alignment: .trailing)
+                    }
                 }
             }
         }
@@ -422,8 +544,10 @@ struct DayView: View {
                 // den Teil nicht, um den es geht.
                 selected = sorted.last { $0.photo != nil } ?? sorted.last
             case "coffee":
+                // Ohne Foto: dann steht das mitgelieferte Bild der Sorte da,
+                // und genau darum geht es bei diesem Schalter.
                 selected = entries.sorted { $0.date < $1.date }
-                    .last { $0.kind == .coffee && $0.photo != nil }
+                    .last { $0.kind == .coffee && $0.photo == nil }
             default:
                 break
             }
@@ -479,6 +603,13 @@ struct ModeToggle: View {
 
 /// Wählt die Ziffernanzeige nach der Einstellung. Ein `switch`, kein
 /// Protokoll — drei konkrete Views, kein Erweiterungspunkt.
+///
+/// **Und die Stelle, an der der Wert wartet.** Wer einen Kaffee erfasst, sieht
+/// den Wechsel sonst nicht: die Summe steht schon neu, während das Sheet noch
+/// nach unten fährt. Die Bewegung findet hinter einer Fläche statt, die sie
+/// verdeckt. Der Wert hinkt deshalb absichtlich hinterher, bis das Sheet weg
+/// ist — die halbe Sekunde ist kurz genug, dass nichts hängt, und lang genug,
+/// dass man hinschaut, bevor es losgeht.
 struct NumberDisplay: View {
     let value: Int
     let style: NumberStyle
@@ -486,14 +617,46 @@ struct NumberDisplay: View {
     /// Wechselt dieser Schlüssel, nullt die Anzeige, statt weiterzuzählen.
     var resetKey: String = ""
 
+    /// **0,3 s Sheet, 0,5 s Stille.** Nachgemessen an einer Bildschirmaufnahme:
+    /// vom Tippen auf die Kaffeekachel bis zum verschwundenen Sheet vergehen
+    /// rund drei Zehntel. Die halbe Sekunde danach ist der Moment, in dem der
+    /// Blick schon auf der Anzeige liegt und sich noch nichts rührt — und
+    /// genau dort setzt die Bewegung an. Mit 0,5 s insgesamt blieben nur zwei
+    /// Zehntel Stille übrig, und der Aufbau begann, während das Auge noch dem
+    /// Sheet nachsah.
+    private static let delay = Duration.milliseconds(800)
+
+    /// `nil`, solange nichts angezeigt wurde: der erste Wert geht ohne Warten
+    /// durch. Das ist auch der Tageswechsel — jede Seite bringt ihre eigene
+    /// Anzeige mit, und eine frisch erscheinende hat nichts zu verzögern.
+    @State private var held: Int?
+    @State private var heldKey = ""
+
     var body: some View {
-        switch style {
-        case .flip:
-            FlipDisplay(value: value, tint: tint, resetKey: resetKey)
-        case .sevenSegment:
-            SevenSegmentDisplay(value: value, tint: tint, resetKey: resetKey)
-        case .dotMatrix:
-            DotMatrixDisplay(value: value, tint: tint, resetKey: resetKey)
+        let shown = held ?? value
+        Group {
+            switch style {
+            case .flip:
+                FlipDisplay(value: shown, tint: tint, resetKey: resetKey)
+            case .sevenSegment:
+                SevenSegmentDisplay(value: shown, tint: tint, resetKey: resetKey)
+            case .dotMatrix:
+                DotMatrixDisplay(value: shown, tint: tint, resetKey: resetKey)
+            }
+        }
+        .task(id: "\(value)|\(resetKey)") {
+            // Der Moduswechsel geht sofort durch: man hat gerade auf den
+            // Umschalter getippt und schaut die Anzeige an. Warten wäre dort
+            // kein Auftritt, sondern eine Verzögerung.
+            guard held != nil, resetKey == heldKey else {
+                heldKey = resetKey
+                held = value
+                return
+            }
+            guard held != value else { return }
+            try? await Task.sleep(for: Self.delay)
+            guard !Task.isCancelled else { return }
+            held = value
         }
     }
 }

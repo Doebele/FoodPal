@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 extension View {
     /// Wie `.font(.custom(_:size:))`, aber **mitwachsend** mit der
@@ -42,6 +43,44 @@ enum Fira {
         return "FiraSans-Regular"
     }
 
+    /// Der Faktor, mit dem jede Grösse in dieser App mitwächst.
+    ///
+    /// Apples Fliesstext geht 14 · 15 · 16 · **17** · 19 · 21 · 23 und in den
+    /// Bedienhilfen 28 · 33 · 40 · 47 · 53. Auf 17 normiert ergibt das diese
+    /// Faktoren; damit folgt jede Grösse derselben Kurve wie der Systemtext.
+    ///
+    /// Steht hier und nicht im Modifier, weil auch Höhen ihn brauchen: eine
+    /// Zeile, die eine Schrift trägt, muss mitwachsen wie die Schrift.
+    static func scale(_ size: DynamicTypeSize) -> CGFloat {
+        switch size {
+        case .xSmall: 14 / 17
+        case .small: 15 / 17
+        case .medium: 16 / 17
+        case .large: 1
+        case .xLarge: 19 / 17
+        case .xxLarge: 21 / 17
+        case .xxxLarge: 23 / 17
+        case .accessibility1: 28 / 17
+        case .accessibility2: 33 / 17
+        case .accessibility3: 40 / 17
+        case .accessibility4: 47 / 17
+        case .accessibility5: 53 / 17
+        @unknown default: 1
+        }
+    }
+
+    /// Die Zeilenhöhe eines Schnitts bei dieser Grösse — gemessen an der
+    /// Schrift selbst, nicht geschätzt.
+    static func lineHeight(_ size: CGFloat, _ typeSize: DynamicTypeSize,
+                           weight: Font.Weight = .regular,
+                           design: Font.Design = .default,
+                           condensed: Bool = false) -> CGFloat {
+        let punkte = size * scale(typeSize)
+        let schrift = UIFont(name: name(weight, design, condensed: condensed), size: punkte)
+            ?? .systemFont(ofSize: punkte)
+        return ceil(schrift.lineHeight)
+    }
+
     /// Fira liegt in drei Schnitten im Bündel. Alles ab Medium fällt auf
     /// Medium, alles darunter auf Regular — mehr Gewichte wären mehr Megabyte
     /// für Unterschiede, die in dieser Oberfläche niemand sieht.
@@ -67,24 +106,5 @@ private struct ScaledFont: ViewModifier {
         )
     }
 
-    /// Apples Fließtext geht 14 · 15 · 16 · **17** · 19 · 21 · 23 und in den
-    /// Bedienhilfen 28 · 33 · 40 · 47 · 53. Auf 17 normiert ergibt das diese
-    /// Faktoren; damit folgt jede Größe derselben Kurve wie der Systemtext.
-    private static func factor(_ size: DynamicTypeSize) -> CGFloat {
-        switch size {
-        case .xSmall: 14 / 17
-        case .small: 15 / 17
-        case .medium: 16 / 17
-        case .large: 1
-        case .xLarge: 19 / 17
-        case .xxLarge: 21 / 17
-        case .xxxLarge: 23 / 17
-        case .accessibility1: 28 / 17
-        case .accessibility2: 33 / 17
-        case .accessibility3: 40 / 17
-        case .accessibility4: 47 / 17
-        case .accessibility5: 53 / 17
-        @unknown default: 1
-        }
-    }
+    private static func factor(_ size: DynamicTypeSize) -> CGFloat { Fira.scale(size) }
 }

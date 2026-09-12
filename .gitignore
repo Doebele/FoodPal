@@ -87,3 +87,6 @@ design/
 # Projektordner, gehoeren aber nicht ins Repository: 35 MB Auswahlmaterial,
 # von dem am Ende ein Viertel in den Asset-Katalog wandert.
 bilder/
+
+# Der Icon-Entwurf ist klein und gehoert dazu.
+!bilder/icon/

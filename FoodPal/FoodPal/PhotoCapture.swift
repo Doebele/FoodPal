@@ -10,6 +10,8 @@ import ImagePlayground
 /// jedem davon offen.
 struct PhotoCapture: View {
     let onSaved: () -> Void
+    /// Ruft die Einstellungen auf, wenn noch kein Modell eingerichtet ist.
+    var onSetup: () -> Void = {}
 
     @Environment(\.modelContext) private var context
     @AppStorage(Preference.healthSync) private var healthSync = true
@@ -17,6 +19,9 @@ struct PhotoCapture: View {
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
     @AppStorage(Preference.models) private var modelsJSON = "{}"
     @AppStorage(Preference.addresses) private var addressesJSON = "{}"
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
+
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     @State private var health = HealthKitSync()
     @State private var phase = {
@@ -48,6 +53,7 @@ struct PhotoCapture: View {
     @State private var beforeDictation = ""
     /// Merkt sich, dass der Abgang ein Erfolg war und nicht ein Abbruch.
     @State private var saved = false
+    @State private var askSetup = false
 
     private enum Phase {
         case idle
@@ -72,6 +78,18 @@ struct PhotoCapture: View {
     }
 
     private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
+
+    /// **Ohne Modell keine Mahlzeit.** Kaffee geht immer, der steht als Sorte
+    /// bereit; eine Mahlzeit dagegen schaetzt ein Modell aus Foto oder
+    /// Beschreibung, und ohne Schluessel antwortet keines. Die App startet
+    /// bewusst im Kaffeemodus, also trifft das genau den, der zum ersten Mal
+    /// auf kcal wechselt.
+    ///
+    /// `isConfigured` sagt für die Dienste im eigenen Netz immer ja: die
+    /// brauchen keinen Schluessel. Stimmt dort die Adresse nicht, sagt es der
+    /// Verbindungstest in den Einstellungen, nicht dieser Dialog.
+    private var ready: Bool { provider.isConfigured }
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
     private var effectiveModel: String { provider.model(from: modelsJSON) }
 
@@ -99,6 +117,15 @@ struct PhotoCapture: View {
             // schluckt UIKit die zweite Anweisung, und die Erfassung bliebe
             // offen stehen. `onDismiss` feuert, wenn wirklich nichts mehr da
             // ist.
+            // **Modal, weil hier nichts weitergeht.** Ein Hinweis in der Ecke
+            // liesse den Tipp ins Leere laufen; der Dialog nennt den Grund und
+            // den naechsten Schritt in einem Zug.
+            .alert("Noch kein Modell eingerichtet", isPresented: $askSetup) {
+                Button("Einstellungen öffnen") { onSetup() }
+                Button("Abbrechen", role: .cancel) {}
+            } message: {
+                Text("Mahlzeiten schätzt ein Sprachmodell aus dem Foto oder deiner Beschreibung. Trage in den Einstellungen einen Anbieter und seinen Schlüssel ein. Oder wähle Apple, das auf dem Gerät rechnet und keinen Schlüssel braucht.")
+            }
             .sheet(isPresented: working, onDismiss: {
                 guard saved else { return }
                 saved = false
@@ -163,29 +190,104 @@ struct PhotoCapture: View {
             // Das Kreuz steht oben und sagt, worum es hier geht: hinzufügen.
             // Es ist keine Schaltfläche — der Weg wird unten gewählt, wo der
             // Daumen liegt.
-            DotArt.plus
+            DotArt.cross
                 .frame(width: 186, height: 186)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 24)
 
             Spacer(minLength: 24)
 
-            Rectangle().fill(Palette.rule).frame(height: 1)
-            action("Foto aufnehmen") { showCamera = true }
-            PhotosPicker(selection: $photoItem, matching: .images) {
-                rowLabel("Aus Fotos wählen")
+            // Zwei mal zwei, und das Feld oben links bleibt leer: der Blick
+            // faellt vom Kreuz nach unten, und dort liegt auch der Daumen.
+            // Aus dem Entwurf (Node `160:111885`) — vorher standen hier drei
+            // Zeilen untereinander.
+            VStack(spacing: CaptureTile.gap) {
+                if typeSize.isAccessibilitySize {
+                    // Bei den Bedienhilfengroessen steht jede Kachel fuer sich:
+                    // in einer halben Spalte bricht „aus fotos waehlen" sonst
+                    // mitten im Wort.
+                    fromPhotos
+                    describing
+                    fromCamera
+                } else {
+                    // Das leere Feld liegt der Bedienhand gegenueber, und
+                    // die Kamera landet in ihrer Ecke.
+                    row {
+                        if hand == .right {
+                            Color.clear.frame(maxWidth: .infinity)
+                            fromPhotos
+                        } else {
+                            fromPhotos
+                            Color.clear.frame(maxWidth: .infinity)
+                        }
+                    }
+                    row {
+                        if hand == .right {
+                            describing
+                            fromCamera
+                        } else {
+                            fromCamera
+                            describing
+                        }
+                    }
+                }
             }
-            .buttonStyle(.plain)
-            .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
-            action("Beschreiben") { phase = .describing }
 
+            // Steht nicht im Entwurf, bleibt trotzdem: wer als Schaetzer
+            // Apple gewaehlt hat, bekommt aus einem Foto nichts — und muss
+            // das sehen, bevor er eins macht.
+            // Klein steht der Satz schon im Katalog; der Name kommt gross aus
+            // `provider.label`. Ein `textCase(.lowercase)` waere hier falsch:
+            // es machte aus Claude ein claude.
             Text(provider.readsPhotos
-                 ? "Geschätzt wird von \(provider.label)."
+                 ? "geschätzt wird von \(provider.label)."
                  : "\(provider.label) schätzt nur aus Beschreibungen.")
                 .scaledFont(11)
                 .foregroundStyle(Palette.ink2)
-                .padding(.top, 4)
+                .padding(.top, 10)
         }
+    }
+
+    private var fromPhotos: some View {
+        // Ohne Modell **kein** Auswahlblatt: sonst sucht man ein Foto aus und
+        // erfaehrt erst danach, dass es niemanden gibt, der es anschaut.
+        Group {
+            if ready {
+                PhotosPicker(selection: $photoItem, matching: .images) {
+                    CaptureTile(label: "Aus Fotos wählen", marks: [.photos(color: Palette.ink)])
+                }
+            } else {
+                Button { askSetup = true } label: {
+                    CaptureTile(label: "Aus Fotos wählen", marks: [.photos(color: Palette.ink)])
+                }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var fromCamera: some View {
+        Button { ready ? showCamera = true : (askSetup = true) } label: {
+            CaptureTile(label: "Foto aufnehmen", marks: [.camera(color: Palette.ink)])
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var describing: some View {
+        Button { ready ? (phase = .describing) : (askSetup = true) } label: {
+            CaptureTile(label: "Beschreiben",
+                        marks: [.pencil(color: Palette.ink), .microphone(color: Palette.ink)])
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Eine Kachelzeile. Beide Kacheln bekommen dieselbe Hoehe — die der
+    /// hoeheren: bei grosser Schrift waechst eine Beschriftung auf zwei
+    /// Zeilen, und ohne das stuende die andere Kachel kuerzer daneben.
+    private func row<Inhalt: View>(@ViewBuilder _ inhalt: () -> Inhalt) -> some View {
+        HStack(spacing: CaptureTile.gap) {
+            inhalt().frame(maxHeight: .infinity)
+        }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     // MARK: - Beschreiben
@@ -236,7 +338,7 @@ struct PhotoCapture: View {
                     // aus dem Bild geschoben.
                     dictateTitle: dictation.isRunning
                         ? String(localized: "Diktat beenden")
-                        : String(localized: "Sprache"),
+                        : String(localized: "Diktat"),
                     dictateColor: dictation.isRunning ? roast.color : Palette.ink,
                     onDictate: {
                         if !dictation.isRunning {
@@ -491,7 +593,9 @@ private struct Confirm: View {
     let onSave: (UIImage?, Bool, [MealEstimate], Date) -> Void
 
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
 
     @State private var drafts: [Draft] = []
     @State private var when = Date.now
@@ -538,6 +642,14 @@ private struct Confirm: View {
                     timeField
                     ForEach($drafts) { $draft in compactRow($draft) }
                 }
+
+                // Ein Wert, der nicht stimmen kann, bekommt hier seinen Satz —
+                // und zwar bevor gesichert wird, nicht danach. Der Knopf
+                // darunter bleibt unberuehrt: es ist ein Hinweis, kein Riegel.
+                PlausibilityNote(
+                    kcal: drafts.map(\.kcal).max(by: { (Double($0) ?? 0) < (Double($1) ?? 0) }) ?? "",
+                    caffeine: drafts.map(\.caffeine).max(by: { (Double($0) ?? 0) < (Double($1) ?? 0) }) ?? ""
+                )
 
                 // Der Knopf haengt unten, im Daumenbereich — dazwischen
                 // steht der Weissraum, der den Satz traegt.
@@ -717,7 +829,7 @@ private struct Confirm: View {
         text: Binding<String>,
         tint: Color = Palette.ink
     ) -> some View {
-        FormField(label: label) {
+        FormField(label: label, alignment: .trailing) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
                 .scaledFont(24, design: .monospaced)
@@ -808,8 +920,94 @@ private struct Confirm: View {
     }
 }
 
-/// Die Zeile, die Apples Bildgenerator oeffnet — nur sichtbar, wo das Geraet
-/// Apple Intelligence hat.
+/// Eine Kachel der Erfassung: das Zeichen oben links, die Beschriftung unten
+/// links, dieselbe Flaeche wie bei der Getraenkeauswahl.
+///
+/// Der Entwurf setzt die Beschriftung in zwei von drei Kacheln an den Fuss und
+/// in der dritten direkt unter das Zeichen. Hier steht sie ueberall unten:
+/// Kacheln nebeneinander, deren Zeilen auf einer Hoehe liegen, sind ruhiger
+/// als solche, die es fast tun.
+struct CaptureTile: View {
+    let label: LocalizedStringKey
+    /// Meist eines. „Beschreiben" traegt zwei — Stift und Mikrofon, und die
+    /// Einstellungen tragen gar keines: dort ist die Kachel selbst der
+    /// Hinweis, und ein Zeichen waere Zierat an der unwichtigeren Stelle.
+    var marks: [DotArt] = []
+    /// Aus dem Entwurf: 160 in der Erfassung, 120 und 60 in der Leiste unten.
+    var height: CGFloat = 160
+
+    static let gap: CGFloat = 4
+    /// Kantenlaenge des Zeichens, ebenfalls aus dem Entwurf.
+    private static let mark: CGFloat = 47
+
+    var body: some View {
+        // **Die Beschriftung traegt die Hoehe, das Zeichen liegt darueber.**
+        // Vorher spannte ein `maxHeight: .infinity` die Kachel von innen auf,
+        // damit ein Abstandhalter die Zeile nach unten schob — und weil das
+        // nach jeder angebotenen Hoehe griff, wurde die halbhohe Kachel der
+        // Einstellungen genauso hoch wie die daneben. Jetzt setzt `minHeight`
+        // die Hoehe, und nur eine umbrechende Zeile laesst sie wachsen.
+        Text(label)
+            .scaledFont(24, weight: .light, condensed: true)
+            .textCase(.lowercase)
+            .foregroundStyle(Palette.ink)
+            // „einstellungen" ist ein langes Wort. Bei grosser Schrift passt
+            // es in keine halbe Spalte mehr, und SwiftUI bricht es dann
+            // mitten durch: „einstellung / en". Lieber etwas kleiner setzen
+            // als ein Wort zerschneiden.
+            .lineLimit(2)
+            .minimumScaleFactor(0.7)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(8)
+            .frame(minHeight: height, alignment: .bottom)
+            .overlay(alignment: .topLeading) {
+                // Abstand null: `DotArt` zeichnet in ein Quadrat und laesst
+                // links und rechts je zwei Einheiten Luft. Zwei Zeichen
+                // stossen damit von selbst im Rastermass aneinander.
+                HStack(spacing: 0) {
+                    ForEach(Array(marks.enumerated()), id: \.offset) { _, zeichen in
+                        zeichen.frame(width: Self.mark, height: Self.mark)
+                    }
+                }
+                .padding(8)
+            }
+        .background(Palette.tile)
+        .contentShape(Rectangle())
+    }
+}
+
+/// Ein stiller Nebenweg unter einem Feld: rechtsbuendig, klein, mit Linie
+/// darunter. Dieselbe Groesse und derselbe Schnitt wie „schliessen" in der
+/// Kopfzeile — beides sind Nebenwege, keine Hauptsache.
+struct QuietRow: View {
+    let label: LocalizedStringKey
+    var disabled = false
+    let action: () -> Void
+
+    var body: some View {
+        // **Rechtsbuendig**, wie im Entwurf — und die Trefferflaeche trotzdem
+        // ueber die ganze Spalte. Der Spacer stand vorher links vom Text und
+        // schob ihn an den linken Rand.
+        Button(action: action) {
+            HStack {
+                Spacer(minLength: 0)
+                Text(label)
+                    .scaledFont(12)
+                    .textCase(.lowercase)
+                    .foregroundStyle(disabled ? Palette.ink2 : Palette.ink)
+            }
+            .frame(minHeight: 46)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(disabled)
+        .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
+    }
+}
+
+/// Dieselbe Zeile, aber nur wo Image Playground ueberhaupt laeuft — also wo
+/// das Geraet Apple Intelligence hat.
 @available(iOS 18.1, *)
 struct GenerateImageRow: View {
     @Environment(\.supportsImagePlayground) private var supported
@@ -821,26 +1019,7 @@ struct GenerateImageRow: View {
 
     var body: some View {
         if supported {
-            // **Rechtsbuendig**, wie im Entwurf — und die Trefferflaeche
-            // trotzdem ueber die ganze Spalte. Der Spacer stand vorher links
-            // vom Text und schob ihn an den linken Rand.
-            Button(action: action) {
-                HStack {
-                    Spacer(minLength: 0)
-                    Text(label)
-                        // Dieselbe Groesse und derselbe Schnitt wie
-                        // „schliessen" in der Kopfzeile: beides sind stille
-                        // Nebenwege, keine Hauptsache.
-                        .scaledFont(12)
-                        .textCase(.lowercase)
-                        .foregroundStyle(disabled ? Palette.ink2 : Palette.ink)
-                }
-                .frame(minHeight: 46)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .disabled(disabled)
-            .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
+            QuietRow(label: label, disabled: disabled, action: action)
         }
     }
 }
@@ -908,7 +1087,7 @@ private struct ProgressMatrix: View {
                         width: Grid.dot * s,
                         height: Grid.dot * s
                     )
-                    ctx.fill(Path(rect), with: .color(lit(row: row, column: column) ? Palette.ink : Palette.rule))
+                    ctx.fill(Path(rect), with: .color(lit(row: row, column: column) ? Palette.ink : Palette.matrix))
                 }
             }
         }

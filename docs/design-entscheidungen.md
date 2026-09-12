@@ -180,8 +180,45 @@ Zwischen den Bändern eine Reihe Fuge (4 pt), natürliche Gesamthöhe 70 pt.
 früheren 100 mg je Reihe waren es kaum zwei — die Skala sagte nichts, was man
 im Kopf nachrechnen konnte.
 
-Unbeleuchtete Punkte in `rule`, nicht mehr in `ink3`: bei 1632 Punkten ist der
-hellere Ton der Unterschied zwischen Raster und Rauschen.
+Unbeleuchtete Punkte in **`matrix`** — hell `#E8E7E3`, dunkel `#222220`
+(Figma-Variable `matrix`). Zuvor `ink3`, dann `rule`, und beide Male war der
+Weg derselbe: bei 1632 Punkten ist der leisere Ton der Unterschied zwischen
+Raster und Rauschen. Gegen Papier fällt er von 1,25 : 1 auf 1,18 : 1, im
+Dunkeln von 1,30 : 1 auf 1,18 : 1.
+
+**Getrennt von `rule`, obwohl beide fast gleich aussehen.** `rule` zieht die
+Haarlinien zwischen Formularzeilen, und die sollen sichtbar bleiben; erloschene
+Punkte sollen es gerade nicht. Zwei Aufgaben, zwei Namen — sonst zieht die
+nächste Justierung an einer Schraube, die auch woanders sitzt.
+
+Derselbe Ton trägt **alle drei Punktfelder**: Zeitstrahl, Ziffernanzeige und
+die Wartewelle beim Schätzen. Es ist dasselbe Feld, also derselbe Ton. Nicht
+betroffen sind die Flipkarte (deren Blatt ist `rule`) und die Piktogramme —
+dort ist der Ton die Zeichnung, nicht ihr Grund.
+
+**Jetzt ist eine Linie, keine Kerbe.** Sie steht in der **Lücke links** der
+laufenden Viertelstunde, eine Einheit breit, in `ink2`, und läuft durch beide
+Bänder — oben um einen Punkt über die erste Rasterreihe hinaus, zu den
+Stundenzahlen hin.
+
+In der Lücke und nicht über einer Spalte: so schiebt sie keinen Punkt weg, das
+Raster bleibt vollständig, und sie liegt nicht darin, sondern dazwischen. Und
+sie trifft den Zeitpunkt genauer als eine Marke in der Spalte — sie steht
+**vor** der Viertelstunde, also an ihrem Anfang.
+
+Vorher waren es zwei Papierpunkte, einer in der obersten Kalorien- und einer in
+der untersten Koffeinreihe, die die Spalte einklammerten. Das Argument dafür
+war gut — eine Lücke kann man mit nichts verwechseln, ein schwarzer Punkt in
+der obersten Reihe hiesse dort sonst 1800 kcal. Nur sagte die Klammer den
+Zeitpunkt zweimal und an keiner Stelle ganz; eine Linie sagt ihn in einem Zug.
+
+Der Überstand kostete Fläche: ein `Canvas` schneidet an seinen Rändern ab, also
+ist das Rasterfeld um drei Einheiten nach oben gewachsen und der Abstand zu den
+Stundenzahlen um dieselben drei zurückgenommen. Die Punkte stehen, wo sie
+standen, und nur die Linie ragt in den Zwischenraum.
+
+Zwischen Mitternacht und Viertel nach zwölf gibt es links nichts mehr — dort
+rückt die Linie an die Kante, statt zu fehlen.
 
 **Der Zeitstrahl läuft aus dem Seitenrand heraus** bis 5 pt an den
 Bildschirmrand. Das ist keine Kosmetik: beim Wischen von Tag zu Tag geht die
@@ -201,7 +238,11 @@ genauso gut.
 **Kalorienanzeige — drei Darstellungen, in den Einstellungen wählbar.**
 
 1. **Flip** — vier Karten 80 × 112, geteilt bei y = 55 mit 2 pt Fuge, Achsnocken (2 × 10, Radius 2) bei x = 7 und x = 72. Helle Karte, dunkle Ziffer.
-2. **7-Segment** — abgeschrägte Segmentenden, unbeleuchtete Segmente in `Ink3` sichtbar.
+2. **7-Segment** — abgeschrägte Segmentenden, unbeleuchtete Segmente sichtbar, aber in einem **eigenen Ton**: `segment`, hell `#EBEBE2`, dunkel `#1F1F1C` (Figma-Variable `segment`, Node `1:8445`).
+
+   Sie haben ein anderes Problem als die Punkte im Diagramm. Ein Segment ist gross und flächig; in `ink3` stand die ganze Acht als Schatten hinter jeder Ziffer und nahm ihr die Kontur — bei 63 303 musste man hinsehen, um die Zahl von der Geisterreihe zu trennen. Gegen Papier fällt der Ton damit von **1,60 : 1 auf 1,15 : 1**: genug, um die Bauart der Anzeige zu zeigen, zu wenig, um mitgelesen zu werden.
+
+   Keine Frage der Zugänglichkeit — die erloschenen Segmente tragen keine Information. Die leuchtenden stehen unverändert bei 17 : 1.
 3. **Dot-Matrix** — die ganze Fläche ist ein durchgehendes Punktfeld im **Spaltenraster des Tagesdiagramms**: gleichmässige Teilung, also `x(c) = c · 4`, Punkt 3 pt, 96 Spalten × 33 Reihen.
 
    Jede Ziffer ist **20 Spalten breit**, alle gleich — die Anzeige rastert wie ein Zählwerk, nicht wie ein Schriftsatz. Zwischen den Ziffern steht je eine **Trennspalte**; ohne sie stossen zwei Ziffern mit ihren leeren Randspalten aneinander und eine 11 sähe aus wie ein breiter Balken. Die Ziffern stehen **rechtsbündig**, links wird mit leeren Rasterspalten aufgefüllt:
@@ -220,7 +261,28 @@ genauso gut.
 
    Die Glyphen stehen als Lauflängen in `DotMatrixFont.swift`, übertragen aus Figma (Node `101:253908`). Vier Tests prüfen die Unversehrtheit der Tabelle — bei übertragenen Daten fände sich ein Kopierfehler sonst erst am Bildschirm.
 
-   Vier Räder heissen vier Stellen: über 9999 zeigt das Zählwerk 9999.
+   **Vier Räder heissen vier Stellen — und darüber sagt sie es.** Ein fünftes
+   Rad gäbe es nicht: vier Ziffern zu 20 Spalten samt Trennspalten sind exakt
+   die 96 des Zeitstrahls, und dasselbe Raster ist der ganze Grund, warum
+   diese Anzeige so aussieht. Über 9999 steht deshalb ein **Grösser-als** vor
+   den vier Neunen. Über zehntausend hat die genaue Zahl ohnehin aufgehört zu
+   interessieren, und wer sie braucht, stellt auf Flipkarte oder 7-Segment um
+   — die sind Schrift auf einer Fläche und bekommen einfach eine Karte mehr.
+
+   Vorher deckelte sie still: über 9999 zeigte sie 9999 und sagte nicht dazu,
+   dass sie das tut. Nachgesehen an einem Tag mit 63 303 kcal — die beiden
+   anderen Stile zeigten die Zahl, die Dot-Matrix log.
+
+   Das Zeichen passt in die **elf Füllerspalten**, die links ohnehin leer
+   standen: neun für die Glyphe, eine als Trennspalte, eine als Luft. Es ist
+   kürzer als eine Ziffer — 13 Reihen gegen 26, mittig gesetzt; ein
+   Rechenzeichen steht neben Zahlen, nicht unter ihnen.
+
+   Seine Treppe geht **Reihe für Reihe**, nicht in 3×3-Stufen wie die
+   Diagonalen der Ziffern. Bei denen läuft die Schräge über zwölf Reihen und
+   liest sich als Linie; über sechs Reihen wird aus derselben Stufung ein
+   Zickzack, das nach Blitz aussieht statt nach Zeichen. Ausprobiert,
+   angesehen, verworfen.
 
 Ziffern sind **proportional**, nicht monospaced, und ihre Breiten sind Vielfache von 3 — also einer Stundengruppe: `1` = 12 Spalten, `4` = 18, alle übrigen 15. Ziffernabstand 3 Spalten. Höhe 21 Reihen, **Strich 2,7 pt** (feine Fassung).
 
@@ -304,11 +366,60 @@ Je Segment die Farbe animieren, mit kleinem Versatz je Segmentindex, damit die Z
 
 Ein Detail mit echter Wirkung: Segmente, die **ausgehen**, langsamer blenden (0,22 s) als solche, die **angehen** (0,12 s). Das ist das Nachleuchten echter LCDs.
 
-**Dot-Matrix — diagonaler Durchlauf.**
+**Dot-Matrix — zeilenweiser Aufbau.**
 
-Verzögerung je Punkt aus seiner Position: `delay = (row + col) * 0.015`. Angehende Punkte zusätzlich von `scale 0.85` auf `1.0`. Ergibt den Eindruck einer Anzeigetafel, die durchläuft.
+Eine Welle läuft von oben nach unten, und jede Zeile blendet um, während die
+Front über sie hinweggeht. Die Anzeige schreibt sich damit waagrecht auf, wie
+eine Tafel, die Zeile für Zeile gesetzt wird.
 
-Der Gewinn dieser Variante: das Tagesdiagramm darüber benutzt dasselbe Punktraster. Ein neuer Eintrag kann seine Diagrammpunkte mit **derselben** Bewegung aufleuchten lassen — eine Bewegungssprache für Anzeige und Diagramm. Haptik: ein einzelner leichter Impuls, wenn der Wert steht, nicht je Punkt.
+**Das Fenster ist der Punkt.** Ohne es schaltet jede Zeile hart um, und bei 27
+Reihen in einer halben Sekunde sieht das nach Bildfehler aus statt nach Aufbau.
+Mit einem Fenster von gut einem Viertel der Gesamtdauer wandert ein weiches
+Band nach unten.
+
+**Zwei Fälle, und die Anzeige kennt den Unterschied schon.** `resetKey` sagt,
+ob ein Moduswechsel vorliegt oder ein Zählschritt. Beim Wechsel von kcal auf mg
+fängt die Anzeige **dunkel** an und schreibt die neue Zahl auf; beim Zählen
+blendet sie von der alten Ziffer auf die neue. Der Aufbau aus dem Dunkeln darf
+länger dauern (0,55 s statt 0,45) — er schreibt die ganze Zahl, nicht eine
+Stelle. Haptik unverändert: ein Impuls, wenn der Wert steht, nicht je Punkt.
+
+**Der Fehler, der dabei auffiel: die Animation hat nie stattgefunden.** Der
+vorherige diagonale Durchlauf las seine animierte Zahl als `@State` direkt im
+`Canvas`. Ein `Canvas` zeichnet aber einmal je Auswertung des Rumpfs, und
+`withAnimation` kann in einen Zeichenblock nicht hineininterpolieren — der Wert
+kam fertig an und nie dazwischen. Die Anzeige sprang, von Anfang an.
+
+Aufgefallen ist es erst an einer Bildschirmaufnahme, Bild für Bild
+nebeneinandergelegt. Die Lösung ist ein View, das `Animatable` erfüllt:
+SwiftUI interpoliert dann `animatableData` und wertet den Rumpf je Bild neu aus.
+
+Die **Wartewelle** im Erfassungsschirm war davon nie betroffen — sie zählt in
+einer Schleife eine Phase hoch, 24 Schritte je Sekunde, und jeder Schritt löst
+eine neue Auswertung aus. Wer einen `Canvas` bewegen will, braucht einen von
+beiden Wegen; `withAnimation` allein ist keiner.
+
+**Der Wert wartet, bis das Sheet weg ist.** Wer einen Kaffee erfasst, sah den
+Wechsel bisher nicht: die Summe stand schon neu, während das Sheet noch nach
+unten fuhr. Die Bewegung fand hinter einer Fläche statt, die sie verdeckt.
+
+`NumberDisplay` hält den Wert deshalb zurück — die Stelle, durch die alle drei
+Ziffernstile laufen, also gilt es für alle drei. Nachgemessen an einer
+Bildschirmaufnahme: vom Tippen auf die Kachel bis zum verschwundenen Sheet
+vergehen rund drei Zehntel. Mit einer halben Sekunde blieben nur zwei Zehntel
+Stille übrig, und der Aufbau begann, während das Auge noch dem Sheet nachsah.
+**0,8 s** ergeben 0,3 s Sheet und 0,5 s Stille davor.
+
+Zwei Ausnahmen, beide aus demselben Grund — gewartet wird nur, wo etwas zu
+verdecken war:
+
+- **Der Moduswechsel geht sofort durch.** Man hat gerade auf kcal oder mg
+  getippt und schaut die Anzeige an; Warten wäre dort kein Auftritt, sondern
+  eine Verzögerung.
+- **Der Tageswechsel auch.** Jede Seite bringt ihre eigene Anzeige mit, und
+  eine frisch erscheinende hat nichts zu verzögern — der erste Wert geht
+  ungebremst durch. Damit klappt beim Wischen nichts um, ohne dass es dafür
+  eine eigene Regel bräuchte.
 
 **Piktogramme nach Otl Aicher.** Massive Flächen, runde Endkappen, nur 0° / 45° / 90°. Durchgehend **Strichstärke 2,4** und **Radius 1,2** auf 24er-Raster (Radius = halbe Strichstärke, also identisch mit dem Kappenradius). Fünf Glyphen: Start, Erfassen, Kaffee, Profil, Einstellungen. Die Tabbar führt vier davon — Profil hat in einer Ein-Personen-App keinen Inhalt.
 
@@ -622,9 +733,10 @@ Er schliesst sich von selbst: nach der Wahl und sobald jemand doch wischt.
 Während ein Modell rechnet, lief bisher eine einzelne Reihe von links voll —
 ein Segmentbalken, wie ihn jede App hat. Jetzt läuft eine **diagonale Welle
 durch ein Punktfeld**: dieselben 96 Spalten wie der Zeitstrahl auf dem
-Startscreen, sieben Reihen hoch, dieselbe Bewegung wie beim Wechsel der
-Dot-Matrix-Ziffern. Die App hat ein Vokabular; ein Wartezeichen ist kein
-Grund, daraus auszubrechen.
+Startscreen, sieben Reihen hoch, dasselbe Raster wie die Dot-Matrix-Ziffern.
+Die Richtung unterscheidet sich seit deren Umbau — die Ziffern bauen sich
+waagrecht auf, die Wartewelle läuft diagonal —, das Vokabular bleibt dasselbe.
+Ein Wartezeichen ist kein Grund, daraus auszubrechen.
 
 Ein Balken, der sich füllt, verspricht ausserdem etwas, das er nicht halten
 kann: wie lange ein Modell braucht, weiss hier niemand. Eine Welle sagt nur
@@ -729,10 +841,23 @@ Marke „erzeugt" oben rechts — so kommen die beiden sich nie ins Gehege.
 Zugeklappt bleibt das Bild ein Bild. Zwei Tipper bis zur Warenkunde, null
 Rauschen davor: erst wächst das Bild, dann bietet es etwas an.
 
-Das Zeichen ist ein **„i" aus Punkten**, im Vokabular von Kreuz und Rosette.
-Die erste Fassung setzte vier gleich weit entfernte Punkte untereinander und
-las sich als Menü. Jetzt sitzen die Stammpunkte **enger als ihr Durchmesser**
-und fliessen zu einem Strich zusammen; frei steht nur das Tüpfelchen.
+**Dieselbe Stelle trägt beides.** Ist die Karte offen, steht dort ein Kreuz
+statt des i — ein Umschalter, der nicht wandert, und die Karte lässt sich
+schliessen, ohne sie erst nach einer Fläche zum Antippen abzusuchen. Im Code
+ist es **ein** Bauplan mit zwei Zeichnungen, nicht zwei Knöpfe.
+
+Beide Zeichen stehen im Entwurf (Node `153:327896`): **12 Spalten, 13 Reihen,
+Teilung 4, Punkt 3** — dasselbe Raster wie der Zeitstrahl, nur mit runden
+Punkten, denn hier ist es eine Marke und kein Datenfeld. Sie stehen im
+Quelltext als Raster aus `.` und `#` und nicht als Koordinatenliste: so sieht
+man die Form beim Lesen und kann sie mit dem Entwurf vergleichen, ohne etwas
+zu rechnen.
+
+Das i ist ein **gesetztes i mit Fahne und Fuss**. Meine eigene erste Fassung
+war ein Strich mit Tüpfelchen, dessen Stammpunkte enger standen als ihr
+Durchmesser, damit sie zu einer Linie zusammenflossen — sie löste dasselbe
+Problem (bei gleichmässigem Abstand liest sich ein Punktstrich als Menü) mit
+einem Trick, wo der Entwurf eine Serife setzt.
 
 **Die Karte liegt im Bild, nicht darunter** — Glas, das Bild bleibt sichtbar,
 nur unscharf. Drei Felder: was drin ist, wie es entsteht, und woher es kommt.
@@ -750,9 +875,27 @@ auch gelesen. Wird der Satz damit höher als das Bild, scrollt die Karte in sich
 Bild und ist unbekannt. Gemessen über dem Braun einer Tasse: `ink2` kam auf
 **3,4 : 1**, `secondary` mit seiner Vibrancy sogar auf **3,1** — beide unter der
 Schwelle von 4,5 : 1 für 11 pt. Jetzt trägt `primary` beide Ebenen, und das
-Etikett tritt über die **Deckkraft** zurück statt über die Farbe: 5,6 : 1 für
-das Etikett, 13,9 : 1 für den Satz. Aus demselben Grund ist das Glas
-`regularMaterial` und nicht `ultraThin`.
+Etikett tritt über die **Deckkraft** zurück statt über die Farbe.
+
+**Das Glas ist `thinMaterial`**, nicht `regularMaterial`: das Bild soll
+durchscheinen, nicht verschwinden. Gemessen an gerenderten Pixeln, jeweils im
+schlimmsten Zwanzigstel des Kartengrunds:
+
+| | hell | dunkel |
+|---|---|---|
+| `regularMaterial` | 14,1 : 1 | — |
+| `thinMaterial` | **10,5 : 1** | 4,16 : 1 ✗ |
+| `thinMaterial` + Schleier | — | **6,78 : 1** |
+
+**Im Dunkeln braucht es einen Schleier.** Dort ist die Schrift hell, und hinter
+dem Glas liegt oft ein *helles* Bild — eine weisse Tasse etwa. Der Fall dreht
+sich also um: nicht dunkler Grund unter dunkler Schrift, sondern heller unter
+heller. Ohne Schleier fiel das hellste Zwanzigstel des Grundes auf 4,16 : 1 und
+damit für die 11-pt-Etiketten durch. Ein Viertel Schwarz über dem Glas zieht
+den Grund zurück, ohne das Bild zu verdecken.
+
+Hell braucht es keinen: dort steht der Satz bei 10,5 : 1, und ein Schleier
+würde nur Kontrast verschenken, den niemand vermisst.
 
 Die Warenkunde gehört der **Sorte**, nicht dem Eintrag, und steht deshalb in
 `CoffeeInfo` statt im Model. Nachgeschlagen wird über die Bezeichnung, Akzente
@@ -780,6 +923,102 @@ Die Kapsel ist 51 × 31 wie die eingebaute, ihre Trefferflaeche 44 hoch. Der Kno
 ## Nur Hochformat
 
 `UISupportedInterfaceOrientations` steht auf `UIInterfaceOrientationPortrait`, iPhone wie iPad. Der ganze Entwurf haengt an einer Spalte: der Zeitstrahl ist ein Tag von 24 Stunden in 96 Rasterspalten, die Anzeige benutzt dasselbe Raster, und die Erfassung kommt als Bottom Sheet von unten. Quer waere das Raster entweder gedehnt oder verloren — und ein Layout, das niemand entworfen hat, ist schlechter als eines, das gar nicht erst erscheint.
+
+## Der Name: Cafcalog
+
+**Caf**feine + **Ca**lories + **-log**, das Logbuch. Drei Silben, beide Werte
+im Wort, und die Endung sagt, was die App tut: sie führt Buch. Geprüft und frei
+waren `cafcalog.ch`, `.com` und `.de`, dazu kein Treffer in Marken, App Stores
+oder im Web.
+
+Gefallen ist die Wahl gegen **Cafcamat**, das klanglich besser läuft — caf-ca-mat
+hat die Betonung vorne —, aber „Cafca" ist im Klang Kafka, und das ist für eine
+App, die Ordnung verkörpern soll, die falsche Assoziation. **Cafcameter** hatte
+vier Silben und ein sichtbares „cam" in der Mitte. Verworfen wurden vorher
+**CoCa** (Coca-Cola), **Cofcal** (Pharmamarke), **MiKi** und **Kimi** (beide
+vergeben), **Kalomat** (Siemens) und alles auf **-Pal** (MyFitnessPal).
+
+Umgestellt wird **nur, was ein Mensch sieht**: `CFBundleDisplayName`, die sechs
+Berechtigungstexte in fünf Sprachen, der Sprachhinweis in den Einstellungen und
+der User-Agent gegenüber Open Food Facts. Das Xcode-Ziel, der Swift-Modulname
+und der Projektordner heissen weiter `FoodPal` — sie stehen in
+`@testable import`, in `TEST_HOST` und im Pfad jeder Datei, und niemand ausser
+dem Compiler liest sie.
+
+`CFBundleName` bleibt aus demselben Grund `FoodPal`. Es kommt aus `PRODUCT_NAME`,
+und die erzeugte Info.plist schlägt jeden Eintrag in der eigenen — nachgemessen,
+beide Wege blieben wirkungslos. Solange `CFBundleDisplayName` gesetzt ist, zeigt
+iOS ohnehin diesen: Home-Bildschirm, Einstellungen, Health-Quelle und jeder
+Berechtigungsdialog.
+
+## Die Bundle-ID trägt keinen Namen
+
+`com.clausmedvesek.kk26` — KK für Kaffee und Kalorien, 26 für das Jahr. Sie
+sagt nicht mehr, wie die App heisst, und das ist der ganze Zweck: die Bundle-ID
+ist die einzige Zeichenkette im Projekt, die sich nicht ohne Preis ändern lässt.
+Hängt sie am Anzeigenamen, kostet jede Namensentscheidung den Datenbestand.
+Hängt sie an nichts, ist der Name frei — er wechselt in `INFOPLIST_KEY_CFBundleDisplayName`
+und sonst nirgends.
+
+Bezahlt wurde der Preis einmal, am 10.9.2026 beim Wechsel von
+`com.clausmedvesek.FoodPal`. iOS sieht eine **andere App**, und mit ihr geht:
+
+| | |
+|---|---|
+| SwiftData | Einträge weg — die Fotos liegen noch vor, daraus lassen sie sich neu erzeugen |
+| UserDefaults | alle Einstellungen zurück auf Werk: Röstung, Ziffernstil, Anbieter, Haptik |
+| Keychain | API-Schlüssel weg. Der Zugriff hängt an `TeamID.bundleID`, nicht am Dienstnamen — eine Umbenennung sperrt sie aus, auch wenn der String mitwandert |
+| HealthKit | bleibt **liegen**. Die alten Samples gehören einer Quelle, die es nicht mehr gibt; die neue App darf sie nicht löschen |
+
+Der HealthKit-Fall ist der einzige, der von Hand aufgeräumt werden muss:
+*Health → Profil → Apps und Dienste → FoodPal → Alle Daten löschen*. Sonst
+stehen die alten Werte für immer neben den neuen in der Tagessumme.
+
+Die alte App bleibt auf dem Gerät liegen, bis sie gelöscht wird — zwei
+verschiedene IDs sind zwei verschiedene Apps.
+
+## Wenn eine Zahl nicht stimmen kann
+
+Die Idee war, Eingaben über 9999 abzulehnen und sich darüber lustig zu machen.
+Beides wurde verworfen, und beides aus demselben Grund: **das hier ist ein
+Tagebuch.**
+
+**Abgelehnt wird nichts.** Was nicht gespeichert wird, fehlt auch in Apple
+Health, und dort füllt es niemand mehr nach. Vor allem aber: wer 9999 kcal an
+einem Tag erreicht, ist nicht zwingend ein Witzbold. Essanfälle in dieser
+Grössenordnung sind dokumentiert. Eine App, die genau diesem Menschen einen
+Walfischwitz zeigt und die Eingabe verweigert, tut das Gegenteil von dem,
+wofür sie da ist — und Apple prüft Gesundheits-Apps ausdrücklich darauf
+(Richtlinie 1.4.1). Beim Koffein wiegt es schwerer: 9999 mg liegen jenseits
+einer tödlichen Dosis, und wer das eintippt, protokolliert womöglich einen
+Notfall.
+
+**Der Satz kommt nicht vom Modell.** Frei erzeugter Text über das Essverhalten
+eines Menschen lässt sich nicht testen — man kann keinen Witz ausliefern, den
+man nicht gelesen hat. Dazu käme ein Netzaufruf im ungünstigsten Moment und
+Stummheit für alle ohne Anbieterschlüssel. Die Sätze stehen deshalb fest in
+`Plausibility.swift`, in fünf Sprachen.
+
+**Geprüft wird der einzelne Eintrag, nicht die Tagessumme.** Eine *Mahlzeit*
+über 4000 kcal oder ein *Getränk* über 1000 mg ist fast immer eine verrutschte
+Stelle beim Tippen oder eine Halluzination des Modells — dort verdient sich
+eine Rückfrage ihr Geld. Eine hohe Tagessumme dagegen ist eine Tatsache und
+bekommt keinen Kommentar.
+
+**Der Witz zielt auf die Zahl, nie auf den Menschen.** „Ein Blauwal schafft
+das" lacht über eine Menge; „du isst wie ein Wal" lacht über einen Menschen.
+Der Unterschied ist der ganze Punkt.
+
+Der Satz wird **aus der Zahl gewählt und nicht gewürfelt**: beim Tippen ändert
+sich der Wert bei jedem Anschlag, und ein zufälliger Satz spränge mit und wäre
+nicht zu lesen. So gehört zu jeder Zahl derselbe Satz, und verschiedene Zahlen
+bekommen verschiedene.
+
+Er steht in der **rechten Spalte**, unter der Bezeichnung. In der Zahlenspalte
+hatte er ein Drittel Breite und brach auf vier Zeilen um; unter beiden Spalten
+stünde er hinter dem Löschen-Knopf, und ein Hinweis zu Zahlen gehört nicht
+hinter die gefährlichste Taste. Gesetzt in `ink2`, nicht in Rot: es ist eine
+Bemerkung, kein Fehler. Der Sichern-Knopf bleibt unberührt.
 
 ## Bewusst weggelassen
 

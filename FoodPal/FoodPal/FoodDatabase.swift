@@ -7,9 +7,10 @@ import Vision
 /// Kein Schlüssel, keine Registrierung — Lesen ist offen, verlangt aber einen
 /// eigenen User-Agent; ohne den wird die IP irgendwann gesperrt. Dort steht die
 /// Repo-Adresse statt einer Mailadresse: identifiziert die App genauso, ohne
-/// eine private Adresse an einen fremden Server zu geben.
+/// eine private Adresse an einen fremden Server zu geben. Die Adresse traegt
+/// noch den alten Namen, weil das Repository so heisst.
 enum FoodDatabase {
-    private static let agent = "FoodPal/1.0 (https://github.com/Doebele/FoodPal)"
+    private static let agent = "Cafcalog/1.0 (https://github.com/Doebele/FoodPal)"
 
     /// Liefert die Werte **je 100 g** — so hält die Datenbank sie vor, und die
     /// Umrechnung auf die gegessene Menge gehört in die Bestätigung, wo man sie

@@ -356,6 +356,88 @@ aus und ist es nicht.
 Sahne und Milchmenge schwanken von Haus zu Haus — der Bestätigen-Schirm steht
 genau deshalb vor jedem Speichern.
 
+### Makros — dieselben Rezepte, dieselbe Rechnung
+
+Kalorien und Koffein standen zuerst; Eiweiss, Kohlenhydrate und Fett kamen am
+10. September 2026 dazu. **Keine zweite Recherche**: die Kettenkaffees bringen
+ihre Makros aus derselben Herstellertabelle mit, alles Übrige entsteht aus den
+Rezepten, die oben schon die Kalorien tragen. Was fehlte, waren nur die
+Nährwertspalten der Bausteine.
+
+| Baustein | kcal | Eiweiss | KH | Fett |
+|---|---|---|---|---|
+| Vollmilch 3,5 %, 100 ml | 64 | 3,3 | 4,8 | 3,6 |
+| Filterkaffee, 100 ml | 2 | 0,1 | 0,3 | – |
+| Kaffeerahm 15 %, Portion 12 g | 19 | 0,3 | 0,5 | 1,8 |
+| Gezuckerte Kondensmilch, 100 g | 321 | 7,9 | 54,4 | 8,7 |
+| Schlagrahm 35 %, 100 ml | 333 | 2,1 | 2,8 | 35,3 |
+| Irish Cream, 100 ml | 327 | 3,0 | 24,9 | 13,0 |
+| Vanilleeis, 100 g | 200 | 3,5 | 23,6 | 11,0 |
+| Tonic Water, 100 ml | 35 | – | 8,8 | – |
+| Kakaopulver, 100 g | 228 | 19,6 | 57,9 | 13,7 |
+| Zucker, 1 g | 4 | – | 1,0 | – |
+| Obstbrand und Whiskey, 40 % vol | 2,25/ml | – | – | – |
+
+**Unter einem Gramm steht keine Zahl.** Ein Espresso trägt 0,86 g Kohlenhydrat.
+Als „1 g" hingeschrieben wäre das eine Genauigkeit, die eine Standardportion
+nicht hat — und in der Tagessumme Rauschen. Sorten ohne jede Angabe sind
+deshalb Espresso, Filterkaffee, Lungo, Americano, Ristretto, Doppio, Mokka, Cold Brew, Nitro Cold Brew, Carajillo, Freddo Espresso: schwarzer Kaffee, sonst nichts.
+
+| Sorte | kcal | Eiweiss | KH | Fett | Herkunft |
+|---|---|---|---|---|---|
+| Cappuccino | 74 | 4 | 6 | 4 | gerechnet |
+| Kaffee Crème | 20 | – | – | 2 | gerechnet |
+| Caffè Latte | 135 | 7 | 10 | 8 | gerechnet |
+| Flat White | 155 | 8 | 12 | 9 | gerechnet |
+| Macchiato | 13 | – | 1 | – | gerechnet |
+| Cortado | 30 | 1 | 3 | 2 | gerechnet |
+| Latte Macchiato | 120 | 6 | 9 | 7 | gerechnet |
+| Schale | 80 | 4 | 6 | 4 | gerechnet |
+| Wiener Melange | 55 | 3 | 4 | 3 | gerechnet |
+| Café au Lait | 100 | 5 | 8 | 5 | gerechnet |
+| Espresso Tonic | 55 | – | 14 | – | gerechnet |
+| Iced Latte | 130 | 8 | 13 | 5 | Herstellertabelle |
+| Iced Americano | 15 | 1 | 3 | – | Herstellertabelle |
+| Cold Brew Süssrahm | 110 | 1 | 14 | 6 | Herstellertabelle |
+| Caramel Macchiato | 250 | 10 | 35 | 7 | Herstellertabelle |
+| Vanilla Latte | 250 | 12 | 37 | 6 | Herstellertabelle |
+| Caffè Mocha | 360 | 14 | 43 | 15 | Herstellertabelle |
+| White Chocolate Mocha | 470 | 15 | 62 | 19 | Herstellertabelle |
+| Pumpkin Spice Latte | 390 | 14 | 52 | 14 | Herstellertabelle |
+| Frappé | 410 | 5 | 64 | 15 | Herstellertabelle |
+| Türkischer Mokka | 20 | – | 4 | – | gerechnet |
+| Barraquito | 105 | 4 | 14 | 4 | gerechnet |
+| Café Bombón | 80 | 2 | 14 | 2 | gerechnet |
+| Marocchino | 30 | 1 | 3 | 1 | gerechnet |
+| Einspänner | 105 | – | 2 | 11 | gerechnet |
+| Irish Coffee | 225 | – | 9 | 11 | gerechnet |
+| Affogato | 100 | 2 | 12 | 6 | gerechnet |
+| Freddo Cappuccino | 55 | 3 | 5 | 3 | gerechnet |
+| Cà phê sữa đá | 100 | 2 | 17 | 3 | gerechnet |
+| Schümli Pflümli | 130 | – | 5 | 7 | gerechnet |
+| Kafi Fertig | 95 | – | 12 | – | gerechnet |
+| Café Baileys | 200 | 2 | 11 | 12 | gerechnet |
+
+**Die Gegenprobe, und was sie ans Licht brachte.** Eiweiss und Kohlenhydrate
+tragen 4 kcal je Gramm, Fett 9 — die Summe muss die hinterlegte Kalorienzahl
+treffen. Sie tat es überall auf ein paar Kilokalorien genau, **ausser bei fünf
+Sorten**: Carajillo, Irish Coffee, Schümli Pflümli, Kafi Fertig, Café Baileys.
+
+Das ist kein Fehler, sondern der Beweis, dass die Rechnung greift: **Alkohol
+trägt 7 kcal je Gramm und ist weder Eiweiss noch Kohlenhydrat noch Fett.** Die
+Lücken waren exakt die Schnapsmengen — 45 kcal für 2 cl Brand, 90 für 4 cl
+Whiskey, 38 für den Alkohol in 4 cl Irish Cream. Bei einem Irish Coffee bleiben
+damit zwei Fünftel der Kalorien ausserhalb der Makros, und das ist richtig so.
+
+Eine Zahl hat die Probe tatsächlich korrigiert: beim **Kafi Fertig** blieben
+nach dem Alkohol noch 12 kcal offen. Drei Schweizer Würfelzucker sind **4 g**,
+nicht 3 — 12 g statt 9, und die Lücke schloss sich auf null.
+
+`CoffeeMacroTests` hält beides fest: keine Sorte trägt mehr Makros als
+Kalorien, und was keinen Alkohol enthält, ist zu mindestens 85 % durch seine
+Makros erklärt. Welche Sorten Alkohol enthalten, liest der Test aus
+`CoffeeInfo.ingredients` — die Warenkunde prüft damit die Nährwerttabelle.
+
 ### Nachtrag zum Bestand
 
 **Kafi Fertig und Kafi Luz sind dasselbe Getränk** — in Luzern heisst es Kafi
@@ -392,20 +474,35 @@ aufgespreizten Bild erscheint unten rechts ein Info-Zeichen, und ein Tipper
 legt den Text als Glas darüber. Sichtbar wird das erst mit den Bildern — ohne
 Bild gibt es nichts aufzuspreizen.
 
-Die Bilder gehören als `coffee/<sorte>` in den Asset-Katalog; die Namen sind die
-`rawValue` aus `CoffeeInfo` — `espresso`, `ristretto`, `doppio`, `lungo`,
-`americano`, `filter`, `mokka`, `macchiato`, `cortado`, `cappuccino`, `latte`,
-`latteMacchiato`, `flatWhite`, `coldBrew`. Neue Sorten brauchen dort einen Fall
-mehr, samt Zutaten und Satz.
+## Vom Kandidaten zum Asset
 
+Vier Fassungen je Sorte liegen in `bilder/kaffee/` als `sorte-1` bis `sorte-4`.
+Sie sind nicht im Repository — 35 MB Auswahlmaterial, von dem ein Viertel
+bleibt. Gewählt wird von Hand, notiert wird in einer Zeile:
 
-Ein Bild je Sorte, benannt nach der Sorte, in den Asset-Katalog; der
-Eintragsschirm zeigt es dort, wo bei einer Mahlzeit das Foto steht. Damit trägt
-**jeder** Eintrag oben rechts ein Bild — fotografiert oder mitgeliefert — und
-der Weissraum links bleibt, wie er ist.
+```
+python3 tools/kaffeebilder_auswahl.py     # liest tools/kaffeeauswahl.txt
+```
 
-**Offen bleibt der Umfang.** Vierzig Sorten in einem Raster, das heute vierzehn
-trägt und nach Häufigkeit sortiert, wird eine lange Liste. Bevor die neuen
-Sorten Presets werden, braucht es eine Trennung zwischen den paar, die man
-täglich tippt, und dem Rest — sonst kostet der Espresso am Morgen plötzlich
-Scrollen.
+Das Skript legt jede gewählte Datei als `Assets.xcassets/coffee/<name>.imageset`
+ab. Der Name entsteht aus dem Sortennamen: Akzente weg, Leerzeichen weg, alles
+klein — „Caffè Latte" wird `caffelatte`. Die Sortennamen liest es aus
+`Entry.swift`, damit es keine zweite Liste gibt.
+
+**Derselbe Name entsteht zweimal**, einmal in Python beim Ablegen und einmal in
+`CoffeeInfo.fold` beim Suchen. Laufen die beiden Faltungen auseinander, findet
+die App nichts und zeigt es nicht an — ein Fehler, der sich nicht meldet.
+`CoffeeImageTests` prüft deshalb die vier Namen, an denen sie auseinanderlaufen
+könnten: `Caffè Latte`, `Café Bombón`, `Cold Brew Süssrahm` und `Cà phê sữa đá`.
+
+Das `đ` ist der interessante Fall. Es sieht aus wie ein d mit Strich, ist aber
+ein eigener Buchstabe — Foundations `diacriticInsensitive` lässt es deshalb
+stehen, wo es `è` und `ó` glattzieht. Es wird vorher ersetzt, sonst hiesse die
+Datei `caphesuađa`.
+
+**Das Bild hängt am Namen, nicht an der Warenkunde.** `CoffeeInfo.image(for:)`
+ist statisch und nimmt einen String, statt an der Aufzählung zu hängen — das
+war nötig, solange es Bilder für 43 Sorten gab und Warenkunde für siebzehn.
+Inzwischen decken beide alle 43 ab, aber die Trennung bleibt richtig: eine neue
+Sorte kann ihr Bild schon haben, bevor jemand ihren Text geschrieben hat. Wer
+sie dann öffnet, sieht das Bild und keine Karte.

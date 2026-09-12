@@ -23,6 +23,7 @@ Ein Anbieter ist deshalb nur eine Zeile Daten, kein Code. Die Liste steht in
 | DeepSeek | `https://api.deepseek.com/v1` | [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) | `deepseek-v4-flash-vision-exp` |
 | Muse | `https://api.meta.ai/v1` | [dev.meta.ai](https://dev.meta.ai) | `muse-spark-1.1` |
 | Mistral | `https://api.mistral.ai/v1` | [console.mistral.ai/api-keys](https://console.mistral.ai/api-keys) | `pixtral-large-latest` |
+| Kimi | `https://api.moonshot.ai/v1` | [platform.kimi.ai/console/api-keys](https://platform.kimi.ai/console/api-keys) | `kimi-k2.6` |
 | LM Studio | `http://<Mac-IP>:1234/v1` | — | `zai-org/glm-4.6v-flash` |
 | Ollama | `http://<Mac-IP>:11434/v1` | — | `qwen3-vl` |
 | Eigener Dienst | frei | optional | frei |

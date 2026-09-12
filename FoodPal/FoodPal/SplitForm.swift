@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Der zweispaltige Satzspiegel der beiden Formulare.
 ///
-/// Links die Zahlen, rechts Bild, Zeitpunkt und Bezeichnung — **37 zu 63**
-/// mit 8 pt Steg, aus dem Entwurf abgemessen (124,4 / 8 / 212,6 auf 345).
+/// Links die Zahlen, rechts Bild, Zeitpunkt und Bezeichnung — die linke
+/// Spalte 124 breit, aus dem Entwurf abgemessen (124,4 auf 345).
 /// Die Aufteilung ist keine Laune: Zahlen sind kurz und brauchen wenig
 /// Breite, ein Gerichtsname ist lang und braucht viel. Nebeneinander gesetzt
 /// steht beides auf einem Blick da, wo es untereinander zwei Bildschirme
@@ -18,9 +18,15 @@ import SwiftUI
 /// Eintrag sie ebenfalls braucht.
 enum FormGrid {
     static let leftWidth: CGFloat = 124
-    static let gap: CGFloat = 8
-    /// Wo die rechte Spalte beginnt, vom Seitenrand aus gerechnet.
-    static var rightInset: CGFloat { leftWidth + gap }
+    /// **Der Steg ist der Seitenrand.** Im Entwurf waren es acht Punkte, und
+    /// damit standen die beiden Spalten enger beieinander als jede von ihnen
+    /// am Blattrand — der Satzspiegel hatte innen eine feinere Fuge als
+    /// aussen. Derselbe Wert wie `Metric.margin` macht aus zwei Spalten ein
+    /// Raster: aussen 24, innen 24.
+    static let gap: CGFloat = Metric.margin
+    /// Wo die Textspalte beginnt, vom Seitenrand aus gerechnet. Auf welcher
+    /// Seite das ist, sagt die Bedienhand.
+    static var textInset: CGFloat { leftWidth + gap }
 }
 
 struct SplitForm<Left: View, Right: View>: View {
@@ -35,7 +41,10 @@ struct SplitForm<Left: View, Right: View>: View {
     @ViewBuilder let left: Left
     @ViewBuilder let right: Right
 
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
     @Environment(\.dynamicTypeSize) private var typeSize
+
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
 
     /// Breite der linken Spalte, aus dem Entwurf: 124,4 auf 345.
     ///
@@ -66,16 +75,32 @@ struct SplitForm<Left: View, Right: View>: View {
             // Ansichten ist ein TupleView, und der wird im `HStack` zu ebenso
             // vielen Geschwistern — die fuenf Zahlenfelder standen
             // nebeneinander statt untereinander.
+            // **Die Zahlen stehen an der Bedienhand**, der Text daneben.
+            // Rechtshaendig heisst das Zahlen links und Text rechts, wie
+            // gehabt; linkshaendig genau umgekehrt.
             HStack(alignment: .top, spacing: FormGrid.gap) {
-                VStack(alignment: .leading, spacing: 0) {
-                    Color.clear.frame(height: leftOffset)
-                    left
+                if hand == .right {
+                    zahlen
+                    text
+                } else {
+                    text
+                    zahlen
                 }
-                .frame(maxWidth: FormGrid.leftWidth, alignment: .leading)
-                VStack(alignment: .leading, spacing: 0) { right }
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+    }
+
+    private var zahlen: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Color.clear.frame(height: leftOffset)
+            left
+        }
+        .frame(maxWidth: FormGrid.leftWidth, alignment: .leading)
+    }
+
+    private var text: some View {
+        VStack(alignment: .leading, spacing: 0) { right }
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -87,18 +112,58 @@ struct SplitForm<Left: View, Right: View>: View {
 /// Schriftstufe über der Vorgabe nicht mehr in eine Zeile.
 struct FormField<Value: View>: View {
     let label: LocalizedStringKey
+    /// **Rechtsbündig in der Zahlenspalte.** Die Werte dort sind kurz und
+    /// verschieden lang; an der linken Kante ausgerichtet flattert ihr Ende,
+    /// an der rechten stehen Einer über Einern — und die Haarlinie darunter
+    /// endet dort, wo die Zahl endet. Die Beschriftung folgt dem Wert, sonst
+    /// zöge sie die Spalte nach zwei Seiten.
+    ///
+    /// Das gilt in **beiden** Bedienhänden. Die Spalte wandert, die Kante
+    /// der Ziffern nicht: es geht um die Zahl, nicht um die Spalte.
+    var alignment: HorizontalAlignment = .leading
     @ViewBuilder let value: Value
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// Ab den Bedienhilfen-Grössen fallen die Spalten untereinander, und die
+    /// Zahlen stehen über die ganze Breite. Rechtsbündig wären sie dann am
+    /// Bildschirmrand statt neben ihrer Beschriftung.
+    private var effective: HorizontalAlignment {
+        typeSize.isAccessibilitySize ? .leading : alignment
+    }
+
+    private var box: Alignment { effective == .trailing ? .trailing : .leading }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: effective, spacing: 6) {
             Text(label)
                 .scaledFont(11)
                 .tracking(0.8)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
-            value
+                .frame(maxWidth: .infinity, alignment: box)
+            // **Eine Zeilenhöhe für beide Spalten.** Links stehen die Zahlen
+            // in Fira Mono, rechts der Name in Fira Sans Condensed — gleiche
+            // Grösse, aber verschiedene Zeilenhöhe, und damit sassen die
+            // Haarlinien der beiden Spalten 2,7 Punkte versetzt. Das Mass
+            // nimmt die höhere der beiden Schriften, gemessen an der Schrift
+            // selbst; beide Spalten liegen danach auf derselben Linie.
+            // Als **Mindesthöhe**, nicht als feste: die Bezeichnung rechts
+            // wächst über mehrere Zeilen, und eine feste Höhe schnitte sie ab.
+            //
+            // Die zwei Punkte über der Zeilenhöhe sind der Unterschied
+            // zwischen einem gesetzten Text und einem Eingabefeld: das Feld
+            // trägt seinen eigenen Rand. Gemessen, nicht geraten — ohne sie
+            // bliebe die Zahlenspalte über der Mindesthöhe und der Versatz
+            // wäre wieder da.
+            value.frame(minHeight: Fira.lineHeight(24, typeSize, design: .monospaced) + 2)
             Rectangle().fill(Palette.rule).frame(height: 1)
         }
+        // Ueber die Umgebung, nicht am Feld: so folgt auch der Text **in**
+        // einem Eingabefeld der Ausrichtung, und die Zahlenfelder brauchen
+        // nichts davon zu wissen. Ohne das stand die Beschriftung links und
+        // der Wert rechts, sobald die Spalten untereinanderfielen.
+        .multilineTextAlignment(effective == .trailing ? .trailing : .leading)
         .padding(.bottom, 18)
     }
 }

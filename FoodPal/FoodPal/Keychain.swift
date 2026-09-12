@@ -4,7 +4,7 @@ import Security
 /// API-Schlüssel gehören in die Keychain, nicht in `UserDefaults`.
 /// Rund dreißig Zeilen über `SecItem`, keine Abhängigkeit.
 enum Keychain {
-    private static let service = "com.clausmedvesek.FoodPal"
+    private static let service = "com.clausmedvesek.kk26"
 
     static func set(_ value: String?, for account: String) {
         let query: [String: Any] = [

@@ -7,31 +7,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal nutzt die Kamera, um Mahlzeiten zu fotografieren."
+            "value": "Cafcalog nutzt die Kamera, um Mahlzeiten zu fotografieren."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal uses the camera to photograph meals."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal utilise l’appareil photo pour photographier vos repas."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal usa la fotocamera per fotografare i pasti."
+            "value": "Cafcalog uses the camera to photograph meals."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal usa la cámara para fotografiar tus comidas."
+            "value": "Cafcalog usa la cámara para fotografiar tus comidas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog utilise l’appareil photo pour photographier vos repas."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog usa la fotocamera per fotografare i pasti."
           }
         }
       }
@@ -42,31 +42,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal liest bestehende Werte aus Health, um doppelte Eintragungen zu vermeiden."
+            "value": "Cafcalog liest bestehende Werte aus Health, um doppelte Eintragungen zu vermeiden."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal reads existing values from Health to avoid duplicate entries."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal lit les valeurs déjà présentes dans Santé afin d’éviter les doublons."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal legge i valori già presenti in Salute per evitare voci doppie."
+            "value": "Cafcalog reads existing values from Health to avoid duplicate entries."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal lee los valores que ya están en Salud para evitar entradas duplicadas."
+            "value": "Cafcalog lee los valores que ya están en Salud para evitar entradas duplicadas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog lit les valeurs déjà présentes dans Santé afin d’éviter les doublons."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog legge i valori già presenti in Salute per evitare voci doppie."
           }
         }
       }
@@ -77,31 +77,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal schreibt Kalorien, Koffein und Makros in Apple Health."
+            "value": "Cafcalog schreibt Kalorien, Koffein und Makros in Apple Health."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal writes calories, caffeine and macros to Apple Health."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal enregistre les calories, la caféine et les macros dans Apple Santé."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal scrive calorie, caffeina e macro in Apple Salute."
+            "value": "Cafcalog writes calories, caffeine and macros to Apple Health."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal escribe calorías, cafeína y macros en Apple Salud."
+            "value": "Cafcalog escribe calorías, cafeína y macros en Apple Salud."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog enregistre les calories, la caféine et les macros dans Apple Santé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog scrive calorie, caffeina e macro in Apple Salute."
           }
         }
       }
@@ -112,31 +112,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal spricht mit LM Studio auf deinem Mac im lokalen Netz."
+            "value": "Cafcalog spricht mit LM Studio auf deinem Mac im lokalen Netz."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal talks to LM Studio on your Mac in the local network."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal communique avec LM Studio sur votre Mac dans le réseau local."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal comunica con LM Studio sul tuo Mac nella rete locale."
+            "value": "Cafcalog talks to LM Studio on your Mac in the local network."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal se comunica con LM Studio en tu Mac dentro de la red local."
+            "value": "Cafcalog se comunica con LM Studio en tu Mac dentro de la red local."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog communique avec LM Studio sur votre Mac dans le réseau local."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog comunica con LM Studio sul tuo Mac nella rete locale."
           }
         }
       }
@@ -147,31 +147,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal hört zu, während du eine Mahlzeit diktierst."
+            "value": "Cafcalog hört zu, während du eine Mahlzeit diktierst."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal listens while you dictate a meal."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal écoute pendant que vous dictez un repas."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal ascolta mentre detti un pasto."
+            "value": "Cafcalog listens while you dictate a meal."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal escucha mientras dictas una comida."
+            "value": "Cafcalog escucha mientras dictas una comida."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog écoute pendant que vous dictez un repas."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog ascolta mentre detti un pasto."
           }
         }
       }
@@ -182,31 +182,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal wandelt das Diktierte in Text um, damit du es vor dem Schätzen noch ändern kannst."
+            "value": "Cafcalog wandelt das Diktierte in Text um, damit du es vor dem Schätzen noch ändern kannst."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal turns what you dictate into text so you can correct it before the estimate."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal convertit votre dictée en texte pour que vous puissiez la corriger avant l’estimation."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "FoodPal converte il dettato in testo, così puoi correggerlo prima della stima."
+            "value": "Cafcalog turns what you dictate into text so you can correct it before the estimate."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "FoodPal convierte lo dictado en texto para que puedas corregirlo antes de la estimación."
+            "value": "Cafcalog convierte lo dictado en texto para que puedas corregirlo antes de la estimación."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog convertit votre dictée en texte pour que vous puissiez la corriger avant l’estimation."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafcalog converte il dettato in testo, così puoi correggerlo prima della stima."
           }
         }
       }

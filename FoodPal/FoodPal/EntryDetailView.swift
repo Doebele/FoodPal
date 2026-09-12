@@ -13,6 +13,7 @@ struct EntryDetailView: View {
     @Environment(\.modelContext) private var context
     @AppStorage(Preference.healthSync) private var healthSync = true
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
 
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var health = HealthKitSync()
@@ -30,10 +31,29 @@ struct EntryDetailView: View {
     /// schriebe das Sichern auf einen Eintrag, den es nicht mehr gibt.
     @State private var deleted = false
     @State private var showPlayground = false
-    @State private var imageExpanded = false
-    @State private var showLore = false
+    @State private var showCamera = false
+    /// Zwei Zustaende, die man sonst nur mit Tippen erreicht — und genau die
+    /// beiden, um die es in den Bildern fuer den App Store geht.
+    /// `START_LORE=bild` spreizt nur auf, `START_LORE=1` legt die Warenkunde
+    /// darueber.
+    @State private var imageExpanded = {
+        #if DEBUG
+        return ProcessInfo.processInfo.environment["START_LORE"] != nil
+        #else
+        return false
+        #endif
+    }()
+    @State private var showLore = {
+        #if DEBUG
+        return ProcessInfo.processInfo.environment["START_LORE"] == "1"
+        #else
+        return false
+        #endif
+    }()
+    @Environment(\.colorScheme) private var scheme
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -56,6 +76,15 @@ struct EntryDetailView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             timeField
                             nameField
+                            // Auch beim Nachbearbeiten faellt eine verrutschte
+                            // Stelle hier auf, nicht erst in der Tagessumme.
+                            //
+                            // **Rechts, nicht in der Zahlenspalte.** Dort ist
+                            // ein Drittel Breite, und der Satz brach auf vier
+                            // Zeilen um. Unter beiden Spalten stuende er nach
+                            // dem Loeschen-Knopf — ein Hinweis zu Zahlen
+                            // gehoert nicht hinter die gefaehrlichste Taste.
+                            PlausibilityNote(kcal: kcal, caffeine: caffeine)
                             // Löschen steht **unten** rechts, nicht direkt
                             // unter der Bezeichnung: der Weissraum dazwischen
                             // ist Teil des Satzes, und der seltenste Griff
@@ -102,6 +131,15 @@ struct EntryDetailView: View {
             entry.photo = VisionEstimator.downscaled(image, maxEdge: 900)
             entry.generatedImage = true
         })
+        .fullScreenCover(isPresented: $showCamera) {
+            CameraPicker { image in
+                showCamera = false
+                guard let image else { return }
+                entry.photo = VisionEstimator.downscaled(image, maxEdge: 900)
+                entry.generatedImage = false
+            }
+            .ignoresSafeArea()
+        }
         .confirmationDialog(
             "Eintrag löschen?",
             isPresented: $askDelete,
@@ -148,16 +186,26 @@ struct EntryDetailView: View {
                     .foregroundStyle(Palette.ink)
             }
 
-            // Auch nachtraeglich: ein Eintrag ohne Bild bekommt hier eins,
-            // aus seiner Bezeichnung. Und ein **erzeugtes** Bild laesst sich
-            // ersetzen — ein Foto nicht. Ein Foto ist ein Beleg; was die App
-            // gezeichnet hat, ist eine Merkhilfe und darf neu gezeichnet
-            // werden, wenn der Wurf danebenging.
-            if entry.photo == nil || entry.generatedImage, #available(iOS 18.1, *) {
-                GenerateImageRow(
-                    label: entry.photo == nil ? "Bild erzeugen" : "Neues Bild erzeugen",
-                    disabled: name.isEmpty
-                ) { showPlayground = true }
+            // Auch nachtraeglich: ein Eintrag ohne Bild bekommt hier eins.
+            // Und ein **erzeugtes** Bild laesst sich ersetzen — ein Foto
+            // nicht. Ein Foto ist ein Beleg; was die App gezeichnet hat, ist
+            // eine Merkhilfe und darf neu gezeichnet werden, wenn der Wurf
+            // danebenging.
+            if entry.photo == nil || entry.generatedImage {
+                if entry.kind == .coffee {
+                    // **Kaffee erzeugt nichts.** Jede Sorte bringt ihr Bild
+                    // mit, aufgenommen in einer Regie, die fuer alle 43 gilt.
+                    // Ein gezeichnetes daneben zu setzen hiesse, eine gute
+                    // Aufnahme gegen eine beliebige zu tauschen. Die eigene
+                    // Tasse zu fotografieren ist etwas anderes: das ist ein
+                    // Beleg und darf das Musterbild ersetzen.
+                    QuietRow(label: "Foto aufnehmen") { showCamera = true }
+                } else if #available(iOS 18.1, *) {
+                    GenerateImageRow(
+                        label: entry.photo == nil ? "Bild erzeugen" : "Neues Bild erzeugen",
+                        disabled: name.isEmpty
+                    ) { showPlayground = true }
+                }
             }
         }
     }
@@ -202,7 +250,7 @@ struct EntryDetailView: View {
     /// beidem da, bleibt der Platz leer — der Weissraum ist Teil des Satzes.
     private var artwork: UIImage? {
         if let data = entry.photo, let image = UIImage(data: data) { return image }
-        return lore?.image
+        return entry.kind == .coffee ? CoffeeInfo.image(for: entry.name) : nil
     }
 
     @ViewBuilder private var picture: some View {
@@ -226,16 +274,32 @@ struct EntryDetailView: View {
                 .overlay(alignment: .topTrailing) { badge }
                 // Erst aufgespreizt: dort ist Platz für den Satz, und zugeklappt
                 // bleibt das Bild ein Bild.
-                .overlay(alignment: .bottomTrailing) {
-                    if imageExpanded, !showLore, lore != nil { loreButton }
-                }
+                // Die Karte zuerst, der Knopf darueber: sonst legt sich das
+                // Glas ueber ihn und man kaeme nicht mehr heran.
                 .overlay { if showLore, let lore { loreCard(lore) } }
+                // Am selben Ort, offen wie zu — ein Umschalter, der nicht
+                // wandert. Erst aufgespreizt: dort ist Platz fuer den Satz,
+                // zugeklappt bleibt das Bild ein Bild.
+                // An der Bedienhand, wie alles, was man oft trifft.
+                .overlay(alignment: hand.thumbCorner) {
+                    if imageExpanded, lore != nil {
+                        if showLore {
+                            markButton(.close, "Warenkunde schließen") { showLore = false }
+                        } else {
+                            markButton(.info, "Warenkunde") { showLore = true }
+                        }
+                    }
+                }
                 // Ruhend so breit wie die rechte Spalte, gespreizt von Kante
                 // zu Kante. Das Polster kommt **nach** dem Overlay: davor
                 // haengt die Marke an der Kante des gepolsterten Rahmens,
                 // also 156 pt weiter rechts — ausserhalb des Bildes.
-                .padding(.leading, imageExpanded ? 0 : Metric.margin + FormGrid.rightInset)
-                .padding(.trailing, imageExpanded ? 0 : Metric.margin)
+                // Ruhend sitzt das Bild ueber der Textspalte, und die liegt
+                // der Bedienhand gegenueber.
+                .padding(.leading, imageExpanded ? 0
+                         : (hand == .right ? Metric.margin + FormGrid.textInset : Metric.margin))
+                .padding(.trailing, imageExpanded ? 0
+                         : (hand == .right ? Metric.margin : Metric.margin + FormGrid.textInset))
                 .padding(.top, 12)
                 .padding(.bottom, 24)
                 .contentShape(Rectangle())
@@ -269,25 +333,38 @@ struct EntryDetailView: View {
 
     /// Das Info-Zeichen unten rechts — gegenüber der Marke oben rechts, damit
     /// sich die beiden nie ins Gehege kommen.
-    private var loreButton: some View {
+    private enum Mark { case info, close }
+
+    /// Info und Schliessen sind dieselbe Marke an derselben Stelle, nur mit
+    /// anderer Zeichnung — deshalb **ein** Bauplan und nicht zwei.
+    private func markButton(
+        _ mark: Mark,
+        _ label: LocalizedStringKey,
+        action: @escaping () -> Void
+    ) -> some View {
         Button {
-            withAnimation(.easeInOut(duration: 0.25)) { showLore = true }
+            withAnimation(.easeInOut(duration: 0.25)) { action() }
         } label: {
-            DotArt.info(color: Palette.paper)
-                .frame(width: 22, height: 22)
-                .padding(5)
-                .background(Palette.ink)
-                .padding(8)
-                // 32 pt Marke in einer 44 pt hohen Trefferfläche.
-                .frame(width: 44, height: 44)
-                .contentShape(Rectangle())
+            Group {
+                switch mark {
+                case .info: DotArt.info(color: Palette.ink)
+                case .close: DotArt.close(color: Palette.ink)
+                }
+            }
+            .frame(width: 22, height: 22)
+            .padding(5)
+            // Heller Grund, dunkle Punkte — so steht es im Entwurf. Umgekehrt
+            // war es nur, weil der alte Knopf es so machte.
+            .background(Palette.paper)
+            .padding(8)
+            // 32 pt Marke in einer 44 pt hohen Trefferflaeche.
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Warenkunde")
+        .accessibilityLabel(label)
     }
 
-    /// Die Karte liegt **im** Bild, nicht darunter: das Bild bleibt sichtbar,
-    /// nur unscharf. Ein Tippen darauf schliesst sie wieder.
     private func loreCard(_ lore: CoffeeInfo) -> some View {
         // **Nicht Ink und Ink2.** Auf Glas ist die Farbe unter dem Text
         // unbekannt, sie kommt aus dem Bild: Ink2 kam ueber dem Braun einer
@@ -338,11 +415,8 @@ struct EntryDetailView: View {
         // Bei grosser Schrift wird aus drei Feldern mehr, als ins Bild passt.
         // `basedOnSize`: es scrollt nur dann, sonst steht es still.
         .modifier(ScrollIfTooTall())
-        // `regularMaterial`, nicht `ultraThin`: über einem Foto — und diese
-        // Bilder sind Fotos — bleibt vom dünnsten Glas zu wenig Kontrast für
-        // 11-pt-Etiketten übrig. Glas bleibt es, nur eines, durch das man den
-        // Satz noch lesen kann.
-        .background(.regularMaterial)
+        // Glas, damit das Bild durchscheint statt zu verschwinden.
+        .background { Glass() }
         .contentShape(Rectangle())
         .onTapGesture { withAnimation(.easeInOut(duration: 0.25)) { showLore = false } }
         .transition(.opacity)
@@ -417,8 +491,13 @@ struct EntryDetailView: View {
         .padding(.bottom, 20)
     }
 
+    /// **Immer rechtsbündig**, in welcher Spalte die Zahlen auch stehen.
+    /// Der Grund ist die Zahl selbst: Einer sollen über Einern stehen, und
+    /// das tun sie nur an einer rechten Kante. Rechtshändig zeigt die Spalte
+    /// damit zur Fuge, linkshändig zum Blattrand — beides richtig, weil es
+    /// hier nicht um die Spalte geht, sondern um die Ziffern.
     private func numberField(_ label: LocalizedStringKey, text: Binding<String>, tint: Color) -> some View {
-        FormField(label: label) {
+        FormField(label: label, alignment: .trailing) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
                 .scaledFont(24, design: .monospaced)

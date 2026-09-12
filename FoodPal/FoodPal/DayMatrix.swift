@@ -25,7 +25,12 @@ struct DayMatrix: View {
     private static let mgPerRow: Double = 65
     /// Beginn des Koffeinbandes: 12 Reihen (47) plus eine Reihe Fuge.
     private static let coffeeTop: CGFloat = 51
-    private static let naturalHeight: CGFloat = 70
+    /// Die Punkte selbst reichen bis 70. Drei Einheiten darueber — die Hoehe
+    /// **eines Punktes** — gehoeren der Jetzt-Linie, die nach oben zu den
+    /// Stundenzahlen hin uebersteht. Ein `Canvas` schneidet an seinen Raendern
+    /// ab; ohne die zusaetzliche Flaeche gaebe es den Ueberstand nicht.
+    private static let overhang: CGFloat = 3
+    private static let naturalHeight: CGFloat = 70 + overhang
 
     var body: some View {
         Canvas { ctx, size in
@@ -34,7 +39,8 @@ struct DayMatrix: View {
             let lit = hourly
 
             func dot(column: Int, y: CGFloat, color: Color) {
-                let rect = CGRect(x: Grid.x(column) * s, y: y * s, width: d, height: d)
+                let rect = CGRect(x: Grid.x(column) * s, y: (y + Self.overhang) * s,
+                                  width: d, height: d)
                 ctx.fill(Path(rect), with: .color(color))
             }
 
@@ -49,7 +55,7 @@ struct DayMatrix: View {
                     let col = hour * perDot + i % perDot
                     dot(column: col,
                         y: CGFloat(row) * Grid.pitch,
-                        color: i < calDots ? Palette.ink : Palette.rule)
+                        color: i < calDots ? Palette.ink : Palette.matrix)
                 }
 
                 // Koffein: von der obersten Reihe nach unten
@@ -58,24 +64,30 @@ struct DayMatrix: View {
                     let col = hour * perDot + i % perDot
                     dot(column: col,
                         y: Self.coffeeTop + CGFloat(row) * Grid.pitch,
-                        color: i < cofDots ? roast.color : Palette.rule)
+                        color: i < cofDots ? roast.color : Palette.matrix)
                 }
             }
 
-            // Jetzt: je ein Punkt in der obersten und der untersten Reihe wird
-            // in Papier gesetzt, also weggenommen. Zwei Kerben an den Rändern
-            // klammern die laufende Viertelstunde ein.
+            // Jetzt: eine senkrechte Linie **in der Luecke links** der
+            // laufenden Viertelstunde, durch beide Baender hindurch und oben
+            // um einen Punkt ueberstehend.
             //
-            // Weggenommen statt geschwärzt, weil ein schwarzer Punkt in der
-            // obersten Kalorienreihe genau das hiesse, was er dort sonst sagt:
-            // 1800 kcal in dieser Stunde. Eine Lücke kann man mit nichts
-            // verwechseln — und in einem regelmässigen Raster sieht man sie
-            // sofort.
+            // In der Luecke, nicht ueber einer Spalte: sie ist eine Einheit
+            // breit und schiebt damit keinen Punkt weg — das Raster bleibt
+            // vollstaendig, und die Linie liegt nicht darin, sondern dazwischen.
+            //
+            // Vorher waren es zwei Papierpunkte, oben und unten, die die
+            // Spalte einklammerten. Eine Linie sagt dasselbe in einem Zug und
+            // trifft den Zeitpunkt genauer: sie steht **vor** der Spalte, also
+            // an ihrem Anfang, nicht irgendwo in ihr.
             if let column = Self.column(for: now) {
-                dot(column: column, y: 0, color: Palette.paper)
-                dot(column: column,
-                    y: Self.coffeeTop + CGFloat(Self.coffeeRows - 1) * Grid.pitch,
-                    color: Palette.paper)
+                // Zwischen null und Viertel nach zwoelf gibt es links nichts
+                // mehr — dort rueckt die Linie an die Kante, statt zu fehlen.
+                let x = max(0, Grid.x(column) - Grid.gap)
+                ctx.fill(
+                    Path(CGRect(x: x * s, y: 0,
+                                width: Grid.gap * s, height: Self.naturalHeight * s)),
+                    with: .color(Palette.ink2))
             }
         }
         .aspectRatio(Grid.naturalWidth / Self.naturalHeight, contentMode: .fit)

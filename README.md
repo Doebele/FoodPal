@@ -1,17 +1,17 @@
-# FoodPal
+# Cafcalog
 
-Kalorien und Koffein für ein einziges iPhone. Mahlzeiten werden fotografiert
-oder diktiert und von einem Modell geschätzt, Kaffee kostet zwei Taps, alles
-landet in Apple Health. Kein Backend, keine Konten, kein Server — die
+**Caf**feine, **Ca**lories, Log**buch**. Kalorien und Koffein für ein einziges
+iPhone. Mahlzeiten werden fotografiert oder diktiert und von einem Modell
+geschätzt, Kaffee kostet zwei Taps, alles landet in Apple Health. Kein Backend, keine Konten, kein Server — die
 Schlüssel liegen in der Keychain und verlassen das Gerät nur als Kopfzeile
 der Anfrage an den gewählten Anbieter.
 
 SwiftUI · SwiftData · HealthKit · iOS 17 · rund 6 000 Zeilen · 75 Tests
 
-> **Der Name ist vergeben.** „FoodPal" gibt es im App Store bereits dreimal,
-> einmal davon als deutschsprachige Ernährungs-App in derselben Kategorie.
-> Vor einer Veröffentlichung braucht die App einen anderen — 75 geprüfte
-> Kandidaten stehen in der Namensakte.
+> Das Xcode-Ziel, der Swift-Modulname und der Projektordner heissen weiter
+> `FoodPal` — sie sind unsichtbar, und ein Umbenennen wäre Arbeit ohne Ertrag.
+> Die Bundle-ID ist `com.clausmedvesek.kk26` und trägt bewusst gar keinen
+> Namen, damit der nächste ihn nicht wieder kostet.
 
 ---
 
@@ -26,7 +26,7 @@ Koffein, wählbar als Röstung von Zimt bis Italienisch.
 - **Ein Screen.** Erfassen und Einstellungen kommen als Bottom Sheet von
   unten, erledigen eine Sache und verschwinden. Keine Tabbar.
 - **Der Tag ist eine Zeile.** 24 Stunden in 96 Rasterspalten, eine
-  Viertelstunde je Spalte, oben Kalorien, unten Koffein, eine Kerbe für jetzt.
+  Viertelstunde je Spalte, oben Kalorien, unten Koffein, eine Linie für jetzt.
 - **Drei Ziffernstile**, in den Einstellungen wählbar: Flipkarte nach der
   Braun-Klappuhr, Sieben-Segment, Dot-Matrix im Raster des Zeitstrahls.
   Das Zählwerk dreht alle Räder gleichzeitig und immer aufwärts.
@@ -47,8 +47,9 @@ Die Bildregie für die Kaffeesorten steht in
 | **Foto** | Kamera oder Fotomediathek, Schätzung durch ein Vision-Modell |
 | **Beschreiben** | Tippen oder Diktieren; „gestern Abend um neun" wird als Zeitpunkt gelesen, mehrere Gerichte werden einzeln erfasst |
 | **Barcode** | wird im Foto automatisch erkannt, Nährwerte von Open Food Facts |
-| **Kaffee** | 14 Sorten, ein Tap; die häufigsten stehen unten, im Daumenbereich |
+| **Kaffee** | 43 Sorten mit Bild und Warenkunde, ein Tap; die häufigsten stehen unten, im Daumenbereich, und das Raster lernt sie |
 | **Koffein** | auch aus Mahlzeiten — Cola, Red Bull, Monster, Tee; Werte aus belegten Quellen, nicht vom Modell geraten |
+| **Nährwerte** | jede Kaffeesorte trägt kcal, Koffein und Makros aus einer offengelegten Rechnung — die Probe hält ein Test fest |
 | **Health** | Kalorien, Koffein und Makros als `HKCorrelation`; Löschen räumt dort mit auf |
 | **Kalender** | Tage mit Einträgen sind markiert |
 
@@ -102,15 +103,103 @@ Katalog fehlt, ist ein Tippfehler, keine neue Zeile.
 Die Übersetzungen für FR, IT und ES stammen nicht von Muttersprachlern und
 sollten vor einer Veröffentlichung gegengelesen werden.
 
+## Bilder für den App Store
+
+```bash
+python3 tools/screenshots.py          # alle fünf Sprachen
+python3 tools/screenshots.py de en    # nur diese
+```
+
+Acht Schirme in fünf Sprachen, 40 Bilder zu **1320 × 2868** — die 6,9 Zoll,
+die App Store Connect verlangt; alles Kleinere rechnet Apple selbst daraus.
+Ausgabe nach `bilder/store/<sprache>/`, nicht ins Repository: sie sind aus dem
+Skript reproduzierbar.
+
+**Je Sprache eine andere Kaffeesorte** im Detailschirm — ein Barraquito auf
+Spanisch, ein Espresso auf Italienisch, ein Filterkaffee auf Deutsch. Die
+Werte dazu kommen aus dem Bestand und nicht aus dem Skript, sonst stünden im
+Bild Zahlen, die die App so nie erzeugt.
+
+Angesteuert werden die Schirme über die Startvarianten, **kein einziger Tipp
+auf den Bildschirm** — was man antippen muss, geht beim nächsten Lauf anders
+aus. Die Uhr steht auf 9:41 wie in Apples eigenen Bildern, und die
+Bezeichnungen der Beispielmahlzeiten reicht das Skript als `DEMO_MEALS` in
+fünf Sprachen herein; im Sprachkatalog haben sie nichts zu suchen, sie sind
+Nutzerdaten.
+
+Gezeigt wird ein **vergangener Tag** (`START_DAY=-2`). Er ist fertig gelaufen
+und trägt alle Einträge, und er hat kein Jetzt — also keine Linie, die der
+Uhrzeit in der Statusleiste widersprechen könnte. Ein heutiger Tag ginge auch,
+aber dann dürfte kein Eintrag nach 9:41 im Zeitstrahl stehen, und übrig bliebe
+ein fast leerer Tag. Zwei Tage zurück und nicht einer, weil im Kopf dann ein
+Datum steht statt des Wortes „gestern" — ein Datum ist eine Angabe, „gestern"
+eine Frage.
+
+**Ein Schirm macht die Ausnahme:** `08-jetzt` zeigt heute, sonst käme die
+Jetzt-Linie in keinem einzigen Bild vor. Dort steht `DEMO_NOW=9:41` — die
+Linie hält bei der Uhrzeit der Statusleiste, und gesät wird von heute nur, was
+davor liegt. Übrig bleibt ein halber Vormittag: zwei Einträge, die Linie, und
+rechts davon der Tag, der noch kommt. Weil sich damit die Saat ändert, setzt
+das Skript die App vor diesem Schirm neu auf.
+
 ## Vor einem App Store
 
-- anderer Name (siehe oben)
+Erledigt: **iPhone-only** (`TARGETED_DEVICE_FAMILY = 1` — der Entwurf hängt an
+einer Spalte, auf dem iPad dehnt sich der Zeitstrahl zum Strich und die
+Flipkarten skalieren nicht mit), **Datenschutzmanifest** (ohne den Grund
+`CA92.1` für `UserDefaults` weist App Store Connect das Paket ab),
+**Export-Erklärung** und die **Lizenznennungen** in den Einstellungen.
+
+**Die Kaffeebilder sind geklärt** (Stand 11.9.2026): Higgsfield beansprucht
+kein Eigentum an den erzeugten Bildern, die kommerzielle Nutzung ist
+ausdrücklich erlaubt, eine gesonderte Lizenz gibt es nicht, und eine Nennung
+verlangen die Bedingungen nicht — in den Einstellungen steht deshalb keine
+Zeile dafür. Zwei Dinge stehen trotzdem im Protokoll: Higgsfield darf mit
+Ein- und Ausgaben seine Modelle trainieren, und „Eigentum" ist hier eine
+Zusage des Anbieters, kein Urheberrecht — rein maschinell Erzeugtes hat in
+vielen Rechtsordnungen keinen Urheber. Für die Veröffentlichung ist beides
+ohne Folgen; erst wenn jemand die Bilder kopierte, wäre der Unterschied einer.
+
+Offen:
+
 - Muttersprachler für FR, IT, ES
-- Datenschutzerklärung und App-Privacy-Angaben
+- die Seiten aus `web/` hochladen — erst dann steht die Datenschutz-URL
 - bezahltes Developer-Programm statt Personal Team
+- ein Anbieterschlüssel in den App Review Notes: ohne ihn schätzt nichts,
+  und der Prüfer muss jede Funktion erreichen können
+
+## Die Seiten im Netz
+
+In `web/` liegen drei Dateien und ein Stylesheet: die **Datenschutzerklärung**
+auf Deutsch (`datenschutz.html`) und Englisch (`privacy.html`) und der
+**Onepager** (`index.html`), der die App vorstellt. Alles statisch, alle Pfade
+relativ — die Dateien laufen unter jeder Adresse, ohne dass eine Zeile sich
+ändert.
+
+Vorgeschlagen ist **`cafcalog.medvesek.com`**, eine Subdomain wie die fünf
+anderen des Hubs; die Datenschutz-URL für App Store Connect wäre dann
+`https://cafcalog.medvesek.com/datenschutz.html`. Genauso gut geht
+`medvesek.com/cafcalog/`.
+
+Angeschaut wird lokal mit
+
+```bash
+python3 -m http.server 8765 --directory web
+```
+
+Die Bilder in `web/bilder/` sind aus dem Simulator, auf 540 Punkt Breite
+gerechnet. Sie zeigen einen vergangenen Tag, aus demselben Grund wie die
+Bilder für den Store: die Uhr in der Statusleiste und die Jetzt-Linie sollen
+sich nicht widersprechen.
+
+Was noch fehlt, steht in den Dateien in eckigen Klammern: Anschrift und
+Kontakt im Fuss der Datenschutzseite — beides verlangt das Gesetz, und beides
+kann ich nicht erfinden. Und die Adresse im App Store, sobald es sie gibt.
 
 ## Lizenzen
 
 Der Code gehört mir. Mitgeliefert sind **Fira Sans**, **Fira Sans Condensed**
 und **Fira Mono** unter der SIL Open Font License 1.1. Nährwerte für
-Fertigprodukte kommen von **Open Food Facts** (ODbL).
+Fertigprodukte kommen von **Open Food Facts** (ODbL). Die 43 Sortenbilder sind
+mit **Higgsfield** erzeugt; deren Bedingungen lassen die kommerzielle Nutzung
+zu und verlangen keine Nennung.
