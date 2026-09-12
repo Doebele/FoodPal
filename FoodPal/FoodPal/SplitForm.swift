@@ -117,6 +117,9 @@ struct FormField<Value: View>: View {
     /// an der rechten stehen Einer über Einern — und die Haarlinie darunter
     /// endet dort, wo die Zahl endet. Die Beschriftung folgt dem Wert, sonst
     /// zöge sie die Spalte nach zwei Seiten.
+    ///
+    /// Das gilt in **beiden** Bedienhänden. Die Spalte wandert, die Kante
+    /// der Ziffern nicht: es geht um die Zahl, nicht um die Spalte.
     var alignment: HorizontalAlignment = .leading
     @ViewBuilder let value: Value
 

@@ -829,7 +829,7 @@ private struct Confirm: View {
         text: Binding<String>,
         tint: Color = Palette.ink
     ) -> some View {
-        FormField(label: label, alignment: hand == .right ? .trailing : .leading) {
+        FormField(label: label, alignment: .trailing) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
                 .scaledFont(24, design: .monospaced)

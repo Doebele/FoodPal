@@ -491,10 +491,13 @@ struct EntryDetailView: View {
         .padding(.bottom, 20)
     }
 
-    /// Die Zahlen stehen an der inneren Kante ihrer Spalte, also zur
-    /// Textspalte hin. Welche das ist, sagt die Bedienhand.
+    /// **Immer rechtsbündig**, in welcher Spalte die Zahlen auch stehen.
+    /// Der Grund ist die Zahl selbst: Einer sollen über Einern stehen, und
+    /// das tun sie nur an einer rechten Kante. Rechtshändig zeigt die Spalte
+    /// damit zur Fuge, linkshändig zum Blattrand — beides richtig, weil es
+    /// hier nicht um die Spalte geht, sondern um die Ziffern.
     private func numberField(_ label: LocalizedStringKey, text: Binding<String>, tint: Color) -> some View {
-        FormField(label: label, alignment: hand == .right ? .trailing : .leading) {
+        FormField(label: label, alignment: .trailing) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
                 .scaledFont(24, design: .monospaced)
