@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Der zweispaltige Satzspiegel der beiden Formulare.
 ///
-/// Links die Zahlen, rechts Bild, Zeitpunkt und Bezeichnung — **37 zu 63**
-/// mit 8 pt Steg, aus dem Entwurf abgemessen (124,4 / 8 / 212,6 auf 345).
+/// Links die Zahlen, rechts Bild, Zeitpunkt und Bezeichnung — die linke
+/// Spalte 124 breit, aus dem Entwurf abgemessen (124,4 auf 345).
 /// Die Aufteilung ist keine Laune: Zahlen sind kurz und brauchen wenig
 /// Breite, ein Gerichtsname ist lang und braucht viel. Nebeneinander gesetzt
 /// steht beides auf einem Blick da, wo es untereinander zwei Bildschirme
@@ -18,7 +18,12 @@ import SwiftUI
 /// Eintrag sie ebenfalls braucht.
 enum FormGrid {
     static let leftWidth: CGFloat = 124
-    static let gap: CGFloat = 8
+    /// **Der Steg ist der Seitenrand.** Im Entwurf waren es acht Punkte, und
+    /// damit standen die beiden Spalten enger beieinander als jede von ihnen
+    /// am Blattrand — der Satzspiegel hatte innen eine feinere Fuge als
+    /// aussen. Derselbe Wert wie `Metric.margin` macht aus zwei Spalten ein
+    /// Raster: aussen 24, innen 24.
+    static let gap: CGFloat = Metric.margin
     /// Wo die rechte Spalte beginnt, vom Seitenrand aus gerechnet.
     static var rightInset: CGFloat { leftWidth + gap }
 }
