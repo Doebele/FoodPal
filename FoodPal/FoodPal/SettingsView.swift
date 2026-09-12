@@ -93,6 +93,14 @@ struct SettingsView: View {
                     handPicker
                 }
 
+                // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
+                // nur beim Einrichten gebraucht werden. Sie stehen deshalb hinter
+                // einer Zeile statt dauerhaft zwischen den Schaltern.
+                group(spacing: 0) {
+                    caption("bildanalyse", value: provider.label)
+                    actionRow("Anbieter und Modell") { showVision = true }
+                }
+
                 group(spacing: 0) {
                     caption("bedienung")
                     row("Haptik") {
@@ -119,14 +127,6 @@ struct SettingsView: View {
                         .scaledFont(11)
                         .foregroundStyle(Palette.ink2)
                         .padding(.top, 8)
-                }
-
-                // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
-                // nur beim Einrichten gebraucht werden. Sie stehen deshalb hinter
-                // einer Zeile statt dauerhaft zwischen den Schaltern.
-                group(spacing: 0) {
-                    caption("bildanalyse", value: provider.label)
-                    actionRow("Anbieter und Modell") { showVision = true }
                 }
 
                 // Zuletzt: einmal verbunden, nie wieder angefasst. Der Zustand
