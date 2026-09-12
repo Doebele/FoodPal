@@ -92,9 +92,12 @@ struct CoffeeCapture: View {
     @Environment(\.modelContext) private var context
     @Query private var all: [Entry]
     @AppStorage(Preference.healthSync) private var healthSync = true
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
 
     @State private var health = HealthKitSync()
     @State private var saves = 0
+
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
 
     private static let bigCount = 2
     private static let midCount = 6
@@ -303,10 +306,10 @@ struct CoffeeCapture: View {
         }
     }
 
-    /// Zwei grosse: die häufigste **rechts**.
+    /// Zwei grosse: die häufigste **an der Bedienhand**.
     private var bigRow: [CoffeePreset?] {
         let two = Array(ranked.prefix(Self.bigCount))
-        return [two.count > 1 ? two[1] : nil, two.first]
+        return hand.order(two.first, two.count > 1 ? two[1] : nil)
     }
 
     private var midGrid: [[CoffeePreset?]] {
@@ -319,16 +322,26 @@ struct CoffeeCapture: View {
         return grid(rest, columns: Self.columns, rows: rows)
     }
 
-    /// Füllt von **unten rechts** nach oben links — die Reihenfolge, in der
-    /// die Liste gelesen wird, wenn der Daumen unten liegt.
+    /// Füllt von unten **an der Bedienhand** nach oben weg — die Reihenfolge,
+    /// in der die Liste gelesen wird, wenn der Daumen unten liegt.
     private func grid(_ items: [CoffeePreset], columns: Int, rows: Int) -> [[CoffeePreset?]] {
+        Self.grid(items, columns: columns, rows: rows, hand: hand)
+    }
+
+    /// Statisch und ohne Ansicht, damit sich die Reihenfolge pruefen laesst.
+    static func grid(
+        _ items: [CoffeePreset], columns: Int, rows: Int, hand: Hand
+    ) -> [[CoffeePreset?]] {
         var field = Array(
             repeating: [CoffeePreset?](repeating: nil, count: columns),
             count: rows
         )
+        let spalten = hand == .right
+            ? Array(stride(from: columns - 1, through: 0, by: -1))
+            : Array(0..<columns)
         var index = 0
         for row in stride(from: rows - 1, through: 0, by: -1) {
-            for column in stride(from: columns - 1, through: 0, by: -1) where index < items.count {
+            for column in spalten where index < items.count {
                 field[row][column] = items[index]
                 index += 1
             }

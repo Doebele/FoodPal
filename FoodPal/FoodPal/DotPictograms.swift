@@ -188,6 +188,44 @@ extension DotArt {
         ], color: color)
     }
 
+    /// **Die Bedienhand.** Ein Telefon und darin die Ecke, die der Daumen
+    /// erreicht — nicht eine gezeichnete Hand. Eine Hand im Zwoelferraster
+    /// wird ein Fleck; der Viertelkreis dagegen sagt genau das, worum es geht:
+    /// bis hierhin kommt der Daumen, ohne dass man umgreift.
+    ///
+    /// Vorschlag im Hausraster, gedacht zum Nachschaerfen im Entwurf.
+    static func hand(_ hand: Hand, color: Color) -> DotArt {
+        hand == .right
+            ? grid([
+                "............",
+                "..########..",
+                "..#......#..",
+                "..#......#..",
+                "..#......#..",
+                "..#......#..",
+                "..#......#..",
+                "..#.....##..",
+                "..#....###..",
+                "..#..#####..",
+                "..########..",
+                "............",
+            ], color: color)
+            : grid([
+                "............",
+                "..########..",
+                "..#......#..",
+                "..#......#..",
+                "..#......#..",
+                "..#......#..",
+                "..#......#..",
+                "..##.....#..",
+                "..###....#..",
+                "..#####..#..",
+                "..########..",
+                "............",
+            ], color: color)
+    }
+
     /// Die Zeichnung steht als Raster da und nicht als Koordinatenliste: so
     /// sieht man die Form im Quelltext und kann sie mit dem Entwurf
     /// vergleichen, ohne etwas zu rechnen.

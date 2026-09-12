@@ -19,6 +19,7 @@ struct TodayView: View {
     @Query(sort: \Entry.date) private var all: [Entry]
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
 
     // Gleich auf heute gesetzt, nicht erst in onAppear — sonst feuert
     // beim Start ein Haptik-Impuls ohne Anlass.
@@ -44,6 +45,7 @@ struct TodayView: View {
     private var calendar: Calendar { .current }
     private var today: Date { calendar.startOfDay(for: .now) }
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
     private var mode: DisplayMode { captureMode == Entry.Kind.coffee.rawValue ? .mg : .kcal }
 
     /// Vom ersten Eintrag bis heute. Nach vorn ist bei heute Schluss —
@@ -218,17 +220,23 @@ struct TodayView: View {
     /// waren es nicht wert.
     private var bottomBar: some View {
         HStack(alignment: .bottom, spacing: CaptureTile.gap) {
-            Button(action: onSettings) {
-                CaptureTile(label: "Einstellungen", height: 60)
+            // Erfassen aussen an der Bedienhand, einstellungen innen.
+            ForEach(hand.order(Griff.erfassen, Griff.einstellungen)) { griff in
+                switch griff {
+                case .einstellungen:
+                    Button(action: onSettings) {
+                        CaptureTile(label: "Einstellungen", height: 60)
+                    }
+                    .buttonStyle(.plain)
+                case .erfassen:
+                    Button(action: onCapture) {
+                        CaptureTile(label: "Erfassen",
+                                    marks: [.plus(color: Palette.ink)],
+                                    height: 120)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
-            .buttonStyle(.plain)
-
-            Button(action: onCapture) {
-                CaptureTile(label: "Erfassen",
-                            marks: [.plus(color: Palette.ink)],
-                            height: 120)
-            }
-            .buttonStyle(.plain)
         }
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal, Metric.margin)
@@ -246,6 +254,13 @@ struct TodayView: View {
     }
 }
 
+/// Die zwei Griffe der Leiste unten, damit sie sich nach der Hand ordnen
+/// lassen, ohne den Aufbau zweimal hinzuschreiben.
+private enum Griff: String, Identifiable, CaseIterable {
+    case einstellungen, erfassen
+    var id: String { rawValue }
+}
+
 /// Ein Tag: Diagramm, Trennlinie, Anzeige, Umschalter, Chronologie.
 struct DayView: View {
     let entries: [Entry]
@@ -256,6 +271,7 @@ struct DayView: View {
 
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var selected: Entry?
 
@@ -279,6 +295,7 @@ struct DayView: View {
     }
 
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
     private var kcal: Int { Int(entries.reduce(0) { $0 + $1.kcal }.rounded()) }
     private var mg: Int { Int(entries.reduce(0) { $0 + $1.caffeineMg }.rounded()) }
 
@@ -397,23 +414,39 @@ struct DayView: View {
             .scaledFont(17, weight: .medium, design: .monospaced)
             .foregroundStyle(Palette.ink)
 
+        // **Die Zeile folgt der Bedienhand.** Der Wert steht an der Kante,
+        // an der der Daumen liegt, die Uhrzeit gegenueber. Bei rechts bleibt
+        // alles, wie es war.
         Group {
             if typeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: hand == .right ? .leading : .trailing, spacing: 6) {
                     HStack(spacing: 8) {
-                        time
-                        Spacer(minLength: 8)
-                        value
+                        if hand == .right {
+                            time
+                            Spacer(minLength: 8)
+                            value
+                        } else {
+                            value
+                            Spacer(minLength: 8)
+                            time
+                        }
                     }
-                    name.frame(maxWidth: .infinity, alignment: .leading)
+                    name.frame(maxWidth: .infinity,
+                               alignment: hand == .right ? .leading : .trailing)
                 }
             } else {
                 HStack(spacing: 8) {
                     // Die 52 pt der Uhrzeitspalte waren schon bei xxLarge zu
                     // eng — „19:15" wurde zu „1…".
-                    time.fixedSize().frame(minWidth: 44, alignment: .leading)
-                    name.lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
-                    value.fixedSize()
+                    if hand == .right {
+                        time.fixedSize().frame(minWidth: 44, alignment: .leading)
+                        name.lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
+                        value.fixedSize()
+                    } else {
+                        value.fixedSize()
+                        name.lineLimit(2).frame(maxWidth: .infinity, alignment: .trailing)
+                        time.fixedSize().frame(minWidth: 44, alignment: .trailing)
+                    }
                 }
             }
         }

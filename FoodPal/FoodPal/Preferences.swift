@@ -9,6 +9,8 @@ enum Preference {
     static let numberStyle = "numberStyle"
     static let captureMode = "captureMode"
     static let appearance = "appearance"
+    /// Die Hand, die das Geraet haelt. Siehe `Hand`.
+    static let hand = "hand"
     /// Ob die Schrift der Systemgroesse folgt. **An**, das ist die
     /// zugaengliche Vorgabe — der Schalter ist die Ausnahme, nicht die Regel.
     static let scaleText = "scaleText"
@@ -31,6 +33,7 @@ enum Preference {
             numberStyle: NumberStyle.flip.rawValue,
             captureMode: Entry.Kind.coffee.rawValue,
             appearance: Appearance.auto.rawValue,
+            hand: Hand.right.rawValue,
             scaleText: true,
             provider: Provider.claude.rawValue,
             models: "{}",
@@ -91,6 +94,44 @@ enum PerProvider {
 
 /// Hell, Dunkel oder dem Gerät folgen. Voreingestellt ist **Auto** —
 /// die App hat keinen Grund, die Systemwahl zu überstimmen.
+/// **Die Bedienhand.** Die App wird einhaendig gehalten, und die Anordnung
+/// folgt dem Daumen: Erfassen aussen an der Bedienhand, die haeufigste
+/// Kaffeesorte in derselben Ecke, das Infozeichen im Bild ebenso.
+///
+/// Gespiegelt werden nur **Griffe** und die Eintragsliste. Ausdruecklich
+/// **nicht**: der Zeitstrahl samt Stundenzahlen und Jetzt-Linie, die drei
+/// Ziffernanzeigen, die Tagespfeile, der kcal/mg-Umschalter, die Kopfzeile
+/// und die Zeilen in den Einstellungen. Ein Tag laeuft von links nach
+/// rechts, gleich welche Hand ihn haelt, und aus 1108 duerfen nie 8011
+/// werden.
+///
+/// Bewusst **kein** `layoutDirection` an der Wurzel: das haette genau diese
+/// Ausnahmen mitgedreht, und ein vergessenes Zurueckdrehen faellt erst dem
+/// auf, der es sucht.
+enum Hand: String, CaseIterable, Identifiable {
+    case left, right
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .left: String(localized: "links")
+        case .right: String(localized: "rechts")
+        }
+    }
+
+    /// Wo der Daumen liegt. Alles, was oft getroffen wird, sucht diese Kante.
+    var thumb: HorizontalAlignment { self == .right ? .trailing : .leading }
+
+    /// Dieselbe Kante als `Alignment`, fuer Overlays.
+    var thumbCorner: Alignment { self == .right ? .bottomTrailing : .bottomLeading }
+
+    /// Ordnet zwei Dinge so, dass das erste an der Bedienhand landet.
+    func order<T>(_ atThumb: T, _ away: T) -> [T] {
+        self == .right ? [away, atThumb] : [atThumb, away]
+    }
+}
+
 enum Appearance: String, CaseIterable, Identifiable {
     case auto, light, dark
 

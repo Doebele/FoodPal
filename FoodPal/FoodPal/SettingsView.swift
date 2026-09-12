@@ -22,6 +22,7 @@ struct SettingsView: View {
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
     @AppStorage(Preference.appearance) private var appearanceRaw = Appearance.auto.rawValue
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
     @AppStorage(Preference.provider) private var providerRaw = Provider.claude.rawValue
 
     @State private var health = HealthKitSync()
@@ -61,6 +62,7 @@ struct SettingsView: View {
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
     private var appearance: Appearance { Appearance(rawValue: appearanceRaw) ?? .auto }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
     private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
 
     var body: some View {
@@ -84,6 +86,11 @@ struct SettingsView: View {
                 group(spacing: 12) {
                     caption("anzeige · ziffern", value: style.label.lowercased())
                     stylePicker
+                }
+
+                group(spacing: 12) {
+                    caption("bedienhand", value: hand.label)
+                    handPicker
                 }
 
                 group(spacing: 0) {
@@ -205,6 +212,35 @@ struct SettingsView: View {
     /// Auf jedem Feld steht ein **A** in Punkten; der Grund darunter sagt den
     /// Modus. Auto teilt beide Gründe senkrecht und dreht das A auf der
     /// dunklen Hälfte um.
+    /// **Zwei Haelften, links steht links.** Die Auswahl selbst spiegelt
+    /// nicht mit: wer sie liest, sucht die Hand, nicht den Daumen.
+    private var handPicker: some View {
+        HStack(spacing: 0) {
+            ForEach(Hand.allCases) { option in
+                let active = option == hand
+                Button { handRaw = option.rawValue } label: {
+                    VStack(spacing: 10) {
+                        DotArt.hand(option, color: active ? Palette.ink : Palette.ink2)
+                            .frame(height: 54)
+                            .frame(maxWidth: .infinity)
+                        Text(option.label)
+                            .scaledFont(12)
+                            .tracking(0.4)
+                            .textCase(.lowercase)
+                            .foregroundStyle(active ? Palette.ink : Palette.ink2)
+                        Rectangle()
+                            .fill(active ? Palette.ink : .clear)
+                            .frame(height: 3)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(option.label)
+            }
+        }
+    }
+
     private var appearancePicker: some View {
         // Drei gleiche Drittel, nicht an die Raender gedrueckt: das Bild sitzt
         // mittig in seinem Feld, und der schwarze Strich laeuft ueber die

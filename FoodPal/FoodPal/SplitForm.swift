@@ -24,8 +24,9 @@ enum FormGrid {
     /// aussen. Derselbe Wert wie `Metric.margin` macht aus zwei Spalten ein
     /// Raster: aussen 24, innen 24.
     static let gap: CGFloat = Metric.margin
-    /// Wo die rechte Spalte beginnt, vom Seitenrand aus gerechnet.
-    static var rightInset: CGFloat { leftWidth + gap }
+    /// Wo die Textspalte beginnt, vom Seitenrand aus gerechnet. Auf welcher
+    /// Seite das ist, sagt die Bedienhand.
+    static var textInset: CGFloat { leftWidth + gap }
 }
 
 struct SplitForm<Left: View, Right: View>: View {
@@ -40,7 +41,10 @@ struct SplitForm<Left: View, Right: View>: View {
     @ViewBuilder let left: Left
     @ViewBuilder let right: Right
 
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
     @Environment(\.dynamicTypeSize) private var typeSize
+
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
 
     /// Breite der linken Spalte, aus dem Entwurf: 124,4 auf 345.
     ///
@@ -71,16 +75,32 @@ struct SplitForm<Left: View, Right: View>: View {
             // Ansichten ist ein TupleView, und der wird im `HStack` zu ebenso
             // vielen Geschwistern — die fuenf Zahlenfelder standen
             // nebeneinander statt untereinander.
+            // **Die Zahlen stehen an der Bedienhand**, der Text daneben.
+            // Rechtshaendig heisst das Zahlen links und Text rechts, wie
+            // gehabt; linkshaendig genau umgekehrt.
             HStack(alignment: .top, spacing: FormGrid.gap) {
-                VStack(alignment: .leading, spacing: 0) {
-                    Color.clear.frame(height: leftOffset)
-                    left
+                if hand == .right {
+                    zahlen
+                    text
+                } else {
+                    text
+                    zahlen
                 }
-                .frame(maxWidth: FormGrid.leftWidth, alignment: .leading)
-                VStack(alignment: .leading, spacing: 0) { right }
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+    }
+
+    private var zahlen: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Color.clear.frame(height: leftOffset)
+            left
+        }
+        .frame(maxWidth: FormGrid.leftWidth, alignment: .leading)
+    }
+
+    private var text: some View {
+        VStack(alignment: .leading, spacing: 0) { right }
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

@@ -19,6 +19,7 @@ struct PhotoCapture: View {
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
     @AppStorage(Preference.models) private var modelsJSON = "{}"
     @AppStorage(Preference.addresses) private var addressesJSON = "{}"
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
 
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -77,6 +78,7 @@ struct PhotoCapture: View {
     }
 
     private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
 
     /// **Ohne Modell keine Mahlzeit.** Kaffee geht immer, der steht als Sorte
     /// bereit; eine Mahlzeit dagegen schaetzt ein Modell aus Foto oder
@@ -208,13 +210,25 @@ struct PhotoCapture: View {
                     describing
                     fromCamera
                 } else {
+                    // Das leere Feld liegt der Bedienhand gegenueber, und
+                    // die Kamera landet in ihrer Ecke.
                     row {
-                        Color.clear.frame(maxWidth: .infinity)
-                        fromPhotos
+                        if hand == .right {
+                            Color.clear.frame(maxWidth: .infinity)
+                            fromPhotos
+                        } else {
+                            fromPhotos
+                            Color.clear.frame(maxWidth: .infinity)
+                        }
                     }
                     row {
-                        describing
-                        fromCamera
+                        if hand == .right {
+                            describing
+                            fromCamera
+                        } else {
+                            fromCamera
+                            describing
+                        }
                     }
                 }
             }
@@ -579,7 +593,9 @@ private struct Confirm: View {
     let onSave: (UIImage?, Bool, [MealEstimate], Date) -> Void
 
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
 
     @State private var drafts: [Draft] = []
     @State private var when = Date.now
@@ -813,7 +829,7 @@ private struct Confirm: View {
         text: Binding<String>,
         tint: Color = Palette.ink
     ) -> some View {
-        FormField(label: label, alignment: .trailing) {
+        FormField(label: label, alignment: hand == .right ? .trailing : .leading) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
                 .scaledFont(24, design: .monospaced)

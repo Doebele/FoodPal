@@ -13,6 +13,7 @@ struct EntryDetailView: View {
     @Environment(\.modelContext) private var context
     @AppStorage(Preference.healthSync) private var healthSync = true
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
 
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var health = HealthKitSync()
@@ -52,6 +53,7 @@ struct EntryDetailView: View {
     @Environment(\.colorScheme) private var scheme
 
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -278,7 +280,8 @@ struct EntryDetailView: View {
                 // Am selben Ort, offen wie zu — ein Umschalter, der nicht
                 // wandert. Erst aufgespreizt: dort ist Platz fuer den Satz,
                 // zugeklappt bleibt das Bild ein Bild.
-                .overlay(alignment: .bottomTrailing) {
+                // An der Bedienhand, wie alles, was man oft trifft.
+                .overlay(alignment: hand.thumbCorner) {
                     if imageExpanded, lore != nil {
                         if showLore {
                             markButton(.close, "Warenkunde schließen") { showLore = false }
@@ -291,8 +294,12 @@ struct EntryDetailView: View {
                 // zu Kante. Das Polster kommt **nach** dem Overlay: davor
                 // haengt die Marke an der Kante des gepolsterten Rahmens,
                 // also 156 pt weiter rechts — ausserhalb des Bildes.
-                .padding(.leading, imageExpanded ? 0 : Metric.margin + FormGrid.rightInset)
-                .padding(.trailing, imageExpanded ? 0 : Metric.margin)
+                // Ruhend sitzt das Bild ueber der Textspalte, und die liegt
+                // der Bedienhand gegenueber.
+                .padding(.leading, imageExpanded ? 0
+                         : (hand == .right ? Metric.margin + FormGrid.textInset : Metric.margin))
+                .padding(.trailing, imageExpanded ? 0
+                         : (hand == .right ? Metric.margin : Metric.margin + FormGrid.textInset))
                 .padding(.top, 12)
                 .padding(.bottom, 24)
                 .contentShape(Rectangle())
@@ -484,8 +491,10 @@ struct EntryDetailView: View {
         .padding(.bottom, 20)
     }
 
+    /// Die Zahlen stehen an der inneren Kante ihrer Spalte, also zur
+    /// Textspalte hin. Welche das ist, sagt die Bedienhand.
     private func numberField(_ label: LocalizedStringKey, text: Binding<String>, tint: Color) -> some View {
-        FormField(label: label, alignment: .trailing) {
+        FormField(label: label, alignment: hand == .right ? .trailing : .leading) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
                 .scaledFont(24, design: .monospaced)
