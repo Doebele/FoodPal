@@ -87,18 +87,41 @@ struct SplitForm<Left: View, Right: View>: View {
 /// Schriftstufe über der Vorgabe nicht mehr in eine Zeile.
 struct FormField<Value: View>: View {
     let label: LocalizedStringKey
+    /// **Rechtsbündig in der Zahlenspalte.** Die Werte dort sind kurz und
+    /// verschieden lang; an der linken Kante ausgerichtet flattert ihr Ende,
+    /// an der rechten stehen Einer über Einern — und die Haarlinie darunter
+    /// endet dort, wo die Zahl endet. Die Beschriftung folgt dem Wert, sonst
+    /// zöge sie die Spalte nach zwei Seiten.
+    var alignment: HorizontalAlignment = .leading
     @ViewBuilder let value: Value
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// Ab den Bedienhilfen-Grössen fallen die Spalten untereinander, und die
+    /// Zahlen stehen über die ganze Breite. Rechtsbündig wären sie dann am
+    /// Bildschirmrand statt neben ihrer Beschriftung.
+    private var effective: HorizontalAlignment {
+        typeSize.isAccessibilitySize ? .leading : alignment
+    }
+
+    private var box: Alignment { effective == .trailing ? .trailing : .leading }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: effective, spacing: 6) {
             Text(label)
                 .scaledFont(11)
                 .tracking(0.8)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: box)
             value
             Rectangle().fill(Palette.rule).frame(height: 1)
         }
+        // Ueber die Umgebung, nicht am Feld: so folgt auch der Text **in**
+        // einem Eingabefeld der Ausrichtung, und die Zahlenfelder brauchen
+        // nichts davon zu wissen. Ohne das stand die Beschriftung links und
+        // der Wert rechts, sobald die Spalten untereinanderfielen.
+        .multilineTextAlignment(effective == .trailing ? .trailing : .leading)
         .padding(.bottom, 18)
     }
 }

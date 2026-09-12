@@ -485,7 +485,7 @@ struct EntryDetailView: View {
     }
 
     private func numberField(_ label: LocalizedStringKey, text: Binding<String>, tint: Color) -> some View {
-        FormField(label: label) {
+        FormField(label: label, alignment: .trailing) {
             TextField("", text: text)
                 .keyboardType(.decimalPad)
                 .scaledFont(24, design: .monospaced)
