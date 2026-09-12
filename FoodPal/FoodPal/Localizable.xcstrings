@@ -8558,6 +8558,111 @@
           }
         }
       }
+    },
+    "Noch kein Modell eingerichtet": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch kein Modell eingerichtet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No model set up yet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay modelo configurado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun modèle configuré"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun modello configurato"
+          }
+        }
+      }
+    },
+    "Mahlzeiten schätzt ein Sprachmodell aus dem Foto oder deiner Beschreibung. Trage in den Einstellungen einen Anbieter und seinen Schlüssel ein. Oder wähle Apple, das auf dem Gerät rechnet und keinen Schlüssel braucht.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mahlzeiten schätzt ein Sprachmodell aus dem Foto oder deiner Beschreibung. Trage in den Einstellungen einen Anbieter und seinen Schlüssel ein. Oder wähle Apple, das auf dem Gerät rechnet und keinen Schlüssel braucht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meals are estimated by a language model from your photo or description. Add a provider and its key in settings. Or pick Apple, which runs on the device and needs no key."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las comidas las estima un modelo de lenguaje a partir de la foto o de tu descripción. Añade un proveedor y su clave en los ajustes. O elige Apple, que calcula en el dispositivo y no necesita clave."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les repas sont estimés par un modèle de langage à partir de la photo ou de ta description. Ajoute un fournisseur et sa clé dans les réglages. Ou choisis Apple, qui calcule sur l’appareil et n’a besoin d’aucune clé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I pasti li stima un modello linguistico dalla foto o dalla tua descrizione. Inserisci un fornitore e la sua chiave nelle impostazioni. Oppure scegli Apple, che calcola sul dispositivo e non richiede chiavi."
+          }
+        }
+      }
+    },
+    "Einstellungen öffnen": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open settings"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir ajustes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir les réglages"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri impostazioni"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

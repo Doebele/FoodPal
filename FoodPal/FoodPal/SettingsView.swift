@@ -2,10 +2,14 @@ import SwiftUI
 
 /// Einstellungen als Sheet — mit Kopfzeile und Schliessen, wie die Erfassung.
 struct SettingsSheet: View {
+    /// Kommt der Aufruf aus der Erfassung, steht der Anbieterdialog gleich
+    /// offen: dorthin wollte man ja.
+    var startVision = false
+
     var body: some View {
         VStack(spacing: 0) {
             SheetHeader(title: "Einstellungen")
-            SettingsView()
+            SettingsView(startVision: startVision)
         }
         .background(Palette.paper)
     }
@@ -22,13 +26,22 @@ struct SettingsView: View {
 
     @State private var health = HealthKitSync()
     @State private var authError: String?
-    @State private var showVision = {
+    @State private var showVision: Bool
+    /// Kommt der Aufruf aus der Erfassung, soll der Anbieterdialog gleich
+    /// offen stehen. **Nicht sofort**: dieses Blatt faehrt in dem Moment noch
+    /// herauf, und ein Blatt, das auf einem heraufkommenden aufsetzen will,
+    /// wird verschluckt. Ein Drittel einer Sekunde spaeter sitzt es.
+    private let startVision: Bool
+
+    init(startVision: Bool = false) {
         #if DEBUG
-        return ProcessInfo.processInfo.environment["START_VISION"] == "1"
+        let debug = ProcessInfo.processInfo.environment["START_VISION"] == "1"
         #else
-        return false
+        let debug = false
         #endif
-    }()
+        self.startVision = startVision
+        _showVision = State(initialValue: debug)
+    }
 
     /// Die Sprache, in der die App gerade laeuft — nicht die des Geraets:
     /// `preferredLocalizations` ist die Schnittmenge aus beidem, also das,
@@ -172,6 +185,11 @@ struct SettingsView: View {
         .toggleStyle(InkToggle())
         .background(Palette.paper)
         .haptic(.selection, trigger: roastRaw)
+        .task {
+            guard startVision, !showVision else { return }
+            try? await Task.sleep(for: .milliseconds(400))
+            showVision = true
+        }
         .sheet(isPresented: $showVision) {
             VisionSheet()
                 .presentationDragIndicator(.visible)

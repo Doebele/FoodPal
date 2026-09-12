@@ -126,7 +126,7 @@ def main():
         if botschaft and 'error' in botschaft:
             print('FEHLER:', json.dumps(botschaft['error'], ensure_ascii=False)[:800])
         elif botschaft:
-            print(json.dumps(botschaft.get('result', {}), ensure_ascii=False)[:2500])
+            print(json.dumps(botschaft.get('result', {}), ensure_ascii=False)[:20000])
 
 
 if __name__ == '__main__':

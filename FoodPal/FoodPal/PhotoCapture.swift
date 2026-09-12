@@ -10,6 +10,8 @@ import ImagePlayground
 /// jedem davon offen.
 struct PhotoCapture: View {
     let onSaved: () -> Void
+    /// Ruft die Einstellungen auf, wenn noch kein Modell eingerichtet ist.
+    var onSetup: () -> Void = {}
 
     @Environment(\.modelContext) private var context
     @AppStorage(Preference.healthSync) private var healthSync = true
@@ -50,6 +52,7 @@ struct PhotoCapture: View {
     @State private var beforeDictation = ""
     /// Merkt sich, dass der Abgang ein Erfolg war und nicht ein Abbruch.
     @State private var saved = false
+    @State private var askSetup = false
 
     private enum Phase {
         case idle
@@ -74,6 +77,17 @@ struct PhotoCapture: View {
     }
 
     private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
+
+    /// **Ohne Modell keine Mahlzeit.** Kaffee geht immer, der steht als Sorte
+    /// bereit; eine Mahlzeit dagegen schaetzt ein Modell aus Foto oder
+    /// Beschreibung, und ohne Schluessel antwortet keines. Die App startet
+    /// bewusst im Kaffeemodus, also trifft das genau den, der zum ersten Mal
+    /// auf kcal wechselt.
+    ///
+    /// `isConfigured` sagt für die Dienste im eigenen Netz immer ja: die
+    /// brauchen keinen Schluessel. Stimmt dort die Adresse nicht, sagt es der
+    /// Verbindungstest in den Einstellungen, nicht dieser Dialog.
+    private var ready: Bool { provider.isConfigured }
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
     private var effectiveModel: String { provider.model(from: modelsJSON) }
 
@@ -101,6 +115,15 @@ struct PhotoCapture: View {
             // schluckt UIKit die zweite Anweisung, und die Erfassung bliebe
             // offen stehen. `onDismiss` feuert, wenn wirklich nichts mehr da
             // ist.
+            // **Modal, weil hier nichts weitergeht.** Ein Hinweis in der Ecke
+            // liesse den Tipp ins Leere laufen; der Dialog nennt den Grund und
+            // den naechsten Schritt in einem Zug.
+            .alert("Noch kein Modell eingerichtet", isPresented: $askSetup) {
+                Button("Einstellungen öffnen") { onSetup() }
+                Button("Abbrechen", role: .cancel) {}
+            } message: {
+                Text("Mahlzeiten schätzt ein Sprachmodell aus dem Foto oder deiner Beschreibung. Trage in den Einstellungen einen Anbieter und seinen Schlüssel ein. Oder wähle Apple, das auf dem Gerät rechnet und keinen Schlüssel braucht.")
+            }
             .sheet(isPresented: working, onDismiss: {
                 guard saved else { return }
                 saved = false
@@ -212,21 +235,31 @@ struct PhotoCapture: View {
     }
 
     private var fromPhotos: some View {
-        PhotosPicker(selection: $photoItem, matching: .images) {
-            CaptureTile(label: "Aus Fotos wählen", marks: [.photos(color: Palette.ink)])
+        // Ohne Modell **kein** Auswahlblatt: sonst sucht man ein Foto aus und
+        // erfaehrt erst danach, dass es niemanden gibt, der es anschaut.
+        Group {
+            if ready {
+                PhotosPicker(selection: $photoItem, matching: .images) {
+                    CaptureTile(label: "Aus Fotos wählen", marks: [.photos(color: Palette.ink)])
+                }
+            } else {
+                Button { askSetup = true } label: {
+                    CaptureTile(label: "Aus Fotos wählen", marks: [.photos(color: Palette.ink)])
+                }
+            }
         }
         .buttonStyle(.plain)
     }
 
     private var fromCamera: some View {
-        Button { showCamera = true } label: {
+        Button { ready ? showCamera = true : (askSetup = true) } label: {
             CaptureTile(label: "Foto aufnehmen", marks: [.camera(color: Palette.ink)])
         }
         .buttonStyle(.plain)
     }
 
     private var describing: some View {
-        Button { phase = .describing } label: {
+        Button { ready ? (phase = .describing) : (askSetup = true) } label: {
             CaptureTile(label: "Beschreiben",
                         marks: [.pencil(color: Palette.ink), .microphone(color: Palette.ink)])
         }

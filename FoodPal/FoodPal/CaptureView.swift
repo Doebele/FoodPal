@@ -6,6 +6,11 @@ import SwiftData
 /// bestimmt, womit sie öffnet — bei mg die Getränkeauswahl, bei kcal die
 /// Kamera. Der Umschalter unten wechselt zwischen beidem.
 struct CaptureSheet: View {
+    /// Wird gerufen, wenn eine Mahlzeit erfasst werden soll, aber noch kein
+    /// Modell eingerichtet ist. Die Huelle schliesst dann dieses Blatt und
+    /// oeffnet die Einstellungen beim Anbieter.
+    var onModelSetup: () -> Void = {}
+
     @Environment(\.dismiss) private var dismiss
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
@@ -36,7 +41,8 @@ struct CaptureSheet: View {
             } else {
                 ScrollsWhenNeeded {
                     VStack(spacing: 0) {
-                        PhotoCapture { dismiss() }
+                        PhotoCapture(onSaved: { dismiss() },
+                                     onSetup: { onModelSetup(); dismiss() })
                         switcher
                     }
                 }
