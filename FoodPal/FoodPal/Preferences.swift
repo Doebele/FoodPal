@@ -98,12 +98,14 @@ enum PerProvider {
 /// folgt dem Daumen: Erfassen aussen an der Bedienhand, die haeufigste
 /// Kaffeesorte in derselben Ecke, das Infozeichen im Bild ebenso.
 ///
-/// Gespiegelt werden nur **Griffe** und die Eintragsliste. Ausdruecklich
+/// Gespiegelt werden nur **Griffe**: die Leiste unten, die Kacheln der
+/// Erfassung, das Kaffeeraster und die zwei Spalten im Eintrag. Ausdruecklich
 /// **nicht**: der Zeitstrahl samt Stundenzahlen und Jetzt-Linie, die drei
-/// Ziffernanzeigen, die Tagespfeile, der kcal/mg-Umschalter, die Kopfzeile
-/// und die Zeilen in den Einstellungen. Ein Tag laeuft von links nach
-/// rechts, gleich welche Hand ihn haelt, und aus 1108 duerfen nie 8011
-/// werden.
+/// Ziffernanzeigen, die Tagespfeile, der kcal/mg-Umschalter, die Kopfzeile,
+/// die Zeilen in den Einstellungen — und die Eintragsliste am Startschirm.
+/// Sie ist ein Protokoll und keine Bedienung: die Uhrzeit steht vorn, wie der
+/// Zeitstrahl darueber. Ein Tag laeuft von links nach rechts, gleich welche
+/// Hand ihn haelt, und aus 1108 duerfen nie 8011 werden.
 ///
 /// Bewusst **kein** `layoutDirection` an der Wurzel: das haette genau diese
 /// Ausnahmen mitgedreht, und ein vergessenes Zurueckdrehen faellt erst dem

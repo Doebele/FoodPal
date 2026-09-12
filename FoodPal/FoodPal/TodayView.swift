@@ -271,7 +271,6 @@ struct DayView: View {
 
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
-    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var selected: Entry?
 
@@ -295,7 +294,6 @@ struct DayView: View {
     }
 
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
-    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
     private var kcal: Int { Int(entries.reduce(0) { $0 + $1.kcal }.rounded()) }
     private var mg: Int { Int(entries.reduce(0) { $0 + $1.caffeineMg }.rounded()) }
 
@@ -464,39 +462,27 @@ struct DayView: View {
             .scaledFont(17, weight: .medium, design: .monospaced)
             .foregroundStyle(Palette.ink)
 
-        // **Die Zeile folgt der Bedienhand.** Der Wert steht an der Kante,
-        // an der der Daumen liegt, die Uhrzeit gegenueber. Bei rechts bleibt
-        // alles, wie es war.
+        // **Die Zeile spiegelt nicht mit.** Sie ist ein Protokoll und keine
+        // Bedienung: die Uhrzeit steht vorn, weil ein Tag von links nach
+        // rechts laeuft, genau wie der Zeitstrahl darueber. Was sich dreht,
+        // sind die Griffe unten — hier tippt man auf die ganze Zeile.
         Group {
             if typeSize.isAccessibilitySize {
-                VStack(alignment: hand == .right ? .leading : .trailing, spacing: 6) {
+                VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 8) {
-                        if hand == .right {
-                            time
-                            Spacer(minLength: 8)
-                            value
-                        } else {
-                            value
-                            Spacer(minLength: 8)
-                            time
-                        }
+                        time
+                        Spacer(minLength: 8)
+                        value
                     }
-                    name.frame(maxWidth: .infinity,
-                               alignment: hand == .right ? .leading : .trailing)
+                    name.frame(maxWidth: .infinity, alignment: .leading)
                 }
             } else {
                 HStack(spacing: 8) {
                     // Die 52 pt der Uhrzeitspalte waren schon bei xxLarge zu
-                    // eng — „19:15" wurde zu „1…".
-                    if hand == .right {
-                        time.fixedSize().frame(minWidth: 44, alignment: .leading)
-                        name.lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
-                        value.fixedSize()
-                    } else {
-                        value.fixedSize()
-                        name.lineLimit(2).frame(maxWidth: .infinity, alignment: .trailing)
-                        time.fixedSize().frame(minWidth: 44, alignment: .trailing)
-                    }
+                    // eng — „19:15“ wurde zu „1…“.
+                    time.fixedSize().frame(minWidth: 44, alignment: .leading)
+                    name.lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
+                    value.fixedSize()
                 }
             }
         }

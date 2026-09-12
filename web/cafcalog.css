@@ -251,3 +251,202 @@ footer a { color: var(--ink-2); }
   font-size: 14px;
   color: var(--ink-2);
 }
+
+/* ——— Promo-Seite —————————————————————————————————————————————
+   Die breite Buehne fuer die Bildergalerien: zwoelf Spalten, wie der
+   Zeitstrahl Viertelstunden hat. Alles, was ein Bild traegt, rastet auf
+   Spalten; die Spannen heissen nach ihrer Breite (.k-6 = halbe Buehne).
+   Unter 720 px wird aus zwoelf Spalten deren Sechstel — zwei Schirme
+   nebeneinander, wie im App Store. */
+
+.promo { max-width: var(--spalte); }
+
+@media (min-width: 720px) {
+  .promo {
+    --spalte: 1080px;
+    --rand: 40px;
+  }
+  .galerie { grid-template-columns: repeat(12, 1fr); }
+  .k-3 { grid-column: span 3; }
+  .k-4 { grid-column: span 4; }
+  .k-6 { grid-column: span 6; }
+  .k-8 { grid-column: span 8; }
+  .k-12 { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1080px) {
+  .promo { --spalte: 1280px; }
+}
+
+.galerie {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.galerie li { padding: 0; max-width: none; }
+.galerie li::before { display: none; }
+
+/* Untereinander waere der Streifen endlos; die kleinen Schirme bleiben
+   nebeneinander, die grossen nehmen die ganze Breite. */
+.galerie .k-6, .galerie .k-8, .galerie .k-12 { grid-column: 1 / -1; }
+
+/* Ein Schirm in der Galerie: derselbe Rahmen wie ueberall, nur ohne
+   Bildunterschrift-Zwang — die steht wahlweise darunter. */
+.galerie .bild { margin: 0; }
+
+/* Die Textkachel im Mosaik: kein Bild, nur Satz auf Flaeche. */
+.spruch {
+  margin: 0;
+  border: 1px solid var(--rule);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 240px;
+}
+
+.spruch p {
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.spruch footer {
+  border: 0;
+  margin: 16px 0 0;
+  padding: 0;
+  font-size: 13px;
+  font-family: "Fira Mono", ui-monospace, monospace;
+}
+
+/* Das Punktband als Abschnittswechsel — auf der Promo oefters. */
+.promo .raster { margin-top: 72px; margin-bottom: 72px; }
+
+/* ——— Rundgang — Bewegung —————————————————————————————————————
+   Der Hero ist eine Flaeche mit dem Tag-Band aus three.js dahinter;
+   der Satz steht vor ihm, auf Papier. Ohne JavaScript bleibt der Hero
+   eine schlichte Ueberschrift ueber viel Weissraum. */
+
+.erlebnis .held {
+  position: relative;
+  min-height: 86vh;
+  min-height: 86svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 72px 0 8px;
+}
+
+#tagband {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+#tagband canvas { display: block; width: 100%; height: 100%; }
+
+/* Der Satz bleibt ueber dem Band und laesst sich weiter markieren. */
+.erlebnis .held > *:not(#tagband) { position: relative; }
+
+/* Weissraum: der Rundgang traegt weitere Abstaende als die Promo —
+   die Sektionen sollen einzeln stehen, nicht aneinanderdrängen. */
+.erlebnis .block { margin-top: 128px; }
+.erlebnis .held { padding-top: 104px; }
+
+/* ——— Der Zeitstrahl ———————————————————————————————————————————— */
+
+.strahlhalter { margin: 0; border: 1px solid var(--rule); background: var(--paper); }
+
+.strahlhalter svg { display: block; width: 100%; height: auto; }
+
+.strahlhalter figcaption {
+  font-size: 13px;
+  color: var(--ink-2);
+  font-family: "Fira Mono", ui-monospace, monospace;
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--rule);
+}
+
+/* Die Legende unter dem Strahl: vier Fakten, je mit einer Linie. */
+.legende {
+  display: grid;
+  gap: 12px 32px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin: 32px 0 0;
+  padding: 0;
+}
+
+.legende div { border-top: 1px solid var(--rule); padding-top: 10px; }
+
+.legende dt {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.legende dd {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+/* ——— Die Anzeigen —————————————————————————————————————————————— */
+
+.anzeige { padding: 40px 32px; margin: 0; align-items: center; }
+
+.anzeige img { display: block; width: 100%; height: auto; }
+
+/* Das Flipwerk in HTML: helle Karte, Tinte-Ziffer, Fuge auf halber
+   Hoehe, Nocken an den Flanken — die Masse der App (80 × 112). */
+.flipwerk {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  width: 100%;
+}
+
+.flipkarte {
+  position: relative;
+  width: 72px;
+  height: 100px;
+  border-radius: 5px;
+  background: var(--matrix);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flipkarte .ziffer {
+  font-family: "Fira Sans", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--ink);
+  transform: perspective(300px) rotateX(4deg);
+}
+
+.flipkarte .fuge {
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 2px;
+  background: var(--paper);
+  transform: translateY(-1px);
+}
+
+.flipkarte::before, .flipkarte::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - 4px);
+  width: 4px; height: 8px;
+  background: var(--ink);
+  opacity: 0.16;
+}
+
+.flipkarte::before { left: 2px; }
+.flipkarte::after { right: 2px; }
