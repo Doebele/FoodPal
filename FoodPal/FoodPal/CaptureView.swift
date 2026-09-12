@@ -102,12 +102,21 @@ struct CoffeeCapture: View {
     private static let gap: CGFloat = 4
     private static let legendHeight: CGFloat = 42
 
-    /// Ein Punkt trägt 20 kcal und 13,3 mg. Der Koffeinwert ist der aus dem
-    /// Rest der App (160 mg auf zwölf Punkte); die Kalorienskala ist auf
-    /// Kaffee gerechnet — 24 Punkte reichen bis 480 kcal, und dort endet,
-    /// was in einer Tasse landen kann.
-    private static let kcalPerDot: Double = 20
-    private static let mgPerDot: Double = 160 / 12
+    /// **Eine Spalte ist die Einheit, nicht ein Punkt.** Zwölf Spalten, und
+    /// die volle Reihe ist das Maximum: 480 kcal und 320 mg. Beides sind die
+    /// Grenzen dessen, was in einer Tasse landet — die stärkste Sorte im
+    /// Bestand hat 470 kcal, die koffeinreichste 280 mg.
+    ///
+    /// Die kleine Kachel füllt eine Spalte mit zwei Punkten, die grosse mit
+    /// fünf. Derselbe Wert ergibt damit dieselbe **Breite**, gleich wie hoch
+    /// die Kachel ist.
+    ///
+    /// Vorher zählte jeder Punkt für sich. Damit lief dasselbe Mass auf der
+    /// grossen Kachel über 60 Punkte statt über 24, und ein Cappuccino sah
+    /// dort aus wie ein Drittel von dem, was er auf der kleinen war.
+    private static let dotColumns = 12
+    private static let kcalPerColumn: Double = 480 / 12
+    private static let mgPerColumn: Double = 320 / 12
 
     var body: some View {
         ScrollView {
@@ -230,36 +239,39 @@ struct CoffeeCapture: View {
         VStack(alignment: .leading, spacing: Self.gap) {
             if tile == .large {
                 HStack(spacing: Self.gap) {
-                    dots(preset.kcal, per: Self.kcalPerDot, rows: tile.rows, color: Palette.ink)
+                    dots(preset.kcal, per: Self.kcalPerColumn, rows: tile.rows, color: Palette.ink)
                     Text("\(Int(preset.kcal))")
                         .scaledFont(20, design: .monospaced)
                         .foregroundStyle(Palette.ink)
                 }
                 HStack(spacing: Self.gap) {
-                    dots(preset.caffeineMg, per: Self.mgPerDot, rows: tile.rows, color: roast.color)
+                    dots(preset.caffeineMg, per: Self.mgPerColumn, rows: tile.rows, color: roast.color)
                     Text("\(Int(preset.caffeineMg))")
                         .scaledFont(20, design: .monospaced)
                         .foregroundStyle(roast.color)
                 }
             } else {
-                dots(preset.kcal, per: Self.kcalPerDot, rows: tile.rows, color: Palette.ink)
-                dots(preset.caffeineMg, per: Self.mgPerDot, rows: tile.rows, color: roast.color)
+                dots(preset.kcal, per: Self.kcalPerColumn, rows: tile.rows, color: Palette.ink)
+                dots(preset.caffeineMg, per: Self.mgPerColumn, rows: tile.rows, color: roast.color)
             }
         }
     }
 
     /// Zwölf Spalten im Raster des Tagesdiagramms: Punkt 3 pt, Teilung 4 und
-    /// 4,33. Gefüllt wird zeilenweise von links.
+    /// 4,33. Gefüllt wird **spaltenweise** von links, jede Spalte ganz.
     private func dots(_ value: Double, per: Double, rows: Int, color: Color) -> some View {
-        let total = rows * 12
-        let lit = min(total, Int((value / per).rounded(.up)))
+        // Aufgerundet: was in der Tasse war, soll man sehen. Zwei Kalorien
+        // eines Espresso ergaeben abgerundet nichts.
+        let lit = min(Self.dotColumns, Int((value / per).rounded(.up)))
         return Canvas { ctx, _ in
-            for index in 0..<total {
-                let rect = CGRect(
-                    x: CGFloat(index % 12) * 4, y: CGFloat(index / 12) * 4.33,
-                    width: 3, height: 3
-                )
-                ctx.fill(Path(rect), with: .color(index < lit ? color : Palette.ink3))
+            for column in 0..<Self.dotColumns {
+                for row in 0..<rows {
+                    let rect = CGRect(
+                        x: CGFloat(column) * 4, y: CGFloat(row) * 4.33,
+                        width: 3, height: 3
+                    )
+                    ctx.fill(Path(rect), with: .color(column < lit ? color : Palette.ink3))
+                }
             }
         }
         .frame(width: 47, height: CGFloat(rows) * 4.33 - 1.33)
