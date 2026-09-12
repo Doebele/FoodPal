@@ -268,6 +268,19 @@ struct TodayView: View {
                     // die Kacheln der Getraenkeauswahl.
                     .overlay(Palette.paper.opacity(0.45))
                     .ignoresSafeArea(edges: .bottom)
+                    // **Oben ausblenden, nicht abschneiden.** Eine Scheibe mit
+                    // gerader Oberkante zieht eine Linie quer ueber den Schirm,
+                    // und genau die sieht man an den Raendern, wo keine Kachel
+                    // darauf liegt. Ueber die ersten Punkte geht Papier in Glas
+                    // ueber; der Uebergang ist danach keine Kante mehr.
+                    .mask {
+                        LinearGradient(
+                            stops: [.init(color: .clear, location: 0),
+                                    .init(color: .black, location: 0.16)],
+                            startPoint: .top, endPoint: .bottom
+                        )
+                        .ignoresSafeArea(edges: .bottom)
+                    }
                     .transition(.opacity)
             }
         }
