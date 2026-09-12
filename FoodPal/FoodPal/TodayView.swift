@@ -300,65 +300,115 @@ struct DayView: View {
     private var mg: Int { Int(entries.reduce(0) { $0 + $1.caffeineMg }.rounded()) }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                // Der Zeitstrahl laeuft aus dem Seitenrand heraus bis fast an
-                // den Bildschirmrand. Beim Wischen von Tag zu Tag geht die
-                // Rasterflaeche dadurch fliessend ineinander ueber, statt an
-                // einer Kante abzubrechen.
+        // **Nur die Liste scrollt.** Der Kopf steht: Zeitstrahl, Anzeige und
+        // Umschalter sind das Bild des Tages und sollen nicht wegwandern,
+        // waehrend man die Eintraege durchsieht. Vorher lag alles in einem
+        // Scrollbereich, und beim Blaettern nach unten verschwand zuerst das,
+        // worum es geht.
+        //
+        // Bei den Bedienhilfengroessen scrollt wieder alles: dort fuellt der
+        // Kopf allein den Schirm, und ein festgenagelter Kopf liesse der
+        // Liste einen Streifen von zwei Zeilen. Wer so gross liest, kommt
+        // lieber scrollend an seine Eintraege als gar nicht.
+        if typeSize.isAccessibilitySize {
+            ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    hourLabels
-                    // Die Linie soll wandern, ohne dass man die App neu
-                    // oeffnet — einmal je Minute genuegt bei Viertelstunden.
-                    TimelineView(.periodic(from: .now, by: 60)) { tick in
-                        DayMatrix(
-                            entries: entries,
-                            roast: roast,
-                            now: now(tick.date)
-                        )
-                    }
-                    // Zwei Punkt Abstand wie bisher, minus die drei Einheiten,
-                    // um die das Rasterfeld fuer den Ueberstand der Jetzt-Linie
-                    // nach oben gewachsen ist. Die Punkte stehen damit, wo sie
-                    // standen, und nur die Linie ragt in den Zwischenraum.
-                    .padding(.top, -1)
-                }
-                .padding(.horizontal, -(Metric.margin - Self.timelineInset))
-
-                // Die gepunktete Trennlinie ist weg: sie sass im alten Raster
-                // mit einem Punkt je Stundengruppe und haette im neuen nur noch
-                // eine zweite, groeber gerasterte Reihe unter dem Zeitstrahl
-                // ergeben. Der Weissraum trennt genauso gut.
-                numberDisplay
-
-                // Keine Einheit neben der Zahl: der Umschalter direkt darunter
-                // sagt bereits, ob kcal oder mg gemeint sind. Zweimal dasselbe
-                // in zwei Zeilen ist eine Zeile zu viel.
-                ModeToggle(mode: mode, roast: roast) { new in
-                    captureMode = new == .kcal ? Entry.Kind.meal.rawValue : Entry.Kind.coffee.rawValue
-                }
-                .frame(maxWidth: .infinity)
-                // Der Abstand nach oben steht bei jedem Stil in seinem eigenen
-                // Zweig: die Dot-Matrix braucht mehr Luft als die Karten, und
-                // ein gemeinsamer Wert hier haette den Umschalter bei einem der
-                // beiden verrueckt.
-
-                if entries.isEmpty {
-                    // Klein und still: der leere Tag ist eine Auskunft, keine
-                    // Ansage. In 22 pt stand der Satz da wie eine Ueberschrift
-                    // ueber nichts.
-                    Text("noch nichts erfasst")
-                        .scaledFont(11)
-                        .foregroundStyle(Palette.ink2)
-                        .padding(.top, 24)
-                } else {
-                    entryList.padding(.top, 32)
+                    kopf
+                    liste
                 }
             }
-            .padding(.horizontal, Metric.margin)
-            .padding(.bottom, 24)
+            .scrollIndicators(.hidden)
+        } else {
+            VStack(alignment: .leading, spacing: 0) {
+                kopf
+                eintraege
+            }
         }
-        .scrollIndicators(.hidden)
+    }
+
+    /// Der feste Teil: Zeitstrahl, Anzeige, Umschalter.
+    private var kopf: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Der Zeitstrahl laeuft aus dem Seitenrand heraus bis fast an
+            // den Bildschirmrand. Beim Wischen von Tag zu Tag geht die
+            // Rasterflaeche dadurch fliessend ineinander ueber, statt an
+            // einer Kante abzubrechen.
+            VStack(alignment: .leading, spacing: 0) {
+                hourLabels
+                // Die Linie soll wandern, ohne dass man die App neu
+                // oeffnet — einmal je Minute genuegt bei Viertelstunden.
+                TimelineView(.periodic(from: .now, by: 60)) { tick in
+                    DayMatrix(
+                        entries: entries,
+                        roast: roast,
+                        now: now(tick.date)
+                    )
+                }
+                // Zwei Punkt Abstand wie bisher, minus die drei Einheiten,
+                // um die das Rasterfeld fuer den Ueberstand der Jetzt-Linie
+                // nach oben gewachsen ist. Die Punkte stehen damit, wo sie
+                // standen, und nur die Linie ragt in den Zwischenraum.
+                .padding(.top, -1)
+            }
+            .padding(.horizontal, -(Metric.margin - Self.timelineInset))
+
+            // Die gepunktete Trennlinie ist weg: sie sass im alten Raster
+            // mit einem Punkt je Stundengruppe und haette im neuen nur noch
+            // eine zweite, groeber gerasterte Reihe unter dem Zeitstrahl
+            // ergeben. Der Weissraum trennt genauso gut.
+            numberDisplay
+
+            // Keine Einheit neben der Zahl: der Umschalter direkt darunter
+            // sagt bereits, ob kcal oder mg gemeint sind. Zweimal dasselbe
+            // in zwei Zeilen ist eine Zeile zu viel.
+            ModeToggle(mode: mode, roast: roast) { new in
+                captureMode = new == .kcal ? Entry.Kind.meal.rawValue : Entry.Kind.coffee.rawValue
+            }
+            .frame(maxWidth: .infinity)
+            // Der Abstand nach oben steht bei jedem Stil in seinem eigenen
+            // Zweig: die Dot-Matrix braucht mehr Luft als die Karten, und
+            // ein gemeinsamer Wert hier haette den Umschalter bei einem der
+            // beiden verrueckt.
+        }
+        .padding(.horizontal, Metric.margin)
+        // **Luft unter dem Umschalter.** Die Liste beginnt hier, und beim
+        // Scrollen laeuft sie an dieser Kante aus. Ohne den Abstand stiege
+        // die erste Zeile dem Umschalter direkt auf die Kappe.
+        .padding(.bottom, 12)
+        // **Der Kopf nimmt sich seine Hoehe zuerst.** Der Zeitstrahl haengt
+        // an einem Seitenverhaeltnis und schrumpft mit, wenn ihm weniger
+        // Hoehe angeboten wird — in einem Stapel neben einem Scrollbereich
+        // teilt SwiftUI sonst beiden zu, und das Raster stand auf halber
+        // Breite da. Mit Vorrang bekommt der Kopf sein Mass, der Rest geht
+        // an die Liste, die ohnehin scrollt.
+        .layoutPriority(1)
+    }
+
+    /// Der bewegliche Teil.
+    private var eintraege: some View {
+        ScrollView { liste }
+            .scrollIndicators(.hidden)
+    }
+
+    private var liste: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if entries.isEmpty {
+                // Klein und still: der leere Tag ist eine Auskunft, keine
+                // Ansage. In 22 pt stand der Satz da wie eine Ueberschrift
+                // ueber nichts.
+                Text("noch nichts erfasst")
+                    .scaledFont(11)
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.top, 24)
+            } else {
+                // 20 statt 32: zwoelf davon stehen jetzt unter dem
+                // Umschalter und bleiben auch beim Scrollen dort.
+                entryList.padding(.top, 20)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Metric.margin)
+        .padding(.bottom, 24)
     }
 
     /// Nur noch vier Marken statt sechs — 02, 08, 14, 20. Ein Tag hat vier
