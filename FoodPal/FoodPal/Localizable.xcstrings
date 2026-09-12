@@ -4808,37 +4808,37 @@
         }
       }
     },
-    "Noch nichts erfasst.": {
+    "noch nichts erfasst": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Noch nichts erfasst."
+            "value": "noch nichts erfasst"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nothing logged yet."
+            "value": "nothing logged yet"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nada registrado aún."
+            "value": "nada registrado aún"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rien d’enregistré."
+            "value": "rien d’enregistré"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ancora nulla."
+            "value": "ancora nulla"
           }
         }
       }

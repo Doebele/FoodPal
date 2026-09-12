@@ -1,6 +1,25 @@
 import SwiftUI
 import SwiftData
 
+/// Wie weit der Inhalt eines Tages nach unten reicht, im Bildschirmraum.
+/// Je Tag einer, weil im Pager auch die Nachbarseiten gebaut werden und ein
+/// laengerer Nachbar sonst die Scheibe des schmalen Tages einschaltete.
+private struct ContentFoot: PreferenceKey {
+    static let defaultValue: [Date: CGFloat] = [:]
+    static func reduce(value: inout [Date: CGFloat], nextValue: () -> [Date: CGFloat]) {
+        value.merge(nextValue()) { max($0, $1) }
+    }
+}
+
+/// Wo die Leiste unten anfaengt — dieselbe Messlatte, damit sich beide Werte
+/// vergleichen lassen.
+private struct BarTop: PreferenceKey {
+    static let defaultValue: CGFloat = .infinity
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = min(value, nextValue())
+    }
+}
+
 /// Was die Anzeige gerade zeigt — und zugleich, womit die Erfassung öffnet.
 enum DisplayMode: String {
     case kcal, mg
@@ -40,6 +59,9 @@ struct TodayView: View {
         #endif
     }()
     @State private var pickingDay = false
+    /// Reicht der Tag unter die Leiste? Nur dann traegt sie ihre Scheibe.
+    @State private var foot: [Date: CGFloat] = [:]
+    @State private var barTop: CGFloat = .infinity
 
     private var calendar: Calendar { .current }
     private var today: Date { calendar.startOfDay(for: .now) }
@@ -97,6 +119,7 @@ struct TodayView: View {
                 LazyHStack(spacing: 0) {
                     ForEach(days, id: \.self) { day in
                         DayView(
+                            day: day,
                             entries: entries(on: day),
                             mode: mode,
                             roast: roast,
@@ -127,6 +150,8 @@ struct TodayView: View {
             .safeAreaInset(edge: .bottom, spacing: 0) { bottomBar }
         }
         .background(Palette.paper)
+        .onPreferenceChange(ContentFoot.self) { foot = $0 }
+        .onPreferenceChange(BarTop.self) { barTop = $0 }
     }
 
     private var header: some View {
@@ -215,7 +240,7 @@ struct TodayView: View {
     private var bottomBar: some View {
         HStack(alignment: .bottom, spacing: CaptureTile.gap) {
             Button(action: onSettings) {
-                CaptureTile(label: "Einstellungen", height: 60, glass: true)
+                CaptureTile(label: "Einstellungen", height: 60, glass: covered)
             }
             .buttonStyle(.plain)
 
@@ -223,26 +248,47 @@ struct TodayView: View {
                 CaptureTile(label: "Erfassen",
                             marks: [.plus(color: Palette.ink)],
                             height: 120,
-                            glass: true)
+                            glass: covered)
             }
             .buttonStyle(.plain)
         }
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal, Metric.margin)
         .padding(.bottom, CaptureTile.gap)
-        // **Die Scheibe reicht bis an den Rand.** Ohne sie blieb unter den
-        // Kacheln ein Streifen Papier, durch den eine Zeile der Liste scharf
-        // hindurchlief, waehrend sie eine Kachel weiter oben schon verwischt
-        // war. `ignoresSafeArea` zieht das Glas bis unter den Griff — was
-        // dahinter durchwandert, ist durchgehend verwischt.
+        // **Die Scheibe kommt und geht.** Sie reicht bis unter den Griff,
+        // damit nichts scharf unter den Kacheln hervorschaut — aber sie
+        // erscheint erst, wenn der Tag ueberhaupt unter die Leiste reicht.
+        // An einem leeren Tag hat sie nichts zu verwischen und stuende nur
+        // als graues Band da.
         .background {
-            Glass()
-                // Die Scheibe verwischt, das Papier darueber nimmt ihr das
-                // Gewicht: sonst laege am Fuss ein Band, das dunkler wirkt
-                // als die Kacheln der Getraenkeauswahl.
-                .overlay(Palette.paper.opacity(0.45))
-                .ignoresSafeArea(edges: .bottom)
+            if covered {
+                Glass()
+                    // Das Papier darueber nimmt der Scheibe das Gewicht:
+                    // sonst laege am Fuss ein Band, das dunkler wirkt als
+                    // die Kacheln der Getraenkeauswahl.
+                    .overlay(Palette.paper.opacity(0.45))
+                    .ignoresSafeArea(edges: .bottom)
+                    .transition(.opacity)
+            }
         }
+        .background {
+            GeometryReader { geo in
+                Color.clear.preference(key: BarTop.self, value: geo.frame(in: .global).minY)
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: covered)
+    }
+
+    /// Liegt der Inhalt des gezeigten Tages unter der Leiste?
+    ///
+    /// Mit 28 Punkten Nachsicht: ist die Liste ganz nach unten gescrollt,
+    /// endet sie genau ihre eigenen 24 Punkte Fussraum ueber der Leiste. Ohne
+    /// die Nachsicht ginge die Scheibe dort aus und beim kleinsten Zurueck
+    /// wieder an. Ein leerer Tag endet weit darueber und bleibt davon
+    /// unberuehrt.
+    private var covered: Bool {
+        guard let unterkante = foot[currentDay] else { return false }
+        return unterkante > barTop - 28
     }
 
     private func title(for day: Date) -> String {
@@ -258,6 +304,7 @@ struct TodayView: View {
 
 /// Ein Tag: Diagramm, Trennlinie, Anzeige, Umschalter, Chronologie.
 struct DayView: View {
+    let day: Date
     let entries: [Entry]
     let mode: DisplayMode
     let roast: Roast
@@ -337,16 +384,25 @@ struct DayView: View {
                 // beiden verrueckt.
 
                 if entries.isEmpty {
-                    Text("Noch nichts erfasst.")
-                        .scaledFont(22, weight: .light)
-                        .foregroundStyle(Palette.ink)
-                        .padding(.top, 40)
+                    // Klein und still: der leere Tag ist eine Auskunft, keine
+                    // Ansage. In 22 pt stand der Satz da wie eine Ueberschrift
+                    // ueber nichts.
+                    Text("noch nichts erfasst")
+                        .scaledFont(11)
+                        .foregroundStyle(Palette.ink2)
+                        .padding(.top, 24)
                 } else {
                     entryList.padding(.top, 32)
                 }
             }
             .padding(.horizontal, Metric.margin)
             .padding(.bottom, 24)
+            .background {
+                GeometryReader { geo in
+                    Color.clear.preference(key: ContentFoot.self,
+                                           value: [day: geo.frame(in: .global).maxY])
+                }
+            }
         }
         .scrollIndicators(.hidden)
     }
