@@ -188,41 +188,42 @@ extension DotArt {
         ], color: color)
     }
 
-    /// **Die Bedienhand.** Ein Telefon und darin die Ecke, die der Daumen
-    /// erreicht — nicht eine gezeichnete Hand. Eine Hand im Zwoelferraster
-    /// wird ein Fleck; der Viertelkreis dagegen sagt genau das, worum es geht:
-    /// bis hierhin kommt der Daumen, ohne dass man umgreift.
+    /// **Die Bedienhand.** Ein Telefon und die Hand, die es von dieser Seite
+    /// haelt: der Umriss oben, die Hand als Flaeche darunter, der Daumen quer
+    /// ueber den Schirm. Die beiden Zeichen sind exakte Spiegelbilder.
     ///
-    /// Vorschlag im Hausraster, gedacht zum Nachschaerfen im Entwurf.
+    /// Der erste Versuch war ein Viertelkreis in der Ecke, die der Daumen
+    /// erreicht — ein Vorschlag im Hausraster. Der Entwurf zeichnet jetzt die
+    /// Hand selbst, und im Zwoelferraster geht das auf.
     static func hand(_ hand: Hand, color: Color) -> DotArt {
         hand == .right
             ? grid([
                 "............",
-                "..########..",
-                "..#......#..",
-                "..#......#..",
-                "..#......#..",
-                "..#......#..",
-                "..#......#..",
-                "..#.....##..",
-                "..#....###..",
-                "..#..#####..",
-                "..########..",
-                "............",
+                "...#####....",
+                "..#.....#...",
+                "..#.....#...",
+                "..#.....#...",
+                ".##.....#...",
+                ".##..##.##..",
+                ".##..######.",
+                ".##...#####.",
+                "..#....####.",
+                "...########.",
+                "......#####.",
             ], color: color)
             : grid([
                 "............",
-                "..########..",
-                "..#......#..",
-                "..#......#..",
-                "..#......#..",
-                "..#......#..",
-                "..#......#..",
-                "..##.....#..",
-                "..###....#..",
-                "..#####..#..",
-                "..########..",
-                "............",
+                "....#####...",
+                "...#.....#..",
+                "...#.....#..",
+                "...#.....#..",
+                "...#.....##.",
+                "..##.##..##.",
+                ".######..##.",
+                ".#####...##.",
+                ".####....#..",
+                ".########...",
+                ".#####......",
             ], color: color)
     }
 

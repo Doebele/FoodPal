@@ -84,13 +84,13 @@ struct SettingsView: View {
                 }
 
                 group(spacing: 12) {
-                    caption("anzeige · ziffern", value: style.label.lowercased())
-                    stylePicker
+                    caption("bedienhand", value: hand.label)
+                    handPicker
                 }
 
                 group(spacing: 12) {
-                    caption("bedienhand", value: hand.label)
-                    handPicker
+                    caption("anzeige · ziffern", value: style.label.lowercased())
+                    stylePicker
                 }
 
                 // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
@@ -207,11 +207,6 @@ struct SettingsView: View {
 
     // MARK: - Erscheinungsbild
 
-    /// Auch hier gilt: man wählt, was man sieht — nur zeigt das Feld jetzt
-    /// dasselbe Punktraster wie Diagramm und Anzeige statt zweier Farbkacheln.
-    /// Auf jedem Feld steht ein **A** in Punkten; der Grund darunter sagt den
-    /// Modus. Auto teilt beide Gründe senkrecht und dreht das A auf der
-    /// dunklen Hälfte um.
     /// **Zwei Haelften, links steht links.** Die Auswahl selbst spiegelt
     /// nicht mit: wer sie liest, sucht die Hand, nicht den Daumen.
     private var handPicker: some View {
@@ -241,6 +236,11 @@ struct SettingsView: View {
         }
     }
 
+    /// Auch hier gilt: man wählt, was man sieht — nur zeigt das Feld jetzt
+    /// dasselbe Punktraster wie Diagramm und Anzeige statt zweier Farbkacheln.
+    /// Auf jedem Feld steht ein **A** in Punkten; der Grund darunter sagt den
+    /// Modus. Auto teilt beide Gründe senkrecht und dreht das A auf der
+    /// dunklen Hälfte um.
     private var appearancePicker: some View {
         // Drei gleiche Drittel, nicht an die Raender gedrueckt: das Bild sitzt
         // mittig in seinem Feld, und der schwarze Strich laeuft ueber die
@@ -328,20 +328,19 @@ struct SettingsView: View {
 
     /// Die Farbfelder sitzen im selben Punktraster wie Diagramm und Anzeige.
     private var roastPicker: some View {
-        HStack(spacing: 0) {
-            ForEach(Array(Roast.allCases.enumerated()), id: \.element.id) { index, candidate in
-                if index > 0 { Spacer(minLength: 4) }
+        // Sechs gleiche Sechstel. Das Feld ist quadratisch wie jedes Zeichen
+        // der App — zwoelf mal zwoelf Punkte —, und damit steht es genauso
+        // hoch wie das A daneben und die Hand darunter.
+        HStack(spacing: 4) {
+            ForEach(Roast.allCases) { candidate in
                 Button { roastRaw = candidate.rawValue } label: {
-                    // 34 hoch, das Seitenverhaeltnis macht daraus 49 breit —
-                    // zehn Spalten mal sieben Reihen desselben Rasters.
                     VStack(spacing: 4) {
                         DotBlock(color: candidate.color)
-                            .frame(height: 34)
                         Rectangle()
                             .fill(candidate == roast ? Palette.ink : .clear)
                             .frame(height: 3)
                     }
-                    .fixedSize(horizontal: true, vertical: false)
+                    .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -352,11 +351,12 @@ struct SettingsView: View {
 
 }
 
-/// Ein Farbfeld aus Punkten des gemeinsamen Rasters — 10 Spalten, 7 Reihen.
+/// Ein Farbfeld aus Punkten des gemeinsamen Rasters — zwoelf mal zwoelf,
+/// dasselbe Quadrat, in dem auch die Zeichen stehen.
 struct DotBlock: View {
     let color: Color
-    var columns = 10
-    var rows = 7
+    var columns = 12
+    var rows = 12
 
     var body: some View {
         Canvas { ctx, size in
@@ -888,20 +888,23 @@ struct AppearanceBlock: View {
     let option: Appearance
 
     static let columns = 12
-    static let rows = 11
+    static let rows = 12
 
-    /// Das A, Spalte für Spalte. Direkt aus dem Entwurf abgelesen.
+    /// Das A, Zeile für Zeile. Direkt aus dem Entwurf abgelesen (Node
+    /// `225:126702`). **Zwölf mal zwölf** wie jedes Zeichen der App, und das
+    /// A füllt sein Quadrat jetzt aus, statt darin zu schweben.
     private static let glyph: [String] = [
         "000000000000",
-        "000000000000",
-        "000011110000",
-        "000100001000",
-        "000100001000",
         "000111111000",
-        "000100001000",
-        "000100001000",
-        "000100001000",
-        "000000000000",
+        "001000000100",
+        "001000000100",
+        "001000000100",
+        "001000000100",
+        "001111111100",
+        "001000000100",
+        "001000000100",
+        "001000000100",
+        "001000000100",
         "000000000000"
     ]
 
