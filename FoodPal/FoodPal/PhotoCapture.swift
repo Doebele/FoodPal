@@ -886,11 +886,6 @@ struct CaptureTile: View {
     var marks: [DotArt] = []
     /// Aus dem Entwurf: 160 in der Erfassung, 120 und 60 in der Leiste unten.
     var height: CGFloat = 160
-    /// **Glas statt Flaeche.** Unten liegt die Leiste ueber der Liste, und
-    /// was dahinter durchlaeuft, soll man ahnen — dasselbe Rezept wie die
-    /// Marken ueber dem Bild. In der Erfassung steht nichts dahinter, dort
-    /// bleibt es die ruhige Flaeche.
-    var glass = false
 
     static let gap: CGFloat = 4
     /// Kantenlaenge des Zeichens, ebenfalls aus dem Entwurf.
@@ -928,12 +923,7 @@ struct CaptureTile: View {
                 }
                 .padding(8)
             }
-        .background {
-            // Auf der Leiste liegt die Scheibe schon; hier genuegt der Ton der
-            // Getraenkeauswahl, durchscheinend gesetzt — zwei Scheiben
-            // uebereinander geraten dunkler als jede Kachel sonst in der App.
-            if glass { Palette.tile.opacity(0.7) } else { Palette.tile }
-        }
+        .background(Palette.tile)
         .contentShape(Rectangle())
     }
 }

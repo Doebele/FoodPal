@@ -1,25 +1,6 @@
 import SwiftUI
 import SwiftData
 
-/// Wie weit der Inhalt eines Tages nach unten reicht, im Bildschirmraum.
-/// Je Tag einer, weil im Pager auch die Nachbarseiten gebaut werden und ein
-/// laengerer Nachbar sonst die Scheibe des schmalen Tages einschaltete.
-private struct ContentFoot: PreferenceKey {
-    static let defaultValue: [Date: CGFloat] = [:]
-    static func reduce(value: inout [Date: CGFloat], nextValue: () -> [Date: CGFloat]) {
-        value.merge(nextValue()) { max($0, $1) }
-    }
-}
-
-/// Wo die Leiste unten anfaengt — dieselbe Messlatte, damit sich beide Werte
-/// vergleichen lassen.
-private struct BarTop: PreferenceKey {
-    static let defaultValue: CGFloat = .infinity
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = min(value, nextValue())
-    }
-}
-
 /// Was die Anzeige gerade zeigt — und zugleich, womit die Erfassung öffnet.
 enum DisplayMode: String {
     case kcal, mg
@@ -59,9 +40,6 @@ struct TodayView: View {
         #endif
     }()
     @State private var pickingDay = false
-    /// Reicht der Tag unter die Leiste? Nur dann traegt sie ihre Scheibe.
-    @State private var foot: [Date: CGFloat] = [:]
-    @State private var barTop: CGFloat = .infinity
 
     private var calendar: Calendar { .current }
     private var today: Date { calendar.startOfDay(for: .now) }
@@ -119,7 +97,6 @@ struct TodayView: View {
                 LazyHStack(spacing: 0) {
                     ForEach(days, id: \.self) { day in
                         DayView(
-                            day: day,
                             entries: entries(on: day),
                             mode: mode,
                             roast: roast,
@@ -143,15 +120,10 @@ struct TodayView: View {
             // Zeitstrahl und die Anzeige zusammengeschoben, und man saehe von
             // dem Tag, den man gerade waehlt, nur noch einen Streifen.
             .overlay(alignment: .top) { calendar_ }
-            // **Ueber** den Tag gelegt, nicht darunter gestellt: so laeuft die
-            // Liste beim Scrollen hinter den Kacheln durch und scheint durchs
-            // Glas hindurch. Ein `safeAreaInset` haelt den ruhenden Inhalt
-            // trotzdem frei — nichts steht dauerhaft dahinter.
-            .safeAreaInset(edge: .bottom, spacing: 0) { bottomBar }
+
+            bottomBar
         }
         .background(Palette.paper)
-        .onPreferenceChange(ContentFoot.self) { foot = $0 }
-        .onPreferenceChange(BarTop.self) { barTop = $0 }
     }
 
     private var header: some View {
@@ -237,71 +209,30 @@ struct TodayView: View {
     ///
     /// Beide auf derselben Grundlinie, damit die Leiste eine Kante hat und
     /// nicht zwei. Aus dem Entwurf (Node `174:134657`).
+    ///
+    /// **Sie steht unter dem Tag, nicht darueber** — derselbe Aufbau wie der
+    /// Umschalter in der Getraenkeauswahl: der Scrollbereich endet hier, nichts
+    /// laeuft dahinter, und der Grund ist dasselbe Papier wie ueberall. Eine
+    /// Fassung mit Glas darueber gab es; sie brachte eine Kante quer ueber den
+    /// Schirm und ein graues Band an leeren Tagen. Zwei Schirme, zwei Aufbauten
+    /// waren es nicht wert.
     private var bottomBar: some View {
         HStack(alignment: .bottom, spacing: CaptureTile.gap) {
             Button(action: onSettings) {
-                CaptureTile(label: "Einstellungen", height: 60, glass: covered)
+                CaptureTile(label: "Einstellungen", height: 60)
             }
             .buttonStyle(.plain)
 
             Button(action: onCapture) {
                 CaptureTile(label: "Erfassen",
                             marks: [.plus(color: Palette.ink)],
-                            height: 120,
-                            glass: covered)
+                            height: 120)
             }
             .buttonStyle(.plain)
         }
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal, Metric.margin)
         .padding(.bottom, CaptureTile.gap)
-        // **Die Scheibe kommt und geht.** Sie reicht bis unter den Griff,
-        // damit nichts scharf unter den Kacheln hervorschaut — aber sie
-        // erscheint erst, wenn der Tag ueberhaupt unter die Leiste reicht.
-        // An einem leeren Tag hat sie nichts zu verwischen und stuende nur
-        // als graues Band da.
-        .background {
-            if covered {
-                Glass()
-                    // Das Papier darueber nimmt der Scheibe das Gewicht:
-                    // sonst laege am Fuss ein Band, das dunkler wirkt als
-                    // die Kacheln der Getraenkeauswahl.
-                    .overlay(Palette.paper.opacity(0.45))
-                    .ignoresSafeArea(edges: .bottom)
-                    // **Oben ausblenden, nicht abschneiden.** Eine Scheibe mit
-                    // gerader Oberkante zieht eine Linie quer ueber den Schirm,
-                    // und genau die sieht man an den Raendern, wo keine Kachel
-                    // darauf liegt. Ueber die ersten Punkte geht Papier in Glas
-                    // ueber; der Uebergang ist danach keine Kante mehr.
-                    .mask {
-                        LinearGradient(
-                            stops: [.init(color: .clear, location: 0),
-                                    .init(color: .black, location: 0.16)],
-                            startPoint: .top, endPoint: .bottom
-                        )
-                        .ignoresSafeArea(edges: .bottom)
-                    }
-                    .transition(.opacity)
-            }
-        }
-        .background {
-            GeometryReader { geo in
-                Color.clear.preference(key: BarTop.self, value: geo.frame(in: .global).minY)
-            }
-        }
-        .animation(.easeInOut(duration: 0.2), value: covered)
-    }
-
-    /// Liegt der Inhalt des gezeigten Tages unter der Leiste?
-    ///
-    /// Mit 28 Punkten Nachsicht: ist die Liste ganz nach unten gescrollt,
-    /// endet sie genau ihre eigenen 24 Punkte Fussraum ueber der Leiste. Ohne
-    /// die Nachsicht ginge die Scheibe dort aus und beim kleinsten Zurueck
-    /// wieder an. Ein leerer Tag endet weit darueber und bleibt davon
-    /// unberuehrt.
-    private var covered: Bool {
-        guard let unterkante = foot[currentDay] else { return false }
-        return unterkante > barTop - 28
     }
 
     private func title(for day: Date) -> String {
@@ -317,7 +248,6 @@ struct TodayView: View {
 
 /// Ein Tag: Diagramm, Trennlinie, Anzeige, Umschalter, Chronologie.
 struct DayView: View {
-    let day: Date
     let entries: [Entry]
     let mode: DisplayMode
     let roast: Roast
@@ -410,12 +340,6 @@ struct DayView: View {
             }
             .padding(.horizontal, Metric.margin)
             .padding(.bottom, 24)
-            .background {
-                GeometryReader { geo in
-                    Color.clear.preference(key: ContentFoot.self,
-                                           value: [day: geo.frame(in: .global).maxY])
-                }
-            }
         }
         .scrollIndicators(.hidden)
     }
