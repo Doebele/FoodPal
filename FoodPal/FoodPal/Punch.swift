@@ -177,27 +177,47 @@ final class SlideHaptic {
 
     private init() {}
 
+    /// **Die Maschine im Voraus anwerfen.** Ihr erster Start dauert einige
+    /// Millisekunden. Wer damit bis zum Tippen wartet, verliert das erste
+    /// Muster und merkt es erst beim zweiten.
+    func prepare() {
+        _ = laufwerk()
+    }
+
     /// Ein an- und abschwellendes Streichen ueber `dauer`, am Ende ein leiser
     /// Anschlag: das Blatt ist da. Ohne Dauer bleibt nur der Anschlag — so
     /// klingt es, wenn „Bewegung reduzieren" die Fahrt wegnimmt.
     func play(dauer: TimeInterval) {
         guard UserDefaults.standard.bool(forKey: Preference.haptics),
-              CHHapticEngine.capabilitiesForHardware().supportsHaptics
+              let engine = laufwerk()
         else { return }
         do {
-            if engine == nil {
-                let neu = try CHHapticEngine()
-                // iOS haelt die Maschine an, wenn die App in den Hintergrund
-                // geht. Ohne diese beiden Haender bleibt sie danach stumm.
-                neu.resetHandler = { Task { @MainActor in try? SlideHaptic.shared.engine?.start() } }
-                neu.stoppedHandler = { _ in Task { @MainActor in SlideHaptic.shared.engine = nil } }
-                try neu.start()
-                engine = neu
-            }
-            try engine?.makePlayer(with: muster(dauer)).start(atTime: 0)
+            try engine.makePlayer(with: muster(dauer)).start(atTime: 0)
         } catch {
             // Haptik ist Beiwerk. Faellt sie aus, faellt sie aus.
+            self.engine = nil
+        }
+    }
+
+    private func laufwerk() -> CHHapticEngine? {
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return nil }
+        if let engine { return engine }
+        do {
+            let neu = try CHHapticEngine()
+            // **Keine Tonspur.** Ohne das reserviert die Maschine
+            // Audioressourcen, und neben der laufenden Aufnahme des Diktats
+            // bekommt sie keine. Sie spielt dann einfach nicht.
+            neu.playsHapticsOnly = true
+            // iOS haelt sie an, wenn die App in den Hintergrund geht. Ohne
+            // diese beiden Haender bleibt sie danach stumm.
+            neu.resetHandler = { Task { @MainActor in try? SlideHaptic.shared.engine?.start() } }
+            neu.stoppedHandler = { _ in Task { @MainActor in SlideHaptic.shared.engine = nil } }
+            try neu.start()
+            engine = neu
+            return neu
+        } catch {
             engine = nil
+            return nil
         }
     }
 

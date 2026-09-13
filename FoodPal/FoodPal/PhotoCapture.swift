@@ -304,11 +304,56 @@ struct PhotoCapture: View {
     /// Abgeschickt wird **nicht** automatisch. Diktat verhört sich bei
     /// Essensnamen zuverlässig, und ein Weg, der aufnimmt und sofort schätzt,
     /// würde den Fehler unsichtbar weiterreichen. Man sieht, was ankam.
+    /// **Erst das Blatt, dann das Mikrofon.** Die Aufnahme beginnt, wenn die
+    /// Loecher offen sind. Vorher zeigte der Schirm etwas anderes, als er tat:
+    /// es lief schon mit, waehrend das Blatt noch fuhr.
+    ///
+    /// Nebenbei loest die Reihenfolge ein zweites Problem. `Dictation.begin()`
+    /// schaltet die Audiositzung auf `.record`, und ein laufendes Mikrofon
+    /// unterdrueckt die Haptik — sie soll nicht in der Aufnahme landen. Laeuft
+    /// sie vorher ganz ab, kommt sie auch ganz an.
+    ///
+    /// Der Preis ist eine halbe Sekunde, in der noch nichts zuhoert. Die
+    /// Loecher sagen, wann es losgeht.
+    private func oeffnen() {
+        beforeDictation = spoken.isEmpty ? "" : spoken + " "
+        guard !reduceMotion else {
+            zug = 1
+            SlideHaptic.shared.play(dauer: 0)
+            dictation.start()
+            return
+        }
+        withAnimation(.easeInOut(duration: PunchedArt.dauer)) { zug = 1 }
+        SlideHaptic.shared.play(dauer: PunchedArt.dauer)
+        Task {
+            try? await Task.sleep(for: .seconds(PunchedArt.dauer))
+            // Wer waehrend der Fahrt noch einmal tippt, hat es sich anders
+            // ueberlegt.
+            guard zug > 0, !dictation.isRunning else { return }
+            dictation.start()
+        }
+    }
+
+    /// Blatt zurueck. Die Reihenfolge der drei Zeilen ist keine Willkuer:
+    ///
+    /// 1. `zug` zuerst. `stop()` setzt `isRunning` und loest damit `onChange`
+    ///    aus, das hier wieder hereinkommt — die Wache oben faengt es nur ab,
+    ///    wenn `zug` schon null ist.
+    /// 2. Dann anhalten. Das gibt die Audiositzung frei.
+    /// 3. Dann erst streichen. Solange die Sitzung auf `.record` steht,
+    ///    unterdrueckt iOS die Haptik.
+    private func schliessen() {
+        guard zug > 0 else { return }
+        if reduceMotion { zug = 0 }
+        else { withAnimation(.easeInOut(duration: PunchedArt.dauer)) { zug = 0 } }
+        dictation.stop()
+        SlideHaptic.shared.play(dauer: reduceMotion ? 0 : PunchedArt.dauer)
+    }
+
     private var describe: some View {
         VStack(alignment: .leading, spacing: 0) {
             Button {
-                if !dictation.isRunning { beforeDictation = spoken.isEmpty ? "" : spoken + " " }
-                dictation.toggle()
+                if dictation.isRunning || zug > 0 { schliessen() } else { oeffnen() }
             } label: {
                 // **Das Blatt dahinter.** Im Ruhezustand liegt es unter den
                 // Loechern und man sieht es durch sie hindurch. Beim Diktieren
@@ -323,17 +368,16 @@ struct PhotoCapture: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel(dictation.isRunning ? "Diktat beenden" : "Diktieren")
-            // Beim Beenden faehrt das Blatt den Weg zurueck, den es gekommen
-            // ist. Wer Bewegung reduziert hat, bekommt denselben Zustand ohne
-            // die Fahrt: die Loecher sind dann sofort offen.
+            // Endet das Diktat von selbst oder scheitert es, faehrt das
+            // Blatt zurueck. Getippt wurde dann nichts, also fasst es hier
+            // niemand an ausser diesen beiden Zeilen.
             .onChange(of: dictation.isRunning) { _, laeuft in
-                let ziel: CGFloat = laeuft ? 1 : 0
-                if reduceMotion { zug = ziel }
-                else { withAnimation(.easeInOut(duration: PunchedArt.dauer)) { zug = ziel } }
-                // Das Blatt streicht unter dem Daumen durch, so lange es
-                // faehrt. Steht es still, bleibt nur der Anschlag.
-                SlideHaptic.shared.play(dauer: reduceMotion ? 0 : PunchedArt.dauer)
+                if !laeuft { schliessen() }
             }
+            .onChange(of: dictation.error) { _, fehler in
+                if fehler != nil { schliessen() }
+            }
+            .onAppear { SlideHaptic.shared.prepare() }
 
             Text("was und wann")
                 .scaledFont(11).tracking(0.8)
