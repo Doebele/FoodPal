@@ -402,8 +402,8 @@ footer a { color: var(--ink-2); }
 
 .anzeige img { display: block; width: 100%; height: auto; }
 
-/* Das Flipwerk in HTML: helle Karte, Tinte-Ziffer, Fuge auf halber
-   Hoehe, Nocken an den Flanken — die Masse der App (80 × 112). */
+/* Das Flipwerk im Katalog: weisse Karte mit Linie — Weiss auf Weiss,
+   die Zeichnung traegt Linie und Ziffer, keine Flaeche. */
 .flipwerk {
   display: flex;
   gap: 14px;
@@ -416,7 +416,8 @@ footer a { color: var(--ink-2); }
   width: 72px;
   height: 100px;
   border-radius: 5px;
-  background: var(--matrix);
+  background: #ffffff;
+  border: 1px solid var(--rule);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -434,19 +435,395 @@ footer a { color: var(--ink-2); }
 .flipkarte .fuge {
   position: absolute;
   left: 0; right: 0; top: 50%;
-  height: 2px;
-  background: var(--paper);
-  transform: translateY(-1px);
+  height: 1px;
+  background: var(--rule);
+  transform: translateY(-0.5px);
 }
 
 .flipkarte::before, .flipkarte::after {
   content: "";
   position: absolute;
-  top: calc(50% - 4px);
-  width: 4px; height: 8px;
-  background: var(--ink);
-  opacity: 0.16;
+  top: calc(50% - 3px);
+  width: 3px; height: 6px;
+  border: 1px solid var(--rule);
 }
 
 .flipkarte::before { left: 2px; }
 .flipkarte::after { right: 2px; }
+
+/* ——— Das Laufband der Sorten ——————————————————————————————————
+   Eine Reihe, die am Scrollen vorbeizieht. Der Rand geht bis an die
+   Fensterkante — das Band ist ein Vorbeilaufen, kein Kasten. */
+
+.laufband {
+  overflow: hidden;
+  margin: 40px calc(var(--rand) * -1) 0;
+  padding: 4px var(--rand);
+}
+
+.laufstrecke {
+  display: flex;
+  gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: max-content;
+}
+
+.laufstrecke li::before { display: none; }
+
+.sorte figure {
+  margin: 0;
+  width: 200px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.sorte.gross figure { width: 300px; }
+
+.sorte img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.sorte figcaption { padding: 10px 12px 12px; }
+
+.sortenname { font-size: 14px; font-weight: 500; margin: 0; }
+
+.sortenwerte {
+  font-family: "Fira Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-2);
+  margin: 4px 0 0;
+}
+
+.sortenwerte .roast { color: var(--roast); }
+
+.sortentext { font-size: 13px; line-height: 1.5; margin: 10px 0 0; }
+
+.sortenort {
+  font-size: 12px;
+  color: var(--ink-2);
+  margin: 10px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+}
+
+/* ——— Der Streifen des Tages ————————————————————————————————————
+   Acht Schirme auf einem Lauf; darunter die Uhr, die mitschreitet.
+   Unter 720 px entfällt der Lauf: die Schirme reihen sich zweispaltig. */
+
+.streifen { margin-top: 40px; }
+
+.streifen-track {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.streifen-track li::before { display: none; }
+
+.streich { flex: none; }
+
+.streich .bild { width: 280px; }
+
+.fortschritt {
+  position: relative;
+  height: 28px;
+  margin-top: 28px;
+  font-family: "Fira Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.fortschritt-linie {
+  position: absolute;
+  left: 48px; right: 48px; top: 13px;
+  height: 1px;
+  background: var(--rule);
+}
+
+.fortschritt-punkt {
+  position: absolute;
+  top: 10px; left: 48px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.fortschritt-von { position: absolute; left: 0; top: 4px; }
+.fortschritt-bis { position: absolute; right: 0; top: 4px; }
+
+@media (max-width: 719px) {
+  .laufband { margin-inline: 0; padding: 0; }
+  .sorte figure, .sorte.gross figure { width: 164px; }
+  .sorte.gross figure { width: calc(100vw - var(--rand) * 2 - 40px); }
+  .streifen-track { flex-wrap: wrap; }
+  .streich { width: calc(50% - 12px); }
+  .streich .bild { width: 100%; }
+  .fortschritt { display: none; }
+}
+
+/* ——— Der Katalog — weisse Fassung ——————————————————————————————
+   Braun-Anleitung: reines Weiss, Tinte, Linien, nummerierte Kapitel.
+   Ein Bestandteil je Kapitel, hervorgehoben wie ein Bauteil. */
+
+.katalog {
+  /* Alle Werte festgenagelt, nicht nur das Papier: im Dunkelmodus des
+     Systems wuerde :root sonst die Tinte aufhell drehen — weisse Schrift
+     auf weissem Grund. Der Katalog ist ein Blatt Papier; er bleibt eins. */
+  --paper: #ffffff;
+  --ink: #161614;
+  --ink-2: #72726a;
+  --rule: #e2e2da;
+  --matrix: #f0f0ee;
+  --roast: #b4531f;
+  --rand: clamp(24px, 6vw, 96px);
+  max-width: 1120px;
+}
+
+.katalog .raster { opacity: 0.55; }
+
+/* Grosszuegigkeit: jedes Kapitel nimmt sich seinen vertikalen Raum,
+   bevor das naechste beginnt — Zeit zum Lesen, Zeit zum Scrollen. */
+.katalog .kapitel { margin-top: 264px; }
+
+.katalog .held { padding-top: 132px; padding-bottom: 48px; }
+
+.katalog .held h1 { font-size: 64px; }
+
+.katalog .block { margin-top: 264px; }
+
+.katalog .raster { margin-top: 132px; margin-bottom: 132px; }
+
+.katalog .buehne { padding: clamp(32px, 5vw, 72px); }
+
+.katalog footer { margin-top: 176px; }
+
+@media (max-width: 719px) {
+  .katalog .kapitel { margin-top: 176px; }
+  .katalog .held h1 { font-size: 44px; }
+}
+
+.katalog .kapitel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 880px) {
+  .katalog .kapitel { grid-template-columns: 240px 1fr; gap: 56px; }
+}
+
+/* Die Kapitelnummer: ein Quadrat mit Ziffer, wie auf Braun-Papieren. */
+.katalog .nummer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: "Fira Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-2);
+  margin: 0 0 8px;
+}
+
+.katalog .nummer::before {
+  content: "";
+  width: 22px; height: 22px;
+  border: 1px solid var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.katalog .kapitel h2 {
+  border-top: 0;
+  padding-top: 0;
+  margin: 8px 0 12px;
+  font-weight: 300;
+  font-size: 26px;
+}
+
+.katalog .kapitel p { max-width: 56ch; }
+
+/* Die Buehne: weisse Flaeche mit Linie, das Bauteil darauf. */
+.buehne {
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  padding: clamp(24px, 4vw, 56px);
+  margin: 0;
+}
+
+/* Das Seitenlayout als Schema: ein Drahtgitter des Startschirms. */
+.schema { aspect-ratio: 393 / 760; max-width: 340px; margin: 0 auto; }
+
+.schema .feld {
+  stroke: var(--ink-2);
+  fill: none;
+  stroke-width: 1;
+}
+
+.schema .heftig { stroke: var(--ink); }
+
+.schema text {
+  font-family: "Fira Mono", ui-monospace, monospace;
+  font-size: 11px;
+  fill: var(--ink-2);
+}
+
+/* Die Inhaltsseite: reine Typografie mit Linien. */
+.inhalt { list-style: none; margin: 0; padding: 0; }
+
+.inhalt li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+  max-width: none;
+}
+
+.inhalt li::before { display: none; }
+
+.inhalt .wann {
+  font-family: "Fira Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-2);
+  min-width: 52px;
+}
+
+.inhalt .was { flex: 1; font-size: 16px; }
+
+.inhalt .wieviel {
+  font-family: "Fira Mono", ui-monospace, monospace;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Die Detailseite eines Kaffees als Inhaltsseite: Bild oben rechts,
+   darunter die Bestandteile als Zeilen. */
+.detailkopf {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.detailbild {
+  width: 96px;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+  display: block;
+}
+
+.wieviel.roast, .roast { color: var(--roast); }
+
+/* Die Cafe-Galerie: Quadrate mit Linie, Weiss dazwischen. */
+.cafe-galerie {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  list-style: none;
+  margin: 0; padding: 0;
+}
+
+.cafe-galerie li::before { display: none; }
+
+.cafe-galerie figure {
+  margin: 0;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.cafe-galerie img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+
+.cafe-galerie figcaption {
+  font-family: "Fira Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-2);
+  padding: 8px 10px;
+  border-top: 1px solid var(--rule);
+}
+
+/* Die Auswahlmaske: Kacheln mit Punktbalken, nachgebaut. */
+.maske {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  list-style: none;
+  margin: 0; padding: 0;
+}
+
+.maske li::before { display: none; }
+
+.maske .kachel {
+  border: 1px solid var(--rule);
+  padding: 14px;
+  margin: 0;
+}
+
+.maske .kachelname { font-size: 14px; margin: 10px 0 0; }
+
+.maske .kachelwerte {
+  font-family: "Fira Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-2);
+  margin: 2px 0 0;
+}
+
+/* Ein Punktbalken: Punkte in einer Reihe, an/aus nach Fortschritt. */
+.balken { display: flex; gap: 4px; }
+
+.balken i {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--matrix);
+  display: block;
+}
+
+.balken i.an { background: var(--ink); }
+.balken.mg i.an { background: var(--roast); }
+
+/* Links-Rechts: beide Paare nebeneinander, gemeinsame Wendung. */
+.wechsel-paar {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 760px) {
+  .wechsel-paar { grid-template-columns: 1fr 1fr; }
+}
+
+.wechsel { perspective: 1400px; }
+
+.wechsel-licht {
+  position: relative;
+  width: min(300px, 72vw);
+  margin: 0 auto;
+  transform-style: preserve-3d;
+}
+
+.wechsel-karte {
+  backface-visibility: hidden;
+  margin: 0;
+  transform: rotateY(0deg);
+}
+
+.wechsel-karte.rueck { position: absolute; inset: 0; transform: rotateY(180deg); }
+
+.wechsel-karte img { display: block; width: 100%; height: auto; }
+
+.wechsel-hinweis {
+  text-align: center;
+  font-family: "Fira Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-2);
+  margin-top: 16px;
+}

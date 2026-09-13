@@ -22,6 +22,7 @@ struct PhotoCapture: View {
     @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
 
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var health = HealthKitSync()
     @State private var phase = {
@@ -47,6 +48,10 @@ struct PhotoCapture: View {
     @State private var saves = 0
     @State private var spoken = ""
     @State private var dictation = Dictation()
+    /// Wie weit das Blatt hinter der Rosette weggezogen ist. Eigener Zustand
+    /// statt einer Ableitung aus `dictation.isRunning`: die Bewegung soll
+    /// laufen, nicht springen.
+    @State private var zug: CGFloat = 0
     /// Was vor dem Diktat schon im Feld stand. Die Erkennung liefert immer den
     /// ganzen erkannten Satz, nicht das Neue daran — ohne diesen Anker würde
     /// ein zweites Diktat das erste überschreiben.
@@ -190,7 +195,7 @@ struct PhotoCapture: View {
             // Das Kreuz steht oben und sagt, worum es hier geht: hinzufügen.
             // Es ist keine Schaltfläche — der Weg wird unten gewählt, wo der
             // Daumen liegt.
-            DotArt.cross
+            PunchedArt(art: .cross)
                 .frame(width: 186, height: 186)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 24)
@@ -305,7 +310,12 @@ struct PhotoCapture: View {
                 if !dictation.isRunning { beforeDictation = spoken.isEmpty ? "" : spoken + " " }
                 dictation.toggle()
             } label: {
-                DotArt.speaker(color: dictation.isRunning ? roast.color : Palette.rule)
+                // **Das Blatt dahinter.** Im Ruhezustand liegt es unter den
+                // Loechern und man sieht es durch sie hindurch. Beim Diktieren
+                // wird es von links nach rechts weggezogen, und die Loecher
+                // werden nacheinander schwarz. Eine Farbe braucht es dafuer
+                // nicht: ein offenes Loch ist Zeichen genug.
+                PunchedArt(art: .speaker(), zug: zug)
                     .frame(width: 187, height: 187)
                     .frame(maxWidth: .infinity)
                     .padding(.top, 24)
@@ -313,6 +323,17 @@ struct PhotoCapture: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel(dictation.isRunning ? "Diktat beenden" : "Diktieren")
+            // Beim Beenden faehrt das Blatt den Weg zurueck, den es gekommen
+            // ist. Wer Bewegung reduziert hat, bekommt denselben Zustand ohne
+            // die Fahrt: die Loecher sind dann sofort offen.
+            .onChange(of: dictation.isRunning) { _, laeuft in
+                let ziel: CGFloat = laeuft ? 1 : 0
+                if reduceMotion { zug = ziel }
+                else { withAnimation(.easeInOut(duration: PunchedArt.dauer)) { zug = ziel } }
+                // Das Blatt streicht unter dem Daumen durch, so lange es
+                // faehrt. Steht es still, bleibt nur der Anschlag.
+                SlideHaptic.shared.play(dauer: reduceMotion ? 0 : PunchedArt.dauer)
+            }
 
             Text("was und wann")
                 .scaledFont(11).tracking(0.8)

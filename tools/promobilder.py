@@ -23,18 +23,21 @@ UHRZEIT = "9:41"
 VERSATZ = "-2"
 MAHLZEITEN = ["Porridge", "Linsensuppe", "Pasta",
               "Porridge mit Beeren", "Bowl mit Lachs", "Ofengemüse"]
-KAFFEE = "Filterkaffee"
+KAFFEE = "Barraquito"
 
 # Je Bild: Dateiname, Startvariante, Einstellungen. Der Heute-Schirm zeigt
 # Kalorien (Flip) — die Erfassung die Getränkekacheln, die bei links unten
 # LINKS liegen; genau der Unterschied, den die Promo zeigen will.
+# Nur zwei Schirme tragen den Unterschied: der Startscreen (die Griffe
+# wandern in die Ecke der Bedienhand) und die Kaffee-Detailansicht (die
+# Spalten tauschen, die Textausrichtungen bleiben). Vier Bilder aus einem
+# Lauf, mit derselben Sorte — der Barraquito —, damit das Paar in sich
+# stimmt: auch die Liste des Startschirms zeigt ihn um 16:00.
 BILDER = [
-    ("links-heute", {}, {"numberStyle": "flip", "captureMode": "meal"}),
-    ("links-erfassen", {"START_SHEET": "1"}, {"captureMode": "coffee"}),
-    # Die Detailseite ist der interessierte Fall: bei links tauschen die
-    # Spalten (bezeichnung/values links statt rechts), die Ausrichtung der
-    # Texte bleibt. Gleiches Env wie Store-Bild 04, damit das Paar stimmt.
-    ("links-eintrag", {"START_ENTRY": "coffee"}, {}),
+    ("heute-rechts", {}, {"numberStyle": "flip", "captureMode": "meal"}, "right"),
+    ("heute-links", {}, {"numberStyle": "flip", "captureMode": "meal"}, "left"),
+    ("eintrag-rechts", {"START_ENTRY": "coffee"}, {}, "right"),
+    ("eintrag-links", {"START_ENTRY": "coffee"}, {}, "left"),
 ]
 
 
@@ -74,7 +77,7 @@ def main():
         pruefen=False)
 
     ZIEL.mkdir(parents=True, exist_ok=True)
-    for name, umgebung, einstellungen in BILDER:
+    for name, umgebung, einstellungen, hand in BILDER:
         sim("terminate", udid, BUNDLE, pruefen=False)
         time.sleep(0.5)
         # Frisch installieren: seedIfEmpty saet nur in leeren Speicher.
@@ -83,7 +86,7 @@ def main():
         # Die Bedienhand VOR dem Start schreiben — alles andere wie beim
         # Store-Lauf, damit die Paare vergleichbar bleiben.
         sim("spawn", udid, "defaults", "write", BUNDLE, "hand",
-            "-string", "left")
+            "-string", hand)
         for schluessel, wert in einstellungen.items():
             sim("spawn", udid, "defaults", "write", BUNDLE, schluessel,
                 "-string", wert)

@@ -43,6 +43,21 @@ enum Palette {
     /// ist. Eine Fläche sagt dasselbe mit einer Zeile.
     static let tile  = dynamic(light: 0xF4F4EF, dark: 0x1B1B19)
 
+    /// **Die Lochplatte.** Kreuz und Rosette sind Stanzungen in einem Karton
+    /// mit Dicke, und eine Stanzung hat eine Wand: hell auf der Seite, auf die
+    /// das Licht faellt, dunkel auf der, die der Rand verdeckt.
+    ///
+    /// Beide Toene liegen **unter** Papier. Auf hellem Grund kann eine
+    /// beleuchtete Lochwand nicht heller sein als die Flaeche um sie herum —
+    /// sonst saehe das Loch aus wie ein Buckel.
+    static let punchLight = dynamic(light: 0xE8E8E0, dark: 0x2E2E2A)
+    static let punchDark  = dynamic(light: 0xBEBEB2, dark: 0x070706)
+    /// Das hintere Blatt, das man durch die Loecher sieht. Etwas dunkler als
+    /// die beleuchtete Wand: es liegt tiefer und im Schatten des Kartons.
+    static let punchSheet = dynamic(light: 0xD8D8CF, dark: 0x3A3A34)
+    /// Und was uebrig bleibt, wenn es weggezogen ist: nichts.
+    static let punchOpen  = dynamic(light: 0x161614, dark: 0x000000)
+
     /// Fester Farbwert, unabhängig vom aktuellen Modus — für Vorschauen,
     /// die zeigen sollen, wie der *andere* Modus aussieht.
     static func fixed(_ hex: UInt32) -> Color { Color(uiColor: UIColor(hex: hex)) }

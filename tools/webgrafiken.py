@@ -93,12 +93,23 @@ def strahl_svg():
 
 
 def strahl_fragment():
-    """Zwei Ebenen fuer die Scroll-Faerbung: unten farbig, darueber grau,
-    dessen Bildbereich per clip-path von links freigegeben wird."""
+    """Zwei Ebenen fuer die Scroll-Faerbung, und oben die Stundenmarker
+    02, 08, 14, 20 — wie in der App. Weitere Angaben stehen dort nicht:
+    die Eintraege sind Punkte im Raster, keine Beschriftung."""
     farbe = strahl(True)
     grau = strahl(False)
     linie_x = 38 * PITCH - 1 + UEBERSTAND
-    return f'''<svg id="strahl" xmlns="http://www.w3.org/2000/svg" viewBox="0 {-(UEBERSTAND + 4)} {BREITE + 2 * UEBERSTAND} {HOEHE + 8}" role="img" aria-label="Der zehnte September als Punktraster: oben Kalorien in Tinte, unten Koffein in Röstfarbe">
+    stunden = []
+    for stunde in (2, 8, 14, 20):
+        x = stunde * PITCH * PER_STUNDE / PER_STUNDE  # Spalte = Stunde * 4
+        x = stunde * 4 * PITCH + UEBERSTAND
+        stunden.append(
+            f'<text x="{x - 3}" y="-7" font-size="7" fill="{INK2}" '
+            f'font-family="Fira Mono, monospace">'
+            f'{stunde:02d}</text>')
+    band = "".join(stunden)
+    return f'''<svg id="strahl" xmlns="http://www.w3.org/2000/svg" viewBox="0 -14 {BREITE + 2 * UEBERSTAND} {HOEHE + 18}" role="img" aria-label="Der zehnte September als Punktraster: oben Kalorien in Tinte, unten Koffein in Röstfarbe, Stundenmarker 02, 08, 14, 20">
+  <g id="strahl-stunden">{band}</g>
   <g id="strahl-grau">{grau}</g>
   <g id="strahl-farbe" style="clip-path: inset(0 100% 0 0)">{farbe}</g>
   <rect id="strahl-linie" x="{linie_x}" y="0" width="1" height="{HOEHE}" fill="{INK2}" style="opacity: 0"/>
@@ -186,8 +197,8 @@ def segment_svg(zahl):
     return "".join(teile)
 
 
-def einbauen():
-    seite = WURZEL / "web" / "rundgang.html"
+def einbauen(ziel_name="rundgang.html"):
+    seite = WURZEL / "web" / ziel_name
     roh = seite.read_text()
     fragment = strahl_fragment()
     neu = re.sub(r"(<!--strahl-start-->).*?(<!--strahl-ende-->)",
@@ -199,7 +210,9 @@ def einbauen():
 
 def main():
     if "--einbauen" in sys.argv:
-        einbauen()
+        idx = sys.argv.index("--einbauen")
+        ziel = sys.argv[idx + 1] if len(sys.argv) > idx + 1 and not sys.argv[idx + 1].startswith("--") else "rundgang.html"
+        einbauen(ziel)
         return
     (WURZEL / "web" / "bilder" / "anzeigen").mkdir(parents=True, exist_ok=True)
     schreiben = [

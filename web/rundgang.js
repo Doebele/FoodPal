@@ -254,6 +254,48 @@
         scrollTrigger: { trigger: ".flipwerk", start: "top 85%", once: true }
       });
     }
+
+    // Zwei Läufe, aber nur dort, wo Platz für einen Lauf ist: das
+    // Sortenband zieht am Vorbeiscrollen vorbei, der Tagesstreifen
+    // pinnt und läuft erst weiter, wenn er durch ist. Auf dem Telefon
+    // wird neither gepinnt — dort reihen sich die Kacheln.
+    if (typeof gsap.matchMedia === "function") {
+      var mm = gsap.matchMedia();
+      mm.add("(min-width: 720px)", function () {
+        var band = document.querySelector(".laufstrecke");
+        if (band && band.scrollWidth > band.parentElement.clientWidth) {
+          gsap.to(band, {
+            x: band.parentElement.clientWidth - band.scrollWidth,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#laufband", start: "top bottom", end: "bottom top",
+              scrub: 1, invalidateOnRefresh: true
+            }
+          });
+        }
+        var track = document.querySelector(".streifen-track");
+        var punkt = document.querySelector(".fortschritt-punkt");
+        var leiste = document.querySelector(".fortschritt-linie");
+        if (track && track.scrollWidth > track.parentElement.clientWidth) {
+          var weg = function () {
+            return track.parentElement.clientWidth - track.scrollWidth;
+          };
+          gsap.to(track, {
+            x: weg, ease: "none",
+            scrollTrigger: {
+              trigger: ".streifen", start: "top 96px", end: "+=" + (track.scrollWidth - track.parentElement.clientWidth),
+              pin: true, scrub: 0.6, invalidateOnRefresh: true,
+              onUpdate: function (selbst) {
+                if (!punkt || !leiste) return;
+                var spanne = leiste.offsetLeft;
+                var raum = leiste.parentElement.clientWidth - spanne * 2;
+                punkt.style.left = (spanne + selbst.progress * raum) + "px";
+              }
+            }
+          });
+        }
+      });
+    }
   }
 
   if (document.readyState === "loading") {

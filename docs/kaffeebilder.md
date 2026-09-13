@@ -506,3 +506,34 @@ war nötig, solange es Bilder für 43 Sorten gab und Warenkunde für siebzehn.
 Inzwischen decken beide alle 43 ab, aber die Trennung bleibt richtig: eine neue
 Sorte kann ihr Bild schon haben, bevor jemand ihren Text geschrieben hat. Wer
 sie dann öffnet, sieht das Bild und keine Karte.
+
+---
+
+## Was der Satz gekostet hat
+
+Nachgehalten am 13. September 2026, weil die Kostenrechnung des Projekts
+sonst unvollständig bliebe. Zuschläge auf den Verbrauch aus dieser Akte;
+Preise nach Recherche, Stand September 2026.
+
+**Verbrauch (aus dieser Akte gerechnet):**
+
+| Position | Menge | Credits |
+|---|---|---|
+| Erster Durchgang, Soul v2 (6 Bilder à 0,12) | 6 | ~1 |
+| Modelltest (4 Modelle à 2 Motive, mit Wiederholungen) | ~15 | ~15 |
+| Heroes je Gefäss, mehrere Anläufe | ~25 | ~25 |
+| Produktion, Flux 2 pro (43 Sorten à 4 Varianten à 1,00) | 172 | 172 |
+| **Summe** | | **~210** |
+
+**Preis je Credit (US-Katalog, Stand 9/2026):** Plus-Jahrestarif 47 $ für
+1'200 Credits (≈ 3,9 ¢/Credit), Ultra-Jahrestarif 99 $ für 3'000
+(≈ 3,3 ¢/Credit), Top-up-Packs 5 $ für 100 (5 ¢/Credit, 90 Tage gültig).
+Quelle: Higgsfield-Preisliste und Drittvergleiche, geprüft 8.–13.9.2026;
+Higgsfield hat die Preise 2026 mehrfach angehoben — vor Veröffentlichung
+gegen die aktuelle Preisseite prüfen.
+
+**Ergebnis:** Der komplette Bildsatz liegt bei gut 210 Credits, umgerechnet
+je nach Tarif **rund 7 bis 10 Dollar**. Das ist bewusst mit der Modellwahl
+zu lesen: Soul wäre achtmal billiger gewesen und hat trotzdem verloren — die
+Bilder sind die billigste Zeile im Projekt und gleichzeitig die einzige mit
+eigenen Modellkosten.

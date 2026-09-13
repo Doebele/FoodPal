@@ -28,9 +28,9 @@ QUELLEN = {
     "warenkunde": "bilder/store/de/06-warenkunde.png",
     "einstellungen": "bilder/store/de/07-einstellungen.png",
     "jetzt": "bilder/store/de/08-jetzt.png",
-    "hand-rechts": "bilder/store/de/01-tagesverlauf.png",
+    "hand-rechts": "bilder/promo/heute-rechts.png",
     "hand-links": "bilder/promo/links-heute.png",
-    "hand-eintrag-rechts": "bilder/store/de/04-eintrag.png",
+    "hand-eintrag-rechts": "bilder/promo/eintrag-rechts.png",
     "hand-eintrag-links": "bilder/promo/links-eintrag.png",
 }
 
