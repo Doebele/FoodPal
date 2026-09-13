@@ -304,6 +304,15 @@ struct PhotoCapture: View {
     /// Abgeschickt wird **nicht** automatisch. Diktat verhört sich bei
     /// Essensnamen zuverlässig, und ein Weg, der aufnimmt und sofort schätzt,
     /// würde den Fehler unsichtbar weiterreichen. Man sieht, was ankam.
+    /// **Ein Schalter, zwei Griffe.** Die Rosette und die Schaltflaeche
+    /// „Diktat" ueber der Tastatur tun dasselbe, also nehmen sie denselben
+    /// Weg. Die zweite sitzt dort, wo bei grosser Schrift die Rosette schon
+    /// aus dem Bild geschoben ist — und wer sie drueckt, soll das Blatt
+    /// genauso fahren sehen und spueren.
+    private func umschalten() {
+        if dictation.isRunning || zug > 0 { schliessen() } else { oeffnen() }
+    }
+
     /// **Erst das Blatt, dann das Mikrofon.** Die Aufnahme beginnt, wenn die
     /// Loecher offen sind. Vorher zeigte der Schirm etwas anderes, als er tat:
     /// es lief schon mit, waehrend das Blatt noch fuhr.
@@ -352,9 +361,7 @@ struct PhotoCapture: View {
 
     private var describe: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Button {
-                if dictation.isRunning || zug > 0 { schliessen() } else { oeffnen() }
-            } label: {
+            Button(action: umschalten) {
                 // **Das Blatt dahinter.** Im Ruhezustand liegt es unter den
                 // Loechern und man sieht es durch sie hindurch. Beim Diktieren
                 // wird es von links nach rechts weggezogen, und die Loecher
@@ -405,12 +412,7 @@ struct PhotoCapture: View {
                         ? String(localized: "Diktat beenden")
                         : String(localized: "Diktat"),
                     dictateColor: dictation.isRunning ? roast.color : Palette.ink,
-                    onDictate: {
-                        if !dictation.isRunning {
-                            beforeDictation = spoken.isEmpty ? "" : spoken + " "
-                        }
-                        dictation.toggle()
-                    }
+                    onDictate: umschalten
                 )
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -429,6 +431,11 @@ struct PhotoCapture: View {
             Spacer(minLength: 0)
 
             Button {
+                // Ohne Fahrt und ohne Streichen: der Schirm wechselt gleich,
+                // und `zug` zuerst, sonst schliesst `onChange` ein zweites
+                // Mal. Zurueckgesetzt gehoert er trotzdem, sonst stuenden die
+                // Loecher beim naechsten Mal offen.
+                zug = 0
                 dictation.stop()
                 Task { await analyse(spoken) }
             } label: {
@@ -447,7 +454,10 @@ struct PhotoCapture: View {
             guard dictation.isRunning else { return }
             spoken = beforeDictation + heard
         }
-        .onDisappear { dictation.stop() }
+        .onDisappear {
+            zug = 0
+            dictation.stop()
+        }
     }
 
     // MARK: - Analyse
