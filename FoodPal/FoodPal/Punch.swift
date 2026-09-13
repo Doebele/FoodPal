@@ -92,13 +92,18 @@ struct PunchedArt: View, Animatable {
     /// schon alles schwarz ist.
     static let dauer: TimeInterval = 0.55
 
-    /// **Zehn Prozent groesser als im Entwurf.** Der Entwurf zeichnet
+    /// **Ein Drittel groesser als im Entwurf.** Der Entwurf zeichnet
     /// Fuellungen, hier stehen Vertiefungen, und die Schattierung lebt allein
-    /// in der Wand. Bei 6 pt sind das vier Pixel, in denen der ganze Effekt
-    /// stattfinden muss. Der Zuschlag geht nach aussen, deshalb waechst
-    /// unten auch das Entwurfsquadrat mit — sonst schnitte der `Canvas` den
-    /// aeussersten Loechern eine Kante ab.
-    static let wuchs: CGFloat = 1.1
+    /// in der Wand. Bei den 6 pt des Entwurfs waren das vier Pixel, in denen
+    /// der ganze Effekt stattfinden muss — zu wenig, um das Kippen zu sehen.
+    /// Jetzt sind es knapp acht.
+    ///
+    /// Platz ist dafuer da: der engste Mittenabstand der Rosette betraegt
+    /// 13,65 Einheiten, es bleiben also noch 5,7 Steg zwischen zwei
+    /// Loechern. Der Zuschlag geht nach aussen, deshalb waechst unten auch
+    /// das Entwurfsquadrat mit — sonst schnitte der `Canvas` den aeussersten
+    /// Loechern eine Kante ab.
+    static let wuchs: CGFloat = 1.32
 
     /// Wie weich die Kante des Blattes laeuft, in Entwurfseinheiten. Ein
     /// Fuenftel der Breite: die Loecher kippen als Welle, nicht als Linie.
