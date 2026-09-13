@@ -52,6 +52,9 @@ struct PhotoCapture: View {
     /// statt einer Ableitung aus `dictation.isRunning`: die Bewegung soll
     /// laufen, nicht springen.
     @State private var zug: CGFloat = 0
+    /// Laeuft gerade ein Schliessvorgang? `dictation.stop()` meldet den Halt
+    /// ueber `onChange` zurueck, und ohne diese Wache faehrt das Blatt zweimal.
+    @State private var schliesst = false
     /// Was vor dem Diktat schon im Feld stand. Die Erkennung liefert immer den
     /// ganzen erkannten Satz, nicht das Neue daran — ohne diesen Anker würde
     /// ein zweites Diktat das erste überschreiben.
@@ -343,20 +346,28 @@ struct PhotoCapture: View {
         }
     }
 
-    /// Blatt zurueck. Die Reihenfolge der drei Zeilen ist keine Willkuer:
+    /// **Zuerst das Mikrofon, dann das Bild.** Umgekehrt als beim Oeffnen,
+    /// und aus einem handfesten Grund: `AVAudioEngine.stop()` haelt den
+    /// Hauptfaden fuer eine Zehntelsekunde an — also genau den Faden, auf dem
+    /// SwiftUI zeichnet. Stand die Fahrt schon, frass die Sperre sie auf: das
+    /// Blatt sprang zurueck, waehrend die Haptik ordentlich streichelte.
     ///
-    /// 1. `zug` zuerst. `stop()` setzt `isRunning` und loest damit `onChange`
-    ///    aus, das hier wieder hereinkommt — die Wache oben faengt es nur ab,
-    ///    wenn `zug` schon null ist.
-    /// 2. Dann anhalten. Das gibt die Audiositzung frei.
-    /// 3. Dann erst streichen. Solange die Sitzung auf `.record` steht,
-    ///    unterdrueckt iOS die Haptik.
+    /// Einen Lauf spaeter ist der Faden wieder frei, und die Aufnahme ist
+    /// sicher aus. Beides zaehlt, denn solange sie laeuft, unterdrueckt iOS
+    /// auch die Haptik — sie soll nicht in der Aufnahme landen.
+    ///
+    /// Der Preis ist eine Zehntelsekunde, bis sich etwas ruehrt. Die vorige
+    /// Fassung zahlte sie auch, nur bekam man dafuer keine Animation.
     private func schliessen() {
-        guard zug > 0 else { return }
-        if reduceMotion { zug = 0 }
-        else { withAnimation(.easeInOut(duration: PunchedArt.dauer)) { zug = 0 } }
+        guard zug > 0, !schliesst else { return }
+        schliesst = true
         dictation.stop()
-        SlideHaptic.shared.play(dauer: reduceMotion ? 0 : PunchedArt.dauer)
+        Task { @MainActor in
+            if reduceMotion { zug = 0 }
+            else { withAnimation(.easeInOut(duration: PunchedArt.dauer)) { zug = 0 } }
+            SlideHaptic.shared.play(dauer: reduceMotion ? 0 : PunchedArt.dauer)
+            schliesst = false
+        }
     }
 
     private var describe: some View {

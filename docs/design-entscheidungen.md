@@ -465,6 +465,18 @@ fehlt, fehlt am weitesten weg vom Griff.
 | die nächsten sechs | 170 × 80 | Punktfeld, Name in 20 |
 | alle übrigen | 83 × 80 | Punktfeld, Name in 12 |
 
+**Aufgestiegen wird stufenweise, nicht gezählt.** Ein Tipp hebt eine Sorte um
+genau **eine** Stufe, und sie tritt dort an der Bedienhand ein; was sie
+verdrängt, fällt um eine zurück. Aus den kleinen Quadraten kommt man deshalb
+nie in einem Zug zu den zwei grossen — dafür ist die Mitte da, und unten
+stehen nur die, die man zweimal gewählt hat.
+
+Vorher zählte eine Häufigkeit, und der Aufstieg hing am Abstand zum
+Vordermann: eine Sorte mit drei Strichen blieb unerreichbar, gleich wie oft
+man die neue wählte. Die Leiter steht in `Preference.coffeeOrder`, beim ersten
+Mal gesät aus der alten Zählung, damit niemand die Anordnung verliert, die
+über Wochen entstanden ist.
+
 Die Zahlen stehen nur auf den beiden grossen. Weiter oben wird nicht gelesen,
 sondern erkannt — dort genügt das Muster, und ein Muster braucht keine Ziffern.
 

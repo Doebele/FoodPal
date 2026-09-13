@@ -17,6 +17,9 @@ enum Preference {
     static let provider = "visionProvider"
     /// Modellname **je Anbieter**, als JSON. Siehe `PerProvider`.
     static let models = "visionModels"
+    /// Die Leiter der Getraenke, als JSON-Liste von Namen. Siehe
+    /// `CoffeeCapture.promoted(_:choosing:)`.
+    static let coffeeOrder = "coffeeOrder"
     /// Adresse je Anbieter, als JSON — betrifft nur die ohne feste Adresse.
     static let addresses = "visionAddresses"
 

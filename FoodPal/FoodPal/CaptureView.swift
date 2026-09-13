@@ -93,6 +93,9 @@ struct CoffeeCapture: View {
     @Query private var all: [Entry]
     @AppStorage(Preference.healthSync) private var healthSync = true
     @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
+    /// Die Leiter, als JSON-Liste von Namen. Leer heisst: noch nie gesetzt,
+    /// dann wird aus dem Bestand gesaet.
+    @AppStorage(Preference.coffeeOrder) private var orderJSON = "[]"
 
     @State private var health = HealthKitSync()
     @State private var saves = 0
@@ -283,11 +286,46 @@ struct CoffeeCapture: View {
 
     // MARK: - Reihenfolge
 
-    /// Häufigste zuerst. Gezählt wird über den **ganzen** Bestand, nicht über
-    /// dreissig Tage: die Stufen sollen stehen und nicht wöchentlich tauschen.
-    /// Bei Gleichstand zählt, was zuletzt getrunken wurde, danach die
-    /// Reihenfolge der Vorlage.
+    /// **Eine Stufe je Tipp.** Die Reihenfolge ist keine Zählung, sondern eine
+    /// Leiter mit drei Sprossen: oben die kleinen Quadrate, in der Mitte die
+    /// laenglichen, unten an der Bedienhand die zwei grossen.
+    ///
+    /// Wer ein Getränk wählt, hebt es um **genau eine** Sprosse, und es tritt
+    /// dort an der Bedienhand ein. Was dabei verdrängt wird, fällt um eine
+    /// zurück. Aus den kleinen Quadraten kommt man also nie in einem Zug zu
+    /// den zwei grossen — dafür ist die Mitte da, und unten stehen nur die,
+    /// die man zweimal gewählt hat.
+    ///
+    /// Eine Zählung stand hier vorher und tat etwas anderes: sie hängte den
+    /// Aufstieg an den Abstand zum Vordermann. Ein Getränk mit drei Strichen
+    /// blieb dann unerreichbar, gleich wie oft man das neue wählte.
     private var ranked: [CoffeePreset] {
+        let nachName = Dictionary(
+            uniqueKeysWithValues: CoffeePreset.all.map { ($0.name, $0) }
+        )
+        var out = leiter.compactMap { nachName[$0] }
+        // Sorten, die es beim letzten Speichern noch nicht gab, hängen sich
+        // hinten an, statt stillschweigend zu fehlen.
+        let gesetzt = Set(out.map(\.name))
+        out.append(contentsOf: CoffeePreset.all.filter { !gesetzt.contains($0.name) })
+        return out
+    }
+
+    /// Die gespeicherte Leiter. Beim ersten Mal aus dem Bestand gesät, damit
+    /// niemand die Anordnung verliert, die sich über Wochen ergeben hat.
+    private var leiter: [String] {
+        if let namen = try? JSONDecoder().decode([String].self, from: Data(orderJSON.utf8)),
+           !namen.isEmpty {
+            return namen
+        }
+        return gesaet
+    }
+
+    /// Der Startwert: häufigste zuerst, bei Gleichstand das zuletzt
+    /// getrunkene, dann die Reihenfolge der Vorlage. Genau die Regel, die bis
+    /// hierher die ganze Sortierung war — jetzt ist sie nur noch der
+    /// Anfangszustand der Leiter.
+    private var gesaet: [String] {
         var counts: [String: Int] = [:]
         var last: [String: Date] = [:]
         for entry in all where entry.kind == .coffee {
@@ -303,7 +341,25 @@ struct CoffeeCapture: View {
             let la = last[a.name] ?? .distantPast, lb = last[b.name] ?? .distantPast
             if la != lb { return la > lb }
             return (fallback[a.name] ?? 0) < (fallback[b.name] ?? 0)
-        }
+        }.map(\.name)
+    }
+
+    /// Ein Tipp, eine Sprosse. Rein und ohne Ansicht, damit sich die Leiter
+    /// prüfen lässt.
+    ///
+    /// Das Ziel ist der **erste Platz der nächsttieferen Gruppe**: aus den
+    /// kleinen Quadraten an den Anfang der Mitte, aus der Mitte an den Anfang
+    /// der zwei grossen. Wer schon unten steht, rückt an den Daumen. Alles
+    /// dazwischen rutscht um einen Platz nach oben — die Sprosse, die frei
+    /// wird, füllt der Nachrücker.
+    static func promoted(_ order: [String], choosing name: String) -> [String] {
+        guard let von = order.firstIndex(of: name) else { return order }
+        let ziel = von >= bigCount + midCount ? bigCount : 0
+        guard ziel < von else { return order }
+        var next = order
+        next.remove(at: von)
+        next.insert(name, at: ziel)
+        return next
     }
 
     /// Zwei grosse: die häufigste **an der Bedienhand**.
@@ -355,6 +411,14 @@ struct CoffeeCapture: View {
         let entry = preset.entry()
         context.insert(entry)
         saves += 1
+
+        // Eine Sprosse nach unten. Gerechnet wird auf der vollstaendigen
+        // Liste, nicht auf der gespeicherten: sonst faende eine Sorte, die es
+        // beim letzten Speichern noch nicht gab, ihren eigenen Platz nicht.
+        let neu = Self.promoted(ranked.map(\.name), choosing: preset.name)
+        if let daten = try? JSONEncoder().encode(neu) {
+            orderJSON = String(decoding: daten, as: UTF8.self)
+        }
 
         if healthSync {
             Task { entry.hkIDs = (try? await health.save(entry)) ?? [] }
