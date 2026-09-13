@@ -92,6 +92,14 @@ struct PunchedArt: View, Animatable {
     /// schon alles schwarz ist.
     static let dauer: TimeInterval = 0.55
 
+    /// **Zehn Prozent groesser als im Entwurf.** Der Entwurf zeichnet
+    /// Fuellungen, hier stehen Vertiefungen, und die Schattierung lebt allein
+    /// in der Wand. Bei 6 pt sind das vier Pixel, in denen der ganze Effekt
+    /// stattfinden muss. Der Zuschlag geht nach aussen, deshalb waechst
+    /// unten auch das Entwurfsquadrat mit — sonst schnitte der `Canvas` den
+    /// aeussersten Loechern eine Kante ab.
+    static let wuchs: CGFloat = 1.1
+
     /// Wie weich die Kante des Blattes laeuft, in Entwurfseinheiten. Ein
     /// Fuenftel der Breite: die Loecher kippen als Welle, nicht als Linie.
     private static let weich: CGFloat = 40
@@ -106,19 +114,25 @@ struct PunchedArt: View, Animatable {
         // der Canvas-Verschluss liest, sieht SwiftUI nicht.
         let licht = reduceMotion ? CGVector(dx: 0, dy: -1) : Tilt.shared.light
         Canvas { ctx, size in
-            let s = min(size.width, size.height) / art.box
-            let r = art.diameter * s / 2
+            // Der Zuschlag legt sich rund um jedes Loch, also auch um die
+            // aeussersten: das Quadrat waechst um ihn, und die Punktmitten
+            // ruecken um die Haelfte nach innen.
+            let d = art.diameter * Self.wuchs
+            let ueber = d - art.diameter
+            let s = min(size.width, size.height) / (art.box + ueber)
+            let versatz = ueber / 2 * s
+            let r = d * s / 2
             // Die Wand frisst gut ein Drittel des Radius. Was uebrig
-            // bleibt, ist der Boden — bei 6 pt knapp 4 pt.
-            let wand = r * 0.38
-            let laenge = min(1, hypot(licht.dx, licht.dy)) * wand * 0.8
+            // bleibt, ist der Boden.
+            let wand = r * 0.42
+            let laenge = min(1, hypot(licht.dx, licht.dy)) * wand * 0.9
             let o = CGSize(width: licht.dx * laenge, height: licht.dy * laenge)
 
             // Die Kante des hinteren Blattes, von links nach rechts.
             let kante = -Self.weich + zug * (art.box + 2 * Self.weich)
 
             for p in art.points {
-                let c = CGPoint(x: p.x * s, y: p.y * s)
+                let c = CGPoint(x: p.x * s + versatz, y: p.y * s + versatz)
 
                 // 1. Die Wand, beleuchtet.
                 ctx.fill(kreis(c, r), with: .color(Palette.punchLight))

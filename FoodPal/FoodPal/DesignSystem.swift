@@ -51,7 +51,7 @@ enum Palette {
     /// beleuchtete Lochwand nicht heller sein als die Flaeche um sie herum —
     /// sonst saehe das Loch aus wie ein Buckel.
     static let punchLight = dynamic(light: 0xE8E8E0, dark: 0x2E2E2A)
-    static let punchDark  = dynamic(light: 0xBEBEB2, dark: 0x070706)
+    static let punchDark  = dynamic(light: 0xADADA0, dark: 0x050504)
     /// Das hintere Blatt, das man durch die Loecher sieht. Etwas dunkler als
     /// die beleuchtete Wand: es liegt tiefer und im Schatten des Kartons.
     static let punchSheet = dynamic(light: 0xD8D8CF, dark: 0x3A3A34)
