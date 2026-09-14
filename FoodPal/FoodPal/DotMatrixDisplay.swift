@@ -185,6 +185,9 @@ struct DotMatrixDisplay: View {
         sweep = reduceMotion ? 1 : 0
         withAnimation(.linear(duration: duration)) { sweep = 1 }
         try? await Task.sleep(for: .seconds(duration))
+        // Derselbe Grund wie in der Segmentanzeige: ein abgeloester Lauf darf
+        // sein Ziel nicht mehr schreiben.
+        guard !Task.isCancelled else { return }
         shown = target
 
         // Ein Impuls, wenn der Wert steht — nicht je Punkt. Beim Nullen des

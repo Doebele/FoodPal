@@ -619,6 +619,52 @@ footer a { color: var(--ink-2); }
   .katalog .kapitel { grid-template-columns: 240px 1fr; gap: 56px; }
 }
 
+/* Der Umschalter kcal/mg — das Schluessellement der App, hier auf das
+   Vierfache vergroessert (44 -> 176 hoch). Die Masse folgen TodayView:
+   Kapsel auf Rule, zwei Pillen; die ruhende Pille traegt ihre Farbe,
+   die aktive ihre Fuellung. */
+.umschalter {
+  display: inline-flex;
+  gap: 16px;
+  padding: 16px;
+  background: var(--rule);
+  border-radius: 88px;
+  margin: 40px 0 8px;
+}
+
+.umschalter .segment {
+  min-width: 224px;
+  height: 144px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 72px;
+  background: var(--paper);
+  font-family: "Fira Sans", system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 56px;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+.umschalter .segment.kcal { color: var(--ink); }
+.umschalter .segment.mg { color: var(--roast); }
+
+.umschalter[data-aktiv="mg"] .segment.mg {
+  background: var(--roast);
+  color: var(--paper);
+}
+
+.umschalter[data-aktiv="kcal"] .segment.kcal {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.umschalter-wort {
+  font-size: 14px;
+  color: var(--ink-2);
+  margin: 12px 0 0;
+}
+
 /* Die Kapitelnummer: ein Quadrat mit Ziffer, wie auf Braun-Papieren. */
 .katalog .nummer {
   display: flex;

@@ -141,12 +141,19 @@ struct SevenSegmentDisplay: View {
         withAnimation(.easeInOut(duration: Self.blank)) {
             shown = Array(repeating: 0, count: shown.count)
         }
+        // **Nach jedem Schlaf nachsehen, ob man noch gebraucht wird.**
+        // `try?` verschluckt den Abbruch: ein abgeloester Lauf schlief nicht
+        // zu Ende, sondern lief sofort weiter und schrieb unten sein altes
+        // Ziel — nach dem neuen. Im Bild stand damit beim Umschalten die Zahl
+        // des jeweils anderen Masses.
         try? await Task.sleep(for: .seconds(Self.blank + 0.04))
+        guard !Task.isCancelled else { return }
 
         withAnimation(.easeInOut(duration: Self.shift)) {
             shown = Array(repeating: 0, count: target.count)
         }
         try? await Task.sleep(for: .seconds(Self.shift + 0.04))
+        guard !Task.isCancelled else { return }
 
         withAnimation(.easeInOut(duration: Self.blank)) { shown = target }
     }

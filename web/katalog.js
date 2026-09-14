@@ -53,6 +53,26 @@
   }
   gsap.registerPlugin(ScrollTrigger);
 
+  // ——— 0: Der Umschalter im Kopf ————————————————————————————————
+  // Zunaechst zaehlt die App Koffein (mg aktiv); wer zu scrollen
+  // beginnt, wechselt auf Kalorien — der Griff, der alles traegt.
+  var schalter = document.getElementById("umschalter");
+  var held = document.querySelector(".held");
+  if (schalter && held) {
+    schalter.dataset.aktiv = "mg";
+    ScrollTrigger.create({
+      trigger: held, start: "top top+=1", end: "+=45%", scrub: 0.4,
+      onUpdate: function (selbst) {
+        var zustand = selbst.progress < 0.5 ? "mg" : "kcal";
+        if (schalter.dataset.aktiv !== zustand) {
+          schalter.dataset.aktiv = zustand;
+          gsap.fromTo(schalter, { scale: 0.985 }, {
+            scale: 1, duration: 0.3, ease: "power2.out" });
+        }
+      }
+    });
+  }
+
   function kachelWerte(kachel) {
     var text = kachel.querySelector(".kachelwerte").textContent;
     var kcal = parseFloat(text) || 0;

@@ -1,0 +1,921 @@
+{
+  "version": "2.17",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "Frame",
+      "clip": true,
+      "width": 800,
+      "height": 600,
+      "fill": "#FFFFFF",
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "Laf7L",
+      "x": 1376,
+      "y": 0,
+      "name": "Intelligence Index Chart",
+      "width": 456,
+      "height": 398,
+      "fill": "#FFFFFF",
+      "cornerRadius": 8,
+      "stroke": "#E5E5E5",
+      "strokeWidth": 1,
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "OKLVc",
+          "x": 376,
+          "y": 16,
+          "name": "Updated Badge",
+          "width": 64,
+          "height": 24,
+          "fill": "#741A66",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "MAnvD",
+              "name": "Badge Label",
+              "fill": "#FFFFFF",
+              "content": "Updated",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "uTkkF",
+          "x": 16,
+          "y": 25,
+          "name": "Title Square",
+          "fill": "#8842FD",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "type": "text",
+          "id": "YgxQY",
+          "x": 40,
+          "y": 16,
+          "name": "Title",
+          "fill": "#1F1F1F",
+          "content": "Intelligence",
+          "fontFamily": "Source Serif 4",
+          "fontSize": 24,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "leWod",
+          "x": 16,
+          "y": 60,
+          "name": "Subtitle",
+          "fill": "#8C8C8C",
+          "content": "Artificial Analysis Intelligence Index · Higher is better",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "X2Z4jz",
+          "x": 16,
+          "y": 92,
+          "name": "Bar Chart",
+          "width": 422,
+          "height": 288,
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "T8azyG",
+              "x": 20,
+              "y": 0,
+              "name": "Gridline 60",
+              "fill": "#E0E0E0",
+              "width": 402,
+              "height": 1
+            },
+            {
+              "type": "rectangle",
+              "id": "V32vh9",
+              "x": 20,
+              "y": 45.75,
+              "name": "Gridline 45",
+              "fill": "#E0E0E0",
+              "width": 402,
+              "height": 1
+            },
+            {
+              "type": "rectangle",
+              "id": "FNxmz",
+              "x": 20,
+              "y": 91.5,
+              "name": "Gridline 30",
+              "fill": "#E0E0E0",
+              "width": 402,
+              "height": 1
+            },
+            {
+              "type": "rectangle",
+              "id": "Lsxgw",
+              "x": 20,
+              "y": 137.25,
+              "name": "Gridline 15",
+              "fill": "#E0E0E0",
+              "width": 402,
+              "height": 1
+            },
+            {
+              "type": "rectangle",
+              "id": "o3feWL",
+              "x": 20,
+              "y": 183,
+              "name": "Gridline 0",
+              "fill": "#E0E0E0",
+              "width": 402,
+              "height": 1
+            },
+            {
+              "type": "rectangle",
+              "id": "vrCZG",
+              "x": 24.568,
+              "y": 20.21,
+              "name": "Bar — Claude Fable 5.1 (max with fallback)",
+              "fill": "#CC785C",
+              "width": 27,
+              "height": 162.79
+            },
+            {
+              "type": "text",
+              "id": "Q8SgKH",
+              "x": 24.568,
+              "y": 90.95,
+              "name": "Value — Claude Fable 5.1 (max with fallback)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "53",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "qesYa",
+              "x": 30.067999999999998,
+              "y": 191,
+              "name": "Logo — anthropic",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_anthropic.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "MR6Be",
+              "x": -11.932000000000002,
+              "y": 275,
+              "name": "Label — Claude Fable 5.1 (max with fallback)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "Claude Fable 5.1 (max with fallback)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "rectangle",
+              "id": "adMu1",
+              "x": 61.114,
+              "y": 21.917,
+              "name": "Bar — GPT-6 Astra (max)",
+              "fill": "#1F1F1F",
+              "width": 27,
+              "height": 161.083
+            },
+            {
+              "type": "text",
+              "id": "nVDi9",
+              "x": 61.114,
+              "y": 91.8,
+              "name": "Value — GPT-6 Astra (max)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "53",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "uBIJb",
+              "x": 66.614,
+              "y": 191,
+              "name": "Logo — openai",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_openai.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "T0BoT1",
+              "x": 24.614000000000004,
+              "y": 275,
+              "name": "Label — GPT-6 Astra (max)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "GPT-6 Astra (max)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "rectangle",
+              "id": "TIRCY",
+              "x": 97.66,
+              "y": 28.364,
+              "name": "Bar — Claude Opus 5 (max)",
+              "fill": "#CC785C",
+              "width": 27,
+              "height": 154.636
+            },
+            {
+              "type": "text",
+              "id": "Jc7cx",
+              "x": 97.66,
+              "y": 95.03,
+              "name": "Value — Claude Opus 5 (max)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "51",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "g12V3e",
+              "x": 103.16,
+              "y": 191,
+              "name": "Logo — anthropic",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_anthropic.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "b7D17",
+              "x": 61.16,
+              "y": 275,
+              "name": "Label — Claude Opus 5 (max)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "Claude Opus 5 (max)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "rectangle",
+              "id": "xXT7q",
+              "x": 134.205,
+              "y": 36.085,
+              "name": "Bar — Muse Spark 1.3 (max)",
+              "fill": "#0089F4",
+              "width": 27,
+              "height": 146.915
+            },
+            {
+              "type": "text",
+              "id": "N86rdt",
+              "x": 134.205,
+              "y": 98.89,
+              "name": "Value — Muse Spark 1.3 (max)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "48",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "kRDb0",
+              "x": 139.705,
+              "y": 191,
+              "name": "Logo — meta",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_meta.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "p7hnX",
+              "x": 97.70500000000001,
+              "y": 275,
+              "name": "Label — Muse Spark 1.3 (max)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "Muse Spark 1.3 (max)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "rectangle",
+              "id": "Iw4GH",
+              "x": 170.75,
+              "y": 46.19,
+              "name": "Bar — GLM-5.3 (max)",
+              "fill": "#1C7FF8",
+              "width": 27,
+              "height": 136.81
+            },
+            {
+              "type": "text",
+              "id": "uiNKe",
+              "x": 170.75,
+              "y": 103.94,
+              "name": "Value — GLM-5.3 (max)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "45",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "SR4n7",
+              "x": 176.25,
+              "y": 191,
+              "name": "Logo — zai",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_zai.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "z5xHK",
+              "x": 134.25,
+              "y": 275,
+              "name": "Label — GLM-5.3 (max)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "GLM-5.3 (max)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "rectangle",
+              "id": "aY6t6",
+              "x": 207.296,
+              "y": 47.565,
+              "name": "Bar — Grok 4.6 (high)",
+              "fill": "#736CD3",
+              "width": 27,
+              "height": 135.435
+            },
+            {
+              "type": "text",
+              "id": "jRypV",
+              "x": 207.296,
+              "y": 104.63,
+              "name": "Value — Grok 4.6 (high)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "44",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "LcQFp",
+              "x": 212.796,
+              "y": 191,
+              "name": "Logo — spacexai",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_spacexai.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "w0WUJ",
+              "x": 170.796,
+              "y": 275,
+              "name": "Label — Grok 4.6 (high)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "Grok 4.6 (high)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "rectangle",
+              "id": "FMf3q",
+              "x": 243.84,
+              "y": 49.458,
+              "name": "Bar — Kimi K3 (max)",
+              "fill": "#047AFE",
+              "width": 27,
+              "height": 133.542
+            },
+            {
+              "type": "text",
+              "id": "wk3b4",
+              "x": 243.84,
+              "y": 105.57,
+              "name": "Value — Kimi K3 (max)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "44",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "g1BuzV",
+              "x": 249.34000000000003,
+              "y": 191,
+              "name": "Logo — kimi",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_kimi.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "cmJV9",
+              "x": 207.34000000000003,
+              "y": 275,
+              "name": "Label — Kimi K3 (max)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "Kimi K3 (max)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "rectangle",
+              "id": "AiZFe",
+              "x": 280.386,
+              "y": 57.382,
+              "name": "Bar — Gemini 3.8 Flash (high)",
+              "fill": "#34A853",
+              "width": 27,
+              "height": 125.618
+            },
+            {
+              "type": "text",
+              "id": "zTHfq",
+              "x": 280.386,
+              "y": 109.53,
+              "name": "Value — Gemini 3.8 Flash (high)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "41",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "B9Cts",
+              "x": 285.886,
+              "y": 191,
+              "name": "Logo — google",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_google.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "U0Ao65",
+              "x": 243.88600000000002,
+              "y": 275,
+              "name": "Label — Gemini 3.8 Flash (high)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "Gemini 3.8 Flash (high)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "rectangle",
+              "id": "oUeHM",
+              "x": 316.932,
+              "y": 62.386,
+              "name": "Bar — DeepSeek V4.1 Flash (max)",
+              "fill": "#2243E6",
+              "width": 27,
+              "height": 120.614
+            },
+            {
+              "type": "text",
+              "id": "aYXi0",
+              "x": 316.932,
+              "y": 112.04,
+              "name": "Value — DeepSeek V4.1 Flash (max)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "40",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "r7QjKF",
+              "x": 322.432,
+              "y": 191,
+              "name": "Logo — deepseek",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_deepseek.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "n09iH",
+              "x": 280.432,
+              "y": 275,
+              "name": "Label — DeepSeek V4.1 Flash (max)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "DeepSeek V4.1 Flash (max)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "rectangle",
+              "id": "lYiRZ",
+              "x": 353.477,
+              "y": 68.61,
+              "name": "Bar — GPT-5.6 Luna (max)",
+              "fill": "#1F1F1F",
+              "width": 27,
+              "height": 114.39
+            },
+            {
+              "type": "text",
+              "id": "z61W5",
+              "x": 353.477,
+              "y": 115.15,
+              "name": "Value — GPT-5.6 Luna (max)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "38",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "NSA8B",
+              "x": 358.977,
+              "y": 191,
+              "name": "Logo — openai",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_openai.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "n4xeo",
+              "x": 316.977,
+              "y": 275,
+              "name": "Label — GPT-5.6 Luna (max)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "GPT-5.6 Luna (max)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "rectangle",
+              "id": "FAahJ",
+              "x": 390.023,
+              "y": 72.337,
+              "name": "Bar — DeepSeek V4 Pro 0813 (max)",
+              "fill": "#2243E6",
+              "width": 27,
+              "height": 110.663
+            },
+            {
+              "type": "text",
+              "id": "N07Sz",
+              "x": 390.023,
+              "y": 117.01,
+              "name": "Value — DeepSeek V4 Pro 0813 (max)",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width-height",
+              "width": 27,
+              "height": 13,
+              "content": "36",
+              "textAlign": "center",
+              "textAlignVertical": "middle",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "rectangle",
+              "id": "NdG0s",
+              "x": 395.523,
+              "y": 191,
+              "name": "Logo — deepseek",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./logo_deepseek.svg",
+                "mode": "fit"
+              },
+              "width": 16,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "kuy46",
+              "x": 353.523,
+              "y": 275,
+              "name": "Label — DeepSeek V4 Pro 0813 (max)",
+              "rotation": 59.99999999999999,
+              "fill": "#4D4D4D",
+              "textGrowth": "fixed-width",
+              "width": 80,
+              "content": "DeepSeek V4 Pro 0813 (max)",
+              "lineHeight": 1,
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "fileToken": "148102ca-90dd-4771-be4b-fd7ef214e173",
+  "fonts": [
+    {
+      "name": "KaTeX_AMS",
+      "url": "fonts/artificialanalysis.ai/34494743736fda75.woff2"
+    },
+    {
+      "name": "KaTeX_Caligraphic",
+      "url": "fonts/artificialanalysis.ai/5bfa49cac46cd1d7.woff2",
+      "weight": 700
+    },
+    {
+      "name": "KaTeX_Caligraphic",
+      "url": "fonts/artificialanalysis.ai/9f8077e0b38a290c.woff2"
+    },
+    {
+      "name": "KaTeX_Fraktur",
+      "url": "fonts/artificialanalysis.ai/f98f89272eca11ae.woff2",
+      "weight": 700
+    },
+    {
+      "name": "KaTeX_Fraktur",
+      "url": "fonts/artificialanalysis.ai/a5764c6e2784d028.woff2"
+    },
+    {
+      "name": "KaTeX_Main",
+      "url": "fonts/artificialanalysis.ai/31050a1b1b123fb2.woff2",
+      "weight": 700
+    },
+    {
+      "name": "KaTeX_Main",
+      "url": "fonts/artificialanalysis.ai/a4a4905b8b126f9f.woff2",
+      "style": "italic",
+      "weight": 700
+    },
+    {
+      "name": "KaTeX_Main",
+      "url": "fonts/artificialanalysis.ai/c9b2b5ffd2f27aa5.woff2",
+      "style": "italic"
+    },
+    {
+      "name": "KaTeX_Main",
+      "url": "fonts/artificialanalysis.ai/c884086c25cec855.woff2"
+    },
+    {
+      "name": "KaTeX_Math",
+      "url": "fonts/artificialanalysis.ai/8fcb9d2de65ac71a.woff2",
+      "style": "italic",
+      "weight": 700
+    },
+    {
+      "name": "KaTeX_Math",
+      "url": "fonts/artificialanalysis.ai/db4883d0cff95ecb.woff2",
+      "style": "italic"
+    },
+    {
+      "name": "KaTeX_SansSerif",
+      "url": "fonts/artificialanalysis.ai/886e61797a525d4a.woff2",
+      "weight": 700
+    },
+    {
+      "name": "KaTeX_SansSerif",
+      "url": "fonts/artificialanalysis.ai/3d5fa3cb309f8d83.woff2",
+      "style": "italic"
+    },
+    {
+      "name": "KaTeX_SansSerif",
+      "url": "fonts/artificialanalysis.ai/e45d5f4f4a7f2ff3.woff2"
+    },
+    {
+      "name": "KaTeX_Script",
+      "url": "fonts/artificialanalysis.ai/63b80959f1fc5689.woff2"
+    },
+    {
+      "name": "KaTeX_Size1",
+      "url": "fonts/artificialanalysis.ai/57fa599974a1bc0b.woff2"
+    },
+    {
+      "name": "KaTeX_Size2",
+      "url": "fonts/artificialanalysis.ai/ee18713634a3be8c.woff2"
+    },
+    {
+      "name": "KaTeX_Size3",
+      "url": "fonts/artificialanalysis.ai/19a7caadfb66bd27.woff2"
+    },
+    {
+      "name": "KaTeX_Size4",
+      "url": "fonts/artificialanalysis.ai/9bed17fb92f26505.woff2"
+    },
+    {
+      "name": "KaTeX_Typewriter",
+      "url": "fonts/artificialanalysis.ai/7a08883fffc6958c.woff2"
+    },
+    {
+      "name": "suisseIntl",
+      "url": "fonts/artificialanalysis.ai/8bb9f7817bd8cddf.woff2",
+      "weight": 300
+    },
+    {
+      "name": "suisseIntl",
+      "url": "fonts/artificialanalysis.ai/4e09d31e406e245d.woff2"
+    },
+    {
+      "name": "suisseIntl",
+      "url": "fonts/artificialanalysis.ai/0df609427404f902.woff2",
+      "weight": 500
+    },
+    {
+      "name": "victorSerifBasic",
+      "url": "fonts/artificialanalysis.ai/0ac054e61712c349.woff2",
+      "weight": 500
+    },
+    {
+      "name": "victorSerifBasic",
+      "url": "fonts/artificialanalysis.ai/d43d0bd6f537a728.woff2",
+      "weight": 600
+    }
+  ]
+}

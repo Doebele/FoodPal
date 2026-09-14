@@ -619,7 +619,12 @@ struct NumberDisplay: View {
     @State private var heldKey = ""
 
     var body: some View {
-        let shown = held ?? value
+        // **Der gehaltene Wert gilt nur zu seinem Schluessel.** Wechselt der
+        // Modus, ist der gehaltene Wert der des *anderen* Masses. Ihn noch
+        // einen Bildlauf lang zu zeigen hiess, der Anzeige unten ein Paar aus
+        // neuer Einheit und altem Wert zu reichen — und die baute darauf
+        // ihren Moduswechsel auf, mit der falschen Zahl als Ziel.
+        let shown = (heldKey == resetKey ? held : nil) ?? value
         Group {
             switch style {
             case .flip:
