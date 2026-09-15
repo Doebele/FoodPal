@@ -30,6 +30,40 @@ enum DotMatrixFont {
         runs.flatMap { run in Array(repeating: mask(run.1), count: run.0) }
     }
 
+    /// Das **Grösser-als** für den Überlauf. Es steht in den Spalten eins bis
+    /// neun — die elf Füllerspalten links der ersten Ziffer waren ohnehin
+    /// leer, und Spalte zehn bleibt als Trennspalte frei.
+    ///
+    /// Kürzer als eine Ziffer: dreizehn Reihen gegen sechsundzwanzig, mittig
+    /// gesetzt. Ein Rechenzeichen steht neben Zahlen, nicht unter ihnen.
+    ///
+    /// **Die Treppe geht Reihe für Reihe**, nicht in 3×3-Stufen wie die
+    /// Diagonalen der Ziffern. Bei denen läuft die Schräge über zwölf Reihen
+    /// und liest sich als Linie; über sechs Reihen wird aus derselben Stufung
+    /// ein Zickzack, das nach Blitz aussieht statt nach Zeichen. Ausprobiert
+    /// und verworfen.
+    static let greater: [UInt32] = greaterShape.flatMap { run in
+        Array(repeating: mask(run.1), count: run.0)
+    }
+
+    private static let greaterShape: [(Int, String)] = [
+        (7,  "...................."),
+        (1,  ".###................"),
+        (1,  "..###..............."),
+        (1,  "...###.............."),
+        (1,  "....###............."),
+        (1,  ".....###............"),
+        (1,  "......###..........."),
+        (1,  ".......###.........."),
+        (1,  "......###..........."),
+        (1,  ".....###............"),
+        (1,  "....###............."),
+        (1,  "...###.............."),
+        (1,  "..###..............."),
+        (1,  ".###................"),
+        (13, "...................."),
+    ]
+
     private static func mask(_ pattern: String) -> UInt32 {
         var bits: UInt32 = 0
         for (index, character) in pattern.enumerated() where character == "#" {

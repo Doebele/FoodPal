@@ -22,12 +22,12 @@ extension ISO8601DateFormatter {
 /// `custom` ist dadurch weit mehr als LM Studio — jeder OpenAI-kompatible
 /// Dienst passt hinein, mit Adresse, Modellnamen und optionalem Schlüssel:
 /// OpenRouter, Gemini über seinen Kompatibilitätspfad, xAI Grok, Z.ai GLM,
-/// Groq, Mistral, DeepSeek. Siehe `docs/anbieter.md`.
+/// Groq, Mistral, DeepSeek, Kimi. Siehe `docs/anbieter.md`.
 enum Provider: String, CaseIterable, Identifiable, Codable {
     // Rohwert "local" bleibt bei custom, damit bestehende Einstellungen und
     // der dort hinterlegte Keychain-Eintrag weitergelten.
     case apple
-    case claude, openAI, openRouter, gemini, grok, glm, deepSeek, muse, mistral
+    case claude, openAI, openRouter, gemini, grok, glm, deepSeek, muse, mistral, kimi
     case lmStudio, ollama, custom = "local"
 
     var id: String { rawValue }
@@ -70,6 +70,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable {
         case .deepSeek:   ("DeepSeek", "https://api.deepseek.com/v1", "deepseek-v4-flash-vision-exp", "https://platform.deepseek.com/api_keys")
         case .muse:       ("Muse", "https://api.meta.ai/v1", "muse-spark-1.1", "https://dev.meta.ai")
         case .mistral:    ("Mistral", "https://api.mistral.ai/v1", "pixtral-large-latest", "https://console.mistral.ai/api-keys")
+        case .kimi:       ("Kimi", "https://api.moonshot.ai/v1", "kimi-k2.6", "https://platform.kimi.ai/console/api-keys")
         case .lmStudio:   ("LM Studio", nil, "zai-org/glm-4.6v-flash", "")
         case .ollama:     ("Ollama", nil, "qwen3-vl", "")
         case .custom:     (String(localized: "Eigener Dienst"), nil, "", "")

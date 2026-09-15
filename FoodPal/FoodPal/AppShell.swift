@@ -24,18 +24,29 @@ struct AppShell: View {
         return false
         #endif
     }()
-    @State private var showSettings = {
+    /// **Wohin die Einstellungen öffnen.** Als Wert und nicht als Flagge:
+    /// `sheet(isPresented:)` baut seinen Inhalt schon, bevor die Flagge
+    /// gesetzt ist, und der Anbieterdialog blieb deshalb zu. `sheet(item:)`
+    /// bekommt den Wert mit, den man ihm beim Öffnen gibt.
+    private enum SettingsTarget: String, Identifiable {
+        case plain, vision
+        var id: String { rawValue }
+    }
+
+    @State private var settings: SettingsTarget? = {
         #if DEBUG
-        return ProcessInfo.processInfo.environment["START_SETTINGS"] == "1"
+        return ProcessInfo.processInfo.environment["START_SETTINGS"] == "1" ? .plain : nil
         #else
-        return false
+        return nil
         #endif
     }()
+    /// Gemerkt, bis das Erfassungsblatt unten ist.
+    @State private var wantsModel = false
 
     var body: some View {
         TodayView(
             onCapture: { showCapture = true },
-            onSettings: { showSettings = true }
+            onSettings: { settings = .plain }
         )
         .background(Palette.paper)
         // Einmalig: Altbestand auf die Viertelstunde nachziehen. Health folgt
@@ -45,15 +56,22 @@ struct AppShell: View {
             guard healthSync, !moved.isEmpty else { return }
             await QuarterHourMigration.resync(moved, with: health)
         }
-        .sheet(isPresented: $showCapture) {
-            CaptureSheet()
+        // **Erst schliessen, dann oeffnen.** Solange das eine Blatt noch nach
+        // unten faehrt, schluckt UIKit die Anweisung fuers naechste. `onDismiss`
+        // feuert, wenn wirklich nichts mehr da ist.
+        .sheet(isPresented: $showCapture, onDismiss: {
+            guard wantsModel else { return }
+            wantsModel = false
+            settings = .vision
+        }) {
+            CaptureSheet(onModelSetup: { wantsModel = true })
                 .preferredColorScheme(scheme)
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.large])
                 .presentationBackground(Palette.paper)
         }
-        .sheet(isPresented: $showSettings) {
-            SettingsSheet()
+        .sheet(item: $settings) { ziel in
+            SettingsSheet(startVision: ziel == .vision)
                 .preferredColorScheme(scheme)
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.large])

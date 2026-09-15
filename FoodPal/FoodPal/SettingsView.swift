@@ -2,10 +2,14 @@ import SwiftUI
 
 /// Einstellungen als Sheet — mit Kopfzeile und Schliessen, wie die Erfassung.
 struct SettingsSheet: View {
+    /// Kommt der Aufruf aus der Erfassung, steht der Anbieterdialog gleich
+    /// offen: dorthin wollte man ja.
+    var startVision = false
+
     var body: some View {
         VStack(spacing: 0) {
             SheetHeader(title: "Einstellungen")
-            SettingsView()
+            SettingsView(startVision: startVision)
         }
         .background(Palette.paper)
     }
@@ -18,17 +22,27 @@ struct SettingsView: View {
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
     @AppStorage(Preference.numberStyle) private var styleRaw = NumberStyle.flip.rawValue
     @AppStorage(Preference.appearance) private var appearanceRaw = Appearance.auto.rawValue
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
     @AppStorage(Preference.provider) private var providerRaw = Provider.claude.rawValue
 
     @State private var health = HealthKitSync()
     @State private var authError: String?
-    @State private var showVision = {
+    @State private var showVision: Bool
+    /// Kommt der Aufruf aus der Erfassung, soll der Anbieterdialog gleich
+    /// offen stehen. **Nicht sofort**: dieses Blatt faehrt in dem Moment noch
+    /// herauf, und ein Blatt, das auf einem heraufkommenden aufsetzen will,
+    /// wird verschluckt. Ein Drittel einer Sekunde spaeter sitzt es.
+    private let startVision: Bool
+
+    init(startVision: Bool = false) {
         #if DEBUG
-        return ProcessInfo.processInfo.environment["START_VISION"] == "1"
+        let debug = ProcessInfo.processInfo.environment["START_VISION"] == "1"
         #else
-        return false
+        let debug = false
         #endif
-    }()
+        self.startVision = startVision
+        _showVision = State(initialValue: debug)
+    }
 
     /// Die Sprache, in der die App gerade laeuft — nicht die des Geraets:
     /// `preferredLocalizations` ist die Schnittmenge aus beidem, also das,
@@ -40,9 +54,15 @@ struct SettingsView: View {
         return Locale(identifier: code).localizedString(forLanguageCode: code) ?? code
     }
 
+    private func open(_ address: String) {
+        guard let url = URL(string: address) else { return }
+        UIApplication.shared.open(url)
+    }
+
     private var roast: Roast { Roast(rawValue: roastRaw) ?? .hell }
     private var style: NumberStyle { NumberStyle(rawValue: styleRaw) ?? .flip }
     private var appearance: Appearance { Appearance(rawValue: appearanceRaw) ?? .auto }
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
     private var provider: Provider { Provider(rawValue: providerRaw) ?? .claude }
 
     var body: some View {
@@ -64,8 +84,21 @@ struct SettingsView: View {
                 }
 
                 group(spacing: 12) {
+                    caption("bedienhand", value: hand.label)
+                    handPicker
+                }
+
+                group(spacing: 12) {
                     caption("anzeige · ziffern", value: style.label.lowercased())
                     stylePicker
+                }
+
+                // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
+                // nur beim Einrichten gebraucht werden. Sie stehen deshalb hinter
+                // einer Zeile statt dauerhaft zwischen den Schaltern.
+                group(spacing: 0) {
+                    caption("bildanalyse", value: provider.label)
+                    actionRow("Anbieter und Modell") { showVision = true }
                 }
 
                 group(spacing: 0) {
@@ -85,25 +118,15 @@ struct SettingsView: View {
                     // nach. Die Zeile steht trotzdem hier — sonst sucht man
                     // sie in den Systemeinstellungen unter „Apps".
                     actionRow("Sprache der App", value: Self.language) {
-                        guard let url = URL(string: UIApplication.openSettingsURLString)
-                        else { return }
-                        UIApplication.shared.open(url)
+                        open(UIApplication.openSettingsURLString)
                     }
                     // Der Weg steht daneben, weil der Sprung ihn nicht immer
                     // ganz geht: unter iOS 26 landet `openSettingsURLString`
                     // auch mal auf der Wurzel statt auf der Seite der App.
-                    Text("iOS führt die Sprachwahl je App: Einstellungen → Apps → FoodPal.")
+                    Text("iOS führt die Sprachwahl je App: Einstellungen → Apps → Cafcalog.")
                         .scaledFont(11)
                         .foregroundStyle(Palette.ink2)
                         .padding(.top, 8)
-                }
-
-                // Anbieter, Schlüssel, Modell und Adresse sind vier Felder, die
-                // nur beim Einrichten gebraucht werden. Sie stehen deshalb hinter
-                // einer Zeile statt dauerhaft zwischen den Schaltern.
-                group(spacing: 0) {
-                    caption("bildanalyse", value: provider.label)
-                    actionRow("Anbieter und Modell") { showVision = true }
                 }
 
                 // Zuletzt: einmal verbunden, nie wieder angefasst. Der Zustand
@@ -111,12 +134,12 @@ struct SettingsView: View {
                 // gelesen, nicht bedient, und spart so eine ganze Reihe.
                 group(spacing: 0) {
                     caption(
-                        "apple health",
+                        "Apple Health",
                         value: health.status.label,
                         marker: health.status == .authorized
                     )
                     if health.status != .authorized {
-                        actionRow("Mit Health verbinden") {
+                        actionRow("mit Health verbinden", keepsCase: true) {
                             Task {
                                 do { try await health.requestAuthorization() }
                                 catch { authError = error.localizedDescription }
@@ -133,6 +156,28 @@ struct SettingsView: View {
                     }
                 }
 
+                // Zwei Bestandteile verlangen eine Nennung, und ein README
+                // liegt dem Buendel nicht bei: Fira steht unter der SIL Open
+                // Font License, die Naehrwerte von Open Food Facts unter der
+                // ODbL. Beide Lizenzen wollen genannt sein, keine will einen
+                // Fliesstext — deshalb zwei Zeilen, die den Text oeffnen.
+                group(spacing: 0) {
+                    caption("lizenzen")
+                    actionRow("Fira Sans · Fira Mono", value: "SIL OFL 1.1",
+                              keepsCase: true) {
+                        open("https://openfontlicense.org")
+                    }
+                    actionRow("Nährwerte", value: "Open Food Facts") {
+                        open("https://opendatacommons.org/licenses/odbl/")
+                    }
+                    // Die OFL verlangt den Rechtevermerk, nicht nur den Namen
+                    // der Lizenz.
+                    Text("Fira © 2012–2015 The Mozilla Foundation und Telefonica S.A.")
+                        .scaledFont(11)
+                        .foregroundStyle(Palette.ink2)
+                        .padding(.top, 8)
+                }
+
                 if let authError {
                     Text(authError)
                         .scaledFont(12)
@@ -147,6 +192,11 @@ struct SettingsView: View {
         .toggleStyle(InkToggle())
         .background(Palette.paper)
         .haptic(.selection, trigger: roastRaw)
+        .task {
+            guard startVision, !showVision else { return }
+            try? await Task.sleep(for: .milliseconds(400))
+            showVision = true
+        }
         .sheet(isPresented: $showVision) {
             VisionSheet()
                 .presentationDragIndicator(.visible)
@@ -156,6 +206,35 @@ struct SettingsView: View {
     }
 
     // MARK: - Erscheinungsbild
+
+    /// **Zwei Haelften, links steht links.** Die Auswahl selbst spiegelt
+    /// nicht mit: wer sie liest, sucht die Hand, nicht den Daumen.
+    private var handPicker: some View {
+        HStack(spacing: 0) {
+            ForEach(Hand.allCases) { option in
+                let active = option == hand
+                Button { handRaw = option.rawValue } label: {
+                    VStack(spacing: 10) {
+                        DotArt.hand(option, color: active ? Palette.ink : Palette.ink2)
+                            .frame(height: 54)
+                            .frame(maxWidth: .infinity)
+                        Text(option.label)
+                            .scaledFont(12)
+                            .tracking(0.4)
+                            .textCase(.lowercase)
+                            .foregroundStyle(active ? Palette.ink : Palette.ink2)
+                        Rectangle()
+                            .fill(active ? Palette.ink : .clear)
+                            .frame(height: 3)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(option.label)
+            }
+        }
+    }
 
     /// Auch hier gilt: man wählt, was man sieht — nur zeigt das Feld jetzt
     /// dasselbe Punktraster wie Diagramm und Anzeige statt zweier Farbkacheln.
@@ -249,20 +328,19 @@ struct SettingsView: View {
 
     /// Die Farbfelder sitzen im selben Punktraster wie Diagramm und Anzeige.
     private var roastPicker: some View {
-        HStack(spacing: 0) {
-            ForEach(Array(Roast.allCases.enumerated()), id: \.element.id) { index, candidate in
-                if index > 0 { Spacer(minLength: 4) }
+        // Sechs gleiche Sechstel. Das Feld ist quadratisch wie jedes Zeichen
+        // der App — zwoelf mal zwoelf Punkte —, und damit steht es genauso
+        // hoch wie das A daneben und die Hand darunter.
+        HStack(spacing: 4) {
+            ForEach(Roast.allCases) { candidate in
                 Button { roastRaw = candidate.rawValue } label: {
-                    // 34 hoch, das Seitenverhaeltnis macht daraus 49 breit —
-                    // zehn Spalten mal sieben Reihen desselben Rasters.
                     VStack(spacing: 4) {
                         DotBlock(color: candidate.color)
-                            .frame(height: 34)
                         Rectangle()
                             .fill(candidate == roast ? Palette.ink : .clear)
                             .frame(height: 3)
                     }
-                    .fixedSize(horizontal: true, vertical: false)
+                    .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -273,11 +351,12 @@ struct SettingsView: View {
 
 }
 
-/// Ein Farbfeld aus Punkten des gemeinsamen Rasters — 10 Spalten, 7 Reihen.
+/// Ein Farbfeld aus Punkten des gemeinsamen Rasters — zwoelf mal zwoelf,
+/// dasselbe Quadrat, in dem auch die Zeichen stehen.
 struct DotBlock: View {
     let color: Color
-    var columns = 10
-    var rows = 7
+    var columns = 12
+    var rows = 12
 
     var body: some View {
         Canvas { ctx, size in
@@ -753,16 +832,20 @@ private func row<Value: View>(_ label: LocalizedStringKey, @ViewBuilder value: (
 
 /// Zeile, die etwas öffnet. Höher als eine Wertzeile (56 statt 48) und im
 /// normalen Schnitt gesetzt: sie ist eine Handlung, keine Angabe.
+/// `keepsCase` fuer Zeilen, in denen ein **Eigenname** steht: Health, Fira.
+/// Sonst schreibt die Oberflaeche alles klein — aus einem Namen wuerde dabei
+/// ein Wort. Die Beschriftung steht dann so im Katalog, wie sie erscheint.
 private func actionRow(
     _ label: LocalizedStringKey,
     value: String? = nil,
+    keepsCase: Bool = false,
     action: @escaping () -> Void
 ) -> some View {
     Button(action: action) {
         HStack {
             Text(label)
                 .scaledFont(16)
-                .textCase(.lowercase)
+                .textCase(keepsCase ? nil : .lowercase)
                 .foregroundStyle(Palette.ink)
             Spacer(minLength: 8)
             // Der Wert wird gelesen, nicht gestellt — er steht deshalb im
@@ -805,20 +888,23 @@ struct AppearanceBlock: View {
     let option: Appearance
 
     static let columns = 12
-    static let rows = 11
+    static let rows = 12
 
-    /// Das A, Spalte für Spalte. Direkt aus dem Entwurf abgelesen.
+    /// Das A, Zeile für Zeile. Direkt aus dem Entwurf abgelesen (Node
+    /// `225:126702`). **Zwölf mal zwölf** wie jedes Zeichen der App, und das
+    /// A füllt sein Quadrat jetzt aus, statt darin zu schweben.
     private static let glyph: [String] = [
         "000000000000",
-        "000000000000",
-        "000011110000",
-        "000100001000",
-        "000100001000",
         "000111111000",
-        "000100001000",
-        "000100001000",
-        "000100001000",
-        "000000000000",
+        "001000000100",
+        "001000000100",
+        "001000000100",
+        "001000000100",
+        "001111111100",
+        "001000000100",
+        "001000000100",
+        "001000000100",
+        "001000000100",
         "000000000000"
     ]
 

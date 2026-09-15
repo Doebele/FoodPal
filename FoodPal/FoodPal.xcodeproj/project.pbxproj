@@ -406,23 +406,23 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "FoodPal nutzt die Kamera, um Mahlzeiten zu fotografieren.";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "FoodPal liest bestehende Werte aus Health, um doppelte Eintragungen zu vermeiden.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "FoodPal schreibt Kalorien, Koffein und Makros in Apple Health.";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "FoodPal spricht mit LM Studio auf deinem Mac im lokalen Netz.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "FoodPal hört zu, während du eine Mahlzeit diktierst.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "FoodPal wandelt das Diktierte in Text um, damit du es vor dem Schätzen noch ändern kannst.";
+				INFOPLIST_KEY_CFBundleDisplayName = Cafcalog;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Cafcalog nutzt die Kamera, um Mahlzeiten zu fotografieren.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Cafcalog liest bestehende Werte aus Health, um doppelte Eintragungen zu vermeiden.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Cafcalog schreibt Kalorien, Koffein und Makros in Apple Health.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Cafcalog spricht mit LM Studio auf deinem Mac im lokalen Netz.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cafcalog hört zu, während du eine Mahlzeit diktierst.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Cafcalog wandelt das Diktierte in Text um, damit du es vor dem Schätzen noch ändern kannst.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.FoodPal;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.kk26;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -430,7 +430,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -446,23 +446,23 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "FoodPal nutzt die Kamera, um Mahlzeiten zu fotografieren.";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "FoodPal liest bestehende Werte aus Health, um doppelte Eintragungen zu vermeiden.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "FoodPal schreibt Kalorien, Koffein und Makros in Apple Health.";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "FoodPal spricht mit LM Studio auf deinem Mac im lokalen Netz.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "FoodPal hört zu, während du eine Mahlzeit diktierst.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "FoodPal wandelt das Diktierte in Text um, damit du es vor dem Schätzen noch ändern kannst.";
+				INFOPLIST_KEY_CFBundleDisplayName = Cafcalog;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Cafcalog nutzt die Kamera, um Mahlzeiten zu fotografieren.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Cafcalog liest bestehende Werte aus Health, um doppelte Eintragungen zu vermeiden.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Cafcalog schreibt Kalorien, Koffein und Makros in Apple Health.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Cafcalog spricht mit LM Studio auf deinem Mac im lokalen Netz.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cafcalog hört zu, während du eine Mahlzeit diktierst.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Cafcalog wandelt das Diktierte in Text um, damit du es vor dem Schätzen noch ändern kannst.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.FoodPal;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.kk26;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -470,7 +470,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -484,13 +484,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.FoodPalTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.kk26Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FoodPal.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FoodPal";
 			};
 			name = Debug;
@@ -505,13 +505,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.FoodPalTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.kk26Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FoodPal.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FoodPal";
 			};
 			name = Release;
@@ -524,13 +524,13 @@
 				DEVELOPMENT_TEAM = 2EAG2V5S26;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.FoodPalUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.kk26UITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_TARGET_NAME = FoodPal;
 			};
 			name = Debug;
@@ -543,13 +543,13 @@
 				DEVELOPMENT_TEAM = 2EAG2V5S26;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.FoodPalUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clausmedvesek.kk26UITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_TARGET_NAME = FoodPal;
 			};
 			name = Release;

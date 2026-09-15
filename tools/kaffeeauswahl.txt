@@ -1,0 +1,46 @@
+# Die gewaehlte Fassung je Kaffeesorte. Vier Kandidaten liegen in
+# bilder/kaffee/, hier steht der Gewinner. `python3 tools/kaffeebilder_auswahl.py`
+# legt sie in den Asset-Katalog.
+affogato-1
+americano-4
+barraquito-1
+ca-phe-sua-da-1
+cafe-au-lait-4
+cafe-baileys-4
+cafe-bombon-3
+caffe-latte-4
+caffe-mocha-4
+cappuccino-4
+carajillo-2
+caramel-macchiato-1
+cold-brew-4
+cold-brew-suessrahm-2
+cortado-4
+doppio-1
+einspaenner-1
+espresso-4
+espresso-tonic-2
+filterkaffee-4
+flat-white-4
+frappe-4
+freddo-cappuccino-4
+freddo-espresso-2
+iced-americano-1
+iced-latte-1
+irish-coffee-2
+kaffee-creme-2
+kafi-fertig-2
+latte-macchiato-1
+lungo-2
+macchiato-3
+marocchino-3
+mokka-1
+nitro-cold-brew-3
+pumpkin-spice-latte-4
+ristretto-2
+schale-4
+schuemli-pfluemli-4
+tuerkischer-mokka-4
+vanilla-latte-4
+white-chocolate-mocha-3
+wiener-melange-3

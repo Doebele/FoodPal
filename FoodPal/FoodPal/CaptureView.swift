@@ -6,6 +6,11 @@ import SwiftData
 /// bestimmt, womit sie öffnet — bei mg die Getränkeauswahl, bei kcal die
 /// Kamera. Der Umschalter unten wechselt zwischen beidem.
 struct CaptureSheet: View {
+    /// Wird gerufen, wenn eine Mahlzeit erfasst werden soll, aber noch kein
+    /// Modell eingerichtet ist. Die Huelle schliesst dann dieses Blatt und
+    /// oeffnet die Einstellungen beim Anbieter.
+    var onModelSetup: () -> Void = {}
+
     @Environment(\.dismiss) private var dismiss
     @AppStorage(Preference.captureMode) private var captureMode = Entry.Kind.coffee.rawValue
     @AppStorage(Preference.roast) private var roastRaw = Roast.hell.rawValue
@@ -36,7 +41,8 @@ struct CaptureSheet: View {
             } else {
                 ScrollsWhenNeeded {
                     VStack(spacing: 0) {
-                        PhotoCapture { dismiss() }
+                        PhotoCapture(onSaved: { dismiss() },
+                                     onSetup: { onModelSetup(); dismiss() })
                         switcher
                     }
                 }
@@ -58,6 +64,7 @@ struct CaptureSheet: View {
                  ? "Für Mahlzeiten auf kcal wechseln"
                  : "Für Kaffee auf mg wechseln")
                 .scaledFont(11)
+                .textCase(.lowercase)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, Metric.margin)
@@ -85,9 +92,15 @@ struct CoffeeCapture: View {
     @Environment(\.modelContext) private var context
     @Query private var all: [Entry]
     @AppStorage(Preference.healthSync) private var healthSync = true
+    @AppStorage(Preference.hand) private var handRaw = Hand.right.rawValue
+    /// Die Leiter, als JSON-Liste von Namen. Leer heisst: noch nie gesetzt,
+    /// dann wird aus dem Bestand gesaet.
+    @AppStorage(Preference.coffeeOrder) private var orderJSON = "[]"
 
     @State private var health = HealthKitSync()
     @State private var saves = 0
+
+    private var hand: Hand { Hand(rawValue: handRaw) ?? .right }
 
     private static let bigCount = 2
     private static let midCount = 6
@@ -95,12 +108,21 @@ struct CoffeeCapture: View {
     private static let gap: CGFloat = 4
     private static let legendHeight: CGFloat = 42
 
-    /// Ein Punkt trägt 20 kcal und 13,3 mg. Der Koffeinwert ist der aus dem
-    /// Rest der App (160 mg auf zwölf Punkte); die Kalorienskala ist auf
-    /// Kaffee gerechnet — 24 Punkte reichen bis 480 kcal, und dort endet,
-    /// was in einer Tasse landen kann.
-    private static let kcalPerDot: Double = 20
-    private static let mgPerDot: Double = 160 / 12
+    /// **Eine Spalte ist die Einheit, nicht ein Punkt.** Zwölf Spalten, und
+    /// die volle Reihe ist das Maximum: 480 kcal und 320 mg. Beides sind die
+    /// Grenzen dessen, was in einer Tasse landet — die stärkste Sorte im
+    /// Bestand hat 470 kcal, die koffeinreichste 280 mg.
+    ///
+    /// Die kleine Kachel füllt eine Spalte mit zwei Punkten, die grosse mit
+    /// fünf. Derselbe Wert ergibt damit dieselbe **Breite**, gleich wie hoch
+    /// die Kachel ist.
+    ///
+    /// Vorher zählte jeder Punkt für sich. Damit lief dasselbe Mass auf der
+    /// grossen Kachel über 60 Punkte statt über 24, und ein Cappuccino sah
+    /// dort aus wie ein Drittel von dem, was er auf der kleinen war.
+    private static let dotColumns = 12
+    private static let kcalPerColumn: Double = 480 / 12
+    private static let mgPerColumn: Double = 320 / 12
 
     var body: some View {
         ScrollView {
@@ -223,36 +245,39 @@ struct CoffeeCapture: View {
         VStack(alignment: .leading, spacing: Self.gap) {
             if tile == .large {
                 HStack(spacing: Self.gap) {
-                    dots(preset.kcal, per: Self.kcalPerDot, rows: tile.rows, color: Palette.ink)
+                    dots(preset.kcal, per: Self.kcalPerColumn, rows: tile.rows, color: Palette.ink)
                     Text("\(Int(preset.kcal))")
                         .scaledFont(20, design: .monospaced)
                         .foregroundStyle(Palette.ink)
                 }
                 HStack(spacing: Self.gap) {
-                    dots(preset.caffeineMg, per: Self.mgPerDot, rows: tile.rows, color: roast.color)
+                    dots(preset.caffeineMg, per: Self.mgPerColumn, rows: tile.rows, color: roast.color)
                     Text("\(Int(preset.caffeineMg))")
                         .scaledFont(20, design: .monospaced)
                         .foregroundStyle(roast.color)
                 }
             } else {
-                dots(preset.kcal, per: Self.kcalPerDot, rows: tile.rows, color: Palette.ink)
-                dots(preset.caffeineMg, per: Self.mgPerDot, rows: tile.rows, color: roast.color)
+                dots(preset.kcal, per: Self.kcalPerColumn, rows: tile.rows, color: Palette.ink)
+                dots(preset.caffeineMg, per: Self.mgPerColumn, rows: tile.rows, color: roast.color)
             }
         }
     }
 
     /// Zwölf Spalten im Raster des Tagesdiagramms: Punkt 3 pt, Teilung 4 und
-    /// 4,33. Gefüllt wird zeilenweise von links.
+    /// 4,33. Gefüllt wird **spaltenweise** von links, jede Spalte ganz.
     private func dots(_ value: Double, per: Double, rows: Int, color: Color) -> some View {
-        let total = rows * 12
-        let lit = min(total, Int((value / per).rounded(.up)))
+        // Aufgerundet: was in der Tasse war, soll man sehen. Zwei Kalorien
+        // eines Espresso ergaeben abgerundet nichts.
+        let lit = min(Self.dotColumns, Int((value / per).rounded(.up)))
         return Canvas { ctx, _ in
-            for index in 0..<total {
-                let rect = CGRect(
-                    x: CGFloat(index % 12) * 4, y: CGFloat(index / 12) * 4.33,
-                    width: 3, height: 3
-                )
-                ctx.fill(Path(rect), with: .color(index < lit ? color : Palette.ink3))
+            for column in 0..<Self.dotColumns {
+                for row in 0..<rows {
+                    let rect = CGRect(
+                        x: CGFloat(column) * 4, y: CGFloat(row) * 4.33,
+                        width: 3, height: 3
+                    )
+                    ctx.fill(Path(rect), with: .color(column < lit ? color : Palette.ink3))
+                }
             }
         }
         .frame(width: 47, height: CGFloat(rows) * 4.33 - 1.33)
@@ -261,11 +286,46 @@ struct CoffeeCapture: View {
 
     // MARK: - Reihenfolge
 
-    /// Häufigste zuerst. Gezählt wird über den **ganzen** Bestand, nicht über
-    /// dreissig Tage: die Stufen sollen stehen und nicht wöchentlich tauschen.
-    /// Bei Gleichstand zählt, was zuletzt getrunken wurde, danach die
-    /// Reihenfolge der Vorlage.
+    /// **Eine Stufe je Tipp.** Die Reihenfolge ist keine Zählung, sondern eine
+    /// Leiter mit drei Sprossen: oben die kleinen Quadrate, in der Mitte die
+    /// laenglichen, unten an der Bedienhand die zwei grossen.
+    ///
+    /// Wer ein Getränk wählt, hebt es um **genau eine** Sprosse, und es tritt
+    /// dort an der Bedienhand ein. Was dabei verdrängt wird, fällt um eine
+    /// zurück. Aus den kleinen Quadraten kommt man also nie in einem Zug zu
+    /// den zwei grossen — dafür ist die Mitte da, und unten stehen nur die,
+    /// die man zweimal gewählt hat.
+    ///
+    /// Eine Zählung stand hier vorher und tat etwas anderes: sie hängte den
+    /// Aufstieg an den Abstand zum Vordermann. Ein Getränk mit drei Strichen
+    /// blieb dann unerreichbar, gleich wie oft man das neue wählte.
     private var ranked: [CoffeePreset] {
+        let nachName = Dictionary(
+            uniqueKeysWithValues: CoffeePreset.all.map { ($0.name, $0) }
+        )
+        var out = leiter.compactMap { nachName[$0] }
+        // Sorten, die es beim letzten Speichern noch nicht gab, hängen sich
+        // hinten an, statt stillschweigend zu fehlen.
+        let gesetzt = Set(out.map(\.name))
+        out.append(contentsOf: CoffeePreset.all.filter { !gesetzt.contains($0.name) })
+        return out
+    }
+
+    /// Die gespeicherte Leiter. Beim ersten Mal aus dem Bestand gesät, damit
+    /// niemand die Anordnung verliert, die sich über Wochen ergeben hat.
+    private var leiter: [String] {
+        if let namen = try? JSONDecoder().decode([String].self, from: Data(orderJSON.utf8)),
+           !namen.isEmpty {
+            return namen
+        }
+        return gesaet
+    }
+
+    /// Der Startwert: häufigste zuerst, bei Gleichstand das zuletzt
+    /// getrunkene, dann die Reihenfolge der Vorlage. Genau die Regel, die bis
+    /// hierher die ganze Sortierung war — jetzt ist sie nur noch der
+    /// Anfangszustand der Leiter.
+    private var gesaet: [String] {
         var counts: [String: Int] = [:]
         var last: [String: Date] = [:]
         for entry in all where entry.kind == .coffee {
@@ -281,13 +341,31 @@ struct CoffeeCapture: View {
             let la = last[a.name] ?? .distantPast, lb = last[b.name] ?? .distantPast
             if la != lb { return la > lb }
             return (fallback[a.name] ?? 0) < (fallback[b.name] ?? 0)
-        }
+        }.map(\.name)
     }
 
-    /// Zwei grosse: die häufigste **rechts**.
+    /// Ein Tipp, eine Sprosse. Rein und ohne Ansicht, damit sich die Leiter
+    /// prüfen lässt.
+    ///
+    /// Das Ziel ist der **erste Platz der nächsttieferen Gruppe**: aus den
+    /// kleinen Quadraten an den Anfang der Mitte, aus der Mitte an den Anfang
+    /// der zwei grossen. Wer schon unten steht, rückt an den Daumen. Alles
+    /// dazwischen rutscht um einen Platz nach oben — die Sprosse, die frei
+    /// wird, füllt der Nachrücker.
+    static func promoted(_ order: [String], choosing name: String) -> [String] {
+        guard let von = order.firstIndex(of: name) else { return order }
+        let ziel = von >= bigCount + midCount ? bigCount : 0
+        guard ziel < von else { return order }
+        var next = order
+        next.remove(at: von)
+        next.insert(name, at: ziel)
+        return next
+    }
+
+    /// Zwei grosse: die häufigste **an der Bedienhand**.
     private var bigRow: [CoffeePreset?] {
         let two = Array(ranked.prefix(Self.bigCount))
-        return [two.count > 1 ? two[1] : nil, two.first]
+        return hand.order(two.first, two.count > 1 ? two[1] : nil)
     }
 
     private var midGrid: [[CoffeePreset?]] {
@@ -300,16 +378,26 @@ struct CoffeeCapture: View {
         return grid(rest, columns: Self.columns, rows: rows)
     }
 
-    /// Füllt von **unten rechts** nach oben links — die Reihenfolge, in der
-    /// die Liste gelesen wird, wenn der Daumen unten liegt.
+    /// Füllt von unten **an der Bedienhand** nach oben weg — die Reihenfolge,
+    /// in der die Liste gelesen wird, wenn der Daumen unten liegt.
     private func grid(_ items: [CoffeePreset], columns: Int, rows: Int) -> [[CoffeePreset?]] {
+        Self.grid(items, columns: columns, rows: rows, hand: hand)
+    }
+
+    /// Statisch und ohne Ansicht, damit sich die Reihenfolge pruefen laesst.
+    static func grid(
+        _ items: [CoffeePreset], columns: Int, rows: Int, hand: Hand
+    ) -> [[CoffeePreset?]] {
         var field = Array(
             repeating: [CoffeePreset?](repeating: nil, count: columns),
             count: rows
         )
+        let spalten = hand == .right
+            ? Array(stride(from: columns - 1, through: 0, by: -1))
+            : Array(0..<columns)
         var index = 0
         for row in stride(from: rows - 1, through: 0, by: -1) {
-            for column in stride(from: columns - 1, through: 0, by: -1) where index < items.count {
+            for column in spalten where index < items.count {
                 field[row][column] = items[index]
                 index += 1
             }
@@ -323,6 +411,14 @@ struct CoffeeCapture: View {
         let entry = preset.entry()
         context.insert(entry)
         saves += 1
+
+        // Eine Sprosse nach unten. Gerechnet wird auf der vollstaendigen
+        // Liste, nicht auf der gespeicherten: sonst faende eine Sorte, die es
+        // beim letzten Speichern noch nicht gab, ihren eigenen Platz nicht.
+        let neu = Self.promoted(ranked.map(\.name), choosing: preset.name)
+        if let daten = try? JSONEncoder().encode(neu) {
+            orderJSON = String(decoding: daten, as: UTF8.self)
+        }
 
         if healthSync {
             Task { entry.hkIDs = (try? await health.save(entry)) ?? [] }

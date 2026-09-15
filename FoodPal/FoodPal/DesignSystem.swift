@@ -14,11 +14,49 @@ enum Palette {
     /// Erloschene Punkte im Diagramm — etwas kräftiger als `rule`.
     static let ink3  = dynamic(light: 0xC9C9BD, dark: 0x33332E)
     static let rule  = dynamic(light: 0xE2E2DA, dark: 0x2A2A27)
+    /// Erloschene **Punkte** im Raster: Zeitstrahl, Ziffernfeld und
+    /// Wartewelle. Es ist dasselbe Feld, also derselbe Ton.
+    ///
+    /// Getrennt von `rule`, obwohl beide fast gleich aussehen: `rule` zieht
+    /// Haarlinien zwischen Formularzeilen, und die sollen sichtbar bleiben.
+    /// Erloschene Punkte sollen es gerade nicht — 1632 davon summieren sich
+    /// zu einer Flaeche, und je leiser sie ist, desto klarer stehen die
+    /// beleuchteten darin.
+    ///
+    /// Figma-Variable `matrix` (Node `1:8445`).
+    static let matrix = dynamic(light: 0xE8E7E3, dark: 0x222220)
+    /// Erloschene **Segmente** — eigener Ton, weil sie ein anderes Problem
+    /// haben als die Punkte im Diagramm. Ein Segment ist gross und flaechig;
+    /// in `ink3` steht die ganze Acht als Schatten hinter jeder Ziffer und
+    /// nimmt ihr die Kontur. Gegen Papier faellt der Ton damit von 1,60 : 1
+    /// auf 1,15 : 1 — genug, um die Bauart der Anzeige zu zeigen, zu wenig,
+    /// um mitgelesen zu werden.
+    ///
+    /// Keine Frage der Zugaenglichkeit: die erloschenen Segmente tragen
+    /// keine Information. Die leuchtenden stehen unveraendert bei 17 : 1.
+    ///
+    /// Figma-Variable `segment` (Node `1:8445`).
+    static let segment = dynamic(light: 0xEBEBE2, dark: 0x1F1F1C)
     /// Die Kachel der Getränkeauswahl: Papier, eine Spur zurückgenommen.
     /// Im Entwurf ist es ein radialer Verlauf von Papier nach `rule` bei 20 %
     /// Deckkraft — sichtbar davon ist nur, dass die Kachel nicht ganz Papier
     /// ist. Eine Fläche sagt dasselbe mit einer Zeile.
     static let tile  = dynamic(light: 0xF4F4EF, dark: 0x1B1B19)
+
+    /// **Die Lochplatte.** Kreuz und Rosette sind Stanzungen in einem Karton
+    /// mit Dicke, und eine Stanzung hat eine Wand: hell auf der Seite, auf die
+    /// das Licht faellt, dunkel auf der, die der Rand verdeckt.
+    ///
+    /// Beide Toene liegen **unter** Papier. Auf hellem Grund kann eine
+    /// beleuchtete Lochwand nicht heller sein als die Flaeche um sie herum —
+    /// sonst saehe das Loch aus wie ein Buckel.
+    static let punchLight = dynamic(light: 0xE8E8E0, dark: 0x2E2E2A)
+    static let punchDark  = dynamic(light: 0xADADA0, dark: 0x050504)
+    /// Das hintere Blatt, das man durch die Loecher sieht. Etwas dunkler als
+    /// die beleuchtete Wand: es liegt tiefer und im Schatten des Kartons.
+    static let punchSheet = dynamic(light: 0xD8D8CF, dark: 0x3A3A34)
+    /// Und was uebrig bleibt, wenn es weggezogen ist: nichts.
+    static let punchOpen  = dynamic(light: 0x161614, dark: 0x000000)
 
     /// Fester Farbwert, unabhängig vom aktuellen Modus — für Vorschauen,
     /// die zeigen sollen, wie der *andere* Modus aussieht.
@@ -95,6 +133,33 @@ enum Grid {
 
     static func scale(forWidth width: CGFloat) -> CGFloat {
         width / naturalWidth
+    }
+}
+
+/// **Das Glas der App.** Durchscheinend, damit man ahnt, was dahinterliegt —
+/// und im Dunkeln mit einem Schleier, sonst traegt ein helles Bild oder eine
+/// helle Zeile dahinter die helle Schrift nicht mehr. Gemessen an der
+/// Bildansicht: ohne Schleier fiel das hellste Zwanzigstel des Grundes auf
+/// 4,16 : 1 und damit unter die 4,5, die 11-pt-Etiketten verlangen. Ein
+/// Viertel Schwarz zieht den Grund zurueck, ohne das Dahinter zu verdecken.
+///
+/// Steht an drei Stellen: ueber dem Bild, auf den Kacheln der Leiste unten
+/// und hinter der Leiste selbst. Eine Zahl, ein Ort.
+/// Zwei Staerken: `.thin` ueber dem Bild, wo der Satz gegen ein Foto bestehen
+/// muss, und `.ultraThin` in der Leiste unten. Dort liegen **zwei** Scheiben
+/// uebereinander — die der Leiste und die der Kachel darauf —, und zwei
+/// duenne ergeben zusammen den Ton der Kacheln in der Getraenkeauswahl.
+/// Zweimal `.thin` geriet dunkler als die, und die Leiste wirkte schwerer,
+/// als sie sollte. Gemessen: Papier 250, Leiste 246, Kachel 244 — und
+/// `Palette.tile` ist 244.
+struct Glass: View {
+    @Environment(\.colorScheme) private var scheme
+
+    var material: Material = .thinMaterial
+
+    var body: some View {
+        Rectangle().fill(material)
+            .overlay(Color.black.opacity(scheme == .dark ? 0.25 : 0))
     }
 }
 

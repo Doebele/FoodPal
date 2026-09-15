@@ -24,6 +24,8 @@ final class Dictation {
     private var recognizer: SFSpeechRecognizer?
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private var task: SFSpeechRecognitionTask?
+    /// Der noch laufende Abbau der vorigen Aufnahme. Siehe `stop()`.
+    private var teardown: Task<Void, Never>?
 
     /// Erkennt in der Sprache der App, nicht in der des Geräts — dieselbe
     /// Regel wie bei den Modellantworten.
@@ -48,21 +50,40 @@ final class Dictation {
                 error = String(localized: "Zugriff auf Mikrofon oder Spracherkennung fehlt.")
                 return
             }
+            // Der Abbau der vorigen Aufnahme laeuft nebenher. Wer ihm in
+            // die Maschine greift, haelt die neue gleich wieder an.
+            await teardown?.value
             do { try begin() }
             catch { self.error = error.localizedDescription }
         }
     }
 
+    /// **Der Abbau blockiert nicht mehr den Hauptfaden.**
+    ///
+    /// `setActive(false)` braucht eine gute Zehntelsekunde und haelt dabei den
+    /// Faden an, auf dem SwiftUI zeichnet. Auf dem Beschreiben-Schirm frass
+    /// das genau die Animation, die daneben lief: das Blatt sprang zurueck,
+    /// statt zu fahren, obwohl die Haptik ordentlich streichelte.
+    ///
+    /// Das Schnelle bleibt hier, das Langsame wandert weg. Ein neuer Start
+    /// wartet den Abbau ab, damit sich die beiden nicht ins Gehege kommen.
     func stop() {
         guard isRunning else { return }
         isRunning = false
-        engine.stop()
         engine.inputNode.removeTap(onBus: 0)
         request?.endAudio()
         task?.cancel()
         request = nil
         task = nil
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        // Die Maschine bleibt hier: sie beendet die Aufnahme, und solange
+        // die laeuft, unterdrueckt iOS die Haptik. Das kostet ein paar
+        // Millisekunden. Die Sitzung freizugeben kostet Hunderte, und das
+        // wartet.
+        engine.stop()
+        teardown = Task.detached(priority: .userInitiated) {
+            try? AVAudioSession.sharedInstance()
+                .setActive(false, options: .notifyOthersOnDeactivation)
+        }
     }
 
     // MARK: - Innenleben

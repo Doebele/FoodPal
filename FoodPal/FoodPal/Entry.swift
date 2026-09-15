@@ -91,6 +91,13 @@ struct CoffeePreset: Identifiable, Hashable {
     let name: String
     let kcal: Double
     let caffeineMg: Double
+    /// Makros je Standardportion — **optional**, und `nil` heisst nicht
+    /// „unbekannt", sondern „unter einem Gramm". Ein Espresso trägt 0,86 g
+    /// Kohlenhydrat; das als „1 g" hinzuschreiben wäre eine Genauigkeit,
+    /// die die Portion nicht hat.
+    var proteinG: Double? = nil
+    var carbsG: Double? = nil
+    var fatG: Double? = nil
 
     var id: String { name }
 
@@ -98,67 +105,87 @@ struct CoffeePreset: Identifiable, Hashable {
     /// hat, sieht unten den Espresso und oben die Exoten; von da an zählt,
     /// was tatsächlich getrunken wird.
     ///
-    /// Werte: die vierzehn Klassiker aus europäischen Standardportionen, die
+    /// Werte: die Klassiker aus europäischen Standardportionen, die
     /// Kettenkaffees aus der Herstellertabelle (Grande, 473 ml, 2 % Milch),
-    /// Schweizer Sorten und Exoten gerechnet. Herkunft je Zahl steht in
-    /// `docs/kaffeebilder.md`.
+    /// Schweizer Sorten und Exoten gerechnet — Kalorien, Koffein und Makros
+    /// aus **derselben** Rezeptur, damit sie zueinander passen. Herkunft je
+    /// Zahl steht in `docs/kaffeebilder.md`, die Gegenprobe in
+    /// `CoffeeMacroTests`.
     static let all: [CoffeePreset] = [
         // Klassiker
         .init(name: "Espresso", kcal: 2, caffeineMg: 63),
-        .init(name: "Cappuccino", kcal: 74, caffeineMg: 63),
-        .init(name: "Kaffee Crème", kcal: 20, caffeineMg: 80),
-        .init(name: "Caffè Latte", kcal: 135, caffeineMg: 63),
-        .init(name: "Flat White", kcal: 155, caffeineMg: 130),
+        .init(name: "Cappuccino", kcal: 74, caffeineMg: 63, proteinG: 4, carbsG: 6, fatG: 4),
+        .init(name: "Kaffee Crème", kcal: 20, caffeineMg: 80, fatG: 2),
+        .init(name: "Caffè Latte", kcal: 135, caffeineMg: 63,
+              proteinG: 7, carbsG: 10, fatG: 8),
+        .init(name: "Flat White", kcal: 155, caffeineMg: 130,
+              proteinG: 8, carbsG: 12, fatG: 9),
         .init(name: "Filterkaffee", kcal: 4, caffeineMg: 95),
         .init(name: "Lungo", kcal: 3, caffeineMg: 75),
         .init(name: "Americano", kcal: 3, caffeineMg: 77),
-        .init(name: "Macchiato", kcal: 13, caffeineMg: 63),
-        .init(name: "Cortado", kcal: 30, caffeineMg: 126),
-        .init(name: "Latte Macchiato", kcal: 120, caffeineMg: 63),
+        .init(name: "Macchiato", kcal: 13, caffeineMg: 63, carbsG: 1),
+        .init(name: "Cortado", kcal: 30, caffeineMg: 126, proteinG: 1, carbsG: 3, fatG: 2),
+        .init(name: "Latte Macchiato", kcal: 120, caffeineMg: 63,
+              proteinG: 6, carbsG: 9, fatG: 7),
         .init(name: "Ristretto", kcal: 1, caffeineMg: 53),
         .init(name: "Doppio", kcal: 4, caffeineMg: 126),
-        .init(name: "Schale", kcal: 80, caffeineMg: 80),
+        .init(name: "Schale", kcal: 80, caffeineMg: 80, proteinG: 4, carbsG: 6, fatG: 4),
         .init(name: "Mokka", kcal: 5, caffeineMg: 95),
         .init(name: "Cold Brew", kcal: 6, caffeineMg: 155),
 
         // Wien, Paris, Bar
-        .init(name: "Wiener Melange", kcal: 55, caffeineMg: 63),
-        .init(name: "Café au Lait", kcal: 100, caffeineMg: 95),
-        .init(name: "Espresso Tonic", kcal: 55, caffeineMg: 63),
+        .init(name: "Wiener Melange", kcal: 55, caffeineMg: 63,
+              proteinG: 3, carbsG: 4, fatG: 3),
+        .init(name: "Café au Lait", kcal: 100, caffeineMg: 95,
+              proteinG: 5, carbsG: 8, fatG: 5),
+        .init(name: "Espresso Tonic", kcal: 55, caffeineMg: 63, carbsG: 14),
 
         // Kettenkaffee, Grande
-        .init(name: "Iced Latte", kcal: 130, caffeineMg: 150),
-        .init(name: "Iced Americano", kcal: 15, caffeineMg: 225),
+        .init(name: "Iced Latte", kcal: 130, caffeineMg: 150,
+              proteinG: 8, carbsG: 13, fatG: 5),
+        .init(name: "Iced Americano", kcal: 15, caffeineMg: 225, proteinG: 1, carbsG: 3),
         .init(name: "Nitro Cold Brew", kcal: 5, caffeineMg: 280),
-        .init(name: "Cold Brew Süssrahm", kcal: 110, caffeineMg: 185),
-        .init(name: "Caramel Macchiato", kcal: 250, caffeineMg: 150),
-        .init(name: "Vanilla Latte", kcal: 250, caffeineMg: 150),
-        .init(name: "Caffè Mocha", kcal: 360, caffeineMg: 175),
-        .init(name: "White Chocolate Mocha", kcal: 470, caffeineMg: 150),
-        .init(name: "Pumpkin Spice Latte", kcal: 390, caffeineMg: 150),
-        .init(name: "Frappé", kcal: 410, caffeineMg: 100),
+        .init(name: "Cold Brew Süssrahm", kcal: 110, caffeineMg: 185,
+              proteinG: 1, carbsG: 14, fatG: 6),
+        .init(name: "Caramel Macchiato", kcal: 250, caffeineMg: 150,
+              proteinG: 10, carbsG: 35, fatG: 7),
+        .init(name: "Vanilla Latte", kcal: 250, caffeineMg: 150,
+              proteinG: 12, carbsG: 37, fatG: 6),
+        .init(name: "Caffè Mocha", kcal: 360, caffeineMg: 175,
+              proteinG: 14, carbsG: 43, fatG: 15),
+        .init(name: "White Chocolate Mocha", kcal: 470, caffeineMg: 150,
+              proteinG: 15, carbsG: 62, fatG: 19),
+        .init(name: "Pumpkin Spice Latte", kcal: 390, caffeineMg: 150,
+              proteinG: 14, carbsG: 52, fatG: 14),
+        .init(name: "Frappé", kcal: 410, caffeineMg: 100, proteinG: 5, carbsG: 64, fatG: 15),
 
         // Exoten
-        .init(name: "Türkischer Mokka", kcal: 20, caffeineMg: 55),
-        .init(name: "Barraquito", kcal: 105, caffeineMg: 63),
-        .init(name: "Café Bombón", kcal: 80, caffeineMg: 63),
-        .init(name: "Marocchino", kcal: 30, caffeineMg: 63),
-        .init(name: "Einspänner", kcal: 105, caffeineMg: 126),
+        .init(name: "Türkischer Mokka", kcal: 20, caffeineMg: 55, carbsG: 4),
+        .init(name: "Barraquito", kcal: 105, caffeineMg: 63,
+              proteinG: 4, carbsG: 14, fatG: 4),
+        .init(name: "Café Bombón", kcal: 80, caffeineMg: 63,
+              proteinG: 2, carbsG: 14, fatG: 2),
+        .init(name: "Marocchino", kcal: 30, caffeineMg: 63, proteinG: 1, carbsG: 3, fatG: 1),
+        .init(name: "Einspänner", kcal: 105, caffeineMg: 126, carbsG: 2, fatG: 11),
         .init(name: "Carajillo", kcal: 50, caffeineMg: 63),
-        .init(name: "Irish Coffee", kcal: 225, caffeineMg: 80),
-        .init(name: "Affogato", kcal: 100, caffeineMg: 63),
+        .init(name: "Irish Coffee", kcal: 225, caffeineMg: 80, carbsG: 9, fatG: 11),
+        .init(name: "Affogato", kcal: 100, caffeineMg: 63, proteinG: 2, carbsG: 12, fatG: 6),
         .init(name: "Freddo Espresso", kcal: 5, caffeineMg: 126),
-        .init(name: "Freddo Cappuccino", kcal: 55, caffeineMg: 126),
-        .init(name: "Cà phê sữa đá", kcal: 100, caffeineMg: 130),
+        .init(name: "Freddo Cappuccino", kcal: 55, caffeineMg: 126,
+              proteinG: 3, carbsG: 5, fatG: 3),
+        .init(name: "Cà phê sữa đá", kcal: 100, caffeineMg: 130,
+              proteinG: 2, carbsG: 17, fatG: 3),
 
         // Kaffee mit Schnaps. Die Werte tragen den Alkohol mit: 2 cl Obstbrand
         // zu 40 % sind rund 44 kcal, 4 cl Irish Cream rund 131.
-        .init(name: "Schümli Pflümli", kcal: 130, caffeineMg: 80),
-        .init(name: "Kafi Fertig", kcal: 95, caffeineMg: 40),
-        .init(name: "Café Baileys", kcal: 200, caffeineMg: 80)
+        .init(name: "Schümli Pflümli", kcal: 130, caffeineMg: 80, carbsG: 5, fatG: 7),
+        .init(name: "Kafi Fertig", kcal: 95, caffeineMg: 40, carbsG: 12),
+        .init(name: "Café Baileys", kcal: 200, caffeineMg: 80,
+              proteinG: 2, carbsG: 11, fatG: 12)
     ]
 
     func entry(at date: Date = .now) -> Entry {
-        Entry(date: date, name: name, kind: .coffee, kcal: kcal, caffeineMg: caffeineMg)
+        Entry(date: date, name: name, kind: .coffee, kcal: kcal,
+              caffeineMg: caffeineMg, proteinG: proteinG, carbsG: carbsG, fatG: fatG)
     }
 }

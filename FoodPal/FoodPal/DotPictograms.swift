@@ -1,8 +1,12 @@
 import SwiftUI
 
-/// Punktgrafiken über den Erfassungsschirmen. Runde Punkte, nicht quadratische:
-/// sie sind kein Datenraster, sondern eine Marke — die Lochung eines
-/// Braun-Lautsprechers, nicht das Tagesdiagramm.
+/// Punktgrafiken über den Erfassungsschirmen.
+///
+/// **Zwei Familien.** Die grossen Marken — Kreuz und Rosette — haben runde
+/// Punkte: sie sind kein Datenraster, sondern eine Lochung, die eines
+/// Braun-Lautsprechers. Die kleinen Zeichen im Zwölferraster sind **eckig**,
+/// wie im Entwurf: dort sind es dieselben 3-pt-Quadrate wie im Zeitstrahl,
+/// also dasselbe Korn und nicht ein zweites.
 ///
 /// Beide Zeichnungen stammen aus dem Entwurf; die Punktmitten sind von dort
 /// abgelesen und liegen als Tabelle bereit, statt zur Laufzeit konstruiert zu
@@ -15,6 +19,8 @@ struct DotArt: View {
     /// Punktdurchmesser in denselben Einheiten.
     var diameter: CGFloat = 6
     var color: Color = Palette.rule
+    /// Eckige Punkte statt runder — siehe die zwei Familien oben.
+    var square = false
 
     var body: some View {
         Canvas { ctx, size in
@@ -22,7 +28,7 @@ struct DotArt: View {
             let r = diameter * s
             for p in points {
                 let rect = CGRect(x: p.x * s - r / 2, y: p.y * s - r / 2, width: r, height: r)
-                ctx.fill(Path(ellipseIn: rect), with: .color(color))
+                ctx.fill(square ? Path(rect) : Path(ellipseIn: rect), with: .color(color))
             }
         }
         .aspectRatio(1, contentMode: .fit)
@@ -31,9 +37,11 @@ struct DotArt: View {
 }
 
 extension DotArt {
-    /// Das Kreuz über der Erfassung: 13 x 13 Raster, Teilung 15, Mittelreihe
-    /// und Mittelspalte gesetzt. Hinzufügen, im selben Punktvokabular.
-    static var plus: DotArt {
+    /// Das grosse Kreuz über der Erfassung: 13 x 13 Raster, Teilung 15,
+    /// Mittelreihe und Mittelspalte gesetzt. Runde Punkte, weil es eine Marke
+    /// ist und kein Zeichen — das kleine `plus` im Zwölferraster ist das
+    /// Zeichen auf der Kachel.
+    static var cross: DotArt {
         let pitch: CGFloat = 15
         let centre = 6
         var points: [CGPoint] = []
@@ -45,16 +53,200 @@ extension DotArt {
         return DotArt(points: points, box: 186)
     }
 
-    /// Das Info-Zeichen: ein „i" im selben Vokabular wie Kreuz und Rosette.
+    /// Die Zeichen im Zwoelferraster, aus dem Entwurf abgelesen (Node
+    /// `160:106669`). **Zwoelf mal zwoelf**, Teilung 4, Punkt 3 — quadratisch,
+    /// seit der Entwurf die dreizehnte Reihe abgelegt hat. Damit steht jedes
+    /// Zeichen in demselben Quadrat, und keines sitzt in seinem Feld tiefer
+    /// als das andere.
     ///
-    /// Der Stamm sitzt **enger als sein Durchmesser** — seine Punkte fliessen
-    /// zu einem Strich zusammen, und nur das Tüpfelchen steht frei. Bei
-    /// gleichmässigem Abstand las sich das Zeichen als drei Punkte
-    /// untereinander, also als Menü, nicht als Buchstabe.
+    /// Das i ist ein gesetztes i mit Fahne und Fuss, nicht ein Strich mit
+    /// Tuepfelchen. Die erste eigene Fassung setzte den Stamm enger als seinen
+    /// Durchmesser, damit er zu einer Linie zusammenfloss; der Entwurf loest
+    /// dasselbe anders und besser, naemlich mit einer Serife.
+    ///
+    /// **Beschreiben traegt zwei**: den Stift und das Mikrofon. Der Schirm
+    /// dahinter kann beides, und die Kachel sagt das, bevor man sie oeffnet.
+    ///
+    /// `plus` ist das Zeichen auf der Erfassen-Kachel — nicht zu verwechseln
+    /// mit `cross`, dem grossen Kreuz aus runden Punkten ueber der Erfassung.
     static func info(color: Color) -> DotArt {
-        var points = [CGPoint(x: 30, y: 6)]
-        points += stride(from: 24, through: 54, by: 6).map { CGPoint(x: 30, y: $0) }
-        return DotArt(points: points, box: 60, diameter: 12, color: color)
+        grid([
+            "............",
+            ".....##.....",
+            ".....##.....",
+            "............",
+            "...####.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            "...######...",
+        ], color: color)
+    }
+
+    static func close(color: Color) -> DotArt {
+        grid([
+            ".#........#.",
+            "###......###",
+            ".###....###.",
+            "..###..###..",
+            "...######...",
+            "....####....",
+            "....####....",
+            "...######...",
+            "..###..###..",
+            ".###....###.",
+            "###......###",
+            ".#........#.",
+        ], color: color)
+    }
+
+    static func camera(color: Color) -> DotArt {
+        grid([
+            "............",
+            "....####....",
+            ".###....###.",
+            "#..........#",
+            "#.#..###...#",
+            "#...#...#..#",
+            "#...#...#..#",
+            "#...#...#..#",
+            "#....###...#",
+            "#..........#",
+            ".##########.",
+            "............",
+        ], color: color)
+    }
+
+    static func photos(color: Color) -> DotArt {
+        grid([
+            "............",
+            "############",
+            "#..........#",
+            "#......##..#",
+            "#.....#..#.#",
+            "#..#..#..#.#",
+            "#.#.#..##..#",
+            "##...#.....#",
+            "#.....#.####",
+            "#......#...#",
+            "#..........#",
+            "############",
+        ], color: color)
+    }
+
+    static func pencil(color: Color) -> DotArt {
+        grid([
+            "............",
+            "........#...",
+            ".......#.#..",
+            "......#...#.",
+            ".....#...#..",
+            "....#...#...",
+            "...#...#....",
+            "..#...#.....",
+            ".#...#......",
+            "##..#.......",
+            "####........",
+            "###..#######",
+        ], color: color)
+    }
+
+    static func microphone(color: Color) -> DotArt {
+        grid([
+            ".....##.....",
+            "....#..#....",
+            "....#..#....",
+            "....#..#....",
+            "..#.#..#.#..",
+            "..#.#..#.#..",
+            "..#..##..#..",
+            "...#....#...",
+            "....####....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+        ], color: color)
+    }
+
+    static func plus(color: Color) -> DotArt {
+        grid([
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            "############",
+            "############",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+            ".....##.....",
+        ], color: color)
+    }
+
+    /// **Die Bedienhand.** Ein Telefon und die Hand, die es von dieser Seite
+    /// haelt: der Umriss oben, die Hand als Flaeche darunter, der Daumen quer
+    /// ueber den Schirm. Die beiden Zeichen sind exakte Spiegelbilder.
+    ///
+    /// Der erste Versuch war ein Viertelkreis in der Ecke, die der Daumen
+    /// erreicht — ein Vorschlag im Hausraster. Der Entwurf zeichnet jetzt die
+    /// Hand selbst, und im Zwoelferraster geht das auf.
+    static func hand(_ hand: Hand, color: Color) -> DotArt {
+        hand == .right
+            ? grid([
+                "............",
+                "...#####....",
+                "..#.....#...",
+                "..#.....#...",
+                "..#.....#...",
+                ".##.....#...",
+                ".##..##.##..",
+                ".##..######.",
+                ".##...#####.",
+                "..#....####.",
+                "...########.",
+                "......#####.",
+            ], color: color)
+            : grid([
+                "............",
+                "....#####...",
+                "...#.....#..",
+                "...#.....#..",
+                "...#.....#..",
+                "...#.....##.",
+                "..##.##..##.",
+                ".######..##.",
+                ".#####...##.",
+                ".####....#..",
+                ".########...",
+                ".#####......",
+            ], color: color)
+    }
+
+    /// Die Zeichnung steht als Raster da und nicht als Koordinatenliste: so
+    /// sieht man die Form im Quelltext und kann sie mit dem Entwurf
+    /// vergleichen, ohne etwas zu rechnen.
+    ///
+    /// `DotArt` zeichnet in ein Quadrat. Seit die Zeichen zwoelf mal zwoelf
+    /// sind, geht das glatt auf; die Mittigkeit bleibt trotzdem stehen, damit
+    /// ein schmaleres Zeichen nicht am linken Rand klebte.
+    private static func grid(_ rows: [String], color: Color) -> DotArt {
+        let pitch: CGFloat = 4, dot: CGFloat = 3
+        let box = CGFloat(rows.count) * pitch - (pitch - dot)
+        let breite = CGFloat(rows[0].count) * pitch - (pitch - dot)
+        let links = (box - breite) / 2
+        var points: [CGPoint] = []
+        for (row, zeile) in rows.enumerated() {
+            for (column, zeichen) in zeile.enumerated() where zeichen == "#" {
+                points.append(CGPoint(x: links + CGFloat(column) * pitch + dot / 2,
+                                      y: CGFloat(row) * pitch + dot / 2))
+            }
+        }
+        return DotArt(points: points, box: box, diameter: dot, color: color, square: true)
     }
 
     /// Die Rosette über der Beschreibung — Sprache. Aus dem Entwurf abgelesen,
